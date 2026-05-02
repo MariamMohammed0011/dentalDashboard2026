@@ -6,6 +6,15 @@ import { Toaster } from 'sonner';
 import LoginForm from "./features/auth/components/LoginForm";
 import MainLayout from "./components/shared/MainLayout";
 import DashboardHome from "./features/dashboard/DashboardHome";
+import OrdersPage from "./features/dashboard/pages/OrdersPage";
+import MembershipRequestsPage from "./features/dashboard/pages/MembershipRequestsPage";
+import DoctorsPage from "./features/dashboard/pages/DoctorsPage";
+import LabsPage from "./features/dashboard/pages/LabsPage";
+import DeliveryCompaniesPage from "./features/dashboard/pages/DeliveryCompaniesPage";
+import AdsPage from "./features/dashboard/pages/AdsPage";
+import ReportsPage from "./features/dashboard/pages/ReportsPage";
+import InterventionLogPage from "./features/dashboard/pages/InterventionLogPage";
+import SettingsPage from "./features/dashboard/pages/SettingsPage";
 
 const queryClient = new QueryClient();
 
@@ -40,7 +49,15 @@ function App() {
             }
           >
             <Route index element={<DashboardHome />} />
-            {/* يمكنك إضافة باقي الصفحات هنا مثل الحسابات والطلبات */}
+            <Route path="orders" element={<OrdersPage />} />
+            <Route path="membership-requests" element={<MembershipRequestsPage />} />
+            <Route path="doctors" element={<DoctorsPage />} />
+            <Route path="labs" element={<LabsPage />} />
+            <Route path="delivery-companies" element={<DeliveryCompaniesPage />} />
+            <Route path="ads" element={<AdsPage />} />
+            <Route path="reports" element={<ReportsPage />} />
+            <Route path="intervention-log" element={<InterventionLogPage />} />
+            <Route path="settings" element={<SettingsPage />} />
           </Route>
 
           {/* إعادة توجيه أي مسار غير معروف للوج ان أو الداشبورد */}
