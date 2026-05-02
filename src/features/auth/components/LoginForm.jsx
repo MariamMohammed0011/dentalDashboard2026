@@ -1,5 +1,5 @@
 import React from "react";
-import { User } from "lucide-react";
+import { User, Loader } from "lucide-react";
 import { useLogin } from "../hooks/useLogin";
 import PasswordInput from "./PasswordInput";
 import InputField from "./InputField";
@@ -21,11 +21,7 @@ export default function LoginForm() {
           {/* القسم الأيمن: نموذج تسجيل الدخول */}
           <div className="md:w-1/2 p-12 flex flex-col justify-center bg-white/10 backdrop-blur-sm">
             <form onSubmit={handleLogin} className="space-y-5">
-            {error && (
-              <div className="bg-red-500/20 text-red-700 p-3 rounded-xl border border-red-500/30 text-sm font-bold text-center">
-                {error.message}
-              </div>
-            )}
+
 
             <InputField
               label="اسم المستخدم"
@@ -56,12 +52,20 @@ export default function LoginForm() {
 
             <div className="pt-4">
               <button
-                type="submit"
-                disabled={isPending}
-                className="w-full md:w-2/3 mx-auto block h-12 bg-primary-dark text-white rounded-xl text-lg font-medium shadow-lg shadow-primary/40 hover:bg-primary transition-all active:scale-95 disabled:bg-primary/50"
-              >
-                {isPending ? "جاري التحقق..." : "تسجيل دخول"}
-              </button>
+  type="submit"
+  disabled={isPending}
+  className="w-full md:w-2/3 mx-auto flex items-center justify-center gap-3 h-12 bg-primary-dark text-white rounded-xl text-lg font-medium shadow-lg transition-all active:scale-95 disabled:bg-primary/70 disabled:cursor-wait"
+>
+  {isPending ? (
+    <>
+      {/* استعملنا strokeWidth لزيادة وضوح الأيقونة أثناء الدوران */}
+      <Loader className="animate-spin text-white" size={24} strokeWidth={3} />
+      <span className="tracking-wide">جاري التحقق...</span>
+    </>
+  ) : (
+    "تسجيل دخول"
+  )}
+</button>
             </div>
           </form>
         </div>
