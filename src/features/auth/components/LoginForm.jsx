@@ -10,15 +10,17 @@ export default function LoginForm() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-primary-bg p-4" dir="rtl">
-      <div className="bg-gradient-to-bl from-primary/40 via-primary/20 to-primary/0 rounded-2xl shadow-2xl w-full max-w-5xl overflow-hidden flex flex-col md:flex-row border border-primary/20">
+      <div className="bg-gradient-to-bl from-primary/40 via-primary/20 to-primary/0 rounded-xl shadow-2xl w-full max-w-5xl overflow-hidden flex flex-col border border-primary/20">
+        
+        {/* عنوان الفورم الرئيسي */}
+        <div className="text-center pt-8 pb-2 bg-white/10 backdrop-blur-md ">
+           <h1 className="text-3xl font-bold text-gray-800">ابتسامتك، إدارتنا</h1>
+        </div>
 
-        {/* القسم الأيمن: نموذج تسجيل الدخول */}
-        <div className="md:w-1/2 p-12 flex flex-col justify-center bg-white/10 backdrop-blur-sm">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2 ">تسجيل دخول</h1>
-          </div>
-
-          <form onSubmit={handleLogin} className="space-y-5">
+        <div className="flex flex-col md:flex-row flex-grow">
+          {/* القسم الأيمن: نموذج تسجيل الدخول */}
+          <div className="md:w-1/2 p-12 flex flex-col justify-center bg-white/10 backdrop-blur-sm">
+            <form onSubmit={handleLogin} className="space-y-5">
             {error && (
               <div className="bg-red-500/20 text-red-700 p-3 rounded-xl border border-red-500/30 text-sm font-bold text-center">
                 {error.message}
@@ -56,7 +58,7 @@ export default function LoginForm() {
               <button
                 type="submit"
                 disabled={isPending}
-                className="w-full md:w-2/3 mx-auto block h-12 bg-primary-dark text-white rounded-xl text-lg font-bold shadow-lg shadow-primary/40 hover:bg-primary transition-all active:scale-95 disabled:bg-primary/50"
+                className="w-full md:w-2/3 mx-auto block h-12 bg-primary-dark text-white rounded-xl text-lg font-medium shadow-lg shadow-primary/40 hover:bg-primary transition-all active:scale-95 disabled:bg-primary/50"
               >
                 {isPending ? "جاري التحقق..." : "تسجيل دخول"}
               </button>
@@ -68,5 +70,7 @@ export default function LoginForm() {
         <LoginIllustration />
       </div>
     </div>
+  </div>
   );
 }
+
