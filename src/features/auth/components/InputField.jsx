@@ -2,7 +2,7 @@ import React from 'react';
 
 const InputField = ({ label, icon: Icon, ...props }) => {
   return (
-    <div className="space-y-1">
+    <div className="space-y-3">
       {label && <label className="block text-sm font-bold text-gray-700 mr-2">{label}</label>}
       <div className="relative">
         <input 
