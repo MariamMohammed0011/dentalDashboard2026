@@ -28,11 +28,11 @@ const NavItem = ({ to, label, icon: Icon, isCollapsed }) => {
         to={to} 
         className={`relative z-10 flex items-center py-2 transition-all duration-300 mx-4 my-0.5 rounded-xl ${
           isActive 
-            ? "bg-white text-primary font-black shadow-md scale-[1.02]" 
-            : "text-gray-500 font-bold hover:text-primary hover:bg-white/30"
+            ? "bg-sidebar-active text-primary font-black shadow-md scale-[1.02]" 
+            : "text-text-muted font-bold hover:text-primary hover:bg-white/10 dark:hover:bg-white/5"
         } ${isCollapsed ? "justify-center px-0" : "justify-start px-4 gap-3"}`}
       >
-        <Icon size={isCollapsed ? 22 : 20} className={`transition-transform duration-300 ${isActive ? "text-primary scale-110" : "text-gray-400"}`} />
+        <Icon size={isCollapsed ? 22 : 20} className={`transition-transform duration-300 ${isActive ? "text-primary scale-110" : "text-text-muted/60"}`} />
         {!isCollapsed && (
           <span className={`whitespace-nowrap transition-transform duration-300 origin-right text-sm ${isActive ? "scale-110 translate-x-1" : ""}`}>
             {label}
@@ -58,7 +58,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
 
   return (
     <aside 
-      className={`h-screen flex flex-col py-4 bg-[#E8F1FF] z-20 transition-all duration-300 relative border-l border-white/20 ${
+      className={`h-screen flex flex-col py-4 bg-bg-main z-20 transition-all duration-300 relative border-l border-border-main ${
         isCollapsed ? "w-[80px]" : "w-[260px]"
       }`} 
       dir="rtl"
@@ -66,7 +66,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
       {/* زر الطي (Toggle Button) */}
       <button 
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -left-3 top-24 w-6 h-6 bg-white rounded-full shadow-md flex items-center justify-center text-primary z-30 border border-gray-100 hover:scale-110 transition-transform"
+        className="absolute -left-3 top-24 w-6 h-6 bg-sidebar-active rounded-full shadow-md flex items-center justify-center text-primary z-30 border border-border-main hover:scale-110 transition-transform"
       >
         {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
       </button>

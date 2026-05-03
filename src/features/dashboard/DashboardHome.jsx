@@ -2,9 +2,9 @@ import React from 'react';
 import WelcomeHeader from './components/WelcomeHeader';
 
 const StatCard = ({ title, count, textColor }) => (
-  <div className="card bg-white shadow-sm border border-gray-100 rounded-[2rem] p-8 transition-transform hover:scale-[1.02]">
+  <div className="card bg-bg-card shadow-sm border border-border-main rounded-[2rem] p-8 transition-transform hover:scale-[1.02]">
     <div className="flex flex-col items-start gap-2 text-right">
-      <h3 className="text-gray-500 font-bold text-lg">{title}</h3>
+      <h3 className="text-text-muted font-bold text-lg">{title}</h3>
       <span className={`text-5xl font-black ${textColor}`}>{count}</span>
     </div>
   </div>

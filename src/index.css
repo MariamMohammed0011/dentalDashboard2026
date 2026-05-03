@@ -1,18 +1,54 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Cal+Sans&family=Comic+Relief:wght@400;700&family=Dosis:wght@200..800&family=Federant&family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&family=IBM+Plex+Sans+JP&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Outfit:wght@100..900&family=Playwrite+RO:wght@100..400&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Qahiri&family=Roboto:ital,wght@0,100..900;1,100..900&family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap');
 
+:root {
+  --bg-main: #E8F1FF;
+  --bg-card: #ffffff;
+  --bg-header: rgba(255, 255, 255, 0.4);
+  --sidebar-bg: #ffffff;
+  --sidebar-active: #ffffff;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --border-color: rgba(255, 255, 255, 0.5);
+  
+  --primary: #367AFF;
+  --primary-dark: #0000CA;
+  --primary-bg: #e0f2fe;
+}
+
+.dark {
+  --bg-main: #020617;
+  --bg-card: #0f172a;
+  --bg-header: rgba(15, 23, 42, 0.4);
+  --sidebar-bg: #0f172a;
+  --sidebar-active: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --border-color: rgba(30, 41, 59, 0.5);
+
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  --primary-bg: #1e3a8a;
+}
+
 @theme {
- --font-sans: "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
-  --color-primary: #367AFF;
-  --color-primary-dark: #0000CA;
-  --color-primary-bg: #e0f2fe;
+  --font-sans: "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-bg: var(--primary-bg);
   
   --radius-xl: 1.5rem;
   --radius-2xl: 2.5rem;
   --radius-3xl: 3.5rem;
 
-  --color-bg-main: #E8F1FF;
-  --color-sidebar-active: #ffffff;
+  --color-bg-main: var(--bg-main);
+  --color-bg-card: var(--bg-card);
+  --color-bg-header: var(--bg-header);
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-sidebar-active: var(--sidebar-active);
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  --color-border-main: var(--border-color);
 }
 
 @layer utilities {
@@ -73,5 +109,8 @@
   }
   body {
     font-family: var(--font-sans);
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    transition: background-color 0.3s, color 0.3s;
   }
 }
