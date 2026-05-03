@@ -9,6 +9,61 @@
   
   --radius-xl: 1.5rem;
   --radius-2xl: 2.5rem;
+  --radius-3xl: 3.5rem;
+
+  --color-bg-main: #E8F1FF;
+  --color-sidebar-active: #ffffff;
+}
+
+@layer utilities {
+  .concave-corner-tr {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background: white;
+  }
+  .concave-corner-tr::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--color-bg-main);
+    border-top-right-radius: 25px;
+  }
+
+  .concave-corner-br {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background: white;
+  }
+  .concave-corner-br::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--color-bg-main);
+    border-bottom-right-radius: 25px;
+  }
+
+  /* Custom scrollbar for a cleaner look */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
 }
 
 
