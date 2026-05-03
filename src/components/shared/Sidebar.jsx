@@ -16,7 +16,7 @@ import {
   ChevronLeft
 } from 'lucide-react';
 
-const NavItem = ({ to, label, icon: Icon, isCollapsed }) => {
+export const NavItem = ({ to, label, icon: Icon, isCollapsed, onClick }) => {
   const location = useLocation();
   const isActive = location.pathname === to || (to !== "/dashboard" && location.pathname.startsWith(to));
 
@@ -26,13 +26,14 @@ const NavItem = ({ to, label, icon: Icon, isCollapsed }) => {
 
       <Link 
         to={to} 
-        className={`relative z-10 flex items-center py-2 transition-all duration-300 mx-4 my-0.5 rounded-xl ${
+        onClick={onClick}
+        className={`relative z-10 flex items-center py-2 transition-all duration-300 mx-4 my-0.5 rounded-xl group ${
           isActive 
             ? "bg-sidebar-active text-primary font-black shadow-md scale-[1.02]" 
             : "text-text-muted font-bold hover:text-primary hover:bg-white/10 dark:hover:bg-white/5"
         } ${isCollapsed ? "justify-center px-0" : "justify-start px-4 gap-3"}`}
       >
-        <Icon size={isCollapsed ? 22 : 20} className={`transition-transform duration-300 ${isActive ? "text-primary scale-110" : "text-text-muted/60"}`} />
+        <Icon size={isCollapsed ? 22 : 20} className={`transition-all duration-300 ${isActive ? "text-primary scale-110" : "text-text-muted/60"} group-hover:rotate-[15deg] group-hover:scale-110`} />
         {!isCollapsed && (
           <span className={`whitespace-nowrap transition-transform duration-300 origin-right text-sm ${isActive ? "scale-110 translate-x-1" : ""}`}>
             {label}
@@ -43,22 +44,23 @@ const NavItem = ({ to, label, icon: Icon, isCollapsed }) => {
   );
 };
 
+export const navItems = [
+  { to: "/dashboard", label: "الداشبورد", icon: LayoutDashboard },
+  { to: "/dashboard/orders", label: "الطلبات", icon: ClipboardList },
+  { to: "/dashboard/membership-requests", label: "طلبات الانتساب", icon: UserPlus },
+  { to: "/dashboard/doctors", label: "الاطباء", icon: UserCog },
+  { to: "/dashboard/labs", label: "المخابر", icon: FlaskConical },
+  { to: "/dashboard/delivery-companies", label: "شركات التوصيل", icon: Truck },
+  { to: "/dashboard/ads", label: "الإعلانات", icon: Megaphone },
+  { to: "/dashboard/reports", label: "التقارير", icon: FileText },
+  { to: "/dashboard/intervention-log", label: "سجل التدخلات", icon: History },
+];
+
 export default function Sidebar({ isCollapsed, setIsCollapsed }) {
-  const navItems = [
-    { to: "/dashboard", label: "الداشبورد", icon: LayoutDashboard },
-    { to: "/dashboard/orders", label: "الطلبات", icon: ClipboardList },
-    { to: "/dashboard/membership-requests", label: "طلبات الانتساب", icon: UserPlus },
-    { to: "/dashboard/doctors", label: "الاطباء", icon: UserCog },
-    { to: "/dashboard/labs", label: "المخابر", icon: FlaskConical },
-    { to: "/dashboard/delivery-companies", label: "شركات التوصيل", icon: Truck },
-    { to: "/dashboard/ads", label: "الإعلانات", icon: Megaphone },
-    { to: "/dashboard/reports", label: "التقارير", icon: FileText },
-    { to: "/dashboard/intervention-log", label: "سجل التدخلات", icon: History },
-  ];
 
   return (
     <aside 
-      className={`h-screen flex flex-col py-4 bg-bg-main z-20 transition-all duration-300 relative border-l border-border-main ${
+      className={`h-screen flex-col py-4 bg-bg-main z-20 transition-all duration-300 relative border-l border-border-main hidden lg:flex ${
         isCollapsed ? "w-[80px]" : "w-[260px]"
       }`} 
       dir="rtl"
