@@ -128,7 +128,7 @@ export default function MainLayout() {
         </AnimatePresence>
 
         {/* الحاوية البيضاء للمحتوى */}
-        <div className="flex-grow mx-4 lg:mx-10 mb-4 lg:mb-10 bg-bg-card rounded-[30px] lg:rounded-[40px] shadow-2xl shadow-primary/5 flex flex-col overflow-hidden relative border-4 lg:border-8 border-bg-card transition-colors duration-300">
+        <div className="flex-grow mx-2 sm:mx-4 lg:mx-10 mb-2 sm:mb-4 lg:mb-10 bg-bg-card rounded-[20px] sm:rounded-[30px] lg:rounded-[40px] shadow-2xl shadow-primary/5 flex flex-col overflow-hidden relative border-2 sm:border-4 lg:border-8 border-bg-card transition-colors duration-300">
           <main className="flex-grow overflow-y-auto custom-scrollbar">
             <Outlet />
           </main>

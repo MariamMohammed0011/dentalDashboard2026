@@ -7,7 +7,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import LoginForm from "./features/auth/components/LoginForm";
 import MainLayout from "./components/shared/MainLayout";
 import DashboardHome from "./features/dashboard/DashboardHome";
-import OrdersPage from "./features/dashboard/pages/OrdersPage";
+import OrdersPage from "./features/orders/pages/OrdersPage";
 import MembershipRequestsPage from "./features/dashboard/pages/MembershipRequestsPage";
 import DoctorsPage from "./features/dashboard/pages/DoctorsPage";
 import LabsPage from "./features/dashboard/pages/LabsPage";
