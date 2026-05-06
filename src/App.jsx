@@ -12,9 +12,9 @@ import MembershipRequestsPage from "./features/membership/pages/MembershipReques
 import DoctorsPage from "./features/doctors/pages/DoctorsPage";
 import LabsPage from "./features/dashboard/pages/LabsPage";
 import DeliveryCompaniesPage from "./features/dashboard/pages/DeliveryCompaniesPage";
-import AdsPage from "./features/dashboard/pages/AdsPage";
-import ReportsPage from "./features/dashboard/pages/ReportsPage";
-import InterventionLogPage from "./features/dashboard/pages/InterventionLogPage";
+import AdsPage from "./features/ads/pages/AdsPage";
+import ReportsPage from "./features/reports/pages/ReportsPage";
+import InterventionPage from "./features/interventions/pages/InterventionPage";
 import SettingsPage from "./features/dashboard/pages/SettingsPage";
 
 const queryClient = new QueryClient();
@@ -58,7 +58,7 @@ function App() {
               <Route path="delivery-companies" element={<DeliveryCompaniesPage />} />
               <Route path="ads" element={<AdsPage />} />
               <Route path="reports" element={<ReportsPage />} />
-              <Route path="intervention-log" element={<InterventionLogPage />} />
+              <Route path="intervention-log" element={<InterventionPage />} />
               <Route path="settings" element={<SettingsPage />} />
             </Route>
   

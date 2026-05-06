@@ -18,9 +18,9 @@ const DoctorsPage = () => {
   } = useDoctors();
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 h-full overflow-hidden p-4 sm:p-8 bg-transparent" dir="rtl">
+    <div className="flex flex-col lg:flex-row gap-8 bg-transparent p-4 sm:p-8" dir="rtl">
       {/* القسم الأيمن (الرئيسي): قائمة الأطباء */}
-      <div className="flex-grow flex flex-col h-full overflow-hidden">
+      <div className="flex-grow flex flex-col gap-6">
         <DoctorsHeader 
           searchQuery={searchQuery} 
           onSearchChange={setSearchQuery} 
@@ -29,7 +29,7 @@ const DoctorsPage = () => {
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-[#E8F1FF]/30 backdrop-blur-md rounded-[3rem] p-6 sm:p-10 border border-white/50 flex-grow overflow-y-auto custom-scrollbar shadow-inner"
+          className="bg-[#F2F4F7] rounded-[2rem] lg:rounded-[2.5rem] p-6 sm:p-8 border border-gray-200/50 shadow-inner"
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8">
             {isLoading ? (

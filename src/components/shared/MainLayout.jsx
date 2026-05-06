@@ -17,7 +17,7 @@ export default function MainLayout() {
   };
 
   return (
-    <div className="flex h-screen bg-bg-main overflow-hidden transition-colors duration-300" dir="rtl">
+    <div className="flex min-h-screen bg-bg-main transition-colors duration-300" dir="rtl">
       {/* 1. السايد بار (مع تمرير حالة الطي) */}
       <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
 
@@ -127,9 +127,9 @@ export default function MainLayout() {
           )}
         </AnimatePresence>
 
-        {/* الحاوية البيضاء للمحتوى */}
-        <div className="flex-grow mx-2 sm:mx-4 lg:mx-10 mb-2 sm:mb-4 lg:mb-10 bg-bg-card rounded-[20px] sm:rounded-[30px] lg:rounded-[40px] shadow-2xl shadow-primary/5 flex flex-col overflow-hidden relative border-2 sm:border-4 lg:border-8 border-bg-card transition-colors duration-300">
-          <main className="flex-grow overflow-y-auto custom-scrollbar">
+        {/* الحاوية البيضاء للمحتوى - تم تصغير الإطار والسماح بالتمدد الرأسي */}
+        <div className="flex-grow mx-2 sm:mx-4 lg:mx-8 mb-2 sm:mb-4 lg:mb-8 bg-white dark:bg-bg-card rounded-[2rem] lg:rounded-[2.5rem] shadow-[0_10px_30px_rgba(0,0,0,0.03)] flex flex-col relative border-[2px] lg:border-[4px] border-[#F1F5F9] dark:border-gray-900 transition-all duration-300 min-h-fit">
+          <main className="flex-grow h-full">
             <Outlet />
           </main>
         </div>
