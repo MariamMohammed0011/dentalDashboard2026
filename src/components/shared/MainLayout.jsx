@@ -31,13 +31,6 @@ export default function MainLayout() {
   <div className="flex items-center gap-6 pointer-events-auto">
     
    
-    <div className="h-8 w-[1px] bg-gray-300/40 dark:bg-gray-700/40" />
-
-    {/* الطقس أو مساحة إضافية كما في الصورة (20C) */}
-   
-
-    <div className="h-8 w-[1px] bg-gray-300/40 dark:bg-gray-700/40" />
-
     {/* التنبيهات والأزرار الأخرى */}
     <div className="flex items-center gap-4">
      
@@ -130,10 +123,10 @@ export default function MainLayout() {
         </AnimatePresence>
 
         {/* الحاوية البيضاء للمحتوى - تم استبدال clip-path بحل يعتمد على الحواف المعكوسة (Inverted Radius) */}
-        <div className="flex-grow mx-4 sm:mx-6 lg:mx-8 mb-4 bg-white dark:bg-bg-card rounded-[2.5rem] shadow-[0_10px_30px_rgba(0,0,0,0.03)] relative border-[4px] border-[#F1F5F9] dark:border-gray-900 transition-all duration-300 min-h-fit mt-4">
+        <div className="flex-grow mx-4 sm:mx-6 lg:mx-8 mb-4 bg-white dark:bg-bg-card rounded-[2.5rem] shadow-[0_10px_30px_rgba(0,0,0,0.03)] relative transition-all duration-300 min-h-fit mt-4">
           
           {/* منطقة الفتحة العلوية (Cutout) - للمقاسات الكبيرة فقط */}
-          <div className="hidden lg:block absolute -top-[4px] -left-[4px] w-[380px] h-[70px] bg-bg-main pointer-events-none rounded-br-[2rem] rounded-tr-[2rem] ">
+          <div className="hidden lg:block absolute -top-[4px] -left-[4px] w-[380px] h-[60px] bg-bg-main pointer-events-none rounded-[3rem]  ">
             {/* الحواف المعكوسة لجعل الزوايا ناعمة ومنحوتة */}
             
            
