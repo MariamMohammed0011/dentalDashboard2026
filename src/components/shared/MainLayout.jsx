@@ -124,13 +124,20 @@ export default function MainLayout() {
 
         {/* الحاوية البيضاء للمحتوى - تم استبدال clip-path بحل يعتمد على الحواف المعكوسة (Inverted Radius) */}
         <div className="flex-grow mx-4 sm:mx-6 lg:mx-8 mb-4 bg-white dark:bg-bg-card rounded-[2.5rem] shadow-[0_10px_30px_rgba(0,0,0,0.03)] relative transition-all duration-300 min-h-fit mt-4">
-          
-          {/* منطقة الفتحة العلوية (Cutout) - للمقاسات الكبيرة فقط */}
-          <div className="hidden lg:block absolute -top-[4px] -left-[4px] w-[380px] h-[60px] bg-bg-main pointer-events-none rounded-[3rem]  ">
-            {/* الحواف المعكوسة لجعل الزوايا ناعمة ومنحوتة */}
-            
+          <div className='bg-bg-main flex flex-row relative  w-[100%] h-[60px]  '>
+           
+           <div className="hidden lg:block absolute -top-[0px] -right-[0px]  w-[65%] h-[60px] bg-white pointer-events-none  rounded-tl-[2rem]  rounded-bl-[2rem]  rounded-tr-[2rem]     ">
+           
            
           </div>
+          </div>
+          
+           <div className="hidden lg:block absolute -top-[-40px] -left-[0px]  w-[38%] h-[30px] bg-white pointer-events-none  rounded-[2rem]       ">
+           
+           
+         
+          </div>
+          {/* منطقة الفتحة العلوية (Cutout) - للمقاسات الكبيرة فقط */}
          
           <main className="flex-grow h-full p-6">
             <Outlet />
