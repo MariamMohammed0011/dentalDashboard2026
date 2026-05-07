@@ -30,31 +30,24 @@ export default function MainLayout() {
 <header className="absolute top-0 left-0 h-20 px-4 lg:px-10 flex items-center z-20 pointer-events-none">
   <div className="flex items-center gap-6 pointer-events-auto">
     
-    {/* زر تسجيل الخروج */}
-    <button 
-      onClick={handleLogout}
-      className="text-red-500 hover:bg-red-50/50 p-2 rounded-xl transition-all"
-      title="تسجيل الخروج"
-    >
-      <LogOut size={22} />
-    </button>
-
+   
     <div className="h-8 w-[1px] bg-gray-300/40 dark:bg-gray-700/40" />
 
     {/* الطقس أو مساحة إضافية كما في الصورة (20C) */}
-    <div className="flex items-center gap-2 text-text-main font-bold">
-      <span className="text-sm">20 C</span>
-      <div className="w-8 h-8 rounded-lg bg-blue-100/50 flex items-center justify-center">
-        ☁️
-      </div>
-    </div>
+   
 
     <div className="h-8 w-[1px] bg-gray-300/40 dark:bg-gray-700/40" />
 
     {/* التنبيهات والأزرار الأخرى */}
     <div className="flex items-center gap-4">
-      <ThemeToggle />
-      
+     
+       <div className="flex items-center gap-3">
+         <div className="w-10 h-10 rounded-full border-2 border-white dark:border-gray-800 overflow-hidden shadow-sm">
+          <img src="https://ui-avatars.com/api/?name=Ahmed+Saeed&background=367AFF&color=fff" alt="User" className="w-full h-full object-cover" />
+        </div>
+        <span className="font-bold text-text-main hidden sm:block text-sm">احمد سعيد</span>
+       
+      </div>
       <div className="flex items-center gap-2 text-primary font-bold relative">
         <Bell size={22} className="text-primary/80" />
         <span className="bg-primary text-white text-[10px] absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center rounded-full">3</span>
@@ -63,13 +56,18 @@ export default function MainLayout() {
       <div className="h-8 w-[1px] bg-gray-300/40 dark:bg-gray-700/40 hidden sm:block" />
 
       {/* اسم المستخدم والصورة */}
-      <div className="flex items-center gap-3">
-        <span className="font-bold text-text-main hidden sm:block text-sm">احمد سعيد</span>
-        <div className="w-10 h-10 rounded-full border-2 border-white dark:border-gray-800 overflow-hidden shadow-sm">
-          <img src="https://ui-avatars.com/api/?name=Ahmed+Saeed&background=367AFF&color=fff" alt="User" className="w-full h-full object-cover" />
-        </div>
-      </div>
+     
     </div>
+     <ThemeToggle />
+     {/* زر تسجيل الخروج */}
+    <button 
+      onClick={handleLogout}
+      className="text-red-500 hover:bg-red-50/50 p-2 rounded-xl transition-all"
+      title="تسجيل الخروج"
+    >
+      <LogOut size={22} />
+    </button>
+
   </div>
 </header>
         {/* بوب اب المنيو للموبايل */}
@@ -131,20 +129,20 @@ export default function MainLayout() {
           )}
         </AnimatePresence>
 
-        {/* الحاوية البيضاء للمحتوى - تم تصغير الإطار والسماح بالتمدد الرأسي */}
-        {/* الحاوية البيضاء للمحتوى */}
-{/* الحاوية البيضاء للمحتوى */}
-<div 
-  className="flex-grow mx-4 sm:mx-6 lg:mx-8 mb-4 bg-white dark:bg-bg-card rounded-[2.5rem] shadow-sm relative border-[4px] border-[#F1F5F9] dark:border-gray-900 transition-all duration-300 min-h-fit mt-4"
-  style={{
-    // هذا المسار يرسم مستطيل بفتحة في الزاوية العلوية اليسرى
-    clipPath: "polygon(0% 0%, 0% 0%, 380px 0%, 380px 70px, 0% 70px, 0% 100%, 100% 100%, 100% 0%)"
-  }}
->
-  <main className="flex-grow h-full p-6">
-    <Outlet />
-  </main>
-</div>
+        {/* الحاوية البيضاء للمحتوى - تم استبدال clip-path بحل يعتمد على الحواف المعكوسة (Inverted Radius) */}
+        <div className="flex-grow mx-4 sm:mx-6 lg:mx-8 mb-4 bg-white dark:bg-bg-card rounded-[2.5rem] shadow-[0_10px_30px_rgba(0,0,0,0.03)] relative border-[4px] border-[#F1F5F9] dark:border-gray-900 transition-all duration-300 min-h-fit mt-4">
+          
+          {/* منطقة الفتحة العلوية (Cutout) - للمقاسات الكبيرة فقط */}
+          <div className="hidden lg:block absolute -top-[4px] -left-[4px] w-[380px] h-[70px] bg-bg-main pointer-events-none rounded-br-[2rem] rounded-tr-[2rem] ">
+            {/* الحواف المعكوسة لجعل الزوايا ناعمة ومنحوتة */}
+            
+           
+          </div>
+         
+          <main className="flex-grow h-full p-6">
+            <Outlet />
+          </main>
+        </div>
       </div>
     </div>
   );

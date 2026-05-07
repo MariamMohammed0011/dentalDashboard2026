@@ -17,7 +17,7 @@ const InterventionPage = () => {
   } = useInterventions();
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 flex flex-col gap-8 bg-transparent" dir="rtl">
+    <div className="p-4 sm:p-6 lg:p-8 flex   mt-8 flex-col gap-8 bg-transparent" dir="rtl">
       <InterventionHeader 
         activeTab={activeTab} 
         onTabChange={handleTabChange} 

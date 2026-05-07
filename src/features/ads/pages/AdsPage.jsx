@@ -9,7 +9,7 @@ const AdsPage = () => {
   const { ads, pagination, isLoading, setCurrentPage } = useAds();
 
   return (
-    <div className="p-4 sm:p-8 flex flex-col gap-6 bg-transparent" dir="rtl">
+    <div className="p-4 sm:p-8  mt-8 flex flex-col gap-6 bg-transparent" dir="rtl">
       <AdsHeader />
       
       <motion.div 
