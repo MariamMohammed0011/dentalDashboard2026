@@ -18,7 +18,7 @@ const DoctorsPage = () => {
   } = useDoctors();
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 bg-transparent p-4 sm:p-8  mt-8" dir="rtl">
+    <div className="flex flex-col lg:flex-row gap-8 bg-transparent p-4 sm:p-8 " dir="rtl">
       {/* القسم الأيمن (الرئيسي): قائمة الأطباء */}
       <div className="flex-grow flex flex-col gap-6">
         <DoctorsHeader 

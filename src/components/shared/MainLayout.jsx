@@ -5,6 +5,8 @@ import ThemeToggle from './ThemeToggle';
 import { LogOut, Bell, Menu, X, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import logoImg from "../../assets/logo.png";
+import Header from './Header/Header';
+import MainComponent from './MainComponent';
 
 export default function MainLayout() {
   const navigate = useNavigate();
@@ -24,45 +26,8 @@ export default function MainLayout() {
       {/* 2. المحتوى الرئيسي */}
       <div className="flex-grow flex flex-col relative overflow-hidden">
         
-        {/* الهيدر العلوي */}
-       {/* الهيدر العلوي - تم تعديله ليناسب الفتحة */}
-{/* الهيدر العلوي - متموضع فوق الفتحة بدون خلفية */}
-<header className="absolute top-0 left-0 h-20 px-4 lg:px-10 flex items-center z-20 pointer-events-none">
-  <div className="flex items-center gap-6 pointer-events-auto">
-    
-   
-    {/* التنبيهات والأزرار الأخرى */}
-    <div className="flex items-center gap-4">
-     
-       <div className="flex items-center gap-3">
-         <div className="w-10 h-10 rounded-full border-2 border-white dark:border-gray-800 overflow-hidden shadow-sm">
-          <img src="https://ui-avatars.com/api/?name=Ahmed+Saeed&background=367AFF&color=fff" alt="User" className="w-full h-full object-cover" />
-        </div>
-        <span className="font-bold text-text-main hidden sm:block text-sm">احمد سعيد</span>
-       
-      </div>
-      <div className="flex items-center gap-2 text-primary font-bold relative">
-        <Bell size={22} className="text-primary/80" />
-        <span className="bg-primary text-white text-[10px] absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center rounded-full">3</span>
-      </div>
-
-      <div className="h-8 w-[1px] bg-gray-300/40 dark:bg-gray-700/40 hidden sm:block" />
-
-      {/* اسم المستخدم والصورة */}
-     
-    </div>
-     <ThemeToggle />
-     {/* زر تسجيل الخروج */}
-    <button 
-      onClick={handleLogout}
-      className="text-red-500 hover:bg-red-50/50 p-2 rounded-xl transition-all"
-      title="تسجيل الخروج"
-    >
-      <LogOut size={22} />
-    </button>
-
-  </div>
-</header>
+        {/* الهيدر العلوي - تم فصله في كومبوننت خاص */}
+        <Header handleLogout={handleLogout} setIsMobileMenuOpen={setIsMobileMenuOpen} />
         {/* بوب اب المنيو للموبايل */}
         <AnimatePresence>
           {isMobileMenuOpen && (
@@ -121,28 +86,14 @@ export default function MainLayout() {
             </>
           )}
         </AnimatePresence>
-
-        {/* الحاوية البيضاء للمحتوى - تم استبدال clip-path بحل يعتمد على الحواف المعكوسة (Inverted Radius) */}
-        <div className="flex-grow mx-4 sm:mx-6 lg:mx-8 mb-4 bg-white dark:bg-bg-card rounded-[2.5rem] shadow-[0_10px_30px_rgba(0,0,0,0.03)] relative transition-all duration-300 min-h-fit mt-4">
-          <div className='bg-bg-main flex flex-row relative  w-[100%] h-[60px]  '>
-           
-           <div className="hidden lg:block absolute -top-[0px] -right-[0px]  w-[65%] h-[60px] bg-white pointer-events-none  rounded-tl-[2rem]  rounded-bl-[2rem]  rounded-tr-[2rem]     ">
-           
-           
-          </div>
-          </div>
-          
-           <div className="hidden lg:block absolute -top-[-40px] -left-[0px]  w-[38%] h-[30px] bg-white pointer-events-none  rounded-[2rem]       ">
-           
-           
-         
-          </div>
-          {/* منطقة الفتحة العلوية (Cutout) - للمقاسات الكبيرة فقط */}
-         
-          <main className="flex-grow h-full p-6">
-            <Outlet />
+        <MainComponent>
+          <main className="h-full flex-grow h-full ">
+            {/* <Outlet />  */}
           </main>
-        </div>
+        </MainComponent>
+
+       
+       
       </div>
     </div>
   );

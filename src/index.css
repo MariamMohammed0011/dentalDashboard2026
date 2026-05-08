@@ -100,3 +100,42 @@
     transition: background-color 0.3s, color 0.3s;
   }
 }
+/* index.css */
+/* index.css */
+/* index.css */
+/* index.css */
+.path {
+  /* الوضع الافتراضي للشاشات الكبيرة */
+  clip-path: path("M 70,40 L 270,40 A 10,10 0,0,0 280,30 L 280,10 A 10,10 0,0,1 290 ,0 L 4990 ,0 A 10,10 0,0,1 5000 , 10 L 5000 , 4990 A 10,10 0,0,1 4990, 5000 L 70 ,5000 A 10,10 0,0,1 60 ,4990 L 60 , 50 A 10,10 0,0,1 70 ,40 Z");
+}
+
+/* استجابة للشاشات الصغيرة */
+@media (max-width: 640px) {
+  .path {
+    /* تقليل الهامش الأيسر في الموبايل لتوفير مساحة */
+    clip-path: path("M 15,40 L 270,40 A 10,10 0,0,0 280,30 L 280,10 A 10,10 0,0,1 290 ,0 L 4990 ,0 A 10,10 0,0,1 5000 , 10 L 5000 , 4990 A 10,10 0,0,1 4990, 5000 L 15 ,5000 A 10,10 0,0,1 5 ,4990 L 5 , 50 A 10,10 0,0,1 15 ,40 Z");
+  }
+}
+
+/* Custom Scrollbar Styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}

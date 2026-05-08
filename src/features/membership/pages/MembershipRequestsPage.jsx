@@ -19,7 +19,7 @@ const MembershipRequestsPage = () => {
   } = useMembership();
 
   return (
-    <div className="p-4 md:p-8 min-h-screen bg-transparent animate-in fade-in duration-500 mt-8">
+    <div className="p-4 md:p-8 min-h-screen bg-transparent animate-in fade-in duration-500 ">
       <div className="max-w-[1600px] mx-auto">
         {/* هيدر الصفحة والفلترة */}
         <MembershipHeader 

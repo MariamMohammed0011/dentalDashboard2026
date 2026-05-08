@@ -1,0 +1,54 @@
+import React from 'react';
+
+const FolderWrapper = ({ 
+  children, 
+  bgColor = "bg-white", 
+  isExternal = false,
+  // القيم الافتراضية للفتحة (يمكنك التلاعب بها لتقصير وتكبير الفتحة)
+  cutoutPointA = 40, // بداية المنحنى
+  cutoutPointB = 380 // نهاية الفتحة
+}) => {
+  
+  // رسم المسار برمجياً: 
+  // يبدأ من اليسار، يرسم انحناء لأسفل، ثم يكمل لليمين، ثم يصعد للأعلى ليرسم الفتحة
+  
+
+  return (
+    <div className={`flex-grow ${isExternal ? 'w-full h-full sm:mx-6 mt-4 mb-0' : 'm-[2px] -mt-[40px] h-full'} relative transition-all duration-300`}>
+      
+      {/* الورقة المقصوصة */}
+      <div 
+        className={`${bgColor} dark:bg-bg-card rounded-[2.5rem] relative overflow-hidden path h-full flex flex-col`}
+      
+      >
+        {/* مساحة المحتوى */}
+        <div className="pt-20 px-4 pb-6 flex-grow overflow-auto custom-scrollbar">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default function MainComponent({ children }) {
+  return (
+    /* الخلفية الرمادية الأساسية للتطبيق */
+    <div className="bg-bg-main min-h-screen ">
+      
+      {/* الطبقة الخارجية (البيضاء) */}
+      <FolderWrapper bgColor="bg-white" isExternal={true} cutoutPointB={400}>
+        
+        {/* الطبقة الداخلية (الرمادية #F0F0F0) */}
+        {/* لاحظ هنا نغير قيمة cutoutPointB لتقصير أو تطويل الفتحة */}
+        <FolderWrapper bgColor="bg-[#F0F0F0]" cutoutPointB={360}>
+          
+          <div className="h-full w-full">
+            {children}
+          </div>
+          
+        </FolderWrapper>
+
+      </FolderWrapper>
+    </div>
+  );
+}
