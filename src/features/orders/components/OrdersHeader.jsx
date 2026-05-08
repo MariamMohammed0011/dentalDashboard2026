@@ -3,7 +3,7 @@ import { Search, SlidersHorizontal } from 'lucide-react';
 
 const OrdersHeader = () => {
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 md:mb-6 gap-3 sm:gap-4" dir="rtl">
+    <div className="flex w-[60%] flex-col sm:flex-row justify-between items-start sm:items-center mb-4 md:mb-6 gap-3 sm:gap-4" dir="rtl">
       {/* عنوان الصفحة */}
       <h1 className="text-lg md:text-2xl font-bold text-text-main whitespace-nowrap">إدارة الطلبات:</h1>
 

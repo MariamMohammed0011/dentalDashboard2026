@@ -18,11 +18,11 @@ const FolderWrapper = ({
       
       {/* الورقة المقصوصة */}
       <div 
-        className={`${bgColor} dark:bg-bg-card rounded-[2.5rem] relative overflow-hidden path h-full flex flex-col`}
+        className={`${bgColor} dark:bg-bg-card rounded-[2.5rem] relative overflow-hidden path h-full flex flex-col`  }
       
       >
         {/* مساحة المحتوى */}
-        <div className="pt-20 px-4 pb-6 flex-grow overflow-auto custom-scrollbar">
+        <div className="pt-17 px-4 relative  flex-grow overflow-auto custom-scrollbar h-full">
           {children}
         </div>
       </div>
@@ -42,7 +42,7 @@ export default function MainComponent({ children }) {
         {/* لاحظ هنا نغير قيمة cutoutPointB لتقصير أو تطويل الفتحة */}
         <FolderWrapper bgColor="bg-[#F0F0F0]" cutoutPointB={360}>
           
-          <div className="h-full w-full">
+          <div className="h-full w-full bg-transparent absolute top-0 right-0">
             {children}
           </div>
           

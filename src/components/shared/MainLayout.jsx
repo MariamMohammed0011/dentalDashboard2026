@@ -88,7 +88,7 @@ export default function MainLayout() {
         </AnimatePresence>
         <MainComponent>
           <main className="h-full flex-grow h-full ">
-            {/* <Outlet />  */}
+            <Outlet /> 
           </main>
         </MainComponent>
 

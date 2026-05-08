@@ -11,9 +11,9 @@ const OrdersTable = ({ orders, isLoading }) => {
   }
 
   return (
-    <div className="bg-[#F0F0F0] rounded-[1.5rem] md:rounded-[2rem] p-3 sm:p-4 md:p-6 shadow-sm border border-border-main" dir="rtl">
+    <div className=" rounded-[1.5rem] md:rounded-[2rem] p-3 sm:p-4 md:p-6 " dir="rtl">
       {/* عرض الجدول للشاشات الكبيرة */}
-      <div className="hidden md:block overflow-hidden border border-gray-300 rounded-[1.5rem]">
+      <div className="hidden md:block overflow-hidden rounded-[1.5rem]">
         <table className="w-full text-center border-collapse bg-[#F0F0F0]">
           <thead>
             <tr className="bg-[#F0F0F0] border-b border-gray-300">
