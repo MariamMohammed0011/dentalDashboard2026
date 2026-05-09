@@ -20,17 +20,19 @@ const MembershipList = ({ requests, isLoading, onUpdateStatus }) => {
     );
   }
 
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {requests.map((request) => (
-        <MembershipCard 
-          key={request.id} 
-          request={request} 
-          onUpdateStatus={onUpdateStatus} 
-        />
-      ))}
-    </div>
-  );
+  // MembershipList.jsx
+return (
+  /* استعملنا auto-fill لضمان أن الكروت تأخذ مساحتها ولا تخرج عن الإطار */
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 pb-10 ">
+    {requests.map((request) => (
+      <MembershipCard 
+        key={request.id} 
+        request={request} 
+        onUpdateStatus={onUpdateStatus} 
+      />
+    ))}
+  </div>
+);
 };
 
 export default MembershipList;

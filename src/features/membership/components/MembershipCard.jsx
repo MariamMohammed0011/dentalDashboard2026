@@ -1,5 +1,6 @@
 import React from 'react';
 import { Eye, CheckCircle2, XCircle, Clock } from 'lucide-react';
+import framerImg from '../../../assets/framer.png';
 
 const statusConfig = {
   pending: {
@@ -36,9 +37,9 @@ const MembershipCard = ({ request, onUpdateStatus }) => {
     <div className="w-full max-w-[323px] min-h-[135px] bg-white rounded-[1.5rem] shadow-sm border border-gray-100 flex flex-col overflow-hidden group transition-all duration-300 hover:shadow-md mx-auto sm:mx-0" dir="rtl">
       {/* الجزء العلوي (أبيض) */}
       <div className="flex-grow p-4 flex flex-col justify-center relative overflow-hidden">
-        {/* النمط الجانبي الزخرفي */}
-        <div className="absolute top-0 right-0 w-16 h-full opacity-10 pointer-events-none">
-          <div className="w-full h-full bg-[radial-gradient(circle,rgba(54,122,255,0.4)_1px,transparent_1px)] bg-[size:8px_8px]"></div>
+        {/* النمط الجانبي الزخرفي (framer) */}
+        <div className="absolute top-0 right-0 w-full h-full opacity-30 pointer-events-none z-0">
+          <img src={framerImg} alt="" className="w-full h-full object-cover" />
         </div>
 
         {/* الاسم والحالة في سطر واحد */}
