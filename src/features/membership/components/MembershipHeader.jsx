@@ -9,7 +9,7 @@ const tabs = [
 
 const MembershipHeader = ({ activeTab, onTabChange, searchQuery, onSearchChange }) => {
   return (
-    <div className="flex flex-col gap-6 mb-8" dir="rtl">
+    <div className="flex flex-col gap-6 w-[60%] mb-8" dir="rtl">
       <div className="flex flex-col md:flex-row justify-between items-end gap-4">
         {/* التبويبات بستايل انسيابي جداً */}
         <div className="flex items-end bg-transparent px-8">

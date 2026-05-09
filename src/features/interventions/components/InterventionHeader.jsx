@@ -9,7 +9,7 @@ const tabs = [
 
 const InterventionHeader = ({ activeTab, onTabChange }) => {
   return (
-    <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-6 px-2" dir="rtl">
+    <div className="flex flex-col w-[60%] md:flex-row justify-between items-center mb-8 gap-6 px-2" dir="rtl">
       {/* العنوان والتبويبات */}
       <div className="flex items-center gap-6">
         <h1 className="text-2xl font-black text-gray-800">طلبات التدخل:</h1>

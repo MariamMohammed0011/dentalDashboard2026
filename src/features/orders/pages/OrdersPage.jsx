@@ -7,7 +7,7 @@ const OrdersPage = () => {
   const { data: orders, isLoading } = useOrders();
 
   return (
-    <div className="p-4  md:p-8 flex flex-col h-full bg-black  ">
+    <div className="p-4  md:p-8 flex flex-col min-h-full  ">
       {/* هيدر الصفحة */}
       <OrdersHeader />
 

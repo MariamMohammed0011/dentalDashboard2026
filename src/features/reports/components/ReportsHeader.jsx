@@ -3,7 +3,7 @@ import { Calendar, ChevronDown } from 'lucide-react';
 
 const ReportsHeader = () => {
   return (
-    <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-6 px-2" dir="rtl">
+    <div className="flex flex-col w-[60%]  md:flex-row justify-between items-center mb-8 gap-6 px-2" dir="rtl">
       {/* الفلاتر */}
       <div className="flex items-center gap-4 flex-grow max-w-2xl">
         <div className="relative flex-grow">

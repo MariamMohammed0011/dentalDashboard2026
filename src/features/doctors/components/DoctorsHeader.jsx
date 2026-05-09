@@ -3,7 +3,7 @@ import { Search } from 'lucide-react';
 
 const DoctorsHeader = ({ searchQuery, onSearchChange }) => {
   return (
-    <div className="flex justify-between items-center mb-8 gap-6" dir="rtl">
+    <div className="flex justify-between w-[60%]  items-center mb-8 gap-6" dir="rtl">
       {/* عنوان الصفحة */}
       <div className="bg-white px-12 py-3.5 rounded-2xl font-black text-text-main text-lg border border-gray-100 shadow-sm">
         الاطباء
