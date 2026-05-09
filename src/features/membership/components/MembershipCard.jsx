@@ -54,7 +54,7 @@ const MembershipCard = ({ request, onUpdateStatus }) => {
         </div>
 
         {/* وثيقة الانتساب */}
-        <div className="flex items-center gap-1.5 relative z-10">
+        <div className="flex flex-row items-center justify-center gap-2 relative z-10 flex-grow py-2">
           <span className="text-[13px] font-medium text-text-main">وثيقة الانتساب:</span>
           <a 
             href={documentUrl} 

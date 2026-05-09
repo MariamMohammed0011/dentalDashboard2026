@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 
@@ -12,49 +13,53 @@ const MembershipPagination = ({ pagination, onPageChange }) => {
       pages.push(
         <motion.button
           key={i}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => onPageChange(i)}
-          className={`w-12 h-12 rounded-2xl text-lg font-black transition-all duration-300 ${
+          className={`w-9 h-9 rounded-xl text-[14px] font-bold transition-all duration-300 ${
             page === i
-              ? 'bg-primary text-white shadow-[0_10px_20px_rgba(54,122,255,0.4)] border-none'
-              : 'text-gray-400 hover:text-primary hover:bg-primary/5 border border-transparent'
+              ? 'bg-primary text-white shadow-md shadow-primary/20 border-none'
+              : 'text-gray-500 hover:text-primary hover:bg-primary/5 border border-transparent'
           }`}
         >
           {i}
         </motion.button>
       );
     }
-    if (totalPages > 5) {
-       pages.push(<span key="dots" className="text-gray-400 px-4 font-black text-xl">...</span>);
+    // عرض النقاط فقط إذا كان هناك أكثر من 7 صفحات (اختياري لتحسين المظهر)
+    if (totalPages > 7) {
+       pages.push(<span key="dots" className="text-gray-300 px-2 font-medium">...</span>);
     }
     return pages;
   };
 
   return (
-    <div className="flex items-center justify-center gap-6 mt-16 pb-10" dir="rtl">
+    <div className="flex items-center justify-center gap-4 mt-12 pb-8" dir="rtl">
+      {/* زر السابق */}
       <motion.button
-        whileHover={{ scale: 1.1, x: 5 }}
-        whileTap={{ scale: 0.9 }}
+        whileHover={{ scale: 1.05, x: 2 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => onPageChange(page - 1)}
         disabled={page === 1}
-        className="w-12 h-12 rounded-2xl bg-white text-gray-800 shadow-sm flex items-center justify-center border border-gray-100 disabled:opacity-20 disabled:cursor-not-allowed hover:text-primary transition-colors"
+        className="w-9 h-9 rounded-xl bg-white text-gray-600 shadow-sm flex items-center justify-center border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:text-primary transition-colors"
       >
-        <ChevronRight size={28} strokeWidth={3} />
+        <ChevronRight size={20} strokeWidth={2.5} />
       </motion.button>
 
-      <div className="flex items-center gap-2">
+      {/* أرقام الصفحات */}
+      <div className="flex items-center gap-1.5">
         {renderPageNumbers()}
       </div>
 
+      {/* زر التالي */}
       <motion.button
-        whileHover={{ scale: 1.1, x: -5 }}
-        whileTap={{ scale: 0.9 }}
+        whileHover={{ scale: 1.05, x: -2 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => onPageChange(page + 1)}
         disabled={page === totalPages}
-        className="w-12 h-12 rounded-2xl bg-white text-gray-800 shadow-sm flex items-center justify-center border border-gray-100 disabled:opacity-20 disabled:cursor-not-allowed hover:text-primary transition-colors"
+        className="w-9 h-9 rounded-xl bg-white text-gray-600 shadow-sm flex items-center justify-center border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:text-primary transition-colors"
       >
-        <ChevronLeft size={28} strokeWidth={3} />
+        <ChevronLeft size={20} strokeWidth={2.5} />
       </motion.button>
     </div>
   );

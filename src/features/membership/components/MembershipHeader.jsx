@@ -10,7 +10,7 @@ const tabs = [
 const MembershipHeader = ({ activeTab, onTabChange, searchQuery, onSearchChange }) => {
   return (
     // تم تغيير العرض إلى w-full ليعطي مساحة أكبر لحقل البحث
-    <div className="flex w-[75%] flex-col gap-3  mb-8" dir="rtl">
+    <div className="flex w-[72%] flex-col gap-3  mb-8" dir="rtl">
       <div className="flex flex-col md:flex-row justify-between items-end gap-6">
         
         {/* التبويبات بستايل انسيابي */}
@@ -38,13 +38,13 @@ const MembershipHeader = ({ activeTab, onTabChange, searchQuery, onSearchChange 
               placeholder="بحث عن طلب..."
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full bg-white border border-border-main py-2.5 px-10 rounded-full text-sm font-medium text-text-main placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all shadow-sm"
+              className="w-full bg-white border border-border-main py-2 px-10 rounded-full text-sm font-medium text-text-main placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all shadow-sm"
             />
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           </div>
           
           {/* زر الفلترة */}
-          <button className="p-2.5 bg-white border border-border-main rounded-full text-gray-500 hover:text-primary hover:border-primary transition-all shadow-sm shrink-0">
+          <button className="p-2 bg-white border border-border-main rounded-full text-gray-500 hover:text-primary hover:border-primary transition-all shadow-sm shrink-0">
             <SlidersHorizontal size={20} />
           </button>
         </div>
