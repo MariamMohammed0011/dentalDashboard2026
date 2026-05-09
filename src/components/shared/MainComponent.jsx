@@ -21,8 +21,11 @@ const FolderWrapper = ({
         className={`${bgColor} dark:bg-bg-card rounded-[2.5rem] relative overflow-hidden path h-full flex flex-col`  }
       
       >
-        {/* مساحة المحتوى */}
-        <div className="pt-17 px-4 relative  flex-grow overflow-auto custom-scrollbar h-full">
+        {/* مساحة المحتوى:
+            - flex-1 min-h-0: يتيح للعنصر أن يأخذ الباقي ويسمح بالسكرول داخله
+            - overflow-y-auto: يتيح السكرول العمودي
+        */}
+        <div className="pt-17 px-4 relative flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar min-h-0 min-w-0">
           {children}
         </div>
       </div>
@@ -33,7 +36,7 @@ const FolderWrapper = ({
 export default function MainComponent({ children }) {
   return (
     /* الخلفية الرمادية الأساسية للتطبيق */
-    <div className="bg-bg-main min-h-screen ">
+    <div className="bg-bg-main min-h-screen flex flex-col">
       
       {/* الطبقة الخارجية (البيضاء) */}
       <FolderWrapper bgColor="bg-white" isExternal={true} cutoutPointB={400}>
@@ -42,7 +45,12 @@ export default function MainComponent({ children }) {
         {/* لاحظ هنا نغير قيمة cutoutPointB لتقصير أو تطويل الفتحة */}
         <FolderWrapper bgColor="bg-[#F0F0F0]" cutoutPointB={360}>
           
-          <div className="h-full w-full bg-transparent absolute top-0 right-0">
+          {/* 
+            ✅ تم إزالة absolute/top-0/right-0
+            السبب: العناصر absolute لا تُحسب في ارتفاع الـ scroll container
+            مما يجعل المحتوى الزائد مقطوعاً وغير قابل للتمرير
+          */}
+          <div className="w-full h-full bg-transparent">
             {children}
           </div>
           

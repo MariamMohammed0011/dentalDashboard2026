@@ -34,7 +34,7 @@ const MembershipCard = ({ request, onUpdateStatus }) => {
   }[type];
 
   return (
-    <div className="w-full max-w-[323px] min-h-[135px] bg-white rounded-[1.5rem] shadow-sm border border-gray-100 flex flex-col overflow-hidden group transition-all duration-300 hover:shadow-md mx-auto sm:mx-0" dir="rtl">
+    <div className="w-full min-h-[135px] bg-white rounded-[1.5rem] shadow-sm border border-gray-100 flex flex-col overflow-hidden group transition-all duration-300 hover:shadow-md" dir="rtl">
       {/* الجزء العلوي (أبيض) */}
       <div className="flex-grow p-4 flex flex-col justify-center relative overflow-hidden">
         {/* النمط الجانبي الزخرفي (framer) */}
@@ -61,7 +61,7 @@ const MembershipCard = ({ request, onUpdateStatus }) => {
             className="flex items-center gap-1 text-primary text-[13px] font-bold hover:underline"
             onClick={(e) => e.preventDefault()}
           >
-            فتح
+            
             <Eye size={16} className="stroke-[2.5]" />
           </a>
         </div>

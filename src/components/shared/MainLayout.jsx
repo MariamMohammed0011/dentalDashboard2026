@@ -24,7 +24,7 @@ export default function MainLayout() {
       <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
 
       {/* 2. المحتوى الرئيسي */}
-      <div className="flex-grow flex flex-col relative overflow-hidden">
+      <div className="flex-grow flex flex-col relative overflow-x-hidden overflow-y-auto">
         
         {/* الهيدر العلوي - تم فصله في كومبوننت خاص */}
         <Header handleLogout={handleLogout} setIsMobileMenuOpen={setIsMobileMenuOpen} />
@@ -87,7 +87,7 @@ export default function MainLayout() {
           )}
         </AnimatePresence>
         <MainComponent>
-          <main className="h-full flex-grow h-full ">
+          <main className="h-full flex-grow flex flex-col">
             <Outlet /> 
           </main>
         </MainComponent>

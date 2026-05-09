@@ -10,7 +10,7 @@ const tabs = [
 const MembershipHeader = ({ activeTab, onTabChange, searchQuery, onSearchChange }) => {
   return (
     // تم تغيير العرض إلى w-full ليعطي مساحة أكبر لحقل البحث
-    <div className="flex w-[72%] flex-col gap-3  mb-8" dir="rtl">
+    <div className="flex w-[70%] absolute top-1 right-0 flex-col gap-3 mb-8" dir="rtl">
       <div className="flex flex-col md:flex-row justify-between items-end gap-6">
         
         {/* التبويبات بستايل انسيابي */}
