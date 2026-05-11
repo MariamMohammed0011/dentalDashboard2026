@@ -7,12 +7,19 @@ const OrdersPage = () => {
   const { data: orders, isLoading } = useOrders();
 
   return (
-    <div className="p-4  md:p-8 flex flex-col min-h-full  ">
-      {/* هيدر الصفحة */}
-      <OrdersHeader />
+    <div className="flex flex-col w-full gap-8 px-6 sm:px-12 lg:px-16 pb-10 min-h-full pt-4" dir="rtl">
+      {/* الحاوية الرئيسية للهيدر والجدول */}
+      <div className="flex flex-col w-full">
+        {/* هيدر الصفحة */}
+        <div className="w-full mb-4">
+          <OrdersHeader />
+        </div>
 
-      {/* جدول الطلبات */}
-      <OrdersTable orders={orders} isLoading={isLoading} />
+        {/* جدول الطلبات */}
+        <div className="w-full">
+          <OrdersTable orders={orders} isLoading={isLoading} />
+        </div>
+      </div>
     </div>
   );
 };

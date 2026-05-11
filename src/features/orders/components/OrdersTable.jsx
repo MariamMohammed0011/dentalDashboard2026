@@ -1,5 +1,7 @@
 import React from 'react';
-import { Eye } from 'lucide-react';
+import { Eye, Clock, User, Building2, Truck } from 'lucide-react';
+import { motion } from 'framer-motion';
+import framerImg from '../../../assets/framer.png';
 
 const OrdersTable = ({ orders, isLoading }) => {
   if (isLoading) {
@@ -11,89 +13,118 @@ const OrdersTable = ({ orders, isLoading }) => {
   }
 
   return (
-    <div className=" rounded-[1.5rem] md:rounded-[2rem] p-3 sm:p-4 md:p-6 " dir="rtl">
-      {/* عرض الجدول للشاشات الكبيرة */}
-      <div className="hidden md:block overflow-hidden rounded-[1.5rem]">
-        <table className="w-full text-center border-collapse bg-[#F0F0F0]">
+    <div className="w-full" dir="rtl">
+      {/* عرض الجدول للشاشات الكبيرة والمتوسطة مع سكرول أفقي */}
+      <div className="hidden md:block overflow-hidden">
+        <table className="w-full text-center border-collapse  table-auto">
           <thead>
             <tr className="bg-[#F0F0F0] border-b border-gray-300">
-              <th className="px-4 py-4 font-bold text-text-main text-sm border-l border-gray-300 last:border-l-0">رقم الطلب</th>
-              <th className="px-4 py-4 font-bold text-text-main text-sm border-l border-gray-300">الطبيب</th>
-              <th className="px-4 py-4 font-bold text-text-main text-sm border-l border-gray-300">المخبر</th>
-              <th className="px-4 py-4 font-bold text-text-main text-sm border-l border-gray-300">شركة التوصيل</th>
-              <th className="px-4 py-4 font-bold text-text-main text-sm border-l border-gray-300">حالة الطلب</th>
-              <th className="px-4 py-4 font-bold text-text-main text-sm border-l border-gray-300">حالة التوصيل</th>
-              <th className="px-4 py-4 font-bold text-text-main text-sm border-l border-gray-300">تاريخ الإنشاء</th>
-              <th className="px-4 py-4 font-bold text-text-main text-sm">عرض</th>
+              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300 last:border-l-0">رقم الطلب</th>
+              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">الطبيب</th>
+              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">المخبر</th>
+               <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">حالة الطلب</th>
+              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">حالة التوصيل</th>
+              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">تاريخ الإنشاء</th>
+              <th className="px-4 py-5 font-bold text-gray-700 text-sm">عرض</th>
             </tr>
           </thead>
           <tbody>
             {orders?.map((order) => (
               <tr 
                 key={order.id} 
-                className="bg-transparent hover:bg-white transition-colors border-b border-gray-200 last:border-b-0 group"
+                className="bg-transparent hover:bg-gray-50/50 transition-colors border-b border-gray-200 last:border-b-0"
               >
-                <td className="px-4 py-4 text-text-main text-sm border-l border-gray-200 last:border-l-0">{order.id}</td>
-                <td className="px-4 py-4 text-text-main text-sm border-l border-gray-200">{order.doctor}</td>
-                <td className="px-4 py-4 text-text-main text-sm border-l border-gray-200">{order.lab}</td>
-                <td className="px-4 py-4 text-text-main text-sm border-l border-gray-200">{order.deliveryCompany}</td>
-                <td className="px-4 py-4 text-text-main text-sm border-l border-gray-200">{order.orderStatus}</td>
-                <td className="px-4 py-4 text-text-main text-sm border-l border-gray-200">{order.deliveryStatus}</td>
-                <td className="px-4 py-4 text-text-main text-sm border-l border-gray-200">{order.createdAt}</td>
+                <td className="px-4 py-4 text-gray-600 text-sm border-l border-gray-200 last:border-l-0">{order.id}</td>
+                <td className="px-4 py-4 text-gray-600 text-sm border-l border-gray-200 font-medium">{order.doctor}</td>
+                <td className="px-4 py-4 text-gray-600 text-sm border-l border-gray-200 font-medium">{order.lab}</td>
+                 <td className="px-4 py-4 text-gray-600 text-sm border-l border-gray-200">
+                  <span className="text-primary font-bold">{order.orderStatus}</span>
+                </td>
+                <td className="px-4 py-4 text-gray-500 text-sm border-l border-gray-200">{order.deliveryStatus}</td>
+                <td className="px-4 py-4 text-gray-400 text-sm border-l border-gray-200">{order.createdAt}</td>
                 <td className="px-4 py-4">
-                  <button className="flex justify-center w-full text-blue-600 hover:scale-110 transition-transform">
+                  <button className="p-2 text-blue-600 hover:scale-110 transition-transform">
                     <Eye size={22} />
                   </button>
                 </td>
-              </tr>
-            ))}
-            {/* أسطر فارغة لتكملة الشكل كما في الصورة */}
-            {[1, 2, 3, 4].map((i) => (
-              <tr key={`empty-${i}`} className="bg-transparent border-b border-gray-200 last:border-b-0 h-[53px]">
-                <td className="border-l border-gray-200 last:border-l-0"></td>
-                <td className="border-l border-gray-200"></td>
-                <td className="border-l border-gray-200"></td>
-                <td className="border-l border-gray-200"></td>
-                <td className="border-l border-gray-200"></td>
-                <td className="border-l border-gray-200"></td>
-                <td className="border-l border-gray-200"></td>
-                <td></td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* عرض البطاقات للجوال */}
-      <div className="grid grid-cols-1 gap-4 md:hidden">
-        {orders?.map((order) => (
-          <div key={order.id} className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 relative overflow-hidden group hover:border-primary/30 transition-all">
-            <div className="flex justify-between items-start mb-3">
-              <span className="bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 rounded-full">#{order.id}</span>
-              <button className="text-blue-600">
-                <Eye size={20} />
-              </button>
+      {/* عرض البطاقات للجوال بتصميم مودرن */}
+      <div className="grid grid-cols-1 gap-5 md:hidden">
+        {orders?.map((order, index) => (
+          <motion.div 
+            key={order.id}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.05 }}
+            whileHover={{ y: -4 }}
+            className="bg-white p-5 rounded-[1.8rem] shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-all duration-300"
+          >
+            {/* الخلفية المزخرفة */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0">
+              <img src={framerImg} alt="" className="w-full h-full object-cover" />
             </div>
+
+            {/* الخط الجانبي الأيمن التفاعلي */}
+            <div className="absolute right-0 top-0 bottom-0 w-1.5 bg-primary transform scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-top z-20 rounded-l-full" />
             
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-text-muted">الطبيب:</span>
-                <span className="font-bold text-text-main">{order.doctor}</span>
+            {/* المحتوى الرئيسي */}
+            <div className="relative z-10">
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                    <span className="text-[10px] font-black">#{order.id}</span>
+                  </div>
+                  <span className="text-[12px] text-gray-400 flex items-center gap-1">
+                    <Clock size={12} />
+                    {order.createdAt}
+                  </span>
+                </div>
+                <button className="w-9 h-9 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+                  <Eye size={18} />
+                </button>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-text-muted">المخبر:</span>
-                <span className="font-bold text-text-main">{order.lab}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-text-muted">حالة الطلب:</span>
-                <span className="font-bold text-primary">{order.orderStatus}</span>
-              </div>
-              <div className="flex justify-between text-xs pt-2 border-t border-gray-100">
-                <span className="text-text-muted">{order.createdAt}</span>
-                <span className="text-text-muted">{order.deliveryCompany}</span>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 rounded-full bg-gray-50 text-gray-400">
+                      <User size={14} />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[11px] text-gray-400">الطبيب</span>
+                      <span className="text-[14px] font-bold text-gray-700">{order.doctor}</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-[11px] text-gray-400">حالة الطلب</span>
+                    <span className="text-[13px] font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-lg mt-1">{order.orderStatus}</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 pt-4 border-t border-gray-50">
+                   <div className="flex items-center gap-2">
+                      <Building2 size={14} className="text-gray-300" />
+                      <div className="flex flex-col">
+                        <span className="text-[10px] text-gray-400">المخبر</span>
+                        <span className="text-[12px] font-semibold text-gray-600 truncate">{order.lab}</span>
+                      </div>
+                   </div>
+                   <div className="flex items-center gap-2">
+                      <Truck size={14} className="text-gray-300" />
+                      <div className="flex flex-col">
+                        <span className="text-[10px] text-gray-400">التوصيل</span>
+                        <span className="text-[12px] font-semibold text-gray-600 truncate">{order.deliveryCompany || 'غير محدد'}</span>
+                      </div>
+                   </div>
+                </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>
