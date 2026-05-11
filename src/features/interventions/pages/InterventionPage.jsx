@@ -17,7 +17,7 @@ const InterventionPage = () => {
   } = useInterventions();
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 flex    flex-col gap-8 bg-transparent" dir="rtl">
+    <div className="pt-2 sm:pt-4 lg:pt-6 px-4 sm:px-6 lg:px-8 flex flex-col gap-4 sm:gap-6 bg-transparent" dir="rtl">
       <InterventionHeader 
         activeTab={activeTab} 
         onTabChange={handleTabChange} 
@@ -26,10 +26,10 @@ const InterventionPage = () => {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-[#F2F4F7] rounded-[2rem] lg:rounded-[2.5rem] p-4 sm:p-8 border border-gray-200/50 shadow-inner"
+        className="p-4 sm:p-6 lg:p-8 "
       >
-        <div className="flex flex-col gap-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
+        <div className="flex flex-col gap-8 sm:gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
             {isLoading ? (
               Array(6).fill(0).map((_, i) => (
                 <div key={i} className="h-[180px] bg-white/50 rounded-[1.5rem] animate-pulse" />
@@ -41,16 +41,6 @@ const InterventionPage = () => {
             )}
           </div>
 
-          {/* زر إنشاء طلب يدوي */}
-          <div className="flex justify-center mt-12 mb-4">
-            <motion.button
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-blue-700 text-white px-12 py-3 rounded-2xl font-black shadow-lg shadow-blue-700/30 flex items-center gap-2 hover:bg-blue-800 transition-all text-lg"
-            >
-              انشاء طلب يدوي
-            </motion.button>
-          </div>
         </div>
 
         {/* الترقيم */}
