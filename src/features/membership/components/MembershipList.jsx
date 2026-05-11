@@ -36,10 +36,10 @@ const MembershipList = ({ requests, isLoading, onUpdateStatus }) => {
       لا overflow هنا — الـ scroll يتم من الحاوية الأب (MembershipRequestsPage)
       w-full dir rtl: الكروت من اليمين لليسار
     */
-    <div className="w-full flex flex-col" dir="rtl">
+    <div className="w-full flex flex-col pb-10" dir="rtl">
 
       {/* ── شبكة الكروت ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {currentItems.map((request) => (
           <MembershipCard
             key={request.id}

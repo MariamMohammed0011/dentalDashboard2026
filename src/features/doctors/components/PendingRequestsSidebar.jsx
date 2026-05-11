@@ -8,17 +8,37 @@ const PendingRequestsSidebar = () => {
   const pendingRequests = requests.filter(r => r.status === 'pending');
 
   return (
-    <div className="w-[380px] bg-[#E8F1FF]/30 rounded-[2.5rem] p-6 flex flex-col gap-6 border border-white/50 h-full" dir="rtl">
-      {/* الهيدر */}
-      <div className="flex justify-between items-center px-2">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-text-muted shadow-sm border border-gray-100">
-            <ChevronRight size={24} />
+    <div className="w-full px-4 sm:px-6 pt-0 pb-6 flex flex-col gap-6 h-full" dir="rtl">
+    <div className="relative mb-8 group">
+      {/* حاوية الهيدر الأساسية */}
+      <div className="relative bg-white rounded-[2.5rem] p-3 shadow-sm border border-gray-50 flex justify-between items-center transition-all duration-300 hover:shadow-md">
+        
+        {/* العنوان (جهة اليمين) */}
+        <h2 className="text-primary font-bold text-lg pr-4 select-none">
+          طلبات بانتظار الموافقة
+        </h2>
+
+        {/* العناصر التفاعلية (جهة اليسار) */}
+        <div className="flex items-center gap-4 pl-2">
+          {/* مجموعة الدوائر (Avatar Stack) */}
+          <div className="flex items-center">
+            {/* دائرة العدد */}
+            <div className="w-9 h-9 rounded-full border-2 border-white bg-primary text-[11px] text-white flex items-center justify-center font-black shadow-sm z-30 ring-1 ring-primary/10">
+              +{pendingRequests.length}
+            </div>
+            {/* دوائر وهمية (Placeholders) */}
+            <div className="w-9 h-9 rounded-full border-2 border-white bg-gray-100 -mr-4 shadow-sm z-20" />
+            <div className="w-9 h-9 rounded-full border-2 border-white bg-gray-200 -mr-4 shadow-sm z-10" />
           </div>
-          <span className="text-text-muted font-bold text-lg">41</span>
+
+          {/* زر الانتقال/السهم */}
+          <div className="w-10 h-10 rounded-2xl bg-gray-50 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm border border-gray-100">
+            <ChevronRight size={22} className="group-hover:translate-x-[-2px] transition-transform" />
+          </div>
         </div>
-        <h2 className="text-primary font-black text-xl">طلبات بانتظار الموافقة</h2>
+
       </div>
+    </div>
 
       {/* القائمة القابلة للتمرير */}
       <div className="flex-grow overflow-y-auto custom-scrollbar flex flex-col gap-4 pr-1">

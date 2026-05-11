@@ -30,58 +30,64 @@ const MembershipCard = ({ request, onUpdateStatus }) => {
   const typeLabel = {
     doctor: 'الطبيب',
     lab: 'المخبر',
-    delivery: 'شركة توصيل',
+   
   }[type];
 
   return (
-    <div className="w-full min-h-[135px] bg-white rounded-[1.5rem] shadow-sm border border-gray-100 flex flex-col overflow-hidden group transition-all duration-300 hover:shadow-md" dir="rtl">
-      {/* الجزء العلوي (أبيض) */}
-      <div className="flex-grow p-4 flex flex-col justify-center relative overflow-hidden">
+    <div className="w-full min-h-[160px] bg-white rounded-[2rem] shadow-sm border border-gray-100 flex flex-col overflow-hidden group transition-all duration-300 hover:shadow-xl hover:-translate-y-1" dir="rtl">
+      {/* ارلجزء العلوي (أبيض) */}
+      <div className="flex-grow p-5 flex flex-col justify-center relative overflow-hidden">
         {/* النمط الجانبي الزخرفي (framer) */}
-        <div className="absolute top-0 right-0 w-full h-full opacity-30 pointer-events-none z-0">
+        <div className="absolute top-0 right-0 w-full h-full opacity-40 pointer-events-none z-0">
           <img src={framerImg} alt="" className="w-full h-full object-cover" />
         </div>
 
         {/* الاسم والحالة في سطر واحد */}
-        <div className="flex justify-between items-center mb-2 relative z-10">
-          <div className="text-[13px] text-text-main font-medium">
-            {typeLabel}: <span className="text-gray-600">{name}</span>
+        <div className="flex justify-between items-start mb-4 relative z-10">
+          <div className="flex flex-col gap-1">
+            <span className="text-[13px] text-text-main font-bold truncate max-w-[180px]">
+              {typeLabel}: <span className="text-gray-500 font-medium">{name}</span>
+            </span>
           </div>
-          <div className="flex items-center gap-1">
-            <span className="text-[13px] text-text-main font-medium">الحالة:</span>
-            <span className={`text-[13px] font-bold ${config.color}`}>{config.label}</span>
+          <div className="flex flex-col items-end gap-1">
+            <span className={`text-[12px] font-bold px-2 py-0.5 rounded-full ${config.color} bg-white border border-current/10`}>
+              {config.label}
+            </span>
           </div>
         </div>
 
         {/* وثيقة الانتساب */}
-        <div className="flex flex-row items-center justify-center gap-2 relative z-10 flex-grow py-2">
-          <span className="text-[13px] font-medium text-text-main">وثيقة الانتساب:</span>
-          <a 
-            href={documentUrl} 
-            className="flex items-center gap-1 text-primary text-[13px] font-bold hover:underline"
-            onClick={(e) => e.preventDefault()}
-          >
-            
-            <Eye size={16} className="stroke-[2.5]" />
-          </a>
+        <div className="flex flex-row items-center justify-between mt-auto relative z-10 pt-2 border-t border-gray-50">
+          <div className="flex items-center gap-1.5 text-[13px] font-medium text-gray-500">
+            <span>وثيقة الانتساب:</span>
+            <a 
+              href={documentUrl} 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary font-bold hover:underline"
+            >
+              فتح
+            </a>
+          </div>
+          <Eye size={15} className="text-primary stroke-[2.5]" />
         </div>
       </div>
 
-      {/* الجزء السفلي (أزرق فاتح جداً) مع أزرار مقسمة */}
-      <div className="bg-[#E8F1FF] h-[35px] flex items-stretch border-t border-gray-100/50">
+      {/* الجزء السفلي (أزرار مقسمة) */}
+      <div className="bg-[#F8FAFC] h-[40px] flex items-stretch border-t border-gray-100">
         {status === 'pending' ? (
           <>
             <button
               onClick={() => onUpdateStatus(id, 'rejected')}
-              className="flex-1 flex items-center justify-center gap-1.5 text-[#E11D48] text-[13px] font-bold hover:bg-white/40 transition-colors"
+              className="flex-1 flex items-center justify-center gap-1.5 text-red-500 text-[13px] font-bold hover:bg-red-50 transition-colors"
             >
               <XCircle size={15} className="stroke-[2.5]" />
               رفض
             </button>
-            <div className="w-[1px] bg-gray-300/40 self-stretch my-1"></div>
+            <div className="w-[1px] bg-gray-200/50 self-stretch my-2"></div>
             <button
               onClick={() => onUpdateStatus(id, 'accepted')}
-              className="flex-1 flex items-center justify-center gap-1.5 text-[#00A34D] text-[13px] font-bold hover:bg-white/40 transition-colors"
+              className="flex-1 flex items-center justify-center gap-1.5 text-green-600 text-[13px] font-bold hover:bg-green-50 transition-colors"
             >
               <CheckCircle2 size={15} className="stroke-[2.5]" />
               قبول

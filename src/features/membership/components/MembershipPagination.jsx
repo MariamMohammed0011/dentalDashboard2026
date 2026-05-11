@@ -18,8 +18,8 @@ const MembershipPagination = ({ pagination, onPageChange }) => {
           onClick={() => onPageChange(i)}
           className={`w-9 h-9 rounded-xl text-[14px] font-bold transition-all duration-300 ${
             page === i
-              ? 'bg-primary text-white shadow-md shadow-primary/20 border-none'
-              : 'text-gray-500 hover:text-primary hover:bg-primary/5 border border-transparent'
+              ? 'bg-primary text-white border-none'
+              : 'text-gray-500 hover:text-primary hover:bg-primary/5 border-none'
           }`}
         >
           {i}
@@ -41,7 +41,7 @@ const MembershipPagination = ({ pagination, onPageChange }) => {
         whileTap={{ scale: 0.95 }}
         onClick={() => onPageChange(page - 1)}
         disabled={page === 1}
-        className="w-9 h-9 rounded-xl bg-white text-gray-600 shadow-sm flex items-center justify-center border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:text-primary transition-colors"
+        className="w-9 h-9 rounded-xl text-gray-600 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed hover:text-primary transition-colors"
       >
         <ChevronRight size={20} strokeWidth={2.5} />
       </motion.button>
@@ -57,7 +57,7 @@ const MembershipPagination = ({ pagination, onPageChange }) => {
         whileTap={{ scale: 0.95 }}
         onClick={() => onPageChange(page + 1)}
         disabled={page === totalPages}
-        className="w-9 h-9 rounded-xl bg-white text-gray-600 shadow-sm flex items-center justify-center border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:text-primary transition-colors"
+        className="w-9 h-9 rounded-xl text-gray-600 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed hover:text-primary transition-colors"
       >
         <ChevronLeft size={20} strokeWidth={2.5} />
       </motion.button>
