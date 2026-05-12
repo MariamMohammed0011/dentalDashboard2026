@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MembershipHeader from '../components/MembershipHeader';
 import MembershipList from '../components/MembershipList';
+import MembershipDetailsModal from '../components/MembershipDetailsModal';
+import ConfirmationModal from '../../../components/shared/ConfirmationModal';
 import { useMembership } from '../hooks/useMembership';
 
 const MembershipRequestsPage = () => {
@@ -14,11 +16,46 @@ const MembershipRequestsPage = () => {
     handleUpdateStatus,
   } = useMembership();
 
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // حالة مودال التأكيد
+  const [confirmConfig, setConfirmConfig] = useState({
+    isOpen: false,
+    id: null,
+    status: null,
+    type: null,
+    title: '',
+    message: '',
+    confirmType: 'warning'
+  });
+
+  const handleShowDetails = (request) => {
+    setSelectedRequest(request);
+    setIsModalOpen(true);
+  };
+
+  // معالج الطلب مع التأكيد
+  const triggerUpdateStatus = (id, status, type) => {
+    const configMap = {
+      accepted: { title: 'قبول الطلب', message: 'هل أنت متأكد من قبول هذا العضو؟ سيتم تفعيل حسابه فوراً.', type: 'success' },
+      rejected: { title: 'رفض الطلب', message: 'هل أنت متأكد من رفض هذا الطلب؟ لن يتمكن العضو من الدخول.', type: 'danger' },
+      suspended: { title: 'تعليق الحساب', message: 'هل أنت متأكد من تعليق هذا الحساب مؤقتاً؟', type: 'warning' },
+    };
+
+    const config = configMap[status];
+    setConfirmConfig({
+      isOpen: true,
+      id,
+      status,
+      type,
+      title: config.title,
+      message: config.message,
+      confirmType: config.type
+    });
+  };
+
   return (
-    /*
-      h-full + flex flex-col: الصفحة تأخذ كامل ارتفاع الـ content area
-      لا تسكرول وحدها — الـ scroll يكون فقط داخل MembershipList
-    */
     <div className="flex flex-col gap-8  px-4 sm:px-10 lg:px-12 pb-10  min-h-full" dir="rtl">
       <div className="flex-grow flex flex-col -mt-4 sm:-mt-4 min-w-0 ">
         
@@ -37,11 +74,29 @@ const MembershipRequestsPage = () => {
             <MembershipList
               requests={requests}
               isLoading={isLoading}
-              onUpdateStatus={handleUpdateStatus}
+              onUpdateStatus={triggerUpdateStatus}
+              onShowDetails={handleShowDetails}
             />
           </div>
         </div>
       </div>
+
+      <MembershipDetailsModal 
+        request={selectedRequest}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+
+      <ConfirmationModal
+        isOpen={confirmConfig.isOpen}
+        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+        onConfirm={() => handleUpdateStatus(confirmConfig.id, confirmConfig.status, confirmConfig.type)}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        type={confirmConfig.confirmType}
+        confirmText="نعم، متأكد"
+        cancelText="تراجع"
+      />
     </div>
   );
 };

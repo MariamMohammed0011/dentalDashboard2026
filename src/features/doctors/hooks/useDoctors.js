@@ -9,7 +9,9 @@ export const useDoctors = () => {
   const { data, isLoading } = useQuery({
     queryKey: ['doctors', currentPage],
     queryFn: () => doctorsApi.getDoctors({ page: currentPage }),
-    keepPreviousData: true,
+    placeholderData: (previousData) => previousData,
+    refetchInterval: 5000,
+    refetchIntervalInBackground: true,
   });
 
   const filteredDoctors = data?.data?.filter(doc => 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import MembershipCard from './MembershipCard';
 import MembershipPagination from './MembershipPagination';
 
-const MembershipList = ({ requests, isLoading, onUpdateStatus }) => {
+const MembershipList = ({ requests, isLoading, onUpdateStatus, onShowDetails }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
@@ -45,6 +45,7 @@ const MembershipList = ({ requests, isLoading, onUpdateStatus }) => {
             key={request.id}
             request={request}
             onUpdateStatus={onUpdateStatus}
+            onShowDetails={onShowDetails}
           />
         ))}
       </div>
