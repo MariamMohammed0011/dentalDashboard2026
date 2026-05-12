@@ -18,10 +18,11 @@ import InterventionPage from "./features/interventions/pages/InterventionPage";
 import SettingsPage from "./features/dashboard/pages/SettingsPage";
 
 const queryClient = new QueryClient();
+import Cookies from "js-cookie";
 
 // مكون لحماية المسارات: إذا لم يوجد توكن، يوجه المستخدم للوج ان
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('auth_token');
+  const token = Cookies.get("auth_token");
   if (!token) return <Navigate to="/login" replace />;
   return children;
 };
