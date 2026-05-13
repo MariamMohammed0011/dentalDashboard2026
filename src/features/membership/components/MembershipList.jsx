@@ -6,7 +6,7 @@ const MembershipList = ({ requests, isLoading, onUpdateStatus, onShowDetails }) 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  /* ───── حالة التحميل ───── */
+  /* ───── حالة التحميل (Skeleton) ───── */
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse" dir="rtl">
@@ -17,7 +17,7 @@ const MembershipList = ({ requests, isLoading, onUpdateStatus, onShowDetails }) 
     );
   }
 
-  /* ───── حالة فارغة ───── */
+  /* ───── حالة عدم وجود بيانات ───── */
   if (!requests || requests.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 bg-white/30 rounded-[2rem] border border-dashed border-gray-200">
@@ -26,35 +26,38 @@ const MembershipList = ({ requests, isLoading, onUpdateStatus, onShowDetails }) 
     );
   }
 
-  /* ───── الباجينيشن ───── */
+  /* ───── منطق الباجينيشن (Pagination Logic) ───── */
   const totalPages = Math.ceil(requests.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentItems = requests.slice(startIndex, startIndex + itemsPerPage);
 
   return (
-    /* 
-      لا overflow هنا — الـ scroll يتم من الحاوية الأب (MembershipRequestsPage)
-      w-full dir rtl: الكروت من اليمين لليسار
-    */
     <div className="w-full flex flex-col pb-10" dir="rtl">
-
+      
       {/* ── شبكة الكروت ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {currentItems.map((request) => (
           <MembershipCard
             key={request.id}
             request={request}
+            // تمرير الدالات لمعالجة التحديث وعرض التفاصيل
             onUpdateStatus={onUpdateStatus}
-            onShowDetails={onShowDetails}
+            onShowDetails={onShowDetails} 
           />
         ))}
       </div>
 
-      {/* ── الباجينيشن ── */}
-      <MembershipPagination
-        pagination={{ page: currentPage, totalPages }}
-        onPageChange={(newPage) => setCurrentPage(newPage)}
-      />
+      {/* ── وحدة التحكم بالصفحات ── */}
+      {totalPages > 1 && (
+        <MembershipPagination
+          pagination={{ page: currentPage, totalPages }}
+          onPageChange={(newPage) => {
+            setCurrentPage(newPage);
+            // اختيارياً: التمرير لأعلى الصفحة عند تغيير الصفحة
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
+      )}
     </div>
   );
 };

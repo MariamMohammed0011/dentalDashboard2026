@@ -59,4 +59,9 @@ export const membershipApi = {
     const response = await axiosInstance.put(`/AdminAccounts/${subPath}/${id}/${action}`);
     return response.data;
   }
+  ,// داخل كائن membershipApi في ملف membershipApi.js
+getUserDetails: async (userId) => {
+  const response = await axiosInstance.get(`/accounts/users/${userId}`);
+  return response.data;
+}
 };

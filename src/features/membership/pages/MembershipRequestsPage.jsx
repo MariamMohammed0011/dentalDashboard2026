@@ -14,10 +14,13 @@ const MembershipRequestsPage = () => {
     searchQuery,
     setSearchQuery,
     handleUpdateStatus,
+    // القيم والوظائف الجديدة من الهوك المحدث
+    userDetails,
+    isLoadingDetails,
+    handleShowDetails,
+    handleCloseDetails,
+    selectedUserId
   } = useMembership();
-
-  const [selectedRequest, setSelectedRequest] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // حالة مودال التأكيد
   const [confirmConfig, setConfirmConfig] = useState({
@@ -30,12 +33,7 @@ const MembershipRequestsPage = () => {
     confirmType: 'warning'
   });
 
-  const handleShowDetails = (request) => {
-    setSelectedRequest(request);
-    setIsModalOpen(true);
-  };
-
-  // معالج الطلب مع التأكيد
+  // معالج الطلب مع التأكيد (قبول/رفض/تعليق)
   const triggerUpdateStatus = (id, status, type) => {
     const configMap = {
       accepted: { title: 'قبول الطلب', message: 'هل أنت متأكد من قبول هذا العضو؟ سيتم تفعيل حسابه فوراً.', type: 'success' },
@@ -56,7 +54,7 @@ const MembershipRequestsPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-8  px-4 sm:px-10 lg:px-12 pb-10  min-h-full" dir="rtl">
+    <div className="flex flex-col gap-8 px-4 sm:px-10 lg:px-12 pb-10 min-h-full" dir="rtl">
       <div className="flex-grow flex flex-col -mt-4 sm:-mt-4 min-w-0 ">
         
         {/* الحاوية البيضاء الرئيسية */}
@@ -75,22 +73,28 @@ const MembershipRequestsPage = () => {
               requests={requests}
               isLoading={isLoading}
               onUpdateStatus={triggerUpdateStatus}
-              onShowDetails={handleShowDetails}
+              onShowDetails={handleShowDetails} // يستخدم الآن الدالة من الهوك لجلب البيانات
             />
           </div>
         </div>
       </div>
 
+      {/* مودال تفاصيل العضو - البيانات تُجلب الآن من الإيند بوينت المخصصة */}
       <MembershipDetailsModal 
-        request={selectedRequest}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        request={userDetails} // البيانات التفصيلية من السيرفر
+        isOpen={!!selectedUserId} // يفتح المودال إذا كان هناك ID مختار
+        onClose={handleCloseDetails} // يغلق المودال ويصفر الـ ID في الهوك
+        isLoading={isLoadingDetails} // حالة التحميل أثناء طلب البيانات من API المستخدم
       />
 
+      {/* مودال التأكيد على الإجراءات */}
       <ConfirmationModal
         isOpen={confirmConfig.isOpen}
         onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
-        onConfirm={() => handleUpdateStatus(confirmConfig.id, confirmConfig.status, confirmConfig.type)}
+        onConfirm={() => {
+          handleUpdateStatus(confirmConfig.id, confirmConfig.status, confirmConfig.type);
+          setConfirmConfig({ ...confirmConfig, isOpen: false });
+        }}
         title={confirmConfig.title}
         message={confirmConfig.message}
         type={confirmConfig.confirmType}

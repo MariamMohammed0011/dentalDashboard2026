@@ -26,7 +26,7 @@ export const useLogin = () => {
         secure: false, 
         sameSite: "lax" 
       });
-
+Cookies.set("refresh_token", data.refreshToken, { expires: 30 });
       // معلومات المستخدم العادية يمكن بقاؤها في localStorage
       localStorage.setItem("user_info", JSON.stringify({ 
         role: data.role, 

@@ -7,17 +7,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import logoImg from "../../assets/logo.png";
 import Header from './Header/Header';
 import MainComponent from './MainComponent';
-
+import { useLogout } from '../../features/auth/hooks/useLogout';
 export default function MainLayout() {
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const handleLogout = () => {
-    localStorage.removeItem('auth_token');
-    window.location.href = '/login';
-  };
-
+const { handleLogout, isLoggingOut } = useLogout();
   return (
     <div className="flex min-h-screen bg-bg-main transition-colors duration-300" dir="rtl">
       {/* 1. السايد بار (مع تمرير حالة الطي) */}
