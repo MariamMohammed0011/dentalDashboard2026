@@ -146,3 +146,39 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.2);
 }
+
+/* Eye looking animation */
+@keyframes eyeLook {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  20% { transform: scale(1.2) rotate(-15deg); }
+  40% { transform: scale(1.2) rotate(15deg); }
+  60% { transform: scale(1.2) rotate(-10deg); }
+  80% { transform: scale(1.2) rotate(10deg); }
+}
+
+.eye-animate:hover svg {
+  animation: eyeLook 2s ease-in-out infinite;
+  color: var(--primary);
+}
+
+
+@theme {
+  /* تعريف الأنميشن */
+  --animate-eye-attract: eye-attract 3s ease-in-out infinite;
+  --animate-spin-slow: spin 3s linear infinite;
+
+  /* تعريف الحركات (Keyframes) */
+  @keyframes eye-attract {
+    0%, 100% { transform: translateX(0) scale(1); }
+    20% { transform: translateX(-3px) scale(1.05); }
+    40% { transform: translateX(3px) scale(1.05); }
+    60% { transform: translateY(-3px) scale(1.1); }
+  }
+}
+.card{
+  background-image: url('/src//assets//framer.png')  ;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: scroll;
+  
+}

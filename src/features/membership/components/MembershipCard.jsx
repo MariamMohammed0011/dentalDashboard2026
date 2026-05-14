@@ -1,135 +1,88 @@
 import React from 'react';
-import { Eye, CheckCircle2, XCircle, Clock, FileText, User, Microscope } from 'lucide-react';
-import framerImg from '../../../assets/framer.png';
+import { Eye, CheckCircle2, XCircle, Clock, User, Microscope } from 'lucide-react';
 
 const statusConfig = {
-  pending: {
-    label: 'قيد المراجعة',
-    color: 'text-[#FFB800]',
-    bgColor: 'bg-[#FFFBEB]',
-    borderColor: 'border-[#FFB800]/20',
-    icon: <Clock size={14} />,
-  },
-  accepted: {
-    label: 'مقبول',
-    color: 'text-[#00A34D]',
-    bgColor: 'bg-[#F0FDF4]',
-    borderColor: 'border-[#00A34D]/20',
-    icon: <CheckCircle2 size={14} />,
-  },
-  rejected: {
-    label: 'مرفوض',
-    color: 'text-[#E11D48]',
-    bgColor: 'bg-[#FFF1F2]',
-    borderColor: 'border-[#E11D48]/20',
-    icon: <XCircle size={14} />,
-  },
-  suspended: {
-    label: 'معلق',
-    color: 'text-[#64748B]',
-    bgColor: 'bg-[#F8FAFC]',
-    borderColor: 'border-[#64748B]/20',
-    icon: <Clock size={14} />,
-  },
+  pending: { label: 'قيد الانتظار', color: 'text-amber-600', bgColor: 'bg-amber-50', icon: <Clock size={14} className="animate-spin-slow" />, border: 'border-amber-100' },
+  accepted: { label: 'مقبول', color: 'text-emerald-600', bgColor: 'bg-emerald-50', icon: <CheckCircle2 size={14} />, border: 'border-emerald-100' },
+  rejected: { label: 'مرفوض', color: 'text-rose-600', bgColor: 'bg-rose-50', icon: <XCircle size={14} />, border: 'border-rose-100' },
+  suspended: { label: 'معلق', color: 'text-slate-500', bgColor: 'bg-slate-50', icon: <Clock size={14} />, border: 'border-slate-100' },
 };
 
 const MembershipCard = ({ request, onUpdateStatus, onShowDetails }) => {
+  if (!request) return null;
+
   const { id, name, type, status } = request;
   const config = statusConfig[status] || statusConfig.pending;
-
-  const typeLabel = {
-    doctor: 'طبيب أسنان',
-    lab: 'مخبر تعويضات',
-  }[type];
+  const isDoctor = type === 'doctor';
 
   return (
-    <div className="w-full bg-white rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col overflow-hidden group transition-all duration-500 hover:shadow-[0_20px_50px_rgba(54,122,255,0.12)] hover:-translate-y-2 relative" dir="rtl">
-      {/* 1. صورة الـ Framer كخلفية (inset-0) */}
-      <div className="absolute inset-0 opacity-40 pointer-events-none z-0">
-        <img 
-          src={framerImg} 
-          alt="" 
-          className="w-full h-full object-cover" 
-        />
-      </div>
-
-      {/* 2. خط التمييز عند الحوم (عمودي على اليسار) */}
-      <div className="absolute right-0 top-0 w-1.5 h-0 bg-gradient-to-b from-primary to-blue-400 transition-all duration-500 group-hover:h-full z-20" />
-
-      {/* الجزء العلوي - المعلومات المختصرة */}
-      <div className="p-6 relative overflow-hidden flex-grow">
-        {/* الترويسة: الأيقونة والاسم */}
-        <div className="flex justify-between items-start relative z-10">
-          <div className="flex items-center gap-3">
-            <div className={`p-3 rounded-2xl ${type === 'doctor' ? 'bg-primary/5 text-primary' : 'bg-purple-50 text-purple-600'} group-hover:scale-110 transition-transform duration-500 shadow-sm bg-white/90 backdrop-blur-sm`}>
-              {type === 'doctor' ? <User size={20} /> : <Microscope size={20} />}
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[12px] text-gray-400 font-medium mb-0.5">{typeLabel}</span>
-              <h3 className="text-[16px] text-text-main font-bold leading-tight group-hover:text-primary transition-colors duration-300">
-                {name}
-              </h3>
-            </div>
+    <div dir="rtl" className=" card group relative w-full h-[220px] bg-white rounded-[2.5rem] border border-slate-100 p-3 transition-all duration-500 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] hover:-translate-y-2 overflow-hidden flex flex-col">
+      {/* Right Side Accent Bar */}
+      <div className={`absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-0 group-hover:h-32 transition-all duration-700 rounded-l-full z-30 ${isDoctor ? 'bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]'}`} />
+    
+      <div className="relative z-10 flex flex-col h-full">
+        {/* Upper Part */}
+        <div className="p-4 flex items-center gap-4">
+          <div className={`relative w-16 h-16 shrink-0 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:shadow-2xl ${isDoctor ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-blue-100' : 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-emerald-100'}`}>
+            {isDoctor ? <User size={30} /> : <Microscope size={30} />}
+            <button 
+              onClick={() => onShowDetails(request)} 
+              className={`absolute -bottom-1 -left-1 w-7 h-7 rounded-full shadow-md flex items-center justify-center transition-all animate-eye-attract ${isDoctor ? 'bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white'}`}
+            >
+              <Eye size={14} />
+            </button>
           </div>
-          
-          {/* زر العين للتفاصيل */}
-          <button 
-            onClick={() => onShowDetails(request)}
-            className="p-2.5 bg-white/90 backdrop-blur-sm text-gray-400 rounded-xl hover:bg-primary hover:text-white transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-0.5"
-            title="عرض التفاصيل"
-          >
-            <Eye size={20} className="stroke-[2.5]" />
-          </button>
-        </div>
 
-        {/* الحالة */}
-        <div className="mt-8 flex justify-end relative z-10">
-          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border ${config.borderColor} ${config.bgColor} ${config.color} text-[12px] font-bold shadow-sm backdrop-blur-[2px]`}>
-            {config.icon}
-            {config.label}
+          <div className="flex flex-col">
+            <span className={`text-[10px] font-black uppercase tracking-widest mb-1 ${isDoctor ? 'text-blue-600' : 'text-emerald-600'}`}>
+              {isDoctor ? 'طبيب أسنان' : 'مخبر تعويضات'}
+            </span>
+            <h4 className="text-lg font-bold text-slate-800 leading-tight">{name}</h4>
           </div>
         </div>
-      </div>
 
-      {/* الجزء السفلي - الأزرار */}
-      <div className="px-4 pb-4 mt-auto">
-        <div className="bg-gray-50/80 backdrop-blur-sm p-1.5 rounded-[1.5rem] flex items-center gap-1 border border-gray-100">
-          {status === 'pending' || status === 'suspended' ? (
-            <>
-              <button
-                onClick={() => onUpdateStatus(id, 'rejected', type)}
-                className="flex-1 flex flex-col items-center justify-center py-2 rounded-2xl text-red-500 hover:bg-white hover:shadow-md hover:text-red-600 transition-all duration-300 group/btn"
-                title="رفض"
-              >
-                <XCircle size={18} className="mb-0.5 group-hover/btn:scale-110 transition-transform" />
-                <span className="text-[11px] font-bold">رفض</span>
-              </button>
-              
-              <button
-                onClick={() => onUpdateStatus(id, 'suspended', type)}
-                className={`flex-1 flex flex-col items-center justify-center py-2 rounded-2xl ${status === 'suspended' ? 'bg-white shadow-sm text-gray-400' : 'text-gray-500 hover:bg-white hover:shadow-md hover:text-gray-700'} transition-all duration-300 group/btn`}
-                title="تعليق"
-                disabled={status === 'suspended'}
-              >
-                <Clock size={18} className="mb-0.5 group-hover/btn:rotate-12 transition-transform" />
-                <span className="text-[11px] font-bold">تعليق</span>
-              </button>
+       
+        {/* --- Action Buttons: Smart Toggle Design --- */}
+         {/* --- Action Buttons: Redesigned --- */}
+        <div className="mt-auto pb-0 px-4">
+          <div className="bg-slate-50/80 backdrop-blur-md p-1 rounded-[2rem] border border-slate-200/50 flex items-center gap-2 shadow-inner">
+            {status === 'pending' || status === 'suspended' ? (
+              <>
+                {/* Rejected Button */}
+                <button
+                  onClick={() => onUpdateStatus(id, 'rejected', type)}
+                  className={`group/btn w-12 h-10 flex items-center justify-center rounded-full transition-all duration-500 ${status === 'rejected' ? 'bg-rose-500 text-white shadow-lg shadow-rose-100' : 'bg-white/50 text-rose-400 hover:bg-rose-50 hover:text-rose-600 border border-transparent hover:border-rose-100'}`}
+                  title="رفض الطلب"
+                >
+                  <XCircle size={18} className="group-hover/btn:rotate-90 transition-transform duration-500" />
+                </button>
+                
+                {/* Suspended Button */}
+                <button
+                  onClick={() => onUpdateStatus(id, 'suspended', type)}
+                  className={`group/btn w-12 h-10 flex items-center justify-center rounded-full transition-all duration-500 ${status === 'suspended' ? 'bg-amber-500 text-white shadow-lg shadow-amber-100' : 'bg-white/50 text-amber-500 hover:bg-amber-50 hover:text-amber-600 border border-transparent hover:border-amber-100'}`}
+                  title="تعليق الطلب"
+                >
+                  <Clock size={18} className="group-hover/btn:rotate-12 transition-transform" />
+                </button>
 
-              <button
-                onClick={() => onUpdateStatus(id, 'accepted', type)}
-                className="flex-[1.5] flex flex-col items-center justify-center py-2 rounded-2xl bg-primary text-white shadow-[0_4px_12px_rgba(54,122,255,0.25)] hover:bg-primary-hover hover:shadow-[0_6px_20px_rgba(54,122,255,0.35)] transition-all duration-300 group/btn"
-                title="قبول"
-              >
-                <CheckCircle2 size={18} className="mb-0.5 group-hover/btn:scale-110 transition-transform" />
-                <span className="text-[11px] font-bold">قبول الطلب</span>
-              </button>
-            </>
-          ) : (
-            <div className={`w-full flex items-center justify-center py-3 px-4 gap-2 text-[14px] font-bold rounded-2xl ${config.bgColor} ${config.color} border ${config.borderColor}`}>
-              {config.icon}
-              تم {config.label}
-            </div>
-          )}
+                {/* Accept Button: The Hero Action */}
+                <button
+                  onClick={() => onUpdateStatus(id, 'accepted', type)}
+                  className={`flex-1 h-10 flex items-center justify-center gap-3 rounded-[1.5rem] font-black text-xs text-white transition-all active:scale-95 shadow-lg group/accept overflow-hidden relative ${isDoctor ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-100' : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-100'}`}
+                >
+                  <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover/accept:translate-x-0 transition-transform duration-500 ease-out" />
+                  <CheckCircle2 size={18} strokeWidth={3} className="relative z-10 group-hover/accept:scale-110 transition-transform" />
+                  <span className="relative z-10 uppercase tracking-tighter"> قبول </span>
+                </button>
+              </>
+            ) : (
+              <div className={`w-full flex items-center justify-center h-10 gap-3 text-[13px] font-black rounded-full bg-white shadow-sm border border-slate-100 ${config.color}`}>
+                <div className={`p-1.5 rounded-full ${config.bgColor}`}>{config.icon}</div>
+                هذا الملف {config.label}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
