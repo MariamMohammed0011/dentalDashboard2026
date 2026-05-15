@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { membershipApi } from '../services/membershipApi';
 import { toast } from 'sonner';
+import { useSearch } from '../../../components/shared/Search/useSearch';
 
 export const useMembership = () => {
   const queryClient = useQueryClient();
@@ -9,7 +10,6 @@ export const useMembership = () => {
   // ── حالات التحكم في القائمة والفلترة ──
   const [activeTab, setActiveTab] = useState('doctor'); 
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
 
   // ── حالة التحكم في المودال (ID المستخدم المختار) ──
   const [selectedUserId, setSelectedUserId] = useState(null);
@@ -23,6 +23,12 @@ export const useMembership = () => {
     refetchIntervalInBackground: true,
   });
 
+  // ── منطق البحث الموحد ──
+  const { searchQuery, setSearchQuery, filteredData: filteredRequests } = useSearch(
+    data?.data,
+    ['name', 'dentistName', 'labName']
+  );
+
   // 2. جلب تفاصيل مستخدم محدد (تُفعل فقط عند فتح المودال)
   const { 
     data: userDetails, 
@@ -31,8 +37,8 @@ export const useMembership = () => {
   } = useQuery({
     queryKey: ['user-details', selectedUserId],
     queryFn: () => membershipApi.getUserDetails(selectedUserId),
-    enabled: !!selectedUserId, // الجلب يعمل فقط إذا كان selectedUserId يمتلك قيمة
-    staleTime: 1000 * 60 * 5, // الاحتفاظ بالبيانات طازجة لمدة 5 دقائق
+    enabled: !!selectedUserId, 
+    staleTime: 1000 * 60 * 5, 
   });
 
   // 3. ميوتيشن تحديث الحالة (قبول، رفض، تعليق)
@@ -60,7 +66,6 @@ export const useMembership = () => {
   };
 
   const handleShowDetails = (request) => {
-    // نعتمد على الـ ID القادم من الكارد لفتح المودال وجلب بياناته
     setSelectedUserId(request.id);
   };
 
@@ -72,12 +77,6 @@ export const useMembership = () => {
     setActiveTab(tab);
     setCurrentPage(1);
   };
-
-  // تصفية البيانات المحلية بناءً على البحث
-  const filteredRequests = data?.data?.filter(request => {
-    const nameToSearch = request.name || request.dentistName || request.labName || "";
-    return nameToSearch.toLowerCase().includes(searchQuery.toLowerCase());
-  }) || [];
 
   return {
     // بيانات القائمة

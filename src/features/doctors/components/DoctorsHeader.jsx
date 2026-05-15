@@ -1,5 +1,4 @@
-import React from 'react';
-import { Search } from 'lucide-react';
+import Search from '../../../components/shared/Search/Search';
 
 const DoctorsHeader = ({ searchQuery, onSearchChange }) => {
   return (
@@ -12,16 +11,14 @@ const DoctorsHeader = ({ searchQuery, onSearchChange }) => {
       </div>
       
       {/* حقل البحث - يسار */}
-      <div className="relative w-full sm:w-[320px]">
-        <input 
-          type="text" 
-          placeholder="بحث.." 
-          value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full bg-white border border-gray-200 py-2.5 pr-4 pl-10 rounded-full shadow-sm focus:outline-none focus:ring-4 focus:ring-primary/5 text-[13px] sm:text-[14px] font-medium text-text-main placeholder-gray-400"
-        />
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-      </div>
+      <Search 
+        value={searchQuery}
+        onChange={onSearchChange}
+        placeholder="بحث.."
+        width="320px"
+        className="w-full sm:w-[320px]"
+        onClear={() => onSearchChange('')}
+      />
     </div>
   );
 };

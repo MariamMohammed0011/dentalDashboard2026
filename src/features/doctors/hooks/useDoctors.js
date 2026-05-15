@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { doctorsApi } from '../services/doctorsApi';
+import { useSearch } from '../../../components/shared/Search/useSearch';
 
 export const useDoctors = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const { data, isLoading } = useQuery({
     queryKey: ['doctors', currentPage],
@@ -14,9 +14,10 @@ export const useDoctors = () => {
     refetchIntervalInBackground: true,
   });
 
-  const filteredDoctors = data?.data?.filter(doc => 
-    doc.name.toLowerCase().includes(searchQuery.toLowerCase())
-  ) || [];
+  const { searchQuery, setSearchQuery, filteredData: filteredDoctors } = useSearch(
+    data?.data,
+    ['name']
+  );
 
   return {
     doctors: filteredDoctors,
