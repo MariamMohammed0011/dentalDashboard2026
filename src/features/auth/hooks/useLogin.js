@@ -29,6 +29,7 @@ export const useLogin = () => {
 Cookies.set("refresh_token", data.refreshToken, { expires: 30 });
       // معلومات المستخدم العادية يمكن بقاؤها في localStorage
       localStorage.setItem("user_info", JSON.stringify({ 
+        userId: data.userId, // تخزين الـ ID لاستخدامه في جلب البروفايل
         role: data.role, 
         status: data.status 
       }));
