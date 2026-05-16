@@ -2,6 +2,7 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { X, User, Mail, Phone, MapPin, Building2, Globe, FileText, Calendar, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import axiosInstance from '../../../api/axios';
 
 const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
   if (typeof document === 'undefined') return null;
@@ -177,35 +178,57 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                     </motion.section>
                   </div>
 
-                  {/* Document Section */}
-                  <motion.div 
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.55 }}
-                    className="mt-12 p-8 bg-gradient-to-br from-gray-50 to-gray-100 rounded-[2.5rem] border border-gray-200/50 flex items-center justify-between group/doc hover:border-primary/30 transition-all duration-500 shadow-inner"
-                  >
-                    <div className="flex items-center gap-6">
-                      <div className="w-16 h-16 bg-white rounded-[1.5rem] flex items-center justify-center text-primary shadow-xl group-hover/doc:rotate-6 transition-transform">
-                        <FileText size={32} />
+                {/* Document Section - Hide completely if no document exists (common for lab technicians) */}
+                {(() => {
+                  const docPath = request.documentUrl || request.verificationDocumentPath || request.verification_doc;
+                  if (!docPath) return null;
+
+                  const baseUrl = axiosInstance.defaults.baseURL.replace('/api', '');
+                  const fullImageUrl = docPath.startsWith('http') ? docPath : `${baseUrl}/${docPath.startsWith('/') ? docPath.slice(1) : docPath}`;
+
+                  return (
+                    <motion.div 
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 0.55 }}
+                      className="mt-12 p-8 bg-gradient-to-br from-gray-50 to-gray-100 rounded-[2.5rem] border border-gray-200/50 flex flex-col gap-6 group/doc hover:border-primary/30 transition-all duration-500 shadow-inner"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-6">
+                          <div className="w-16 h-16 bg-white rounded-[1.5rem] flex items-center justify-center text-primary shadow-xl group-hover/doc:rotate-6 transition-transform">
+                            <FileText size={32} />
+                          </div>
+                          <div>
+                            <h4 className="text-lg font-black text-text-main mb-1 tracking-tight">وثيقة التحقق</h4>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">تحقق من صحة المستندات المرفقة</p>
+                          </div>
+                        </div>
+
+                        <a 
+                          href={fullImageUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="px-8 py-4 bg-[#367AFF] text-white text-[13px] font-black rounded-2xl shadow-[0_10px_30px_rgba(54,122,255,0.3)] hover:bg-[#0051FF] hover:-translate-y-1 transition-all active:scale-95"
+                        >
+                          معاينة الوثيقة في علامة تبويب جديدة
+                        </a>
                       </div>
-                      <div>
-                        <h4 className="text-lg font-black text-text-main mb-1 tracking-tight">وثيقة التحقق</h4>
-                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">تحقق من صحة المستندات المرفقة</p>
+
+                      {/* عرض الصورة مباشرةً داخل المودال لسهولة المعاينة الفورية */}
+                      <div className="mt-2 w-full overflow-hidden rounded-2xl border border-gray-200 bg-white p-2 shadow-sm">
+                        <img 
+                          src={fullImageUrl} 
+                          alt="Verification Document" 
+                          className="w-full h-auto max-h-60 object-contain rounded-xl"
+                          onError={(e) => {
+                            e.target.onerror = null; 
+                            e.target.src = 'https://placehold.co/600x400?text=خطأ+في+تحميل+الصورة';
+                          }}
+                        />
                       </div>
-                    </div>
-                    {request.documentUrl || request.verification_doc ? (
-                      <a 
-                        href={request.documentUrl || request.verification_doc} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="px-8 py-4 bg-[#367AFF] text-white text-[13px] font-black rounded-2xl shadow-[0_10px_30px_rgba(54,122,255,0.3)] hover:bg-[#0051FF] hover:-translate-y-1 transition-all active:scale-95"
-                      >
-                        معاينة الوثيقة
-                      </a>
-                    ) : (
-                      <span className="text-gray-400 text-sm font-bold italic">لا توجد وثيقة</span>
-                    )}
-                  </motion.div>
+                    </motion.div>
+                  );
+                })()}
                 </div>
               </>
             ) : null}

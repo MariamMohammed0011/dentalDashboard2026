@@ -12,7 +12,7 @@ export const membershipApi = {
       // Map document path to URL (derived from axios baseURL)
       documentUrl: item.verificationDocumentPath 
         ? `${axiosInstance.defaults.baseURL.replace('/api', '')}/${item.verificationDocumentPath}`
-        : null
+        : item.documentUrl || null
     }));
 
     if (type === 'all') {
@@ -60,8 +60,16 @@ export const membershipApi = {
     return response.data;
   }
   ,// داخل كائن membershipApi في ملف membershipApi.js
-getUserDetails: async (userId) => {
-  const response = await axiosInstance.get(`/accounts/users/${userId}`);
-  return response.data;
-}
+  getUserDetails: async (userId) => {
+    const response = await axiosInstance.get(`/accounts/users/${userId}`);
+    const data = response.data;
+    
+    // تطبيع البيانات للمستخدم الواحد أيضاً
+    return {
+      ...data,
+      documentUrl: data.verificationDocumentPath 
+        ? `${axiosInstance.defaults.baseURL.replace('/api', '')}/${data.verificationDocumentPath}`
+        : data.documentUrl || null
+    };
+  }
 };
