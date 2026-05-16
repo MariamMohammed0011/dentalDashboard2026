@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from "./context/ThemeContext";
+import ThemeToggleFAB from "./components/shared/ThemeToggleFAB";
 import LoginForm from "./features/auth/components/LoginForm";
 import MainLayout from "./components/shared/MainLayout";
 import DashboardHome from "./features/dashboard/DashboardHome";
@@ -68,6 +69,7 @@ function App() {
           </Routes>
         </Router>
         <ReactQueryDevtools initialIsOpen={false} />
+        <ThemeToggleFAB />
       </QueryClientProvider>
     </ThemeProvider>
   );
