@@ -1,6 +1,7 @@
 import React from 'react';
-import { LogOut, Bell, Menu, User } from 'lucide-react';
+import { LogOut, Menu, User } from 'lucide-react';
 import { useProfile } from '../../../features/auth/hooks/useProfile';
+import NotificationMenu from './NotificationMenu';
 
 export default function Header({ handleLogout, setIsMobileMenuOpen }) {
   const { data: user, isLoading } = useProfile();
@@ -37,10 +38,8 @@ export default function Header({ handleLogout, setIsMobileMenuOpen }) {
           </div>
 
           {/* التنبيهات */}
-          <div className="flex items-center gap-2 text-primary font-bold relative">
-            <Bell size={22} className="text-primary/80" />
-            <span className="bg-primary text-white text-[10px] absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center rounded-full">3</span>
-          </div>
+          <NotificationMenu />
+
 {/* 
           <div className="h-8 w-[1px] bg-gray-300/40 dark:bg-gray-700/40 hidden sm:block" />
 
