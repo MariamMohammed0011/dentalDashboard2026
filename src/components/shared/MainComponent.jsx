@@ -14,7 +14,7 @@ const FolderWrapper = ({
   
 
   return (
-    <div className={`flex-grow ${isExternal ? 'w-full h-full lg:mx-6 lg:mt-4 mt-16 mb-0' : 'm-[2px] lg:-mt-[40px] mt-0 lg:h-full h-[calc(100%-4px)]'} relative transition-all duration-300`}>
+    <div className={`flex-grow ${isExternal ? 'w-full h-full lg:mx-6 lg:mt-4 mt-20 mb-0' : 'm-[2px] lg:-mt-[40px] mt-0 lg:h-full h-[calc(100%-4px)]'} relative transition-all duration-300`}>
       
       {/* الورقة المقصوصة */}
       <div 
