@@ -145,7 +145,7 @@ export default function NotificationMenu() {
           >
             <Bell size={21} className={`${unreadCount > 0 ? 'text-primary animate-[wiggle_1s_ease-in-out_infinite]' : 'text-gray-500 dark:text-gray-400'}`} />
             {unreadCount > 0 && (
-              <span className="absolute top-2 right-2 w-3.5 h-3.5 bg-red-500 text-white text-[8px] font-black flex items-center justify-center rounded-full ring-2 ring-white dark:ring-gray-900 animate-pulse">
+              <span className="absolute top-2 end-2 w-3.5 h-3.5 bg-red-500 text-white text-[8px] font-black flex items-center justify-center rounded-full ring-2 ring-white dark:ring-gray-900 animate-pulse">
                 {unreadCount}
               </span>
             )}
@@ -162,6 +162,7 @@ export default function NotificationMenu() {
               side="bottom"
               sideOffset={12}
               collisionPadding={16}
+              dir="rtl"
               onMouseEnter={handleMouseEnter} 
               onMouseLeave={handleMouseLeave}
             >
@@ -172,7 +173,7 @@ export default function NotificationMenu() {
                 exit="exit"
               >
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-5 bg-gradient-to-l from-primary/[0.02] to-transparent border-b border-gray-100 dark:border-gray-900">
+                <div className="flex items-center justify-between px-5 py-3.5 bg-gradient-to-l from-primary/[0.02] to-transparent border-b border-gray-100 dark:border-gray-900">
                   <div className="flex items-center gap-2.5">
                     <h3 className="font-extrabold text-base text-gray-900 dark:text-gray-50">مركز الإشعارات</h3>
                     {unreadCount > 0 && (
@@ -191,7 +192,7 @@ export default function NotificationMenu() {
 
                 {/* Tabs Bar */}
                 <div 
-                  className="flex items-center gap-1 px-4 py-2.5 border-b border-gray-100 dark:border-gray-900 bg-gray-50/50 dark:bg-gray-950/20 overflow-x-auto select-none [&::-webkit-scrollbar]:hidden"
+                  className="flex items-center gap-1 px-3.5 py-2 border-b border-gray-100 dark:border-gray-900 bg-gray-50/50 dark:bg-gray-950/20 overflow-x-auto select-none [&::-webkit-scrollbar]:hidden"
                   style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
                   {tabs.map((tab) => {
@@ -202,7 +203,7 @@ export default function NotificationMenu() {
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`relative flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold transition-all duration-300 cursor-pointer whitespace-nowrap ${
+                        className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 cursor-pointer whitespace-nowrap ${
                           isActive
                             ? "text-primary"
                             : "text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100/50 dark:hover:bg-gray-900/40"
@@ -233,7 +234,7 @@ export default function NotificationMenu() {
                 </div>
 
                 {/* List Container */}
-                <div className="max-h-[24rem] overflow-y-auto custom-scrollbar flex flex-col bg-transparent divide-y divide-gray-100 dark:divide-gray-900/60">
+                <div className="max-h-[min(24rem,calc(100vh-220px))] overflow-y-auto custom-scrollbar flex flex-col bg-transparent divide-y divide-gray-100 dark:divide-gray-900/60 px-2">
                   <AnimatePresence mode="popLayout">
                     {filteredNotifications.length > 0 ? (
                       filteredNotifications.map((notif) => (
@@ -243,7 +244,7 @@ export default function NotificationMenu() {
                           layout
                           exit={{ opacity: 0, x: -40, filter: 'blur(4px)', transition: { duration: 0.2 } }}
                           onClick={() => toggleReadStatus(notif.id)}
-                          className={`group flex flex-col gap-1.5 p-3 sm:p-4 text-xs sm:text-sm transition-all duration-300 relative cursor-pointer select-none ${
+                          className={`group flex flex-col gap-1.5 p-3 sm:p-3.5 text-xs sm:text-sm transition-all duration-300 relative cursor-pointer select-none ${
                             notif.read 
                               ? 'bg-transparent hover:bg-gray-50/50 dark:hover:bg-gray-900/20' 
                               : 'bg-primary/[0.02] dark:bg-primary/[0.03] hover:bg-primary/[0.04] dark:hover:bg-primary/[0.05]'
@@ -251,7 +252,7 @@ export default function NotificationMenu() {
                         >
                           {/* Accent Line on the right for unread notifications */}
                           {!notif.read && (
-                            <span className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" />
+                            <span className="absolute start-0 top-3 bottom-3 w-1 bg-primary rounded-e-full" />
                           )}
 
                           {/* Inner Row */}
@@ -260,7 +261,7 @@ export default function NotificationMenu() {
                             <div className="relative shrink-0">
                               {getIcon(notif.type, notif.read)}
                               {!notif.read && (
-                                <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-red-500 rounded-full ring-2 ring-white dark:ring-gray-950 animate-pulse z-10" />
+                                <span className="absolute -top-0.5 -end-0.5 w-3 h-3 bg-red-500 rounded-full ring-2 ring-white dark:ring-gray-950 animate-pulse z-10" />
                               )}
                             </div>
 
@@ -330,7 +331,7 @@ export default function NotificationMenu() {
 
                           {/* Contextual Action Link */}
                           {getActionLink(notif.type) && (
-                            <div className="flex justify-end pr-10 sm:pr-14 mt-0.5">
+                            <div className="flex justify-end ps-10 sm:ps-14 mt-0.5">
                               <Link
                                 to={getActionLink(notif.type).url}
                                 onClick={(e) => {

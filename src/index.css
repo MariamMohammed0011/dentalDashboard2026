@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Cal+Sans&family=Comic+Relief:wght@400;700&family=Dosis:wght@200..800&family=Federant&family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&family=IBM+Plex+Sans+JP&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Outfit:wght@100..900&family=Playwrite+RO:wght@100..400&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Qahiri&family=Roboto:ital,wght@0,100..900;1,100..900&family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap');
+@import "tailwindcss";
 
 :root {
   --bg-main: #E8F1FF;
@@ -117,14 +117,23 @@
   /* لجعلها مرنة تماماً مع أي نص، نستخدم نسخة الـ SVG ClipPath أدناه */
 }
 /* استجابة للشاشات الصغيرة */
-@media (max-width: 640px) {
+@media (max-width: 1023px) {
   .path {
-    /* تقليل الهامش الأيسر في الموبايل لتوفير مساحة */
-    clip-path: path("M 15,40 L 270,40 A 10,10 0,0,0 280,30 L 280,10 A 10,10 0,0,1 290 ,0 L 4990 ,0 A 10,10 0,0,1 5000 , 10 L 5000 , 4990 A 10,10 0,0,1 4990, 5000 L 15 ,5000 A 10,10 0,0,1 5 ,4990 L 5 , 50 A 10,10 0,0,1 15 ,40 Z");
+    clip-path: none !important;
+    border-radius: 1.5rem !important;
   }
 }
 
 /* Custom Scrollbar Styles */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+.dark .custom-scrollbar {
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -140,7 +149,7 @@
 }
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {

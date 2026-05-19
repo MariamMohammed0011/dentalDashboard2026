@@ -7,7 +7,7 @@ export default function Header({ handleLogout, setIsMobileMenuOpen }) {
   const { data: user, isLoading } = useProfile();
 
   return (
-    <header className="absolute top-2 left-0 h-10 px-4 lg:px-4 flex items-center justify-between w-full z-20 pointer-events-none">
+    <header className="absolute lg:top-2 top-4 left-0 h-10 px-4 flex items-center justify-between w-full z-20 pointer-events-none">
       <div className="flex items-center gap-6 pointer-events-auto w-full justify-between">
         
         {/* زر القائمة للموبايل - يظهر فقط في الشاشات الصغيرة */}
