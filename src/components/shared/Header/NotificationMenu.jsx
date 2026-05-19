@@ -1,72 +1,151 @@
-import React, { useState, useRef } from 'react';
-import { Bell, CheckCircle2, Trash2, X, UserPlus, FileEdit, Calendar, BellRing } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { 
+  Bell, CheckCircle2, Trash2, X, UserPlus, FileEdit, Calendar, 
+  BellRing, Mail, MailOpen, MessageSquare, MessageCircle, Clock, ChevronLeft,
+  Check, CheckCheck
+} from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNotifications } from './hooks/useNotifications';
+
+// أنميشن مخصص للقائمة المنسدلة (تأثير مرن وحديث)
+const dropdownVariants = {
+  hidden: { opacity: 0, y: 12, scale: 0.96, filter: 'blur(4px)' },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1, 
+    filter: 'blur(0px)',
+    transition: { type: "spring", damping: 25, stiffness: 350, staggerChildren: 0.04 }
+  },
+  exit: { 
+    opacity: 0, 
+    y: 8, 
+    scale: 0.97, 
+    filter: 'blur(4px)',
+    transition: { duration: 0.15, ease: "easeInOut" }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+};
 
 export default function NotificationMenu() {
-  const [isOpen, setIsOpen] = useState(false);
-  const timeoutRef = useRef(null);
+  const {
+    isOpen,
+    setIsOpen,
+    notifications,
+    unreadCount,
+    handleMouseEnter,
+    handleMouseLeave,
+    markAllAsSeen,
+    clearAll,
+    removeNotification,
+    toggleReadStatus
+  } = useNotifications();
 
-  // Mock Notifications Data
-  const [notifications, setNotifications] = useState([
-    { id: 1, type: "join", text: "طلب انضمام جديد من د. أحمد محمود", time: "منذ 5 دقائق", read: false },
-    { id: 2, type: "update", text: "تم تحديث حالة الطلب #1024", time: "منذ ساعتين", read: false },
-    { id: 3, type: "reminder", text: "تذكير: اجتماع الإدارة غداً", time: "منذ يوم", read: true },
-  ]);
+  const [activeTab, setActiveTab] = useState('all');
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const tabs = [
+    { id: 'all', label: 'الكل', icon: Bell },
+    { id: 'join', label: 'طلبات', icon: UserPlus },
+    { id: 'message', label: 'رسائل', icon: MessageSquare },
+    { id: 'update', label: 'تحديثات', icon: FileEdit },
+    { id: 'reminder', label: 'تنبيهات', icon: Calendar }
+  ];
 
-  const handleMouseEnter = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setIsOpen(true);
+  const getTabCount = (tabId) => {
+    if (tabId === 'all') return notifications.length;
+    if (tabId === 'update') return notifications.filter(n => n.type === 'update' || n.type === 'comment').length;
+    return notifications.filter(n => n.type === tabId).length;
   };
 
-  const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => {
-      setIsOpen(false);
-    }, 250); 
-  };
-
-  const markAllAsSeen = () => {
-    setNotifications(notifications.map(n => ({ ...n, read: true })));
-  };
-
-  const clearAll = () => {
-    setNotifications([]);
-  };
-
-  const removeNotification = (id) => {
-    setNotifications(notifications.filter(n => n.id !== id));
+  const getFilteredNotifications = () => {
+    if (activeTab === 'all') return notifications;
+    if (activeTab === 'update') return notifications.filter(n => n.type === 'update' || n.type === 'comment');
+    return notifications.filter(n => n.type === activeTab);
   };
 
   const getIcon = (type, read) => {
-    const baseClass = "p-2.5 rounded-2xl shrink-0 transition-all duration-300 flex items-center justify-center border shadow-sm";
-    const colorClass = read 
-      ? "bg-gray-50 text-gray-400 border-gray-100 dark:bg-gray-800/40 dark:text-gray-500 dark:border-gray-800" 
-      : "bg-primary/10 text-primary border-primary/10 dark:bg-primary/20 dark:border-primary/20";
-      
-    const iconProps = { size: 18, className: "stroke-[2.25]" };
+    const baseClass = "p-2 rounded-xl shrink-0 transition-all duration-300 flex items-center justify-center border shadow-sm";
+    let colorClass = "";
+    
+    if (read) {
+      colorClass = "bg-gray-50/50 text-gray-400 border-gray-100 dark:bg-gray-900/30 dark:text-gray-600 dark:border-gray-900/60";
+    } else {
+      switch (type) {
+        case 'join':
+          colorClass = "bg-emerald-500/10 text-emerald-600 border-emerald-500/10 dark:bg-emerald-500/20 dark:border-emerald-500/20";
+          break;
+        case 'message':
+          colorClass = "bg-blue-500/10 text-blue-600 border-blue-500/10 dark:bg-blue-500/20 dark:border-blue-500/20";
+          break;
+        case 'update':
+          colorClass = "bg-amber-500/10 text-amber-600 border-amber-500/10 dark:bg-amber-500/20 dark:border-amber-500/20";
+          break;
+        case 'comment':
+          colorClass = "bg-purple-500/10 text-purple-600 border-purple-500/10 dark:bg-purple-500/20 dark:border-purple-500/20";
+          break;
+        case 'reminder':
+          colorClass = "bg-rose-500/10 text-rose-600 border-rose-500/10 dark:bg-rose-500/20 dark:border-rose-500/20";
+          break;
+        default:
+          colorClass = "bg-primary/10 text-primary border-primary/10 dark:bg-primary/20 dark:border-primary/20";
+      }
+    }
+    
+    const iconProps = { size: 18, className: "stroke-[2.25] transition-transform duration-300" };
     
     switch (type) {
       case 'join': return <div className={`${baseClass} ${colorClass}`}><UserPlus {...iconProps} /></div>;
+      case 'message': return <div className={`${baseClass} ${colorClass}`}><MessageSquare {...iconProps} /></div>;
       case 'update': return <div className={`${baseClass} ${colorClass}`}><FileEdit {...iconProps} /></div>;
+      case 'comment': return <div className={`${baseClass} ${colorClass}`}><MessageCircle {...iconProps} /></div>;
       case 'reminder': return <div className={`${baseClass} ${colorClass}`}><Calendar {...iconProps} /></div>;
       default: return <div className={`${baseClass} ${colorClass}`}><BellRing {...iconProps} /></div>;
     }
   };
+
+  const getActionLink = (type) => {
+    switch (type) {
+      case 'join':
+        return { label: "معاينة طلب الانتساب", url: "/dashboard/membership-requests" };
+      case 'message':
+        return { label: "الذهاب للإعدادات", url: "/dashboard/settings" };
+      case 'update':
+        return { label: "تتبع حالة الطلبات", url: "/dashboard/orders" };
+      case 'comment':
+        return { label: "عرض التقارير", url: "/dashboard/reports" };
+      default:
+        return null;
+    }
+  };
+
+  const notifBadge = {
+    join: { label: "انضمام جديد", color: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20 dark:border-emerald-500/10" },
+    message: { label: "رسالة جديدة", color: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20 dark:border-blue-500/10" },
+    update: { label: "تحديث حالة", color: "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20 dark:border-amber-500/10" },
+    reminder: { label: "تنبيه هام", color: "bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20 dark:border-rose-500/10" },
+    comment: { label: "تعليق جديد", color: "bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/20 dark:border-purple-500/10" }
+  };
+
+  const filteredNotifications = getFilteredNotifications();
 
   return (
     <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className="relative">
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center justify-center text-primary font-bold relative p-3 rounded-2xl bg-white/60 dark:bg-gray-800/60 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/30 shadow-sm hover:shadow-md transition-all duration-300"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="flex items-center justify-center text-primary relative p-3 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200/60 dark:border-gray-800/60 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer pointer-events-auto"
           >
-            <Bell size={22} className={`${unreadCount > 0 ? 'text-primary animate-[wiggle_1s_ease-in-out_infinite]' : 'text-gray-500 dark:text-gray-400'}`} />
+            <Bell size={21} className={`${unreadCount > 0 ? 'text-primary animate-[wiggle_1s_ease-in-out_infinite]' : 'text-gray-500 dark:text-gray-400'}`} />
             {unreadCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-[9px] font-black flex items-center justify-center rounded-full shadow-[0_0_10px_rgba(239,68,68,0.5)] ring-2 ring-white dark:ring-gray-900 animate-pulse">
+              <span className="absolute top-2 right-2 w-3.5 h-3.5 bg-red-500 text-white text-[8px] font-black flex items-center justify-center rounded-full ring-2 ring-white dark:ring-gray-900 animate-pulse">
                 {unreadCount}
               </span>
             )}
@@ -78,101 +157,210 @@ export default function NotificationMenu() {
             <PopoverContent 
               forceMount
               asChild
-              className="w-96 p-0 overflow-hidden rounded-[2rem] shadow-[0_30px_70px_rgba(0,0,0,0.15)] dark:shadow-[0_30px_70px_rgba(0,0,0,0.4)] border border-gray-100/80 dark:border-gray-800/80 bg-white/95 dark:bg-gray-950/95 backdrop-blur-2xl z-[999]" 
+              className="w-[calc(100vw-32px)] sm:w-[29rem] max-w-md p-0 overflow-hidden rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.12)] dark:shadow-[0_35px_70px_-10px_rgba(0,0,0,0.5)] border border-gray-100 dark:border-gray-900 bg-white/95 dark:bg-gray-950/95 backdrop-blur-2xl z-[999] pointer-events-auto" 
               align="end"
+              side="bottom"
               sideOffset={12}
+              collisionPadding={16}
               onMouseEnter={handleMouseEnter} 
               onMouseLeave={handleMouseLeave}
             >
               <motion.div
-                initial={{ opacity: 0, y: 15, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 15, scale: 0.95 }}
-                transition={{ type: "spring", damping: 20, stiffness: 260 }}
+                variants={dropdownVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
               >
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-5 bg-gradient-to-l from-primary/[0.03] to-transparent border-b border-gray-100/70 dark:border-gray-800/70">
-                  <div className="flex items-center gap-3">
-                    <h3 className="font-black text-base text-text-main">مركز الإشعارات</h3>
+                <div className="flex items-center justify-between px-6 py-5 bg-gradient-to-l from-primary/[0.02] to-transparent border-b border-gray-100 dark:border-gray-900">
+                  <div className="flex items-center gap-2.5">
+                    <h3 className="font-extrabold text-base text-gray-900 dark:text-gray-50">مركز الإشعارات</h3>
                     {unreadCount > 0 && (
-                      <span className="bg-primary/10 text-primary text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-inner">
-                        {unreadCount} جديد
+                      <span className="bg-primary/10 text-primary text-[11px] font-bold px-2.5 py-0.5 rounded-full">
+                        {unreadCount} غير مقروء
                       </span>
                     )}
                   </div>
                   <button 
                     onClick={() => setIsOpen(false)} 
-                    className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-gray-50 hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800 p-2 rounded-xl transition-all duration-200 hover:rotate-90"
+                    className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-gray-50 hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800 p-2 rounded-xl transition-all duration-200 hover:rotate-90 cursor-pointer"
                   >
                     <X size={14} className="stroke-[2.5]" />
                   </button>
                 </div>
 
+                {/* Tabs Bar */}
+                <div 
+                  className="flex items-center gap-1 px-4 py-2.5 border-b border-gray-100 dark:border-gray-900 bg-gray-50/50 dark:bg-gray-950/20 overflow-x-auto select-none [&::-webkit-scrollbar]:hidden"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  {tabs.map((tab) => {
+                    const isActive = activeTab === tab.id;
+                    const count = getTabCount(tab.id);
+                    const TabIcon = tab.icon;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`relative flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold transition-all duration-300 cursor-pointer whitespace-nowrap ${
+                          isActive
+                            ? "text-primary"
+                            : "text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100/50 dark:hover:bg-gray-900/40"
+                        }`}
+                      >
+                        <TabIcon size={14} className={isActive ? "stroke-[2.5]" : "stroke-[2] opacity-70"} />
+                        <span>{tab.label}</span>
+                        {count > 0 && (
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-extrabold transition-colors duration-300 ${
+                            isActive 
+                              ? "bg-primary/10 text-primary" 
+                              : "bg-gray-100 text-gray-500 dark:bg-gray-800/80 dark:text-gray-400"
+                          }`}>
+                            {count}
+                          </span>
+                        )}
+                        
+                        {isActive && (
+                          <motion.div 
+                            layoutId="activeTabIndicator"
+                            className="absolute inset-0 bg-primary/5 dark:bg-primary/10 rounded-lg border border-primary/10 dark:border-primary/20 -z-10"
+                            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
                 {/* List Container */}
-                <div className="max-h-[22rem] overflow-y-auto custom-scrollbar p-3 flex flex-col gap-2 bg-transparent">
+                <div className="max-h-[24rem] overflow-y-auto custom-scrollbar flex flex-col bg-transparent divide-y divide-gray-100 dark:divide-gray-900/60">
                   <AnimatePresence mode="popLayout">
-                    {notifications.length > 0 ? (
-                      notifications.map((notif) => (
+                    {filteredNotifications.length > 0 ? (
+                      filteredNotifications.map((notif) => (
                         <motion.div
                           key={notif.id}
+                          variants={itemVariants}
                           layout
-                          initial={{ opacity: 0, x: 20, scale: 0.95 }}
-                          animate={{ opacity: 1, x: 0, scale: 1 }}
-                          exit={{ opacity: 0, x: -30, scale: 0.95 }}
-                          transition={{ type: "spring", damping: 22, stiffness: 300 }}
-                          className={`group flex items-start gap-3.5 p-3.5 rounded-2xl text-sm transition-all duration-300 relative border ${
+                          exit={{ opacity: 0, x: -40, filter: 'blur(4px)', transition: { duration: 0.2 } }}
+                          onClick={() => toggleReadStatus(notif.id)}
+                          className={`group flex flex-col gap-1.5 p-3 sm:p-4 text-xs sm:text-sm transition-all duration-300 relative cursor-pointer select-none ${
                             notif.read 
-                              ? 'bg-transparent border-transparent hover:bg-gray-50/60 dark:hover:bg-gray-900/40' 
-                              : 'bg-white dark:bg-gray-900 border-primary/5 dark:border-primary/10 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-md hover:-translate-y-0.5'
+                              ? 'bg-transparent hover:bg-gray-50/50 dark:hover:bg-gray-900/20' 
+                              : 'bg-primary/[0.02] dark:bg-primary/[0.03] hover:bg-primary/[0.04] dark:hover:bg-primary/[0.05]'
                           }`}
                         >
-                          {/* Unread Status Dot Indicator */}
+                          {/* Accent Line on the right for unread notifications */}
                           {!notif.read && (
-                            <span className="absolute top-4 right-2 w-1.5 h-1.5 rounded-full bg-primary" />
+                            <span className="absolute right-0 top-3 bottom-3 w-1 bg-primary rounded-l-full" />
                           )}
 
-                          {/* Icon */}
-                          <div className={!notif.read ? "mr-1.5" : ""}>
-                            {getIcon(notif.type, notif.read)}
+                          {/* Inner Row */}
+                          <div className="flex items-start gap-2.5 sm:gap-3.5 relative">
+                            {/* Icon Container with integrated unread dot */}
+                            <div className="relative shrink-0">
+                              {getIcon(notif.type, notif.read)}
+                              {!notif.read && (
+                                <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-red-500 rounded-full ring-2 ring-white dark:ring-gray-950 animate-pulse z-10" />
+                              )}
+                            </div>
+
+                            {/* Content */}
+                            <div className="flex flex-col gap-1 flex-grow pt-0.5 min-w-0">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                {/* Category Badge */}
+                                {notifBadge[notif.type] && (
+                                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${notifBadge[notif.type].color}`}>
+                                    {notifBadge[notif.type].label}
+                                  </span>
+                                )}
+                                
+                                {/* Read / Unread label */}
+                                {!notif.read && (
+                                  <span className="text-[9px] bg-primary/10 text-primary font-bold px-1.5 py-0.5 rounded">
+                                    جديد
+                                  </span>
+                                )}
+                              </div>
+
+                              <span className={`text-gray-800 dark:text-gray-200 leading-relaxed text-[13px] transition-colors duration-200 ${!notif.read ? 'font-bold' : 'font-normal text-gray-500 dark:text-gray-400'}`}>
+                                {notif.text}
+                              </span>
+                              
+                              <div className="flex items-center gap-1.5 text-gray-400 dark:text-gray-500">
+                                <Clock size={11} className="stroke-[2.25] opacity-70" />
+                                <span className="text-[10.5px] font-medium">
+                                  {notif.time}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Actions Panel */}
+                            <div className="flex items-center gap-1 lg:opacity-0 group-hover:opacity-100 opacity-100 transition-opacity duration-200 native-hover-fix shrink-0 self-center">
+                              {/* Read Status Indicator */}
+                              {notif.read ? (
+                                <div className="p-2 text-emerald-500 dark:text-emerald-400 flex items-center justify-center" title="تمت المشاهدة">
+                                  <CheckCheck size={16} className="stroke-[2.5]" />
+                                </div>
+                              ) : (
+                                <button 
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleReadStatus(notif.id);
+                                  }}
+                                  className="p-2 text-primary hover:text-primary-dark hover:bg-primary/5 rounded-xl border border-transparent transition-all cursor-pointer"
+                                  title="تحديد كمقروء"
+                                >
+                                  <Check size={16} className="stroke-[2.5]" />
+                                </button>
+                              )}
+
+                              {/* Delete Button */}
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeNotification(notif.id);
+                                }}
+                                className="text-gray-400 hover:text-red-500 p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl border border-transparent transition-colors cursor-pointer"
+                                title="حذف"
+                              >
+                                <Trash2 size={14} className="stroke-[2.25]" />
+                              </button>
+                            </div>
                           </div>
 
-                          {/* Content */}
-                          <div className="flex flex-col gap-1 flex-1 pt-0.5">
-                            <span className={`text-text-main leading-relaxed text-[13.5px] ${!notif.read ? 'font-extrabold text-gray-900 dark:text-white' : 'font-medium text-gray-600 dark:text-gray-400'}`}>
-                              {notif.text}
-                            </span>
-                            <span className="text-[11px] text-gray-400 dark:text-gray-500 font-semibold tracking-wide">
-                              {notif.time}
-                            </span>
-                          </div>
-
-                          {/* Actions - Animated Trash Icon */}
-                          <div className="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200">
-                            <button 
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                removeNotification(notif.id);
-                              }}
-                              className="text-gray-400 hover:text-red-500 p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors shadow-none"
-                              title="حذف الإشعار"
-                            >
-                              <Trash2 size={15} className="stroke-[2.25]" />
-                            </button>
-                          </div>
+                          {/* Contextual Action Link */}
+                          {getActionLink(notif.type) && (
+                            <div className="flex justify-end pr-10 sm:pr-14 mt-0.5">
+                              <Link
+                                to={getActionLink(notif.type).url}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setIsOpen(false);
+                                }}
+                                className="flex items-center gap-1 text-[11px] font-bold text-primary hover:text-primary-dark transition-colors bg-primary/5 hover:bg-primary/10 px-3 py-1.5 rounded-lg border border-primary/5 hover:border-primary/10"
+                              >
+                                <span>{getActionLink(notif.type).label}</span>
+                                <ChevronLeft size={10} className="stroke-[3] -translate-y-[0.5px]" />
+                              </Link>
+                            </div>
+                          )}
                         </motion.div>
                       ))
                     ) : (
+                      // Empty State
                       <motion.div 
-                        initial={{ opacity: 0, scale: 0.9 }} 
+                        initial={{ opacity: 0, scale: 0.95 }} 
                         animate={{ opacity: 1, scale: 1 }} 
-                        className="py-12 px-6 flex flex-col items-center justify-center gap-4 text-center"
+                        className="py-14 px-6 flex flex-col items-center justify-center gap-4 text-center"
                       >
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-gray-900 dark:to-gray-800/50 flex items-center justify-center text-gray-300 dark:text-gray-600 border border-gray-100 dark:border-gray-800 shadow-inner">
-                          <BellRing size={28} className="stroke-[1.75]" />
+                        <div className="w-12 h-12 rounded-xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center text-gray-300 dark:text-gray-700 border border-gray-100 dark:border-gray-800/80">
+                          <BellRing size={26} className="stroke-[1.75]" />
                         </div>
                         <div className="space-y-1">
-                          <p className="text-gray-700 dark:text-gray-300 text-sm font-black">صندوق الإشعارات فارغ</p>
-                          <p className="text-xs text-gray-400 dark:text-gray-500 max-w-[200px] leading-normal">رائع! لقد قمت بقراءة جميع التحديثات الواردة لنظامك.</p>
+                          <p className="text-gray-800 dark:text-gray-200 text-sm font-bold">صندوق الإشعارات فارغ</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500 max-w-[220px] leading-normal">
+                            لا توجد إشعارات جديدة في هذا القسم حالياً.
+                          </p>
                         </div>
                       </motion.div>
                     )}
@@ -181,19 +369,19 @@ export default function NotificationMenu() {
 
                 {/* Footer Actions */}
                 {notifications.length > 0 && (
-                  <div className="flex items-center justify-between p-3.5 bg-gray-50/60 dark:bg-gray-900/40 border-t border-gray-100 dark:border-gray-800/80 backdrop-blur-md rounded-b-[2rem]">
+                  <div className="flex items-center justify-between p-3 bg-gray-50/70 dark:bg-gray-900/50 border-t border-gray-100 dark:border-gray-900 backdrop-blur-md rounded-b-2xl">
                     <button 
                       onClick={markAllAsSeen}
-                      className="flex items-center gap-2 text-xs text-primary hover:text-white font-black px-4 py-2.5 rounded-xl hover:bg-primary transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-primary/20 active:scale-95"
+                      className="flex items-center gap-1.5 text-xs text-primary font-bold px-3 py-2 rounded-lg hover:bg-primary/5 transition-all duration-200 cursor-pointer"
                     >
                       <CheckCircle2 size={14} className="stroke-[2.5]" />
                       تحديد الكل كمقروء
                     </button>
                     <button 
                       onClick={clearAll}
-                      className="flex items-center gap-2 text-xs text-red-500 hover:text-white font-black px-4 py-2.5 rounded-xl hover:bg-red-500 transition-all duration-300 shadow-none active:scale-95"
+                      className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-red-500 font-bold px-3 py-2 rounded-lg hover:bg-red-500/5 transition-all duration-200 cursor-pointer"
                     >
-                      <Trash2 size={14} className="stroke-[2.5]" />
+                      <Trash2 size={14} className="stroke-[2.25]" />
                       مسح الكل
                     </button>
                   </div>
