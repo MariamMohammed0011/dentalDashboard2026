@@ -8,16 +8,16 @@ const AdCard = ({ ad }) => {
     <motion.div 
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-[1.5rem] flex items-stretch overflow-hidden shadow-sm border border-gray-100 h-[100px] group hover:shadow-md transition-all"
+      className="bg-white rounded-[1.5rem] flex flex-col sm:flex-row items-stretch overflow-hidden shadow-sm border border-gray-100 sm:h-[100px] group hover:shadow-md transition-all relative"
       dir="rtl"
     >
       {/* الصورة (يمين في RTL) */}
-      <div className="w-[100px] h-full flex-shrink-0 relative overflow-hidden">
+      <div className="w-full h-36 sm:w-[100px] sm:h-full flex-shrink-0 relative overflow-hidden">
         <img src={image} alt="Ad" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
       </div>
 
       {/* التفاصيل (وسط) */}
-      <div className="flex-grow p-3 flex flex-col justify-center gap-1 text-right relative overflow-hidden">
+      <div className="flex-grow p-4 sm:p-3 flex flex-col justify-center gap-1.5 sm:gap-1 text-right relative overflow-hidden">
          {/* نمط زخرفي */}
          <div className="absolute top-0 right-0 w-16 h-full opacity-5 pointer-events-none">
           <div className="w-full h-full bg-[radial-gradient(circle,rgba(54,122,255,0.4)_1px,transparent_1px)] bg-[size:8px_8px]"></div>
@@ -35,7 +35,7 @@ const AdCard = ({ ad }) => {
       </div>
 
       {/* زر العرض (يسار في RTL) */}
-      <div className="w-[45px] bg-[#367AFF] flex items-center justify-center text-white font-bold text-[13px] cursor-pointer hover:bg-primary-dark transition-colors vertical-text">
+      <div className="w-full sm:w-[45px] bg-[#367AFF] flex items-center justify-center text-white font-bold text-sm sm:text-[13px] py-2.5 sm:py-0 cursor-pointer hover:bg-primary-dark transition-colors sm:[writing-mode:vertical-rl] sm:rotate-180">
         عرض
       </div>
     </motion.div>

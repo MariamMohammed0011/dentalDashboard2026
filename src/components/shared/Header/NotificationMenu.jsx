@@ -157,7 +157,7 @@ export default function NotificationMenu() {
             <PopoverContent 
               forceMount
               asChild
-              className="w-[calc(100vw-32px)] sm:w-[29rem] max-w-md p-0 overflow-hidden rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.12)] dark:shadow-[0_35px_70px_-10px_rgba(0,0,0,0.5)] border border-gray-100 dark:border-gray-900 bg-white/95 dark:bg-gray-950/95 backdrop-blur-2xl z-[999] pointer-events-auto" 
+              className="w-[calc(100vw-32px)]  mt-[-10px] sm:w-[28rem] max-w-md p-0  overflow-hidden rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.12)] dark:shadow-[0_35px_70px_-10px_rgba(0,0,0,0.5)] border border-gray-100 dark:border-gray-900 bg-white/95 dark:bg-gray-950/95 backdrop-blur-2xl z-[999] pointer-events-auto" 
               align="end"
               side="bottom"
               sideOffset={12}
@@ -172,7 +172,7 @@ export default function NotificationMenu() {
                 animate="visible"
                 exit="exit"
               >
-                {/* Header */}
+                
                 <div className="flex items-center justify-between px-5 py-3.5 bg-gradient-to-l from-primary/[0.02] to-transparent border-b border-gray-100 dark:border-gray-900">
                   <div className="flex items-center gap-2.5">
                     <h3 className="font-extrabold text-base text-gray-900 dark:text-gray-50">مركز الإشعارات</h3>
@@ -190,7 +190,7 @@ export default function NotificationMenu() {
                   </button>
                 </div>
 
-                {/* Tabs Bar */}
+                
                 <div 
                   className="flex items-center gap-1 px-3.5 py-2 border-b border-gray-100 dark:border-gray-900 bg-gray-50/50 dark:bg-gray-950/20 overflow-x-auto select-none [&::-webkit-scrollbar]:hidden"
                   style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
@@ -233,7 +233,7 @@ export default function NotificationMenu() {
                   })}
                 </div>
 
-                {/* List Container */}
+                
                 <div className="max-h-[min(24rem,calc(100vh-220px))] overflow-y-auto custom-scrollbar flex flex-col bg-transparent divide-y divide-gray-100 dark:divide-gray-900/60 px-2">
                   <AnimatePresence mode="popLayout">
                     {filteredNotifications.length > 0 ? (
@@ -250,14 +250,14 @@ export default function NotificationMenu() {
                               : 'bg-primary/[0.02] dark:bg-primary/[0.03] hover:bg-primary/[0.04] dark:hover:bg-primary/[0.05]'
                           }`}
                         >
-                          {/* Accent Line on the right for unread notifications */}
+                          
                           {!notif.read && (
                             <span className="absolute start-0 top-3 bottom-3 w-1 bg-primary rounded-e-full" />
                           )}
 
-                          {/* Inner Row */}
+                         
                           <div className="flex items-start gap-2.5 sm:gap-3.5 relative">
-                            {/* Icon Container with integrated unread dot */}
+                           
                             <div className="relative shrink-0">
                               {getIcon(notif.type, notif.read)}
                               {!notif.read && (
@@ -265,17 +265,17 @@ export default function NotificationMenu() {
                               )}
                             </div>
 
-                            {/* Content */}
+                           
                             <div className="flex flex-col gap-1 flex-grow pt-0.5 min-w-0">
                               <div className="flex items-center gap-1.5 flex-wrap">
-                                {/* Category Badge */}
+                               
                                 {notifBadge[notif.type] && (
                                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${notifBadge[notif.type].color}`}>
                                     {notifBadge[notif.type].label}
                                   </span>
                                 )}
                                 
-                                {/* Read / Unread label */}
+                                
                                 {!notif.read && (
                                   <span className="text-[9px] bg-primary/10 text-primary font-bold px-1.5 py-0.5 rounded">
                                     جديد

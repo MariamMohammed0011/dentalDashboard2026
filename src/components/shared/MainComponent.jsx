@@ -25,7 +25,7 @@ const FolderWrapper = ({
             - flex-1 min-h-0: يتيح للعنصر أن يأخذ الباقي ويسمح بالسكرول داخله
             - overflow-y-auto: يتيح السكرول العمودي
         */}
-        <div className="pt-4 lg:pt-17 px-4 relative flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar min-h-0 min-w-0">
+        <div className={`pt-4 lg:pt-17 relative flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar min-h-0 min-w-0 ${isExternal ? 'px-4' : 'pr-4 pl-8 sm:pl-10 lg:pr-6 lg:pl-14'}`}>
           {children}
         </div>
       </div>
