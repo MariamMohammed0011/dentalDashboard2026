@@ -40,16 +40,10 @@ export default function Header({ handleLogout, setIsMobileMenuOpen }) {
           {/* التنبيهات */}
           <NotificationMenu />
 
-{/* 
-          <div className="h-8 w-[1px] bg-gray-300/40 dark:bg-gray-700/40 hidden sm:block" />
 
-        
-          <ThemeToggle /> */}
-
-          {/* زر تسجيل الخروج */}
           <button 
             onClick={handleLogout}
-            className="text-red-500 hover:bg-red-50/50 p-2 rounded-xl transition-all"
+            className="text-danger hover:bg-danger-bg p-2 rounded-xl transition-all"
             title="تسجيل الخروج"
           >
             <LogOut size={22} />

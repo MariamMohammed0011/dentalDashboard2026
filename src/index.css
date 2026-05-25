@@ -14,6 +14,8 @@
   --primary: #367AFF;
   --primary-dark: #0000CA;
   --primary-bg: #e0f2fe;
+  --danger: #ef4444;          /* أحمر صريح */
+  --danger-bg: rgba(239, 68, 68, 0.1); /* خلفية حمراء خفيف
 }
 
 .dark {
@@ -29,6 +31,8 @@
   --primary: #3b82f6;
   --primary-dark: #2563eb;
   --primary-bg: #1e3a8a;
+  --danger: #f87171;          /* أحمر أفتح يناسب الخلفيات الغامقة */
+  --danger-bg: rgba(248, 113, 113, 0.15); /* خلفية حمراء خفيفة للهوفر */
 }
 
 @theme {
@@ -49,6 +53,9 @@
   --color-text-main: var(--text-main);
   --color-text-muted: var(--text-muted);
   --color-border-main: var(--border-color);
+
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
 }
 
 @layer utilities {

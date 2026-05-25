@@ -18,25 +18,31 @@ export const useLogin = () => {
       return response.data;
     },
 
-    onSuccess: (data) => {
-      // 2. تخزين التوكن في الكوكيز بدلاً من localStorage
-      // نضع مدة صلاحية (مثلاً 7 أيام) ونفعل خيار secure ليعمل مع HTTPS
-      Cookies.set("auth_token", data.accessToken, { 
-        expires: 7, 
-        secure: false, 
-        sameSite: "lax" 
-      });
-Cookies.set("refresh_token", data.refreshToken, { expires: 30 });
-      // معلومات المستخدم العادية يمكن بقاؤها في localStorage
-      localStorage.setItem("user_info", JSON.stringify({ 
-        userId: data.userId, // تخزين الـ ID لاستخدامه في جلب البروفايل
-        role: data.role, 
-        status: data.status 
-      }));
+  onSuccess: (data) => {
+  // 1. تعيين auth_token مع السماح بالربط بين النطاقات المختلفة محلياً
+  Cookies.set("auth_token", data.accessToken, { 
+    expires: 7, 
+    secure: true,        // إجباري مع SameSite=None
+    sameSite: "none"     // يسمح بمرور الكوكي من http (الفرونت) إلى https (الباك)
+  });
 
-      toast.success("تم تسجيل الدخول بنجاح");
-      setTimeout(() => navigate("/dashboard"), 500);
-    },
+  // 2. تعيين refresh_token بنفس الإعدادات لئلا يحظره المتصفح
+  Cookies.set("refresh_token", data.refreshToken, { 
+    expires: 30,
+    secure: true,        
+    sameSite: "none"     
+  });
+
+  // معلومات المستخدم العادية في localStorage
+  localStorage.setItem("user_info", JSON.stringify({ 
+    userId: data.userId, 
+    role: data.role, 
+    status: data.status 
+  }));
+
+  toast.success("تم تسجيل الدخول بنجاح");
+  setTimeout(() => navigate("/dashboard"), 500);
+},
     onError: (error) => {
       // معالجة الأخطاء القادمة من الانترسيبتور أو السيرفر
       const errorMessage = error.response?.data?.message || "حدث خطأ غير متوقع";
