@@ -38,10 +38,10 @@ function App() {
   
           <Routes>
             {/* مسار تسجيل الدخول */}
-            <Route 
-              path="/login" 
-              element={localStorage.getItem('auth_token') ? <Navigate to="/dashboard" replace /> : <LoginForm />} 
-            />
+           <Route 
+  path="/login" 
+  element={Cookies.get('auth_token') ? <Navigate to="/dashboard" replace /> : <LoginForm />} 
+/>
   
             {/* مسارات لوحة التحكم المحمية */}
             <Route 
