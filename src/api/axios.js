@@ -1,5 +1,5 @@
 import axios from "axios";
-import Cookies from "js-cookie"; // استيراد المكتبة هنا أيضاً
+import Cookies from "js-cookie"; 
 
 const axiosInstance = axios.create({
   baseURL: "https://localhost:44334/api",
@@ -9,7 +9,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    // جلب التوكن من الكوكيز
+   
     const token = Cookies.get("auth_token"); 
     
     if (token) {

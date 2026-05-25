@@ -1,7 +1,7 @@
 import React from 'react';
 import { LogOut, Menu, User } from 'lucide-react';
 import { useProfile } from '../../../features/auth/hooks/useProfile';
-import NotificationMenu from './NotificationMenu';
+import NotificationMenu from '../Notifications/NotificationMenu';
 
 export default function Header({ handleLogout, setIsMobileMenuOpen }) {
   const { data: user, isLoading } = useProfile();
