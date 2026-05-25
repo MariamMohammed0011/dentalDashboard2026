@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { membershipApi } from '../services/membershipApi';
 import { toast } from 'sonner';
-import { useSearch } from '../../../components/shared/Search/useSearch';
+import { useSearch } from '../../../components/shared/Search/hooks/useSearch';
 
 export const useMembership = () => {
   const queryClient = useQueryClient();

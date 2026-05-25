@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { doctorsApi } from '../services/doctorsApi';
-import { useSearch } from '../../../components/shared/Search/useSearch';
+import { useSearch } from '../../../components/shared/Search/hooks/useSearch';
 
 export const useDoctors = () => {
   const [currentPage, setCurrentPage] = useState(1);
