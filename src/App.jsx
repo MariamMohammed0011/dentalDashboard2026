@@ -17,6 +17,7 @@ import AdsPage from "./features/ads/pages/AdsPage";
 import ReportsPage from "./features/reports/pages/ReportsPage";
 import InterventionPage from "./features/interventions/pages/InterventionPage";
 import SettingsPage from "./features/dashboard/pages/SettingsPage";
+import BlogsPage from "./features/blogs/pages/BlogsPage";
 
 const queryClient = new QueryClient();
 import Cookies from "js-cookie";
@@ -57,6 +58,7 @@ function App() {
               <Route path="membership-requests" element={<MembershipRequestsPage />} />
               <Route path="doctors" element={<DoctorsPage />} />
               <Route path="labs" element={<LabsPage />} />
+              <Route path="blogs" element={<BlogsPage />} />
               <Route path="delivery-companies" element={<DeliveryCompaniesPage />} />
               <Route path="ads" element={<AdsPage />} />
               <Route path="reports" element={<ReportsPage />} />

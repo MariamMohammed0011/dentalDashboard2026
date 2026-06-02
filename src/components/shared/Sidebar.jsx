@@ -12,7 +12,8 @@ import {
   History, 
   Settings,
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
+  BookOpen
 } from 'lucide-react';
 
 export const NavItem = ({ to, label, icon: Icon, isCollapsed, onClick }) => {
@@ -49,6 +50,7 @@ export const navItems = [
   { to: "/dashboard/membership-requests", label: "طلبات الانتساب", icon: UserPlus },
   { to: "/dashboard/doctors", label: "الاطباء", icon: UserCog },
   { to: "/dashboard/labs", label: "المخابر", icon: FlaskConical },
+  { to: "/dashboard/blogs", label: "المدونات", icon: BookOpen },
   { to: "/dashboard/ads", label: "الإعلانات", icon: Megaphone },
   { to: "/dashboard/reports", label: "التقارير", icon: FileText },
   { to: "/dashboard/intervention-log", label: "سجل التدخلات", icon: History },
