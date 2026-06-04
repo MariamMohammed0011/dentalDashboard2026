@@ -1,48 +1,194 @@
-// src/services/notificationsService.js
+import axiosInstance from "../../../../api/axios";
 
-// البيانات التجريبية (Mock Data) محاطة محلياً داخل الملف
-let mockNotifications = [
-  { id: 1, type: "join", text: "طلب انضمام جديد من د. أحمد محمود في قائمة الأطباء", time: "منذ 5 دقائق", read: false },
-  { id: 2, type: "message", text: "رسالة جديدة من د. سارة الأحمد بخصوص الطلبات المعلقة", time: "منذ 15 دقيقة", read: false },
-  { id: 3, type: "update", text: "تم تحديث حالة الطلب #1024 بنجاح إلى 'جاهز للتسليم'", time: "منذ ساعتين", read: false },
-  { id: 4, type: "reminder", text: "تذكير هام: موعد اجتماع الإدارة الأسبوعي غداً الساعة 10 صباحاً", time: "منذ 4 ساعات", read: true },
-  { id: 5, type: "comment", text: "علق المشرف د. خالد على التقرير المالي لشهر أبريل: 'يرجى مراجعة الأرقام'", time: "منذ يوم واحد", read: true },
-  { id: 6, type: "join", text: "طلب انتساب جديد من عيادة الأمل لطب الأسنان بجدة", time: "منذ يومين", read: true },
-  { id: 7, type: "message", text: "استفسار جديد من المريض محمد علي حول خدمات التعويضات السنية", time: "منذ 3 أيام", read: true },
-  { id: 8, type: "reminder", text: "تنبيه النظام: موعد تجديد ترخيص المنصة السنوي بعد 3 أيام", time: "منذ 4 أيام", read: false }
-];
+// مفاتيح التخزين المحلي لتتبع الإشعارات المقروءة والمحذوفة في حال عدم وجود روابط مخصصة بالباك إند
+const READ_NOTIFS_KEY = "read_notification_ids";
+const DELETED_NOTIFS_KEY = "deleted_notification_ids";
+
+const getLocalReadIds = () => {
+  try {
+    return JSON.parse(localStorage.getItem(READ_NOTIFS_KEY)) || [];
+  } catch {
+    return [];
+  }
+};
+
+const getLocalDeletedIds = () => {
+  try {
+    return JSON.parse(localStorage.getItem(DELETED_NOTIFS_KEY)) || [];
+  } catch {
+    return [];
+  }
+};
+
+const addLocalReadId = (id) => {
+  const ids = getLocalReadIds();
+  if (!ids.includes(id)) {
+    ids.push(id);
+    localStorage.setItem(READ_NOTIFS_KEY, JSON.stringify(ids));
+  }
+};
+
+const addLocalDeletedId = (id) => {
+  const ids = getLocalDeletedIds();
+  if (!ids.includes(id)) {
+    ids.push(id);
+    localStorage.setItem(DELETED_NOTIFS_KEY, JSON.stringify(ids));
+  }
+};
+
+// دالة تصنيف نوع الإشعار بناءً على محتواه أو نوعه المرجعي
+const mapNotificationType = (type, message) => {
+  if (!type) return "reminder";
+  const lowerType = type.toLowerCase();
+  
+  if (lowerType.includes("status") || lowerType.includes("update")) {
+    return "update";
+  }
+  if (lowerType.includes("join") || lowerType.includes("membership") || (message && message.includes("طلب موافقة"))) {
+    return "join";
+  }
+  if (lowerType.includes("message") || lowerType.includes("chat")) {
+    return "message";
+  }
+  if (lowerType.includes("comment") || lowerType.includes("reply")) {
+    return "comment";
+  }
+  return "reminder";
+};
+
+// دالة تنسيق الوقت بشكل نسبي فخم باللغة العربية
+const formatTimeArabic = (dateString) => {
+  if (!dateString) return "";
+  try {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return "الآن";
+    if (diffMins < 60) {
+      if (diffMins === 1) return "منذ دقيقة";
+      if (diffMins === 2) return "منذ دقيقتين";
+      if (diffMins >= 3 && diffMins <= 10) return `منذ ${diffMins} دقائق`;
+      return `منذ ${diffMins} دقيقة`;
+    }
+    if (diffHours < 24) {
+      if (diffHours === 1) return "منذ ساعة";
+      if (diffHours === 2) return "منذ ساعتين";
+      if (diffHours >= 3 && diffHours <= 10) return `منذ ${diffHours} ساعات`;
+      return `منذ ${diffHours} ساعة`;
+    }
+    if (diffDays < 7) {
+      if (diffDays === 1) return "منذ يوم";
+      if (diffDays === 2) return "منذ يومين";
+      if (diffDays >= 3 && diffDays <= 10) return `منذ ${diffDays} أيام`;
+      return `منذ ${diffDays} يوم`;
+    }
+    
+    return date.toLocaleDateString('ar-EG', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return "";
+  }
+};
 
 export const notificationsService = {
+  // دالة تنسيق وتوحيد شكل الإشعار
+  formatNotification: (n) => {
+    const localReadIds = getLocalReadIds();
+    return {
+      id: n.id,
+      type: mapNotificationType(n.type, n.message),
+      text: n.message || "",
+      time: formatTimeArabic(n.createdAt),
+      read: n.isRead || localReadIds.includes(n.id),
+      createdAt: n.createdAt
+    };
+  },
+
   // جلب كل الإشعارات
   getNotifications: async () => {
-    // محاكاة تأخير الشبكة (اختياري، يمكنك حذفه لو أردت الاستجابة فورية)
-    await new Promise(resolve => setTimeout(resolve, 100)); 
-    return [...mockNotifications];
+    try {
+      const response = await axiosInstance.get("/DoctorBlog/notifications", {
+        params: {
+          _t: Date.now() // كسر كاش المتصفح لضمان الحصول على أحدث البيانات دائماً
+        },
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
+      const rawNotifications = response.data || [];
+      
+      const localDeletedIds = getLocalDeletedIds();
+
+      // فلترة ومطابقة البيانات لتتوافق مع الفرونت إند
+      return rawNotifications
+        .filter(n => !localDeletedIds.includes(n.id))
+        .map(notificationsService.formatNotification)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } catch (error) {
+      console.error("Failed to fetch notifications from server:", error);
+      return [];
+    }
   },
 
   // تحديث حالة إشعار معين ليصبح مقروءاً
   markAsRead: async (id) => {
-    mockNotifications = mockNotifications.map(n =>
-      n.id === id ? { ...n, read: true } : n
-    );
-    return [...mockNotifications];
+    addLocalReadId(id);
+    try {
+      // محاولة تحديث الباك إند احتياطياً
+      await axiosInstance.put(`/DoctorBlog/notifications/${id}/read`);
+    } catch (error) {
+      // تجاهل الخطأ في حال عدم توفر الميثود بالخادم
+    }
+    return await notificationsService.getNotifications();
   },
 
   // قراءة جميع الإشعارات
   markAllAsRead: async () => {
-    mockNotifications = mockNotifications.map(n => ({ ...n, read: true }));
-    return [...mockNotifications];
+    try {
+      const notifications = await notificationsService.getNotifications();
+      notifications.forEach(n => addLocalReadId(n.id));
+      
+      // محاولة تحديث الباك إند احتياطياً
+      await axiosInstance.put(`/DoctorBlog/notifications/read-all`);
+    } catch (error) {
+      // تجاهل الخطأ
+    }
+    return await notificationsService.getNotifications();
   },
 
   // حذف إشعار معين
   deleteNotification: async (id) => {
-    mockNotifications = mockNotifications.filter(n => n.id !== id);
-    return [...mockNotifications];
+    addLocalDeletedId(id);
+    try {
+      // محاولة الحذف من الباك إند احتياطياً
+      await axiosInstance.delete(`/DoctorBlog/notifications/${id}`);
+    } catch (error) {
+      // تجاهل الخطأ
+    }
+    return await notificationsService.getNotifications();
   },
 
   // مسح جميع الإشعارات
   clearAllNotifications: async () => {
-    mockNotifications = [];
-    return [...mockNotifications];
+    try {
+      const notifications = await notificationsService.getNotifications();
+      notifications.forEach(n => addLocalDeletedId(n.id));
+      
+      // محاولة الحذف من الباك إند احتياطياً
+      await axiosInstance.delete(`/DoctorBlog/notifications/clear-all`);
+    } catch (error) {
+      // تجاهل الخطأ
+    }
+    return [];
   }
-};
+};
