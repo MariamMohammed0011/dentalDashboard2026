@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Eye, Clock, User, Building2, Truck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import framerImg from '../../../assets/framer.png';
+import OrderDetailsModal from './OrderDetailsModal';
 
 const OrdersTable = ({ orders, isLoading }) => {
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -41,12 +45,18 @@ const OrdersTable = ({ orders, isLoading }) => {
                   <span className="text-primary font-bold">{order.orderStatus}</span>
                 </td>
                 <td className="px-4 py-4 text-gray-500 text-sm border-l border-gray-200">{order.deliveryStatus}</td>
-                <td className="px-4 py-4 text-gray-400 text-sm border-l border-gray-200">{order.createdAt}</td>
-                <td className="px-4 py-4">
-                  <button className="p-2 text-blue-600 hover:scale-110 transition-transform">
-                    <Eye size={22} />
-                  </button>
-                </td>
+                 <td className="px-4 py-4 font-bold text-gray-400 text-sm border-l border-gray-200">{order.createdAt}</td>
+                 <td className="px-4 py-4">
+                   <button 
+                     onClick={() => {
+                       setSelectedOrder(order);
+                       setIsModalOpen(true);
+                     }}
+                     className="p-2 text-blue-600 hover:scale-110 transition-transform cursor-pointer"
+                   >
+                     <Eye size={22} />
+                   </button>
+                 </td>
               </tr>
             ))}
           </tbody>
@@ -84,7 +94,13 @@ const OrdersTable = ({ orders, isLoading }) => {
                     {order.createdAt}
                   </span>
                 </div>
-                <button className="w-9 h-9 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+                <button 
+                  onClick={() => {
+                    setSelectedOrder(order);
+                    setIsModalOpen(true);
+                  }}
+                  className="w-9 h-9 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm cursor-pointer"
+                >
                   <Eye size={18} />
                 </button>
               </div>
@@ -127,6 +143,13 @@ const OrdersTable = ({ orders, isLoading }) => {
           </motion.div>
         ))}
       </div>
+
+      {/* مودال تفاصيل الطلبية */}
+      <OrderDetailsModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        order={selectedOrder} 
+      />
     </div>
   );
 };
