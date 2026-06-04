@@ -17,9 +17,13 @@ export const useBlogs = () => {
   // مودال قراءة المقال بالكامل
   const [activeArticle, setActiveArticle] = useState(null);
 
-  // مودال تأكيد الحذف
-  const [deleteTarget, setDeleteTarget] = useState(null); // يحمل كائن المنشور المراد حذفه
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  // مودال تأكيد الرفض
+  const [rejectTarget, setRejectTarget] = useState(null);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+
+  // مودال تأكيد القبول
+  const [approveTarget, setApproveTarget] = useState(null);
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
 
   // لمنع استدعاء API بشكل متكرر عند كل نقرة زر كيبورد
   useEffect(() => {
@@ -32,8 +36,8 @@ export const useBlogs = () => {
   }, [searchQuery]);
 
   // جلب البيانات
-  const fetchBlogsData = async () => {
-    setIsLoading(true);
+  const fetchBlogsData = async (isSilent = false) => {
+    if (!isSilent) setIsLoading(true);
     try {
       const [blogsRes, statsRes] = await Promise.all([
         blogsApi.getBlogs({
@@ -49,9 +53,11 @@ export const useBlogs = () => {
       setPagination(blogsRes.pagination);
       setStats(statsRes);
     } catch (error) {
-      toast.error("فشل في تحميل المقالات، يرجى المحاولة مرة أخرى.");
+      if (!isSilent) {
+        toast.error("فشل في تحميل المقالات، يرجى المحاولة مرة أخرى.");
+      }
     } finally {
-      setIsLoading(false);
+      if (!isSilent) setIsLoading(false);
     }
   };
 
@@ -59,27 +65,56 @@ export const useBlogs = () => {
     fetchBlogsData();
   }, [debouncedSearch, selectedRole, currentPage]);
 
-  // معالجة الحذف الفعلي بعد التأكيد
-  const handleDeleteConfirm = async () => {
-    if (!deleteTarget) return;
+  // التحديث التلقائي كل 5 ثوانٍ بشكل صامت لعدم إحداث اهتزاز بالواجهة
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchBlogsData(true);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [debouncedSearch, selectedRole, currentPage]);
+
+  // معالجة الرفض الفعلي بعد التأكيد
+  const handleRejectConfirm = async () => {
+    if (!rejectTarget) return;
 
     try {
-      const res = await blogsApi.deleteBlog(deleteTarget.id);
-      if (res.success) {
-        toast.success(`تم حذف مقال "${deleteTarget.title}" بنجاح.`);
+      await blogsApi.rejectBlog(rejectTarget.id);
+      toast.success(`تم رفض المنشور "${rejectTarget.title}" بنجاح.`);
 
-        // إغلاق المودال التفصيلي في حال كان مفتوحاً
-        if (activeArticle && activeArticle.id === deleteTarget.id) {
-          setActiveArticle(null);
-        }
-
-        // إعادة التحميل وتحديث البيانات
-        fetchBlogsData();
+      // إغلاق المودال التفصيلي في حال كان مفتوحاً
+      if (activeArticle && activeArticle.id === rejectTarget.id) {
+        setActiveArticle(null);
       }
+
+      // إعادة التحميل وتحديث البيانات
+      fetchBlogsData();
     } catch (error) {
-      toast.error("فشل في حذف المقال.");
+      toast.error("فشل في رفض المنشور.");
     } finally {
-      setDeleteTarget(null);
+      setRejectTarget(null);
+    }
+  };
+
+  // معالجة القبول الفعلي بعد التأكيد
+  const handleApproveConfirm = async () => {
+    if (!approveTarget) return;
+
+    try {
+      await blogsApi.approveBlog(approveTarget.id);
+      toast.success(`تم قبول ونشر المقال "${approveTarget.title}" بنجاح.`);
+
+      // إغلاق المودال التفصيلي في حال كان مفتوحاً
+      if (activeArticle && activeArticle.id === approveTarget.id) {
+        setActiveArticle(null);
+      }
+
+      // إعادة التحميل وتحديث البيانات
+      fetchBlogsData();
+    } catch (error) {
+      toast.error("فشل في قبول ونشر المقال.");
+    } finally {
+      setApproveTarget(null);
     }
   };
 
@@ -96,11 +131,16 @@ export const useBlogs = () => {
     setCurrentPage,
     activeArticle,
     setActiveArticle,
-    deleteTarget,
-    setDeleteTarget,
-    isDeleteModalOpen,
-    setIsDeleteModalOpen,
-    handleDeleteConfirm,
+    rejectTarget,
+    setRejectTarget,
+    isRejectModalOpen,
+    setIsRejectModalOpen,
+    handleRejectConfirm,
+    approveTarget,
+    setApproveTarget,
+    isApproveModalOpen,
+    setIsApproveModalOpen,
+    handleApproveConfirm,
     fetchBlogsData
   };
 };

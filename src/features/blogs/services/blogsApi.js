@@ -1,249 +1,115 @@
-/**
- * Blogs API Service (Mock)
- * Handles blog posts for Doctors and Laboratories
- * Persists changes in localStorage so deletions are saved across reloads
- */
-
-const DEFAULT_BLOGS = [
-  {
-    id: 1,
-    title: "كيف تختار مقاس ولون القشرة التجميلية المناسبة لمريضك؟",
-    summary: "دليل عملي شامل للأطباء حول اختيار الدرجة اللونية المثالية وتصميم الابتسامة المتناسقة باستخدام مقاييس VITA ثلاثية الأبعاد.",
-    content: `إن اختيار اللون والمقاس المناسب للقشرات التجميلية (Veneers) يعد الخطوة الأكثر حرجاً في طب الأسنان التجميلي. تعتمد النتيجة النهائية الناجحة على فهم عميق للخصائص البصرية لأسنان المريض الطبيعية، بالإضافة إلى التنسيق الدقيق مع المخبري.
-
-أولاً: تحديد اللون المناسب
-من الأخطاء الشائعة الاعتماد الكامل على الإضاءة الاصطناعية لعيادة الأسنان. يُنصح دائماً بأخذ اللون في وضح النهار (الإضاءة الطبيعية) أو باستخدام مصابيح مخصصة تحاكي ضوء الشمس (5500 Kelvin).
-كذلك، يُنصح بتحديد لون الأسنان قبل بدء التحضير (Preparation) لأن جفاف السن أثناء العمل يجعله يبدو أكثر بياضاً مما هو عليه في الواقع.
-
-ثانياً: التنسيق مع المخبر السني
-أرسل دائماً صوراً عالية الدقة للمريض بجانب دليل الألوان (Shade Guide). من الأفضل وضع الدليل في نفس المسافة البؤرية للسن المستهدف لمنع التظليل.
-يجب إرسال لون السن المحضر (Stub Shade) للمخبري، حيث أن لون السن الأصلي الداكن يؤثر بشكل كبير على درجة شفافية ونوع السيراميك المستخدم.
-
-ثالثاً: اختيار المقاس والشكل الهندسي
-يجب دراسة أبعاد الوجه ونسب العرض إلى الطول للثنايا العليا (والتي يجب أن تكون حوالي 75% إلى 80%). استخدام برامج تصميم الابتسامة الرقمية (DSD) يساهم بشكل كبير في توقع النتائج وتفادي تعديلات ما بعد الإلصاق.`,
-    publishDate: "2026-05-28",
-    image: "https://images.unsplash.com/photo-1579684389782-64d84b5e905d?w=800&auto=format&fit=crop&q=80",
-    likes: 42,
-    comments: 15,
-    author: {
-      name: "د. أيمن سلامة",
-      avatar: "https://i.pravatar.cc/150?img=60",
-      role: "doctor",
-      specialty: "أخصائي تقويم وتجميل الأسنان"
-    }
-  },
-  {
-    id: 2,
-    title: "الفروقات التقنية بين جسور الزيركون المونوليثيك والجسور المغطاة بالخزف",
-    summary: "دراسة مقارنة للمخبريين والأطباء حول خصائص مقاومة الكسر والجمالية والحدود السريرية لاستخدام كل نوع في التعويضات السنية.",
-    content: `مع التطور السريع لتقنيات CAD/CAM، أصبحت مادة الزيركون الخيار المفضل للتعويضات الثابتة. ومع ذلك، يقع الأطباء والمخبريون في حيرة عند الاختيار بين الزيركون الكامل (Monolithic Zirconia) والزيركون المغطى بالخزف (Layered/Porcelain-fused-to-zirconia).
-
-الزيركون المونوليثيك (الكامل):
-يتميز بقوته الفائقة التي قد تتجاوز 1200 ميجاباسكال، مما يجعله مقاوماً ممتازاً للكسر والتشقق. يعتبر الخيار المثالي للتعويضات الخلفية (Posterior crowns & bridges) خاصة لدى المرضى الذين يعانون من صرير الأسنان (Bruxism).
-نظراً لعدم وجود طبقة بورسلان خارجية، فإن احتمالية حدوث تقشر أو كسر جزئي (Chipping) تنعدم تماماً. لكنه يعاب عليه قلة الشفافية والجمالية مقارنة بالخزف التقليدي، على الرغم من أن الأجيال الحديثة متعددة الطبقات (Multi-layered) حسنت الجمالية بشكل ملحوظ.
-
-الزيركون المغطى بالخزف (Layered Zirconia):
-يتكون من هيكل زيركون داخلي قوي يوفر الدعم، مغطى بطبقات من البورسلان التجميلي. هذا النوع يعطي نتائج جمالية فائقة وشفافية طبيعية تحاكي السن الطبيعي تماماً، مما يجعله الخيار الأول للأسنان الأمامية (Anterior zone).
-ومع ذلك، تكمن نقطة الضعف في قوة الرابط بين الخزف والزيركون، حيث يظل خطر حدوث الـ Chipping قائماً إذا لم يتم التصميم الحراري والتبريد بشكل دقيق في فرن الخزف.
-
-توصيات سريرية ومخبرية:
-للحصول على أفضل النتائج، يُنصح باستخدام الزيركون المونوليثيك في الطواحن الخلفية لضمان القوة القصوى، واستخدام الزيركون المغطى بالخزف في الأسنان الأمامية للحصول على المظهر التجميلي الأكمل، مع ضرورة اتباع بروتوكول التبريد البطيء للمخبريين لتجنب الإجهادات الحرارية في البورسلان.`,
-    publishDate: "2026-05-25",
-    image: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=800&auto=format&fit=crop&q=80",
-    likes: 31,
-    comments: 8,
-    author: {
-      name: "مخبر الجزيرة الرقمي",
-      avatar: "https://i.pravatar.cc/150?img=11",
-      role: "lab",
-      specialty: "مختبر تعويضات سنية وزراعة رقمية"
-    }
-  },
-  {
-    id: 3,
-    title: "أهمية التصوير السني الرقمي ثلاثي الأبعاد CBCT في التخطيط لابتسامة هوليود",
-    summary: "كيف تساهم الأشعة المقطعية المخروطية ثلاثية الأبعاد في حماية البنى الحيوية وتقدير سماكة العظم واللثة قبل تركيب الفينير والزرعات التجميلية.",
-    content: `لم يعد التخطيط للابتسامة التجميلية يقتصر على المظهر الخارجي فقط، بل أصبح يعتمد بشكل جوهري على البنية التشريحية الأساسية للمريض. وتأتي تقنية CBCT (Cone Beam Computed Tomography) كأداة ثورية لضمان دقة وسلامة الإجراءات العلاجية.
-
-لماذا نحتاج CBCT في التخطيط التجميلي؟
-1. تقييم سماكة وصحة العظم السنخي: قبل البدء بوضع الزرعات التجميلية في المنطقة الأمامية، يجب التأكد من وجود كمية كافية من العظم لدعم الزرعة واللثة المحيطة بها لتجنب انحسار اللثة (Gingival Recession) مستقبلاً.
-2. الكشف عن البنى الحيوية: مثل العصب السنخي السفلي والجيوب الأنفية، مما يمنع حدوث أي إصابات عصبية أثناء التحضير أو الجراحة.
-3. دراسة النسبة بين التاج والجذر: تتيح التقنية معرفة طول الجذور وصحتها، مما يساعد في تقرير ما إذا كان السن قادراً على تحمل القوى المطبقة عليه بعد تركيب التاج أو الجسر.
-
-التكامل مع برمجيات CAD/CAM:
-من خلال دمج ملفات الـ CBCT (بصيغة DICOM) مع المسح الفموي الرقمي (بصيغة STL)، يمكن للمخبر الطبيب تصميم دليل جراحي رقمي فائق الدقة (Surgical Guide)، مما يسمح بوضع الزرعات في مكانها التجميلي والوظيفي المثالي وبأقل تدخل جراحي ممكن.`,
-    publishDate: "2026-05-20",
-    image: "https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=800&auto=format&fit=crop&q=80",
-    likes: 56,
-    comments: 22,
-    author: {
-      name: "د. سارة الأحمد",
-      avatar: "https://i.pravatar.cc/150?img=47",
-      role: "doctor",
-      specialty: "أخصائية تجميل وزراعة الأسنان"
-    }
-  },
-  {
-    id: 4,
-    title: "مستقبل طب الأسنان الرقمي: استخدامات الطابعات ثلاثية الأبعاد في إنتاج قوالب التقويم الشفاف",
-    summary: "نظرة تقنية تفصيلية على دور الطابعات ثلاثية الأبعاد الراتنجية (SLA/DLP) في تسريع عمليات إنتاج الموديلات وقوالب التقويم الشفاف داخل المخابر.",
-    content: `تشهد صناعة تقويم الأسنان تحولاً جذرياً بفضل تقنيات الطباعة ثلاثية الأبعاد (3D Printing). لقد ولى عصر الطبعات الجبسية التقليدية المزعجة للمريض وحل محلها المسح الرقمي الفموي والإنتاج المباشر في المختبر.
-
-آلية عمل إنتاج التقويم الشفاف (Aligners):
-تبدأ العملية بمسح فم المريض باستخدام ماسح رقمي فموي (Intraoral Scanner)، ثم يتم استيراد الملف إلى برنامج تخطيط حركة الأسنان (مثل 3Shape or Dental System). يقوم البرنامج بتقسيم الحركة المطلوبة إلى خطوات صغيرة (مثلاً 15 خطوة)، حيث تمثل كل خطوة نموذجاً ثلاثي الأبعاد مستقلاً لفك المريض.
-
-دور الطابعات ثلاثية الأبعاد:
-يتم طباعة النماذج ثلاثية الأبعاد لكل خطوة باستخدام طابعات راتنجية عالية الدقة والسرعة تعمل بتقنية SLA (Stereolithography) أو DLP (Digital Light Processing). بعد الطباعة والغسيل بالمعالجة الضوئية (Curing)، يتم كبس صفائح بلاستيكية حرارية خاصة (Biocompatible thermoplastic sheets) فوق هذه النماذج المطبوعة باستخدام أجهزة الكبس الحراري (Vacuum forming machines).
-
-المميزات التي تقدمها التقنية للمخابر والأطباء:
-1. السرعة الفائقة: يمكن للمخبر إنتاج مجموعة كاملة من القوالب وتوصيلها للعيادة في غضون أيام قليلة بدلاً من الأسابيع.
-2. الدقة المتناهية: تصل دقة الطابعات الحديثة إلى أقل من 50 ميكرون، مما يضمن انطباق القالب وتطبيقه للقوى المحددة بدقة متناهية على الأسنان.
-3. تقليل التكلفة الإجمالية والنفايات مقارنة بطرق النحت والصب التقليدية.`,
-    publishDate: "2026-05-15",
-    image: "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800&auto=format&fit=crop&q=80",
-    likes: 49,
-    comments: 14,
-    author: {
-      name: "مخبر النخبة الرقمي",
-      avatar: "https://i.pravatar.cc/150?img=12",
-      role: "lab",
-      specialty: "تصميم وتصنيع رقمي CAD/CAM"
-    }
-  },
-  {
-    id: 5,
-    title: "بروتوكول التحميل الفوري للزرعات السنية: الشروط والمعايير لنجاح العملية",
-    summary: "شرح شامل للبروتوكول السريري لتركيب الأسنان المؤقتة فور زراعة السن، ومتطلبات الاستقرار الأولي للزرعة لضمان الاندماج العظمي.",
-    content: `يعتبر التحميل الفوري للزرعات السنية (Immediate Loading) من أكثر العلاجات طلباً من قبل المرضى، لما يوفره من استعادة فورية للمظهر الجمالي والوظيفة النطقية والغذائية في نفس جلسة الجراحة. ولكن لضمان نجاح هذا الإجراء وتفادي فشل الزرعة، يجب الالتزام بشروط صارمة.
-
-1. الاستقرار الأولي للزرعة (Primary Stability):
-هو المعيار الأهم على الإطلاق. يجب قياس عزم التثبيت (Insertion Torque) أثناء إدخال الزرعة في العظم. لكي نتمكن من التحميل الفوري، يجب ألا يقل عزم التثبيت عن 35 إلى 45 نيوتن/سم (N.cm)، أو قياس معامل استقرار الزرعة (ISQ) بحيث يكون أعلى من 70. إذا كان العظم هشاً أو العزم أقل من ذلك، يجب التراجع فوراً وتطبيق بروتوكول التحميل التقليدي (الانتظار 3-6 أشهر).
-
-2. جودة وكثافة العظم (Bone Quality):
-يفضل تطبيق هذا البروتوكول في الفك السفلي الأمامي نظراً لكثافة العظم العالية من النوع (D1 or D2). بينما يتطلب الفك العلوي الخلفي (العظم الاسفنجي الخفيف D4) حذراً شديداً وغالباً ما يستبعد من التحميل الفوري.
-
-3. تصميم التعويض المؤقت (Temporary Prosthesis):
-يجب أن يكون التاج أو الجسر المؤقت مصمماً بحيث يكون خارج الإطباق (Out of occlusion) تماماً في الحركات المركزية والجانبية (Centric and eccentric movements). الهدف هو حماية الزرعة من أي قوى إطباقية مباشرة (Non-functional loading) قد تؤدي إلى حركتها الدقيقة (Micro-movements) وبالتالي منع اندماجها العظمي (Osseointegration).
-
-4. تعاون المريض:
-يجب التزام المريض التام بتناول الأطعمة اللينة وتفادي الضغط على المنطقة المزروعة طوال فترة الاندماج العظمي (التي تتراوح بين 6 إلى 8 أسابيع الأولى).`,
-    publishDate: "2026-05-10",
-    image: "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?w=800&auto=format&fit=crop&q=80",
-    likes: 67,
-    comments: 29,
-    author: {
-      name: "د. خالد العتيبي",
-      avatar: "https://i.pravatar.cc/150?img=33",
-      role: "doctor",
-      specialty: "أستاذ زراعة الأسنان وجراحة الفكين"
-    }
-  },
-  {
-    id: 6,
-    title: "تجنب التصدعات في خزف إيماكس (e.max): نصائح عملية للمخبريين عند التصنيع والمعالجة",
-    summary: "دليل فني حول التعامل الصحيح مع سيراميك ثنائي سيليكات الليثيوم أثناء مرحلة التبلور والتبريد لتفادي التشققات المجهرية.",
-    content: `مادة الإيماكس (Lithium Disilicate) أحدثت ثورة في تجميل الأسنان الأمامية بفضل حيويتها البصرية الفائقة وقدرتها على محاكاة ميناء السن. لكن حساسية هذه المادة للحرارة والمعالجة الميكانيكية تتطلب من المخبري دقة بالغة لتجنب حدوث تصدعات مجهرية قد تؤدي لاحقاً لكسر التعويض داخل فم المريض.
-
-أهم التوصيات المخبرية للحفاظ على سلامة الإيماكس:
-
-1. المعالجة بحذر بعد الخرط (Post-milling handle):
-في حالة استخدام الخرط الرطب (Wet milling) لقوالب الإيماكس وهي في الحالة الزرقاء (Pre-crystallized state)، يجب إزالة زوائد الدعم باستخدام أدوات ماسية ناعمة جداً وبسرعة منخفضة ودون ضغط زائد. أي خدش أو إجهاد ميكانيكي في هذه المرحلة قد يتحول إلى تصدع كبير أثناء عملية التبلور (Crystallization).
-
-2. الالتزام التام ببرنامج فرن الخزف:
-عملية التبلور هي المرحلة التي تكتسب فيها المادة قوتها النهائية (حوالي 360-400 ميجاباسكال) ويتحول لونها الأزرق إلى اللون السني الطبيعي. يجب استخدام الفرن الموصى به من الشركة المصنعة ومعايرة درجة الحرارة ومعدل الصعود الحراري بدقة. إن الصعود السريع جداً لدرجة الحرارة يؤدي لعدم تجانس تبلور المادة.
-
-3. بروتوكول التبريد البطيء (Slow Cooling):
-الخطأ الأكثر شيوعاً هو فتح الفرن وإخراج التعويضات فور انتهاء البرنامج وهي لا تزال في درجات حرارة مرتفعة. التغير المفاجئ في الحرارة (Thermal shock) يتسبب في تشققات داخلية مجهرية غير مرئية بالعين المجردة، لكنها تظهر وتتسبب في كسر التاج بعد إلصاقه بأشهر. يجب ترك التعويض يبرد ببطء داخل الفرن حتى تصل الحرارة إلى أقل من 400 درجة مئوية.
-
-4. عدم استخدام أدوات حادة للإنهاء بعد التبلور وتفادي التعديل بدون تبريد مائي كافٍ.`,
-    publishDate: "2026-05-02",
-    image: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=800&auto=format&fit=crop&q=80",
-    likes: 38,
-    comments: 11,
-    author: {
-      name: "مخبر الفا للتعويضات السنية",
-      avatar: "https://i.pravatar.cc/150?img=17",
-      role: "lab",
-      specialty: "تخصص خزف سني وتجميل متقدم"
-    }
-  }
-];
-
-const STORAGE_KEY = "dental_dashboard_blogs";
-
-const getStoredBlogs = () => {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (!stored) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_BLOGS));
-    return DEFAULT_BLOGS;
-  }
-  return JSON.parse(stored);
-};
+import axiosInstance from "../../../api/axios";
 
 export const blogsApi = {
-  // جلب جميع منشورات المدونات مع الفلاتر والبحث
+  // جلب جميع منشورات المدونات المعلقة مع الفلاتر والبحث
   getBlogs: async ({ search = "", role = "all", page = 1, limit = 6 } = {}) => {
-    // محاكاة تأخير الشبكة لإضفاء طابع واقعي وحركات أنيميشن تحميل
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    try {
+      const response = await axiosInstance.get("/DoctorBlog/pending-posts");
+      const rawPosts = response.data || [];
 
-    let blogs = getStoredBlogs();
+      // تطبيع البيانات لتتوافق مع مكونات الفرونت إند
+      let blogs = rawPosts.map((post) => {
+        const isLab = post.type?.toLowerCase().includes("lab");
+        const roleStr = isLab ? "lab" : "doctor";
+        const specialtyStr = isLab ? "مختبر تعويضات سنية" : "أخصائي أسنان";
+        
+        // جلب صورة المرفق إن وجدت، وإلا استخدام صورة افتراضية فخمة
+        let imageUrl = "https://images.unsplash.com/photo-1579684389782-64d84b5e905d?w=800&auto=format&fit=crop&q=80";
+        if (post.attachments && post.attachments.length > 0) {
+          imageUrl = `${axiosInstance.defaults.baseURL.replace("/api", "")}/${post.attachments[0].path}`;
+        }
 
-    // تطبيق البحث
-    if (search.trim() !== "") {
-      const q = search.toLowerCase();
-      blogs = blogs.filter(
-        (blog) =>
-          blog.title.toLowerCase().includes(q) ||
-          blog.summary.toLowerCase().includes(q) ||
-          blog.author.name.toLowerCase().includes(q)
-      );
+        return {
+          id: post.postId,
+          title: post.title || "",
+          summary: post.content && post.content.length > 150 
+            ? post.content.substring(0, 150) + "..." 
+            : post.content || "",
+          content: post.content || "",
+          publishDate: post.createdAt ? post.createdAt.split("T")[0] : "",
+          image: imageUrl,
+          likes: 0,
+          comments: 0,
+          author: {
+            name: post.authorName || "مستخدم غير معروف",
+            avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(post.authorName || "User")}&background=random`,
+            role: roleStr,
+            specialty: specialtyStr
+          },
+          status: post.status,
+          reviewMessage: post.reviewMessage
+        };
+      });
+
+      // تطبيق البحث العميل (Client-side search)
+      if (search.trim() !== "") {
+        const q = search.toLowerCase();
+        blogs = blogs.filter(
+          (blog) =>
+            blog.title.toLowerCase().includes(q) ||
+            blog.summary.toLowerCase().includes(q) ||
+            blog.author.name.toLowerCase().includes(q)
+        );
+      }
+
+      // تطبيق فلترة الدور (طبيب / مخبر)
+      if (role !== "all") {
+        blogs = blogs.filter((blog) => blog.author.role === role);
+      }
+
+      // حساب الصفحات والتقسيم
+      const total = blogs.length;
+      const start = (page - 1) * limit;
+      const paginatedData = blogs.slice(start, start + limit);
+
+      return {
+        data: paginatedData,
+        pagination: {
+          total,
+          page,
+          totalPages: Math.ceil(total / limit) || 1,
+        },
+      };
+    } catch (error) {
+      console.error("Error in getBlogs:", error);
+      throw error;
     }
-
-    // تطبيق فلترة الدور (طبيب / مخبر)
-    if (role !== "all") {
-      blogs = blogs.filter((blog) => blog.author.role === role);
-    }
-
-    // حساب الصفحات والتقسيم
-    const total = blogs.length;
-    const start = (page - 1) * limit;
-    const paginatedData = blogs.slice(start, start + limit);
-
-    return {
-      data: paginatedData,
-      pagination: {
-        total,
-        page,
-        totalPages: Math.ceil(total / limit) || 1,
-      },
-    };
   },
 
-  // حذف منشور معين من المدونة
-  deleteBlog: async (id) => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    
-    let blogs = getStoredBlogs();
-    const filteredBlogs = blogs.filter((blog) => blog.id !== id);
-    
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredBlogs));
-    
-    return { success: true };
+  // قبول ونشر منشور معلق
+  approveBlog: async (id) => {
+    const response = await axiosInstance.put(`/DoctorBlog/${id}/approve`);
+    return response.data;
   },
 
-  // الحصول على إحصائيات سريعة للمدونات
+  // رفض وحذف منشور معلق
+  rejectBlog: async (id) => {
+    const response = await axiosInstance.delete(`/DoctorBlog/${id}/reject`);
+    return response.data;
+  },
+
+  // الحصول على إحصائيات سريعة للمنشورات المعلقة
   getStats: async () => {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    const blogs = getStoredBlogs();
-    
-    const total = blogs.length;
-    const doctorCount = blogs.filter((b) => b.author.role === "doctor").length;
-    const labCount = blogs.filter((b) => b.author.role === "lab").length;
-    
-    return {
-      total,
-      doctorCount,
-      labCount,
-    };
+    try {
+      const response = await axiosInstance.get("/DoctorBlog/pending-posts");
+      const rawPosts = response.data || [];
+      
+      const total = rawPosts.length;
+      const doctorCount = rawPosts.filter((p) => !p.type?.toLowerCase().includes("lab")).length;
+      const labCount = rawPosts.filter((p) => p.type?.toLowerCase().includes("lab")).length;
+      
+      return {
+        total,
+        doctorCount,
+        labCount,
+      };
+    } catch (error) {
+      console.error("Error in getStats:", error);
+      return {
+        total: 0,
+        doctorCount: 0,
+        labCount: 0
+      };
+    }
   }
 };

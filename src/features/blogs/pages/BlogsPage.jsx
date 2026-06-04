@@ -12,7 +12,8 @@ import {
   MessageCircle,
   Eye,
   X,
-  AlertCircle
+  AlertCircle,
+  Check
 } from "lucide-react";
 import { useBlogs } from "../hooks/useBlogs";
 import MembershipPagination from "../../membership/components/MembershipPagination";
@@ -83,11 +84,16 @@ export default function BlogsPage() {
     setCurrentPage,
     activeArticle,
     setActiveArticle,
-    deleteTarget,
-    setDeleteTarget,
-    isDeleteModalOpen,
-    setIsDeleteModalOpen,
-    handleDeleteConfirm
+    rejectTarget,
+    setRejectTarget,
+    isRejectModalOpen,
+    setIsRejectModalOpen,
+    handleRejectConfirm,
+    approveTarget,
+    setApproveTarget,
+    isApproveModalOpen,
+    setIsApproveModalOpen,
+    handleApproveConfirm
   } = useBlogs();
 
   return (
@@ -261,20 +267,31 @@ export default function BlogsPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setActiveArticle(blog)}
-                      className="px-4 py-2 bg-primary/5 hover:bg-primary/10 text-primary rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+                      className="px-3 py-2 bg-primary/5 hover:bg-primary/10 text-primary rounded-xl text-xs font-bold flex items-center gap-1 transition-all active:scale-95 cursor-pointer"
+                      title="مراجعة التفاصيل"
                     >
                       <Eye size={14} />
                       <span>مراجعة</span>
                     </button>
                     <button
                       onClick={() => {
-                        setDeleteTarget(blog);
-                        setIsDeleteModalOpen(true);
+                        setApproveTarget(blog);
+                        setIsApproveModalOpen(true);
+                      }}
+                      className="p-2 bg-emerald-50 dark:bg-emerald-950/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 text-emerald-500 rounded-xl transition-all active:scale-95 cursor-pointer"
+                      title="قبول المنشور"
+                    >
+                      <Check size={15} />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setRejectTarget(blog);
+                        setIsRejectModalOpen(true);
                       }}
                       className="p-2 bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-500 rounded-xl transition-all active:scale-95 cursor-pointer"
-                      title="حذف المقال"
+                      title="رفض المنشور"
                     >
-                      <Trash2 size={15} />
+                      <X size={15} />
                     </button>
                   </div>
                 </div>
@@ -424,16 +441,29 @@ export default function BlogsPage() {
                     إغلاق المراجعة
                   </button>
                   
-                  <button
-                    onClick={() => {
-                      setDeleteTarget(activeArticle);
-                      setIsDeleteModalOpen(true);
-                    }}
-                    className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-2xl flex items-center gap-2 shadow-lg shadow-red-500/10 hover:shadow-xl hover:shadow-red-500/20 transition-all active:scale-95"
-                  >
-                    <Trash2 size={16} />
-                    <span>حذف المنشور</span>
-                  </button>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => {
+                        setApproveTarget(activeArticle);
+                        setIsApproveModalOpen(true);
+                      }}
+                      className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl flex items-center gap-2 shadow-lg shadow-emerald-500/10 hover:shadow-xl hover:shadow-emerald-500/20 transition-all active:scale-95"
+                    >
+                      <Check size={16} />
+                      <span>قبول المنشور</span>
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        setRejectTarget(activeArticle);
+                        setIsRejectModalOpen(true);
+                      }}
+                      className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-2xl flex items-center gap-2 shadow-lg shadow-red-500/10 hover:shadow-xl hover:shadow-red-500/20 transition-all active:scale-95"
+                    >
+                      <Trash2 size={16} />
+                      <span>رفض المنشور</span>
+                    </button>
+                  </div>
                 </div>
 
               </motion.div>
@@ -443,19 +473,34 @@ export default function BlogsPage() {
         document.body
       )}
 
-      {/* 6. بوب اب تأكيد الحذف */}
+      {/* بوب اب تأكيد الرفض */}
       <ConfirmationModal
-        isOpen={isDeleteModalOpen}
+        isOpen={isRejectModalOpen}
         onClose={() => {
-          setIsDeleteModalOpen(false);
-          setDeleteTarget(null);
+          setIsRejectModalOpen(false);
+          setRejectTarget(null);
         }}
-        onConfirm={handleDeleteConfirm}
-        title="حذف منشور المدونة"
-        message={`هل أنت متأكد من رغبتك في حذف المقال "${deleteTarget?.title}" بشكل نهائي؟ لا يمكن التراجع عن هذا الإجراء.`}
-        confirmText="حذف المقال"
+        onConfirm={handleRejectConfirm}
+        title="رفض منشور المدونة"
+        message={`هل أنت متأكد من رغبتك في رفض المقال "${rejectTarget?.title}"؟ لا يمكن التراجع عن هذا الإجراء.`}
+        confirmText="رفض المنشور"
         cancelText="تراجع"
         type="danger"
+      />
+
+      {/* بوب اب تأكيد القبول */}
+      <ConfirmationModal
+        isOpen={isApproveModalOpen}
+        onClose={() => {
+          setIsApproveModalOpen(false);
+          setApproveTarget(null);
+        }}
+        onConfirm={handleApproveConfirm}
+        title="قبول ونشر المنشور"
+        message={`هل أنت متأكد من رغبتك في الموافقة على نشر المقال "${approveTarget?.title}"؟ سيصبح مرئياً للجميع.`}
+        confirmText="قبول ونشر"
+        cancelText="تراجع"
+        type="success"
       />
 
     </div>
