@@ -29,6 +29,13 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// مكون لمنع تكرار الدخول: إذا كان المستخدم مسجلاً بالفعل، يوجهه للداشبورد مباشرة
+const LoginRoute = () => {
+  const token = Cookies.get("auth_token");
+  if (token) return <Navigate to="/dashboard" replace />;
+  return <LoginForm />;
+};
+
 function App() {
 
   return (
@@ -39,10 +46,10 @@ function App() {
   
           <Routes>
             {/* مسار تسجيل الدخول */}
-           <Route 
-  path="/login" 
-  element={Cookies.get('auth_token') ? <Navigate to="/dashboard" replace /> : <LoginForm />} 
-/>
+            <Route 
+              path="/login" 
+              element={<LoginRoute />} 
+            />
   
             {/* مسارات لوحة التحكم المحمية */}
             <Route 

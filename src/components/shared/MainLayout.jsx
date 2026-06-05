@@ -55,7 +55,7 @@ const { handleLogout, isLoggingOut } = useLogout();
                   </button>
                 </div>
 
-                <nav className="flex-grow overflow-y-auto pb-6">
+                <nav className="flex-grow overflow-y-auto no-scrollbar pb-6">
                   <div className="flex flex-col gap-1">
                     {navItems.map((item) => (
                       <NavItem 
