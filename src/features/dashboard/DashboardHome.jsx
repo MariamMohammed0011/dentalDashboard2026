@@ -1,13 +1,16 @@
 import React from 'react';
-import { Pie, Column, Line, Area } from '@ant-design/plots';
+import { Pie, Column, Line, Area, Bar } from '@ant-design/plots';
 import WelcomeHeader from './components/WelcomeHeader';
 import { useTheme } from '../../context/ThemeContext';
+import { useDashboardStats } from './hooks/useDashboardStats';
 import { 
   Users, 
   FlaskConical, 
   Activity, 
   TrendingUp, 
-  DollarSign
+  DollarSign,
+  Loader2,
+  AlertTriangle
 } from 'lucide-react';
 
 const StatCard = ({ title, count, icon: Icon, color, subDetails }) => (
@@ -30,6 +33,74 @@ const StatCard = ({ title, count, icon: Icon, color, subDetails }) => (
 
 export default function DashboardHome() {
   const { theme } = useTheme();
+
+  const {
+    dentistsOrdersData,
+    labsOrdersData,
+    isLoading,
+    isError,
+    getPeriodText
+  } = useDashboardStats();
+
+  // إعدادات مخطط أعمدة الأطباء (Column Chart)
+  const dentistsColumnConfig = {
+    data: dentistsOrdersData,
+    xField: 'displayName',
+    yField: 'totalOrders',
+    theme: theme === 'dark' ? 'dark' : 'light',
+    style: {
+      fill: theme === 'dark' ? '#a78bfa' : '#8b5cf6',
+      radiusTopLeft: 8,
+      radiusTopRight: 8,
+    },
+    label: {
+      text: 'totalOrders',
+      style: {
+        fontSize: 11,
+        fontWeight: 'bold',
+        dy: -8,
+        fill: theme === 'dark' ? '#f8fafc' : '#1f2937',
+      },
+    },
+    axis: {
+      x: {
+        labelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
+      },
+      y: {
+        labelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
+      },
+    },
+  };
+
+  // إعدادات مخطط أعمدة المخابر (Column Chart)
+  const labsColumnConfig = {
+    data: labsOrdersData,
+    xField: 'displayName',
+    yField: 'totalOrders',
+    theme: theme === 'dark' ? 'dark' : 'light',
+    style: {
+      fill: theme === 'dark' ? '#34d399' : '#10b981',
+      radiusTopLeft: 8,
+      radiusTopRight: 8,
+    },
+    label: {
+      text: 'totalOrders',
+      style: {
+        fontSize: 11,
+        fontWeight: 'bold',
+        dy: -8,
+        fill: theme === 'dark' ? '#f8fafc' : '#1f2937',
+      },
+    },
+    axis: {
+      x: {
+        labelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
+      },
+      y: {
+        labelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
+      },
+    },
+  };
 
   // 1. مخطط توزيع الحالات (Donut Chart)
   const lifecycleData = [
@@ -292,6 +363,77 @@ export default function DashboardHome() {
             </>
           }
         />
+
+      </div>
+
+      {/* قسم إحصائيات الطلبات الشهرية الفعلية (بيانات حقيقية) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        {/* مخطط طلبات أطباء الأسنان */}
+        <div className="bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
+          <div className="flex justify-between items-center mb-6">
+            <div className="text-right">
+              <h3 className="text-base sm:text-lg font-bold text-text-main">طلبات أطباء الأسنان {getPeriodText(dentistsOrdersData)}</h3>
+              <p className="text-xs text-text-muted">الأطباء الأكثر طلباً وتداولاً للحالات عبر المنصة</p>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-violet-500 bg-violet-500/10 px-2 py-1 rounded-lg font-bold">
+              <TrendingUp size={14} />
+              <span>نشاط مرتفع</span>
+            </div>
+          </div>
+          <div className="h-[300px] flex items-center justify-center">
+            {isLoading ? (
+              <div className="flex flex-col items-center gap-2">
+                <Loader2 className="animate-spin text-primary" size={32} />
+                <span className="text-sm text-text-muted">جاري تحميل البيانات...</span>
+              </div>
+            ) : isError ? (
+              <div className="flex flex-col items-center gap-2 text-red-500">
+                <AlertTriangle size={32} />
+                <span className="text-sm">فشل في تحميل إحصائيات الأطباء</span>
+              </div>
+            ) : dentistsOrdersData.length === 0 ? (
+              <span className="text-sm text-text-muted">لا توجد بيانات متوفرة حالياً</span>
+            ) : (
+              <div className="w-full h-full">
+                <Column {...dentistsColumnConfig} />
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* مخطط طلبات المختبرات (المخابر) */}
+        <div className="bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
+          <div className="flex justify-between items-center mb-6">
+            <div className="text-right">
+              <h3 className="text-base sm:text-lg font-bold text-text-main">طلبات المختبرات {getPeriodText(labsOrdersData)}</h3>
+              <p className="text-xs text-text-muted">المخابر الأكثر استقبالاً وتصنيعاً للحالات السنية</p>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-green-500 bg-green-500/10 px-2 py-1 rounded-lg font-bold">
+              <TrendingUp size={14} />
+              <span>إنتاجية عالية</span>
+            </div>
+          </div>
+          <div className="h-[300px] flex items-center justify-center">
+            {isLoading ? (
+              <div className="flex flex-col items-center gap-2">
+                <Loader2 className="animate-spin text-primary" size={32} />
+                <span className="text-sm text-text-muted">جاري تحميل البيانات...</span>
+              </div>
+            ) : isError ? (
+              <div className="flex flex-col items-center gap-2 text-red-500">
+                <AlertTriangle size={32} />
+                <span className="text-sm">فشل في تحميل إحصائيات المختبرات</span>
+              </div>
+            ) : labsOrdersData.length === 0 ? (
+              <span className="text-sm text-text-muted">لا توجد بيانات متوفرة حالياً</span>
+            ) : (
+              <div className="w-full h-full">
+                <Column {...labsColumnConfig} />
+              </div>
+            )}
+          </div>
+        </div>
 
       </div>
 
