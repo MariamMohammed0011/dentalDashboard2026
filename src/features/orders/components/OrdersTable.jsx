@@ -26,37 +26,35 @@ const OrdersTable = ({ orders, isLoading }) => {
               <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300 last:border-l-0">رقم الطلب</th>
               <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">الطبيب</th>
               <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">المخبر</th>
-               <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">حالة الطلب</th>
-              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">حالة التوصيل</th>
+              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">حالة الطلب</th>
               <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">تاريخ الإنشاء</th>
               <th className="px-4 py-5 font-bold text-gray-700 text-sm">عرض</th>
             </tr>
           </thead>
           <tbody>
             {orders?.map((order) => (
-              <tr 
-                key={order.id} 
+              <tr
+                key={order.id}
                 className="bg-transparent hover:bg-gray-50/50 transition-colors border-b border-gray-200 last:border-b-0"
               >
                 <td className="px-4 py-4 text-gray-600 text-sm border-l border-gray-200 last:border-l-0">{order.id}</td>
                 <td className="px-4 py-4 text-gray-600 text-sm border-l border-gray-200 font-medium">{order.doctor}</td>
                 <td className="px-4 py-4 text-gray-600 text-sm border-l border-gray-200 font-medium">{order.lab}</td>
-                 <td className="px-4 py-4 text-gray-600 text-sm border-l border-gray-200">
+                <td className="px-4 py-4 text-gray-600 text-sm border-l border-gray-200">
                   <span className="text-primary font-bold">{order.orderStatus}</span>
                 </td>
-                <td className="px-4 py-4 text-gray-500 text-sm border-l border-gray-200">{order.deliveryStatus}</td>
-                 <td className="px-4 py-4 font-bold text-gray-400 text-sm border-l border-gray-200">{order.createdAt}</td>
-                 <td className="px-4 py-4">
-                   <button 
-                     onClick={() => {
-                       setSelectedOrder(order);
-                       setIsModalOpen(true);
-                     }}
-                     className="p-2 text-blue-600 hover:scale-110 transition-transform cursor-pointer"
-                   >
-                     <Eye size={22} />
-                   </button>
-                 </td>
+                <td className="px-4 py-4 font-bold text-gray-400 text-sm border-l border-gray-200">{order.createdAt}</td>
+                <td className="px-4 py-4">
+                  <button
+                    onClick={() => {
+                      setSelectedOrder(order);
+                      setIsModalOpen(true);
+                    }}
+                    className="p-2 text-blue-600 hover:scale-110 transition-transform cursor-pointer"
+                  >
+                    <Eye size={22} />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -66,7 +64,7 @@ const OrdersTable = ({ orders, isLoading }) => {
       {/* عرض البطاقات للجوال بتصميم مودرن */}
       <div className="grid grid-cols-1 gap-5 md:hidden">
         {orders?.map((order, index) => (
-          <motion.div 
+          <motion.div
             key={order.id}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -81,7 +79,7 @@ const OrdersTable = ({ orders, isLoading }) => {
 
             {/* الخط الجانبي الأيمن التفاعلي */}
             <div className="absolute right-0 top-0 bottom-0 w-1.5 bg-primary transform scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-top z-20 rounded-l-full" />
-            
+
             {/* المحتوى الرئيسي */}
             <div className="relative z-10">
               <div className="flex justify-between items-center mb-4">
@@ -94,7 +92,7 @@ const OrdersTable = ({ orders, isLoading }) => {
                     {order.createdAt}
                   </span>
                 </div>
-                <button 
+                <button
                   onClick={() => {
                     setSelectedOrder(order);
                     setIsModalOpen(true);
@@ -104,7 +102,7 @@ const OrdersTable = ({ orders, isLoading }) => {
                   <Eye size={18} />
                 </button>
               </div>
-              
+
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -123,20 +121,14 @@ const OrdersTable = ({ orders, isLoading }) => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 pt-4 border-t border-gray-50">
-                   <div className="flex items-center gap-2">
-                      <Building2 size={14} className="text-gray-300" />
-                      <div className="flex flex-col">
-                        <span className="text-[10px] text-gray-400">المخبر</span>
-                        <span className="text-[12px] font-semibold text-gray-600 truncate">{order.lab}</span>
-                      </div>
-                   </div>
-                   <div className="flex items-center gap-2">
-                      <Truck size={14} className="text-gray-300" />
-                      <div className="flex flex-col">
-                        <span className="text-[10px] text-gray-400">التوصيل</span>
-                        <span className="text-[12px] font-semibold text-gray-600 truncate">{order.deliveryCompany || 'غير محدد'}</span>
-                      </div>
-                   </div>
+                  <div className="flex items-center gap-2">
+                    <Building2 size={14} className="text-gray-300" />
+                    <div className="flex flex-col">
+                      <span className="text-[10px] text-gray-400">المخبر</span>
+                      <span className="text-[12px] font-semibold text-gray-600 truncate">{order.lab}</span>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -145,10 +137,10 @@ const OrdersTable = ({ orders, isLoading }) => {
       </div>
 
       {/* مودال تفاصيل الطلبية */}
-      <OrderDetailsModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        order={selectedOrder} 
+      <OrderDetailsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        order={selectedOrder}
       />
     </div>
   );

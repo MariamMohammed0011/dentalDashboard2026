@@ -31,17 +31,17 @@ export const fetchOrders = async () => {
   try {
     const response = await axiosInstance.get("/CaseOrders/all-with-details");
     const rawOrders = response.data || [];
-    
+
     // مطابقة وتنسيق بيانات الطلبيات لتتوافق مع الأعمدة المعروضة في جدول الواجهة
     return rawOrders.map(order => ({
       id: order.orderId,
       doctor: order.dentistName || "طبيب غير معروف",
       lab: order.labName || "مخبر غير معروف",
-      deliveryCompany: "واصل", // قيمة افتراضية للتوصيل
+
       orderStatus: mapStatusArabic(order.status),
-      deliveryStatus: "لم يتم", // قيمة افتراضية لحالة التوصيل
+
       createdAt: formatDate(order.createdAt),
-      
+
       // الاحتفاظ بجميع الحقول التفصيلية للعرض عند الضغط على زر التفاصيل (العين)
       title: order.title,
       status: order.status,
