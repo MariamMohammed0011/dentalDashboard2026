@@ -39,6 +39,13 @@ export const useAds = () => {
     }
   });
 
+  const createClientMutation = useMutation({
+    mutationFn: (clientData) => adsApi.createAdClient(clientData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['ads'] });
+    }
+  });
+
   return {
     ads: data?.data || [],
     pagination: data?.pagination,
@@ -50,5 +57,7 @@ export const useAds = () => {
     updateAd: updateMutation.mutate,
     deleteAd: deleteMutation.mutate,
     createAd: createMutation.mutate,
+    createAdClient: createClientMutation.mutate,
+    isCreatingClient: createClientMutation.isPending
   };
 };
