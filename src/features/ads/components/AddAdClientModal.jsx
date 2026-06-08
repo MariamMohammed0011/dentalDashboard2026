@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -11,44 +11,15 @@ import {
   Map,
   Globe
 } from 'lucide-react';
-import { toast } from 'sonner';
+import { useAddAdClient } from '../hooks/useAddAdClient';
 
 const AddAdClientModal = ({ isOpen, onClose, onCreateClient, isSubmitting }) => {
-  const [form, setForm] = useState({
-    name: '',
-    phone: '',
-    namePlace: '',
-    addressPlace: '',
-    cityPlace: '',
-    countryPlace: 'سوريا'
+  // تمرير الخاصية isSubmitting للهوك ليتمكن من إيقاف الإرسال المتكرر والتحقق الذكي
+  const { form, handleChange, handleSubmit } = useAddAdClient({ 
+    onCreateClient, 
+    onClose,
+    isSubmitting
   });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!form.name || !form.phone) {
-      toast.error('يرجى ملء الحقول الإجبارية (الاسم ورقم الهاتف)');
-      return;
-    }
-
-    onCreateClient(form, {
-      onSuccess: () => {
-        toast.success('تم إنشاء حساب عميل الإعلانات بنجاح');
-        setForm({
-          name: '',
-          phone: '',
-          namePlace: '',
-          addressPlace: '',
-          cityPlace: '',
-          countryPlace: 'سوريا'
-        });
-        onClose();
-      },
-      onError: (error) => {
-        console.error("Failed to create client:", error);
-        toast.error('حدث خطأ أثناء إنشاء حساب العميل');
-      }
-    });
-  };
 
   if (typeof document === 'undefined') return null;
 
@@ -95,8 +66,9 @@ const AddAdClientModal = ({ isOpen, onClose, onCreateClient, isSubmitting }) => 
                       required
                       placeholder="مثال: أحمد المحمد"
                       value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
+                      onChange={(e) => handleChange('name', e.target.value)}
                       className="bg-gray-50 border border-gray-200/80 rounded-2xl pr-10 pl-4 py-2.5 text-gray-700 font-medium text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full"
+                      disabled={isSubmitting}
                     />
                     <User className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                   </div>
@@ -111,14 +83,18 @@ const AddAdClientModal = ({ isOpen, onClose, onCreateClient, isSubmitting }) => 
                     <input
                       type="text"
                       required
-                      placeholder="مثال: 098765432"
+                      placeholder="مثال: 963930000000+"
                       value={form.phone}
-                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      onChange={(e) => handleChange('phone', e.target.value)}
                       className="bg-gray-50 border border-gray-200/80 rounded-2xl pr-10 pl-4 py-2.5 text-gray-700 font-medium text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full text-right"
                       dir="ltr"
+                      disabled={isSubmitting}
                     />
                     <Phone className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                   </div>
+                  <span className="text-[11px] text-gray-400 mr-1 block mt-0.5">
+                    * يجب كتابة رمز الدولة مع علامة (+) ليتم قبول الرقم دولياً.
+                  </span>
                 </div>
 
                 {/* Name Place */}
@@ -129,8 +105,9 @@ const AddAdClientModal = ({ isOpen, onClose, onCreateClient, isSubmitting }) => 
                       type="text"
                       placeholder="مثال: عيادة السن الجميل"
                       value={form.namePlace}
-                      onChange={(e) => setForm({ ...form, namePlace: e.target.value })}
+                      onChange={(e) => handleChange('namePlace', e.target.value)}
                       className="bg-gray-50 border border-gray-200/80 rounded-2xl pr-10 pl-4 py-2.5 text-gray-700 font-medium text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full"
+                      disabled={isSubmitting}
                     />
                     <Building2 className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                   </div>
@@ -144,8 +121,9 @@ const AddAdClientModal = ({ isOpen, onClose, onCreateClient, isSubmitting }) => 
                       type="text"
                       placeholder="مثال: شارع بغداد، بجانب صيدلية الشفاء"
                       value={form.addressPlace}
-                      onChange={(e) => setForm({ ...form, addressPlace: e.target.value })}
+                      onChange={(e) => handleChange('addressPlace', e.target.value)}
                       className="bg-gray-50 border border-gray-200/80 rounded-2xl pr-10 pl-4 py-2.5 text-gray-700 font-medium text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full"
+                      disabled={isSubmitting}
                     />
                     <MapPin className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                   </div>
@@ -160,8 +138,9 @@ const AddAdClientModal = ({ isOpen, onClose, onCreateClient, isSubmitting }) => 
                         type="text"
                         placeholder="مثال: دمشق"
                         value={form.cityPlace}
-                        onChange={(e) => setForm({ ...form, cityPlace: e.target.value })}
+                        onChange={(e) => handleChange('cityPlace', e.target.value)}
                         className="bg-gray-50 border border-gray-200/80 rounded-2xl pr-10 pl-4 py-2.5 text-gray-700 font-medium text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full"
+                        disabled={isSubmitting}
                       />
                       <Map className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                     </div>
@@ -174,8 +153,9 @@ const AddAdClientModal = ({ isOpen, onClose, onCreateClient, isSubmitting }) => 
                         type="text"
                         placeholder="مثال: سوريا"
                         value={form.countryPlace}
-                        onChange={(e) => setForm({ ...form, countryPlace: e.target.value })}
+                        onChange={(e) => handleChange('countryPlace', e.target.value)}
                         className="bg-gray-50 border border-gray-200/80 rounded-2xl pr-10 pl-4 py-2.5 text-gray-700 font-medium text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full"
+                        disabled={isSubmitting}
                       />
                       <Globe className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                     </div>

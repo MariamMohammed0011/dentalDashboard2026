@@ -1,29 +1,7 @@
-import React, { useState } from 'react';
-import { useAds } from '../hooks/useAds';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Megaphone, 
-  Search, 
-  RotateCcw, 
-  Trash2, 
-  Eye, 
-  Check, 
-  AlertCircle, 
-  Clock, 
-  CheckCircle2, 
-  Plus, 
-  X, 
-  Building2, 
-  Box,
-  ChevronRight,
-  ChevronLeft,
-  Calendar,
-  Phone,
-  Image as ImageIcon,
-  CheckCircle,
-  UserPlus
-} from 'lucide-react';
-import { toast } from 'sonner';
+import React from 'react';
+import { Megaphone, Plus, UserPlus } from 'lucide-react';
+import { useAdsPageLogic } from '../hooks/useAdsPageLogic'; // استدعاء الهوك الجديد
+
 import ConfirmationModal from '../../../components/shared/ConfirmationModal';
 import AddAdModal from '../components/AddAdModal';
 import AddAdClientModal from '../components/AddAdClientModal';
@@ -32,78 +10,40 @@ import ViewAdModal from '../components/ViewAdModal';
 import AdsList from '../components/AdsList';
 
 const AdsPage = () => {
-  const { 
-    ads, 
-    pagination, 
-    isLoading, 
-    currentPage, 
-    setCurrentPage, 
-    filters, 
-    setFilters,
-    updateAd,
-    deleteAd,
+  // استدعاء كافة الحالات والدوال من الهوك الصافي
+  const {
+    ads,
+    pagination,
+    isLoading,
+    isCreatingClient,
     createAd,
     createAdClient,
-    isCreatingClient
-  } = useAds();
-
-  // Modals state
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isAddClientModalOpen, setIsAddClientModalOpen] = useState(false);
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [selectedAd, setSelectedAd] = useState(null);
-  const [deleteAdId, setDeleteAdId] = useState(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
-  // Preset images and local form state moved to separate AddAdModal component
-
-  // Filter handlers are managed inside the AdsFilter component
-
-  // Toggle active/inactive status
-  const handleToggleStatus = (ad) => {
-    const newStatus = ad.status === 'active' ? 'inactive' : 'active';
-    updateAd({ 
-      id: ad.id, 
-      updates: { status: newStatus } 
-    });
-    toast.success(`تم تغيير حالة الإعلان إلى (${newStatus === 'active' ? 'نشط' : 'غير نشط'})`);
-  };
-
-  // Approve advertisement
-  const handleApproveAd = (ad) => {
-    updateAd({ 
-      id: ad.id, 
-      updates: { approvalStatus: 'approved', status: 'active', userId: ad.userId } 
-    });
-    toast.success('تمت الموافقة على الإعلان وتفعيله بنجاح');
-  };
-
-  // Reject advertisement
-  const handleRejectAd = (ad) => {
-    updateAd({ 
-      id: ad.id, 
-      updates: { approvalStatus: 'rejected', status: 'inactive' } 
-    });
-    toast.error('تم رفض الإعلان وإلغاء تفعيله');
-  };
-
-  // Confirm delete handler
-  const handleConfirmDelete = () => {
-    if (deleteAdId) {
-      deleteAd(deleteAdId);
-      toast.success('تم حذف الإعلان بنجاح');
-      setDeleteAdId(null);
-    }
-  };
-
-  // Create ad action is handled directly in AddAdModal via createAd mutation
+    setCurrentPage,
+    filters,
+    isAddModalOpen,
+    setIsAddModalOpen,
+    isAddClientModalOpen,
+    setIsAddClientModalOpen,
+    isViewModalOpen,
+    setIsViewModalOpen,
+    isDeleteModalOpen,
+    setIsDeleteModalOpen,
+    selectedAd,
+    handleToggleStatus,
+    handleApproveAd,
+    handleRejectAd,
+    handleDeleteClick,
+    handleViewClick,
+    handleConfirmDelete,
+    handleResetFilters,
+    handleApplyFilters
+  } = useAdsPageLogic();
 
   return (
     <div className="p-4 sm:p-8 flex flex-col gap-6 bg-transparent" dir="rtl">
       
-      {/* 1. Header Section (Styled exactly like Ratings Page, but with Blue color scheme) */}
+      {/* 1. Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4">
-        {/* Title and Icon Wrapper */}
         <div className="flex items-center gap-4">
           <div className="p-3.5 bg-[#E8F1FF] text-[#367AFF] rounded-2xl shadow-sm border border-[#D2E4FF]/50 flex items-center justify-center">
             <Megaphone size={28} className="text-[#367AFF]" />
@@ -137,19 +77,8 @@ const AdsPage = () => {
       {/* 2. Filters Container */}
       <AdsFilter 
         filters={filters} 
-        onApplyFilters={(newFilters) => {
-          setFilters(newFilters);
-          setCurrentPage(1);
-        }} 
-        onResetFilters={() => {
-          setFilters({
-            search: '',
-            approvalStatus: 'all',
-            status: 'all',
-            type: 'all'
-          });
-          setCurrentPage(1);
-        }} 
+        onApplyFilters={handleApplyFilters} 
+        onResetFilters={handleResetFilters} 
       />
 
       {/* 3. Table / Cards View */}
@@ -160,14 +89,8 @@ const AdsPage = () => {
         setCurrentPage={setCurrentPage} 
         handleApproveAd={handleApproveAd} 
         handleToggleStatus={handleToggleStatus} 
-        handleDeleteClick={(id) => {
-          setDeleteAdId(id);
-          setIsDeleteModalOpen(true);
-        }} 
-        handleViewClick={(ad) => {
-          setSelectedAd(ad);
-          setIsViewModalOpen(true);
-        }} 
+        handleDeleteClick={handleDeleteClick} 
+        handleViewClick={handleViewClick} 
       />
 
       {/* ====================================================== */}
@@ -203,7 +126,6 @@ const AdsPage = () => {
         isOpen={isDeleteModalOpen}
         onClose={() => {
           setIsDeleteModalOpen(false);
-          setDeleteAdId(null);
         }}
         onConfirm={handleConfirmDelete}
         title="حذف الإعلان"

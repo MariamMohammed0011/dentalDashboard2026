@@ -36,15 +36,25 @@ const addLocalDeletedId = (id) => {
   }
 };
 
-// دالة تصنيف نوع الإشعار بناءً على محتواه أو نوعه المرجعي
-const mapNotificationType = (type, message) => {
-  if (!type) return "reminder";
-  const lowerType = type.toLowerCase();
+// 🎯 تعديل: استقبال الحقل المرجعي blogPostType القادم من الباك إند
+const mapNotificationType = (type, blogPostType, message) => {
+  // فحص الحقلين لضمان التقاط النوع أياً كان مسماه من السيرفر
+  const currentType = blogPostType || type || "";
+  const lowerType = currentType.toLowerCase();
+  const lowerMessage = message ? message.toLowerCase() : "";
   
   if (lowerType.includes("status") || lowerType.includes("update")) {
     return "update";
   }
-  if (lowerType.includes("join") || lowerType.includes("membership") || (message && message.includes("طلب موافقة"))) {
+  // مطابقة الأنواع الخاصة بطلبات الموافقة أو حقول السيرفر (مثل CommunityDiscussionDoctor)
+  if (
+    lowerType.includes("join") || 
+    lowerType.includes("membership") || 
+    lowerType.includes("community") || 
+    lowerType.includes("discussion") || 
+    lowerMessage.includes("طلب موافقة") ||
+    lowerMessage.includes("انضمام")
+  ) {
     return "join";
   }
   if (lowerType.includes("message") || lowerType.includes("chat")) {
@@ -104,7 +114,8 @@ export const notificationsService = {
     const localReadIds = getLocalReadIds();
     return {
       id: n.id,
-      type: mapNotificationType(n.type, n.message),
+      // 🎯 تعديل: تمرير n.blogPostType إلى دالة التصنيف لحل مشكلة التبويبات والأيقونات المخفية
+      type: mapNotificationType(n.type, n.blogPostType, n.message),
       text: n.message || "",
       time: formatTimeArabic(n.createdAt),
       read: n.isRead || localReadIds.includes(n.id),
@@ -113,38 +124,25 @@ export const notificationsService = {
   },
 
   // جلب كل الإشعارات
-  getNotifications: async () => {
+ // في ملف notificationsService.js
+// داخل ملف notificationsService.js، عدلي دالة الجلب لتصبح كالتالي:
+getNotifications: async () => {
     try {
-      const response = await axiosInstance.get("/DoctorBlog/notifications", {
-        params: {
-          _t: Date.now() // كسر كاش المتصفح لضمان الحصول على أحدث البيانات دائماً
-        },
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        }
-      });
-      const rawNotifications = response.data || [];
-      
-      const localDeletedIds = getLocalDeletedIds();
-
-      // فلترة ومطابقة البيانات لتتوافق مع الفرونت إند
-      return rawNotifications
-        .filter(n => !localDeletedIds.includes(n.id))
-        .map(notificationsService.formatNotification)
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        // استخدمي axiosInstance إذا كان هو المعرف بـ BaseURL و Tokens
+        const response = await axiosInstance.get('/DoctorBlog/notifications'); 
+        console.log("البيانات الخام من الـ API:", response.data); 
+        
+        return response.data.map(n => notificationsService.formatNotification(n));
     } catch (error) {
-      console.error("Failed to fetch notifications from server:", error);
-      return [];
+        console.error("خطأ في الخدمة:", error);
+        return [];
     }
-  },
+},
 
   // تحديث حالة إشعار معين ليصبح مقروءاً
   markAsRead: async (id) => {
     addLocalReadId(id);
     try {
-      // محاولة تحديث الباك إند احتياطياً
       await axiosInstance.put(`/DoctorBlog/notifications/${id}/read`);
     } catch (error) {
       // تجاهل الخطأ في حال عدم توفر الميثود بالخادم
@@ -158,7 +156,6 @@ export const notificationsService = {
       const notifications = await notificationsService.getNotifications();
       notifications.forEach(n => addLocalReadId(n.id));
       
-      // محاولة تحديث الباك إند احتياطياً
       await axiosInstance.put(`/DoctorBlog/notifications/read-all`);
     } catch (error) {
       // تجاهل الخطأ
@@ -170,7 +167,6 @@ export const notificationsService = {
   deleteNotification: async (id) => {
     addLocalDeletedId(id);
     try {
-      // محاولة الحذف من الباك إند احتياطياً
       await axiosInstance.delete(`/DoctorBlog/notifications/${id}`);
     } catch (error) {
       // تجاهل الخطأ
@@ -184,11 +180,10 @@ export const notificationsService = {
       const notifications = await notificationsService.getNotifications();
       notifications.forEach(n => addLocalDeletedId(n.id));
       
-      // محاولة الحذف من الباك إند احتياطياً
       await axiosInstance.delete(`/DoctorBlog/notifications/clear-all`);
     } catch (error) {
       // تجاهل الخطأ
     }
     return [];
   }
-};
+};

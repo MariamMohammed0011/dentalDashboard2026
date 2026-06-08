@@ -19,27 +19,29 @@ export const useLogin = () => {
     },
 
     onSuccess: (data) => {
-      // 1. تعيين الأكسس توكن في الكوكيز
-      Cookies.set("auth_token", data.accessToken, { 
-        expires: 7, 
-        secure: true,        
-        sameSite: "none"     
-      });
+  // للبيئة المحلية، نكتفي بوضع الإعدادات القياسية لضمان قراءتها من نفس المتصفح دون حجب حماية
+  const isLocalhost = window.location.hostname === "localhost";
+  const cookieConfig = isLocalhost 
+    ? { expires: 7 } // إعدادات محلية مرنة لتفادي انهيار الـ CORS
+    : { expires: 7, secure: true, sameSite: "none" }; // الإنتاج
 
-      // 2. تعيين الريفرش توكن في الكوكيز
-      Cookies.set("refresh_token", data.refreshToken, { 
-        expires: 30,
-        secure: true,        
-        sameSite: "none"     
-      });
+  const refreshConfig = isLocalhost 
+    ? { expires: 30 } 
+    : { expires: 30, secure: true, sameSite: "none" };
 
-      // 3. تخزين الـ userId والـ role داخل الكوكيز بدلاً من الـ LocalStorage 🚀
-      Cookies.set("user_id", data.userId, { expires: 7, secure: true, sameSite: "none" });
-      Cookies.set("user_role", data.role, { expires: 7, secure: true, sameSite: "none" });
+  // 1. تعيين الأكسس توكن في الكوكيز
+  Cookies.set("auth_token", data.accessToken, cookieConfig);
 
-      toast.success("تم تسجيل الدخول بنجاح");
-      setTimeout(() => navigate("/dashboard"), 500);
-    },
+  // 2. تعيين الريفرش توكن في الكوكيز
+  Cookies.set("refresh_token", data.refreshToken, refreshConfig);
+
+  // 3. تخزين الـ userId والـ role داخل الكوكيز
+  Cookies.set("user_id", data.userId, cookieConfig);
+  Cookies.set("user_role", data.role, cookieConfig);
+
+  toast.success("تم تسجيل الدخول بنجاح");
+  setTimeout(() => navigate("/dashboard"), 500);
+},
     onError: (error) => {
       const errorMessage = error.response?.data?.message || "حدث خطأ غير متوقع";
       toast.error(errorMessage);

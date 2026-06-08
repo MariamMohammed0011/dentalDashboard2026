@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Bell, CheckCircle2, Trash2, X, UserPlus, FileEdit, Calendar, 
-  BellRing, Mail, MailOpen, MessageSquare, MessageCircle, Clock, ChevronLeft,
+  BellRing, MessageSquare, MessageCircle, Clock, ChevronLeft,
   Check, CheckCheck
 } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
@@ -56,18 +56,17 @@ export default function NotificationMenu() {
     { id: 'update', label: 'تحديثات', icon: FileEdit },
     { id: 'reminder', label: 'تنبيهات', icon: Calendar }
   ];
+const getTabCount = (tabId) => {
+  if (tabId === 'all') return notifications.length;
+  if (tabId === 'update') return notifications.filter(n => n.type === 'update' || n.type === 'comment').length;
+  return notifications.filter(n => n.type === tabId).length;
+};
 
-  const getTabCount = (tabId) => {
-    if (tabId === 'all') return notifications.length;
-    if (tabId === 'update') return notifications.filter(n => n.type === 'update' || n.type === 'comment').length;
-    return notifications.filter(n => n.type === tabId).length;
-  };
-
-  const getFilteredNotifications = () => {
-    if (activeTab === 'all') return notifications;
-    if (activeTab === 'update') return notifications.filter(n => n.type === 'update' || n.type === 'comment');
-    return notifications.filter(n => n.type === activeTab);
-  };
+const getFilteredNotifications = () => {
+  if (activeTab === 'all') return notifications;
+  if (activeTab === 'update') return notifications.filter(n => n.type === 'update' || n.type === 'comment');
+  return notifications.filter(n => n.type === activeTab);
+};
 
   const getIcon = (type, read) => {
     const baseClass = "p-2 rounded-xl shrink-0 transition-all duration-300 flex items-center justify-center border shadow-sm";
@@ -114,11 +113,13 @@ export default function NotificationMenu() {
       case 'join':
         return { label: "معاينة طلب الانتساب", url: "/dashboard/membership-requests" };
       case 'message':
-        return { label: "الذهاب للإعدادات", url: "/dashboard/settings" };
+        return { label: "الذهاب للرسائل", url: "/dashboard/messages" };
       case 'update':
         return { label: "تتبع حالة الطلبات", url: "/dashboard/orders" };
       case 'comment':
         return { label: "عرض التقارير", url: "/dashboard/reports" };
+      case 'reminder':
+        return { label: "عرض المواعيد", url: "/dashboard/appointments" };
       default:
         return null;
     }
@@ -133,7 +134,7 @@ export default function NotificationMenu() {
   };
 
   const filteredNotifications = getFilteredNotifications();
-
+console.log("Mapped Notifications:", notifications);
   return (
     <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className="relative">
       <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -157,7 +158,7 @@ export default function NotificationMenu() {
             <PopoverContent 
               forceMount
               asChild
-              className="w-[calc(100vw-32px)]  mt-[-10px] sm:w-[28rem] max-w-md p-0  overflow-hidden rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.12)] dark:shadow-[0_35px_70px_-10px_rgba(0,0,0,0.5)] border border-gray-100 dark:border-gray-900 bg-white/95 dark:bg-gray-950/95 backdrop-blur-2xl z-[999] pointer-events-auto" 
+              className="w-[calc(100vw-32px)] mt-[-10px] sm:w-[28rem] max-w-md p-0 overflow-hidden rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.12)] dark:shadow-[0_35px_70px_-10px_rgba(0,0,0,0.5)] border border-gray-100 dark:border-gray-900 bg-white/95 dark:bg-gray-950/95 backdrop-blur-2xl z-[999] pointer-events-auto" 
               align="end"
               side="bottom"
               sideOffset={12}
@@ -172,7 +173,7 @@ export default function NotificationMenu() {
                 animate="visible"
                 exit="exit"
               >
-                
+                {/* Header */}
                 <div className="flex items-center justify-between px-5 py-3.5 bg-gradient-to-l from-primary/[0.02] to-transparent border-b border-gray-100 dark:border-gray-900">
                   <div className="flex items-center gap-2.5">
                     <h3 className="font-extrabold text-base text-gray-900 dark:text-gray-50">مركز الإشعارات</h3>
@@ -190,7 +191,7 @@ export default function NotificationMenu() {
                   </button>
                 </div>
 
-                
+                {/* Tabs */}
                 <div 
                   className="flex items-center gap-1 px-3.5 py-2 border-b border-gray-100 dark:border-gray-900 bg-gray-50/50 dark:bg-gray-950/20 overflow-x-auto select-none [&::-webkit-scrollbar]:hidden"
                   style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
@@ -203,7 +204,7 @@ export default function NotificationMenu() {
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 cursor-pointer whitespace-nowrap ${
+                        className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 cursor-pointer whitespace-nowrap z-10 ${
                           isActive
                             ? "text-primary"
                             : "text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100/50 dark:hover:bg-gray-900/40"
@@ -233,7 +234,7 @@ export default function NotificationMenu() {
                   })}
                 </div>
 
-                
+                {/* Notifications List */}
                 <div className="max-h-[min(24rem,calc(100vh-220px))] overflow-y-auto custom-scrollbar flex flex-col bg-transparent divide-y divide-gray-100 dark:divide-gray-900/60 px-2">
                   <AnimatePresence mode="popLayout">
                     {filteredNotifications.length > 0 ? (
@@ -243,7 +244,9 @@ export default function NotificationMenu() {
                           variants={itemVariants}
                           layout
                           exit={{ opacity: 0, x: -40, filter: 'blur(4px)', transition: { duration: 0.2 } }}
-                          onClick={() => toggleReadStatus(notif.id)}
+                          onClick={() => {
+                            if (!notif.read) toggleReadStatus(notif.id);
+                          }}
                           className={`group flex flex-col gap-1.5 p-3 sm:p-3.5 text-xs sm:text-sm transition-all duration-300 relative cursor-pointer select-none ${
                             notif.read 
                               ? 'bg-transparent hover:bg-gray-50/50 dark:hover:bg-gray-900/20' 
@@ -255,9 +258,8 @@ export default function NotificationMenu() {
                             <span className="absolute start-0 top-3 bottom-3 w-1 bg-primary rounded-e-full" />
                           )}
 
-                         
                           <div className="flex items-start gap-2.5 sm:gap-3.5 relative">
-                           
+                            
                             <div className="relative shrink-0">
                               {getIcon(notif.type, notif.read)}
                               {!notif.read && (
@@ -265,16 +267,13 @@ export default function NotificationMenu() {
                               )}
                             </div>
 
-                           
                             <div className="flex flex-col gap-1 flex-grow pt-0.5 min-w-0">
                               <div className="flex items-center gap-1.5 flex-wrap">
-                               
                                 {notifBadge[notif.type] && (
                                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${notifBadge[notif.type].color}`}>
                                     {notifBadge[notif.type].label}
                                   </span>
                                 )}
-                                
                                 
                                 {!notif.read && (
                                   <span className="text-[9px] bg-primary/10 text-primary font-bold px-1.5 py-0.5 rounded">
@@ -297,28 +296,30 @@ export default function NotificationMenu() {
 
                             {/* Actions Panel */}
                             <div className="flex items-center gap-1 lg:opacity-0 group-hover:opacity-100 opacity-100 transition-opacity duration-200 native-hover-fix shrink-0 self-center">
-                              {/* Read Status Indicator */}
-                              {notif.read ? (
-                                <div className="p-2 text-emerald-500 dark:text-emerald-400 flex items-center justify-center" title="تمت المشاهدة">
+                              {/* Read Status Indicator Button */}
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation(); 
+                                  toggleReadStatus(notif.id);
+                                }}
+                                className={`p-2 rounded-xl border border-transparent transition-all cursor-pointer ${
+                                  notif.read 
+                                    ? 'text-emerald-500 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10' 
+                                    : 'text-primary hover:text-primary-dark hover:bg-primary/5'
+                                }`}
+                                title={notif.read ? "تحديد كغير مقروء" : "تحديد كمقروء"}
+                              >
+                                {notif.read ? (
                                   <CheckCheck size={16} className="stroke-[2.5]" />
-                                </div>
-                              ) : (
-                                <button 
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    toggleReadStatus(notif.id);
-                                  }}
-                                  className="p-2 text-primary hover:text-primary-dark hover:bg-primary/5 rounded-xl border border-transparent transition-all cursor-pointer"
-                                  title="تحديد كمقروء"
-                                >
+                                ) : (
                                   <Check size={16} className="stroke-[2.5]" />
-                                </button>
-                              )}
+                                )}
+                              </button>
 
                               {/* Delete Button */}
                               <button 
                                 onClick={(e) => {
-                                  e.stopPropagation();
+                                  e.stopPropagation(); 
                                   removeNotification(notif.id);
                                 }}
                                 className="text-gray-400 hover:text-red-500 p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl border border-transparent transition-colors cursor-pointer"
@@ -348,7 +349,7 @@ export default function NotificationMenu() {
                         </motion.div>
                       ))
                     ) : (
-                      // Empty State
+                      /* Empty State */
                       <motion.div 
                         initial={{ opacity: 0, scale: 0.95 }} 
                         animate={{ opacity: 1, scale: 1 }} 

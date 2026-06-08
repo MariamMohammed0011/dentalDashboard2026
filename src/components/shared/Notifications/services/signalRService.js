@@ -5,101 +5,77 @@ let connection = null;
 
 export const signalRService = {
   /**
-   * بدء الاتصال بـ SignalR Hub مع تجربة مسارات متعددة
-   * @param {Function} onNotificationReceived - الكولباك المستدعى عند وصول إشعار جديد
+   * بدء الاتصال بـ SignalR Hub
+   * @param {Function} onNotificationReceived - دالة الاستدعاء الارتجاعية عند استلام إشعار جديد
    */
   startConnection: async (onNotificationReceived) => {
-    // التحقق من حالة الاتصال الحالية لتجنب التكرار
     if (connection && connection.state !== HubConnectionState.Disconnected) {
-      console.log("[SignalR] Connection already active or starting. Current state:", connection.state);
+      console.log("[SignalR] Connection already active. State:", connection.state);
       return connection;
     }
 
     const token = Cookies.get("auth_token");
     
-    // قائمة بالمسارات الشائعة للـ Hub في دوت نت لتجربتها تلقائياً
-    const hubUrls = [
-      "https://localhost:44334/notificationHub",
-      "https://localhost:44334/notifications",
-      "https://localhost:44334/notificationsHub",
-      "https://localhost:44334/notification",
-      "https://localhost:44334/hubs/notification",
-      "https://localhost:44334/hubs/notifications"
-    ];
+    // 🎯 التعديل الجوهري هنا: تغيير المسار ليطابق ما يطلبه السيرفر في الـ Console تماماً!
+   const hubUrl = "https://localhost:44334/notificationHub"; //  المسار الصحيح
+    try {
+      console.log(`[SignalR] Initializing connection to correct endpoint: ${hubUrl}`);
+      
+      // signalRService.js
 
-    let lastError = null;
+// signalRService.js
 
-    for (const url of hubUrls) {
-      try {
-        console.log(`[SignalR] Attempting to connect to: ${url}`);
-        
-        connection = new HubConnectionBuilder()
-          .withUrl(url, {
-            accessTokenFactory: () => token || "",
-            skipNegotiation: false,
-            transport: HttpTransportType.WebSockets
-          })
-          .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
-          .configureLogging(1) // طباعة معلومات الاتصال والتصحيح بالكونسول
-          .build();
+connection = new HubConnectionBuilder()
+  .withUrl(hubUrl, {
+    accessTokenFactory: () => {
+      const token = Cookies.get("auth_token");
+      console.log("[SignalR] Fetching token for connection:", token ? "Token Found" : "No Token");
+      return token || "";
+    },
+    // 1. اجعليها false أو قومي بحذف السطر تماماً لتفعيل الـ Negotiation
+    skipNegotiation: false, 
+    // 2. يفضل ترك الخيارات مفتوحة ليختار المتصفح أفضل وسيلة مدعومة تلقائياً
+    transport: HttpTransportType.WebSockets | HttpTransportType.LongPolling 
+  })
+  .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
+  .configureLogging(1) 
+  .build();
 
-        // دالة معالجة الإشعار المستقبل
-        const handleIncomingNotification = (notification) => {
-          console.log("[SignalR] New Notification received:", notification);
-          if (onNotificationReceived) {
-            onNotificationReceived(notification);
-          }
-        };
+      const handleIncomingNotification = (notification) => {
+        console.log("[SignalR] New Live Notification received:", notification);
+        if (onNotificationReceived) {
+          onNotificationReceived(notification);
+        }
+      };
 
-        // الاستماع لأي ميثود يرسلها الباك إند (سجلنا كل المسميات الشائعة لضمان التوافق)
-        const eventNames = [
-          "ReceiveNotification", 
-          "SendNotification", 
-          "Notification", 
-          "notification",
-          "ReceiveMessage", 
-          "SendMessage", 
-          "BroadcastNotification", 
-          "NewNotification",
-          "AddNotification", 
-          "BlogAdded", 
-          "NewPost", 
-          "NewPendingPost",
-          "NotificationReceived", 
-          "NewBlog",
-          "PostStatusChanged",
-          "StatusChanged"
-        ];
+      // مسميات الميثودز الأساسية والمتوقعة من الـ Backend
+      const eventNames = [
+        "ReceiveNotification", 
+        "SendNotification", 
+        "Notification", 
+        "notification"
+      ];
 
-        eventNames.forEach(event => {
-          connection.on(event, handleIncomingNotification);
-        });
+      eventNames.forEach(event => {
+        connection.on(event, handleIncomingNotification);
+      });
 
-        // تسجيل مستمعي الأحداث لمراقبة حالة الاتصال
-        connection.onreconnecting((error) => {
-          console.warn("[SignalR] Connection lost. Reconnecting...", error);
-        });
+      connection.onreconnecting((error) => {
+        console.warn("[SignalR] Link lost. Attempting auto-reconnect...", error);
+      });
 
-        connection.onreconnected((connectionId) => {
-          console.log("[SignalR] Connection restored. Connection ID:", connectionId);
-        });
+      connection.onreconnected((connectionId) => {
+        console.log("[SignalR] Link re-established. ID:", connectionId);
+      });
 
-        connection.onclose((error) => {
-          console.error("[SignalR] Connection closed:", error);
-        });
-
-        await connection.start();
-        console.log(`[SignalR] Connected successfully to ${url}. State:`, connection.state);
-        return connection;
-      } catch (error) {
-        console.warn(`[SignalR] Failed to connect to ${url}. Error:`, error.message);
-        lastError = error;
-        connection = null; // تصفير المحاولة الفاشلة للانتقال للتالية
-      }
+      await connection.start();
+      console.log(`[SignalR] Connected successfully. Connection State:`, connection.state);
+      return connection;
+    } catch (error) {
+      console.error("[SignalR] Critical error while setting up webSocket:", error.message);
+      connection = null;
+      throw error;
     }
-
-    console.error("[SignalR] All hub connection attempts failed.");
-    throw lastError || new Error("Failed to connect to any SignalR Hub");
   },
 
   /**
@@ -109,9 +85,9 @@ export const signalRService = {
     if (!connection) return;
     try {
       await connection.stop();
-      console.log("[SignalR] Connection stopped.");
+      console.log("[SignalR] Connection closed safely.");
     } catch (error) {
-      console.error("[SignalR] Error while stopping connection:", error);
+      console.error("[SignalR] Error while closing connection:", error);
     } finally {
       connection = null;
     }

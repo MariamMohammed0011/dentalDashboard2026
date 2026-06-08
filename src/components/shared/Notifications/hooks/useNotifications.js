@@ -1,4 +1,3 @@
-// src/hooks/useNotifications.js
 import { useState, useRef, useEffect } from 'react';
 import { notificationsService } from '../services/notificationsService';
 import { signalRService } from '../services/signalRService';
@@ -7,71 +6,74 @@ import { toast } from 'sonner';
 export function useNotifications() {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(true); // إضافة حالة التحميل لكون البيانات تأتي من خدمة خارجيّة
+  const [loading, setLoading] = useState(true);
   const timeoutRef = useRef(null);
 
-  // جلب البيانات وإعداد اتصال SignalR عند التركيب
   useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const data = await notificationsService.getNotifications();
-        // مقارنة المعرفات لمنع تحديث الـ State في حال عدم وجود تغييرات حقيقية
-        setNotifications((prev) => {
-          const prevIds = prev.map((n) => n.id).join(",");
-          const dataIds = data.map((n) => n.id).join(",");
-          if (prevIds === dataIds) return prev;
-          return data;
-        });
-      } catch (error) {
-        console.error("Failed to fetch notifications:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    let isMounted = true;
 
+    // 1. جلب الإشعارات المحفوظة قديماً في السيرفر لمرة واحدة فقط عند إقلاع المكون
+   // داخل useNotifications
+// داخل useNotifications
+const fetchNotifications = async () => {
+  try {
+    const data = await notificationsService.getNotifications();
+    console.log("البيانات الخام القادمة من السيرفر:", data); 
+    
+    if (isMounted) {
+      // إذا كانت المصفوفة لا تزال فارغة، هنا سنعرف هل السبب من السيرفر أم من الـ filter
+      setNotifications(data || []);
+      console.log("تم تحديث الحالة بـ:", data);
+    }
+  } catch (error) {
+    console.error("خطأ أثناء الجلب:", error);
+  } finally {
+    if (isMounted) setLoading(false);
+  }
+};
     fetchNotifications();
 
-    // تشغيل تحديث دوري (Polling) كحل احتياطي كل 5 ثوانٍ لضمان جلب البيانات تلقائياً
-    const pollingInterval = setInterval(fetchNotifications, 5000);
-
-    // معالجة الإشعار اللحظي القادم من الويب سوكيت
+    // 2. معالجة الإشعار اللحظي القادم من الويب سوكيت فوراً دون إعادة طلب الـ API
     const handleIncomingNotification = (rawNotif) => {
-      if (!rawNotif) return;
+      if (!rawNotif || !isMounted) return;
       
+      // تنسيق الكائن القادم من الباك إند ليطابق بنية العرض بالفرونت إند
       const formatted = notificationsService.formatNotification(rawNotif);
       
-      // تحديث مصفوفة الإشعارات بإضافة الإشعار الجديد في البداية
       setNotifications((prev) => {
-        // تجنب تكرار الإشعار في حال استلامه بالخطأ مرتين
+        // منع التكرار العشوائي لنفس الـ ID
         if (prev.some((n) => n.id === formatted.id)) return prev;
         return [formatted, ...prev];
       });
 
-      // إظهار تنبيه Toast فخم وجذاب للمستخدم
+      // تنبيه منبثق للمخدم
       toast.info("إشعار جديد", {
         description: formatted.text,
         duration: 6000,
         action: {
           label: "عرض الإشعار",
-          onClick: () => {
-            setIsOpen(true);
-          }
+          onClick: () => setIsOpen(true)
         }
       });
     };
 
-    // تشغيل الاتصال بالـ Hub
-    signalRService.startConnection(handleIncomingNotification)
-      .catch((err) => console.error("Error starting SignalR connection in hook:", err));
+    // 3. تشغيل الـ SignalR والاستماع للـ Hub بشكل آمن
+    const startSignalR = async () => {
+      try {
+        await signalRService.startConnection(handleIncomingNotification);
+      } catch (err) {
+        console.error("Error starting SignalR connection in hook:", err);
+      }
+    };
 
-    // إغلاق الاتصال والتكرار عند إلغاء التركيب
+    startSignalR();
+
+    // تنظيف الـ Connection بشكل ذكي لا يقطع الاتصال المستقر أثناء الـ StrictMode المزدوج
     return () => {
-      clearInterval(pollingInterval);
-      signalRService.stopConnection();
+      isMounted = false;
     };
   }, []);
 
-  // حساب عدد الإشعارات غير المقروءة ديناميكياً
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const handleMouseEnter = () => {
@@ -85,7 +87,6 @@ export function useNotifications() {
     }, 250);
   };
 
-  // العمليات المعتمدة على الـ Service
   const markAllAsSeen = async () => {
     const updated = await notificationsService.markAllAsRead();
     setNotifications(updated);
@@ -111,7 +112,7 @@ export function useNotifications() {
     setIsOpen,
     notifications,
     unreadCount,
-    loading, // تم تمريرها للمكونات لتوضيح حالة التحميل إذا لزم الأمر
+    loading,
     handleMouseEnter,
     handleMouseLeave,
     markAllAsSeen,
