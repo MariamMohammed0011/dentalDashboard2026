@@ -227,6 +227,42 @@ export const adsApi = {
     }
   },
 
+  createAdForUser: async (userId, ad) => {
+    try {
+      let imageBlob = null;
+      try {
+        if (ad.image && ad.image.startsWith('http')) {
+          const imgRes = await fetch(ad.image);
+          imageBlob = await imgRes.blob();
+        }
+      } catch (e) {
+        console.error("Failed to fetch image blob", e);
+      }
+
+      const adFormData = new FormData();
+      adFormData.append('Title', ad.title || "إعلان جديد");
+      adFormData.append('Content', ad.content || "محتوى الإعلان");
+      
+      const targetVal = (ad.type === 'labs' || ad.targetAudience === 1) ? '1' : '0';
+      adFormData.append('Target', targetVal);
+      
+      const oneYearLater = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      adFormData.append('expiresAt', ad.expiresAt || oneYearLater);
+
+      if (imageBlob) {
+        adFormData.append('ImageFiles', imageBlob, 'ad_image.jpg');
+      }
+
+      const response = await axiosInstance.post(`/Advertisement/user/${userId}/advertisement`, adFormData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error in createAdForUser:", error);
+      throw error;
+    }
+  },
+
   createAdClient: async (clientData) => {
     try {
       const formData = new FormData();

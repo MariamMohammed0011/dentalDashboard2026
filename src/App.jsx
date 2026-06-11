@@ -14,6 +14,7 @@ import DoctorsPage from "./features/doctors/pages/DoctorsPage";
 import LabsPage from "./features/dashboard/pages/LabsPage";
 import DeliveryCompaniesPage from "./features/dashboard/pages/DeliveryCompaniesPage";
 import AdsPage from "./features/ads/pages/AdsPage";
+import UsersManagementPage from "./features/ads/pages/UsersManagementPage";
 import ReportsPage from "./features/reports/pages/ReportsPage";
 import InterventionPage from "./features/interventions/pages/InterventionPage";
 import SettingsPage from "./features/dashboard/pages/SettingsPage";
@@ -68,6 +69,7 @@ function App() {
               <Route path="blogs" element={<BlogsPage />} />
               <Route path="delivery-companies" element={<DeliveryCompaniesPage />} />
               <Route path="ads" element={<AdsPage />} />
+              <Route path="ads/users" element={<UsersManagementPage />} />
               <Route path="reports" element={<ReportsPage />} />
               <Route path="intervention-log" element={<InterventionPage />} />
               <Route path="settings" element={<SettingsPage />} />
