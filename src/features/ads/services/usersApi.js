@@ -32,15 +32,37 @@ const mapUserToFrontend = (user) => {
 };
 
 export const usersApi = {
-  getUsers: async () => {
+  getUsers: async (search = "") => {
     try {
+      // 1. جلب جميع عملاء الإعلانات بالبيانات الكاملة
       const response = await axiosInstance.get("/Advertisement/all");
+      const allUsers = response.data || [];
+      const mappedAllUsers = allUsers.map(mapUserToFrontend).filter(Boolean);
 
-      const users = response.data || [];
+      // 2. إذا لم يكن هناك نص بحث، نعيد القائمة الكاملة مباشرة
+      if (!search || search.trim() === "") {
+        return mappedAllUsers;
+      }
 
-      return users
-        .map(mapUserToFrontend)
-        .filter(Boolean);
+      // 3. إذا كان هناك نص بحث، نرسل طلب البحث للباك إند
+      const formData = new FormData();
+      formData.append("query", search);
+
+      const searchResponse = await axiosInstance.post("/Users/search", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const categorizedResults = searchResponse.data?.categorizedResults || {};
+      
+      // استخراج معرّفات المستخدمين من نتائج البحث
+      const searchUserIds = Object.values(categorizedResults).flatMap((list) => 
+        (list || []).map((u) => u.id)
+      );
+
+      // 4. تصفية قائمة عملاء الإعلانات بناءً على معرّفات نتائج البحث المطابقة
+      return mappedAllUsers.filter((u) => searchUserIds.includes(u.id));
     } catch (error) {
       console.error("Error in getUsers:", error);
       throw error;

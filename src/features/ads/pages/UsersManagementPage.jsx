@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Users, UserPlus, Search, Megaphone } from 'lucide-react';
 import { toast } from 'sonner';
@@ -13,16 +13,27 @@ import ConfirmationModal from '../../../components/shared/ConfirmationModal';
 const UsersManagementPage = () => {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [isAddClientOpen, setIsAddClientOpen] = useState(false);
   const [selectedUserForAd, setSelectedUserForAd] = useState(null);
   const [selectedUserForView, setSelectedUserForView] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  // 1. Fetch Users Query
+  // تحديث نص البحث بمهلة زمنية لمنع الإرسال مع كل ضغطة زر
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 400);
+
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  // 1. Fetch Users Query (إرسال الاستعلام للباك إند)
   const { data: users = [], isLoading } = useQuery({
-    queryKey: ['ads-users'],
-    queryFn: usersApi.getUsers,
+    queryKey: ['ads-users', debouncedSearch],
+    queryFn: () => usersApi.getUsers(debouncedSearch),
+    placeholderData: (previousData) => previousData,
   });
 
   // 2. Add Ad Client Mutation
@@ -67,17 +78,8 @@ const UsersManagementPage = () => {
     }
   });
 
-  // Handle client-side search filtering
-  const filteredUsers = users.filter(user => {
-    const q = searchQuery.toLowerCase();
-    return (
-      (user.name && user.name.toLowerCase().includes(q)) ||
-      (user.phone && user.phone.includes(q)) ||
-      (user.email && user.email.toLowerCase().includes(q)) ||
-      (user.namePlace && user.namePlace.toLowerCase().includes(q)) ||
-      (user.cityPlace && user.cityPlace.toLowerCase().includes(q))
-    );
-  });
+  // بما أن البحث يتم الآن عبر السيرفر مباشرة، فإن القائمة المصفاة هي نفس القائمة المعادة من الاستعلام
+  const filteredUsers = users;
 
   // Active ads count calculation
   const totalAdsCount = users.reduce((sum, user) => sum + (user.advertisementsCount || 0), 0);
@@ -108,11 +110,11 @@ const UsersManagementPage = () => {
       </div>
 
       {/* 2 & 3. Unified Stats & Search Control Center */}
-      <div className="bg-white dark:bg-bg-card border border-border-main/50 rounded-[2rem] p-6 shadow-sm flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-6 w-full mt-2">
+      <div className="bg-white dark:bg-bg-card border border-border-main/50 rounded-[2rem] py-4 px-6 shadow-sm flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-8 w-full mt-2">
         
         {/* Right Section: Modern Search Box */}
-        <div className="flex-shrink-0 w-full lg:w-96 flex flex-col gap-1.5">
-          <label className="text-[11px] font-black text-text-muted text-right">البحث السريع عن العملاء</label>
+        <div className="flex-shrink-0 w-full lg:w-80 flex flex-col gap-1.5">
+          <label className="text-[11px] font-black text-text-muted text-right mr-1">البحث السريع عن العملاء</label>
           <div className="relative w-full">
             <input
               type="text"
@@ -126,37 +128,26 @@ const UsersManagementPage = () => {
         </div>
 
         {/* Vertical Separator for Large Screens */}
-        <div className="hidden lg:block w-[1px] h-12 bg-border-main/20" />
+        <div className="hidden lg:block w-[1px] h-10 bg-border-main/20" />
 
         {/* Left Section: Compact Stats Grid */}
-        <div className="flex-grow grid grid-cols-3 gap-2 sm:gap-4 divide-x divide-x-reverse divide-border-main/30">
+        <div className="flex-grow grid grid-cols-2 gap-4 divide-x divide-x-reverse divide-border-main/20">
           
           {/* Stat 1: Total Users */}
-          <div className="flex flex-col items-center justify-center px-2 sm:px-4 text-center">
-            <span className="text-[10px] sm:text-xs font-bold text-text-muted mb-1 block">إجمالي العملاء</span>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              <span className="text-lg sm:text-xl font-black text-text-main">{isLoading ? '...' : users.length}</span>
+          <div className="flex flex-col items-center justify-center px-4 text-center">
+            <span className="text-xs font-bold text-text-muted mb-1.5 block">إجمالي العملاء</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xl sm:text-2xl font-black text-text-main">{isLoading ? '...' : users.length}</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse flex-shrink-0" />
             </div>
           </div>
 
           {/* Stat 2: Active Ads */}
-          <div className="flex flex-col items-center justify-center px-2 sm:px-4 text-center text-right">
-            <span className="text-[10px] sm:text-xs font-bold text-text-muted mb-1 block">الإعلانات النشطة</span>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span className="text-lg sm:text-xl font-black text-text-main">{isLoading ? '...' : totalAdsCount}</span>
-            </div>
-          </div>
-
-          {/* Stat 3: Avg Ads per User */}
-          <div className="flex flex-col items-center justify-center px-2 sm:px-4 text-center">
-            <span className="text-[10px] sm:text-xs font-bold text-text-muted mb-1 block">متوسط الإعلانات</span>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-purple-500" />
-              <span className="text-lg sm:text-xl font-black text-text-main">
-                {isLoading || users.length === 0 ? '0' : (totalAdsCount / users.length).toFixed(1)}
-              </span>
+          <div className="flex flex-col items-center justify-center px-4 text-center">
+            <span className="text-xs font-bold text-text-muted mb-1.5 block">الإعلانات النشطة</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xl sm:text-2xl font-black text-text-main">{isLoading ? '...' : totalAdsCount}</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 flex-shrink-0" />
             </div>
           </div>
 
