@@ -6,6 +6,43 @@ import {
   Loader2, Star, CheckCircle2, XCircle, Award, Sparkles, Shield
 } from 'lucide-react';
 
+const getStatusConfig = (status) => {
+  const cleanStatus = typeof status === 'string' ? status.toLowerCase() : '';
+  if (cleanStatus === 'active') {
+    return {
+      label: 'نشط',
+      color: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30',
+      dot: 'bg-emerald-500 animate-pulse'
+    };
+  }
+  if (cleanStatus === 'pendingadminapproval' || cleanStatus === 'pending') {
+    return {
+      label: 'بانتظار الموافقة',
+      color: 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-900/30',
+      dot: 'bg-amber-500'
+    };
+  }
+  if (cleanStatus === 'suspended') {
+    return {
+      label: 'معلق',
+      color: 'bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-800',
+      dot: 'bg-slate-400'
+    };
+  }
+  if (cleanStatus === 'rejected') {
+    return {
+      label: 'مرفوض',
+      color: 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-900/30',
+      dot: 'bg-rose-500'
+    };
+  }
+  return {
+    label: status || 'غير محدد',
+    color: 'bg-gray-50 dark:bg-gray-800/40 text-gray-500 dark:text-gray-400 border-gray-100 dark:border-gray-800',
+    dot: 'bg-gray-400'
+  };
+};
+
 const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
   if (typeof document === 'undefined') return null;
 
@@ -116,9 +153,20 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                       transition={{ delay: 0.25 }}
                       className="text-white min-w-0"
                     >
-                      <span className="text-[10px] bg-white/25 backdrop-blur-md border border-white/30 text-white font-bold py-1 px-3.5 rounded-full tracking-widest leading-none mb-2 inline-block">
-                        مخبر رقم #{lab.id}
-                      </span>
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <span className="text-[10px] bg-white/25 backdrop-blur-md border border-white/30 text-white font-bold py-1.5 px-3.5 rounded-full tracking-widest leading-none inline-block">
+                          مخبر رقم #{lab.id}
+                        </span>
+                        {lab.owner?.status && (() => {
+                          const statusCfg = getStatusConfig(lab.owner.status);
+                          return (
+                            <span className="text-[10px] bg-white/25 backdrop-blur-md border border-white/30 text-white font-bold py-1.5 px-3.5 rounded-full tracking-widest leading-none inline-flex items-center gap-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                              الحالة: {statusCfg.label}
+                            </span>
+                          );
+                        })()}
+                      </div>
                       <h2 className="text-2xl sm:text-3xl font-black tracking-tight leading-none truncate mb-1">
                         {lab.owner?.namePlace || lab.owner?.name || 'مخبر تعويضات'}
                       </h2>
@@ -162,6 +210,25 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                           </span>
                         </div>
                       </div>
+
+                      {/* Account Status Tag */}
+                      {lab.owner?.status && (() => {
+                        const statusCfg = getStatusConfig(lab.owner.status);
+                        return (
+                          <div className="flex items-center gap-4">
+                            <div className="p-3 bg-gray-50 dark:bg-slate-800 rounded-2xl text-gray-400 shrink-0">
+                              <Shield size={20} />
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-[10px] text-gray-400 font-black mb-1">حالة الحساب</span>
+                              <span className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full border ${statusCfg.color}`}>
+                                <span className={`w-2 h-2 rounded-full ${statusCfg.dot}`} />
+                                {statusCfg.label}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })()}
 
                       {/* Average Rating */}
                       <div className="flex items-center gap-4">
