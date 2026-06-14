@@ -40,9 +40,20 @@ export const useAdsPageLogic = () => {
 
   // Approve advertisement
   const handleApproveAd = (ad) => {
+    const currentPrice = ad.raw?.price || ad.price || 0;
+    const inputPrice = prompt("يرجى إدخال/تأكيد سعر الحملة الإعلانية (ل.س):", currentPrice);
+    if (inputPrice === null) return; // cancel click
+
+    const parsedPrice = parseFloat(inputPrice) || 0;
+
     updateAd({ 
       id: ad.id, 
-      updates: { approvalStatus: 'approved', status: 'active', userId: ad.userId } 
+      updates: { 
+        approvalStatus: 'approved', 
+        status: 'active', 
+        userId: ad.userId,
+        price: parsedPrice
+      } 
     });
     toast.success('تمت الموافقة على الإعلان وتفعيله بنجاح');
   };

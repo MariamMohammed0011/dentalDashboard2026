@@ -1,7 +1,9 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Phone, Building2, MapPin, Shield, Calendar, Megaphone, CheckCircle2, Clock } from 'lucide-react';
+import { X, Phone, Building2, MapPin, Shield, Calendar, Megaphone, CheckCircle2, Clock, Loader2 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { adsApi } from '../../services/adsApi';
 
 const roleTranslations = {
   ADSClient: 'عميل إعلانات',
@@ -12,6 +14,12 @@ const roleTranslations = {
 
 const ViewUserModal = ({ isOpen, onClose, user }) => {
   if (typeof document === 'undefined') return null;
+
+  const { data: adsData, isLoading: isLoadingAds } = useQuery({
+    queryKey: ['user-valid-ads', user?.id],
+    queryFn: () => adsApi.getUserValidAds(user.id),
+    enabled: isOpen && !!user?.id,
+  });
 
   const formatDate = (dateString) => {
     if (!dateString) return '-';
@@ -147,6 +155,72 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
                     </span>
                   </div>
                 </div>
+              </div>
+
+              {/* Active Advertisements Section */}
+              <div className="flex flex-col gap-3 mt-2">
+                <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-1">
+                  <Megaphone size={14} className="text-primary animate-pulse" />
+                  الإعلانات الفعالة للمستخدم ({adsData?.totalCount || 0})
+                </h4>
+                
+                {isLoadingAds ? (
+                  <div className="flex items-center justify-center p-8 bg-bg-main/20 rounded-2xl border border-border-main/30 gap-2">
+                    <Loader2 size={18} className="text-primary animate-spin" />
+                    <span className="text-xs text-text-muted font-bold">جاري تحميل الإعلانات...</span>
+                  </div>
+                ) : adsData?.advertisements?.length > 0 ? (
+                  <div className="flex flex-col gap-4">
+                    {adsData.advertisements.map((ad) => (
+                      <div 
+                        key={ad.id} 
+                        className="bg-bg-card border border-border-main/30 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+                      >
+                        {/* Ad Image */}
+                        {ad.imageUrl && (
+                          <div className="relative h-36 w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
+                            <img 
+                              src={ad.imageUrl} 
+                              alt={ad.title} 
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute top-2.5 right-2.5 bg-black/60 backdrop-blur-md text-white text-[10px] font-black px-2 py-1 rounded-lg">
+                              ID: #{ad.id}
+                            </div>
+                            {ad.price && (
+                              <div className="absolute bottom-2.5 left-2.5 bg-emerald-500 text-white text-[10px] font-black px-2 py-1 rounded-lg">
+                                سعر الحملة: {ad.price.toLocaleString()} ر.س
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        
+                        {/* Ad Content */}
+                        <div className="p-4 flex flex-col gap-2">
+                          <h5 className="font-bold text-text-main text-sm">{ad.title || "إعلان بدون عنوان"}</h5>
+                          <p className="text-xs text-text-muted font-medium leading-relaxed">{ad.content || "لا يوجد محتوى"}</p>
+                          
+                          <div className="h-px bg-border-main/20 my-1" />
+                          
+                          <div className="flex justify-between items-center text-[10px] text-text-muted font-bold gap-2 flex-wrap">
+                            <span className="flex items-center gap-1">
+                              <Calendar size={10} />
+                              تاريخ الإنشاء: {formatDate(ad.createdAt)}
+                            </span>
+                            <span className="flex items-center gap-1 text-rose-500 bg-rose-500/10 px-2 py-0.5 rounded-md">
+                              <Clock size={10} />
+                              ينتهي في: {formatDate(ad.expiresAt)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-6 bg-bg-main/20 rounded-2xl border border-border-main/30 text-xs text-text-muted font-bold">
+                    {adsData?.message || "لا يوجد إعلانات فعالة حالياً لهذا المستخدم."}
+                  </div>
+                )}
               </div>
 
             </div>

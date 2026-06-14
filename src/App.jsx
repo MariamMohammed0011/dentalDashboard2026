@@ -11,7 +11,7 @@ import DashboardHome from "./features/dashboard/DashboardHome";
 import OrdersPage from "./features/orders/pages/OrdersPage";
 import MembershipRequestsPage from "./features/membership/pages/MembershipRequestsPage";
 import DoctorsPage from "./features/doctors/pages/DoctorsPage";
-import LabsPage from "./features/dashboard/pages/LabsPage";
+import LabsPage from "./features/labs/pages/LabsPage";
 import DeliveryCompaniesPage from "./features/dashboard/pages/DeliveryCompaniesPage";
 import AdsPage from "./features/ads/pages/AdsPage";
 import UsersManagementPage from "./features/ads/pages/UsersManagementPage";

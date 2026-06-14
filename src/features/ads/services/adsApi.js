@@ -132,9 +132,19 @@ export const adsApi = {
     }
   },
 
-  approveAd: async (userId, adId) => {
+  approveAd: async (userId, adId, price = 0) => {
     try {
-      const response = await axiosInstance.put(`/Advertisement/admin/accept-and-publish/user/${userId}/advertisement/${adId}`);
+      const formData = new FormData();
+      formData.append('price', String(price));
+      formData.append('Price', String(price));
+
+      const response = await axiosInstance.patch(
+        `/Advertisement/admin/accept-and-publish/user/${userId}/advertisement/${adId}`,
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        }
+      );
       return response.data;
     } catch (error) {
       console.error("Error in approveAd:", error);
@@ -147,7 +157,7 @@ export const adsApi = {
       // If we are performing an approval, route it directly to approveAd
       if (updates.approvalStatus === 'approved') {
         const userId = updates.userId || 2;
-        return await adsApi.approveAd(userId, id);
+        return await adsApi.approveAd(userId, id, updates.price || 0);
       }
 
       // Format update values into FormData since update endpoint uses form-data
@@ -158,7 +168,10 @@ export const adsApi = {
       const targetVal = updates.type === 'labs' ? '1' : updates.type === 'both' ? '2' : '0';
       formData.append('Target', targetVal);
       
-      if (updates.expiresAt) formData.append('ExpiresAt', updates.expiresAt);
+      if (updates.expiresAt) {
+        formData.append('ExpiresAt', updates.expiresAt);
+        formData.append('expiresAt', updates.expiresAt);
+      }
       
       // Standard backend PUT admin/update/{id}
       const response = await axiosInstance.put(`/Advertisement/admin/update/${id}`, formData, {
@@ -227,6 +240,7 @@ export const adsApi = {
       adFormData.append('Target', targetVal);
       
       const oneYearLater = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      adFormData.append('ExpiresAt', ad.expiresAt || oneYearLater);
       adFormData.append('expiresAt', ad.expiresAt || oneYearLater);
 
       if (ad.image instanceof File) {
@@ -265,6 +279,7 @@ export const adsApi = {
       adFormData.append('Target', targetVal);
       
       const oneYearLater = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      adFormData.append('ExpiresAt', ad.expiresAt || oneYearLater);
       adFormData.append('expiresAt', ad.expiresAt || oneYearLater);
 
       if (ad.image instanceof File) {
@@ -299,6 +314,35 @@ export const adsApi = {
       return response.data;
     } catch (error) {
       console.error("Error in createAdClient:", error);
+      throw error;
+    }
+  },
+
+  getUserValidAds: async (userId) => {
+    try {
+      const response = await axiosInstance.get(`/Advertisement/user/${userId}/valid-advertisements`);
+      const data = response.data || { totalCount: 0, advertisements: [] };
+      
+      // Normalize image URLs
+      const ads = (data.advertisements || []).map(ad => {
+        let imgUrl = ad.imageUrl;
+        if (imgUrl && !imgUrl.startsWith('http') && !imgUrl.startsWith('data:')) {
+          const baseUrlClean = axiosInstance.defaults.baseURL.replace('/api', '');
+          imgUrl = `${baseUrlClean}/${imgUrl.replace(/^\//, '')}`;
+        }
+        return {
+          ...ad,
+          imageUrl: imgUrl || 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80'
+        };
+      });
+
+      return {
+        totalCount: data.totalCount ?? ads.length,
+        message: data.message || null,
+        advertisements: ads
+      };
+    } catch (error) {
+      console.error("Error in getUserValidAds:", error);
       throw error;
     }
   }
