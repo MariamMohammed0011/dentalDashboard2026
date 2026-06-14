@@ -77,8 +77,9 @@ const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
             className="bg-gray-50/50 border border-gray-200/80 rounded-2xl px-4 py-2.5 text-gray-700 font-bold text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full cursor-pointer appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1rem] bg-[position:left_1rem_center] bg-no-repeat pl-10"
           >
             <option value="all">كل الجماهير</option>
-            <option value="dentists">أطباء الأسنان</option>
-            <option value="labs">المختبرات</option>
+            <option value="dentists">أطباء الأسنان فقط</option>
+            <option value="labs">مخابر الأسنان فقط</option>
+            <option value="both">الأطباء والمخابر معاً</option>
           </select>
         </div>
 

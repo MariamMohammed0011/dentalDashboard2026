@@ -30,6 +30,9 @@ const ViewAdModal = ({ isOpen, onClose, selectedAd, handleApproveAd, handleRejec
                 src={selectedAd.image} 
                 alt="Advertisement Banner" 
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.src = 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80';
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent flex items-end p-6">
                 <div className="flex items-center gap-3 text-white">
@@ -37,13 +40,18 @@ const ViewAdModal = ({ isOpen, onClose, selectedAd, handleApproveAd, handleRejec
                     src={selectedAd.storeAvatar} 
                     alt={selectedAd.storeName} 
                     className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-white shadow-xl flex-shrink-0"
+                    onError={(e) => {
+                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedAd.storeName || 'Ad')}&background=367AFF&color=fff`;
+                    }}
                   />
                   <div className="text-right">
                     <h3 className="text-base sm:text-xl font-black">{selectedAd.storeName}</h3>
-                    <p className="text-xs text-gray-200 flex items-center gap-1 mt-0.5">
-                      <Phone size={12} />
-                      <span dir="ltr">{selectedAd.storePhone}</span>
-                    </p>
+                    {selectedAd.storePhone && (
+                      <p className="text-xs text-gray-200 flex items-center gap-1 mt-0.5">
+                        <Phone size={12} />
+                        <span dir="ltr">{selectedAd.storePhone}</span>
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -51,17 +59,31 @@ const ViewAdModal = ({ isOpen, onClose, selectedAd, handleApproveAd, handleRejec
 
             {/* Details Body */}
             <div className="p-5 sm:p-7 flex flex-col gap-5 text-right overflow-y-auto flex-grow custom-scrollbar">
+
+              {/* Ad Title & Content */}
+              <div className="flex flex-col gap-2">
+                <h2 className="text-lg sm:text-xl font-black text-gray-800">{selectedAd.title}</h2>
+                {selectedAd.content && (
+                  <p className="text-sm text-gray-500 leading-relaxed">{selectedAd.content}</p>
+                )}
+              </div>
               
               {/* Meta details grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-3xl border border-gray-100">
                 <div className="flex flex-col gap-1">
-                  <span className="text-xs text-gray-400 font-bold">رقم الإعلان المعرف</span>
+                  <span className="text-xs text-gray-400 font-bold">رقم الإعلان</span>
                   <span className="text-sm font-extrabold text-gray-700">#{selectedAd.id}</span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-xs text-gray-400 font-bold">الجمهور المستهدف</span>
                   <span className="text-sm font-extrabold text-[#367AFF]">
-                    {selectedAd.type === 'labs' || selectedAd.type === 'lab' ? 'مختبرات الأسنان' : 'أطباء الأسنان'}
+                    {selectedAd.type === 'labs'
+                      ? 'مخابر الأسنان فقط'
+                      : selectedAd.type === 'both'
+                      ? 'الأطباء والمخابر معاً'
+                      : selectedAd.type === 'dentists'
+                      ? 'أطباء الأسنان فقط'
+                      : 'غير محدد'}
                   </span>
                 </div>
                 <div className="flex flex-col gap-1">
@@ -75,14 +97,50 @@ const ViewAdModal = ({ isOpen, onClose, selectedAd, handleApproveAd, handleRejec
                   </span>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <span className="text-xs text-gray-400 font-bold">حالة المراجعة والتأكيد</span>
+                  <span className="text-xs text-gray-400 font-bold">حالة المراجعة</span>
                   <div>
                     {selectedAd.approvalStatus === 'pending' && <span className="text-amber-500 font-bold text-sm">قيد المراجعة</span>}
                     {selectedAd.approvalStatus === 'approved' && <span className="text-blue-600 font-bold text-sm">مقبول وموافق عليه</span>}
                     {selectedAd.approvalStatus === 'rejected' && <span className="text-rose-500 font-bold text-sm">مرفوض</span>}
                   </div>
                 </div>
+                {selectedAd.expiresAt && (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs text-gray-400 font-bold">تاريخ الانتهاء</span>
+                    <span className="text-sm font-extrabold text-gray-700">{selectedAd.expiresAt}</span>
+                  </div>
+                )}
+                {selectedAd.raw?.createdAt && (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs text-gray-400 font-bold">تاريخ الإنشاء</span>
+                    <span className="text-sm font-extrabold text-gray-700">
+                      {new Date(selectedAd.raw.createdAt).toLocaleDateString('ar-SY', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    </span>
+                  </div>
+                )}
               </div>
+
+              {/* Additional images if more than one */}
+              {selectedAd.raw?.images && selectedAd.raw.images.length > 1 && (
+                <div className="flex flex-col gap-2">
+                  <span className="text-xs text-gray-400 font-bold">صور الإعلان</span>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedAd.raw.images.map((img, idx) => {
+                      const baseUrl = 'https://localhost:44334';
+                      const fullUrl = img.startsWith('http') ? img : `${baseUrl}/${img.replace(/^\//, '')}`;
+                      return (
+                        <img
+                          key={idx}
+                          src={fullUrl}
+                          alt={`صورة ${idx + 1}`}
+                          className="w-20 h-20 rounded-2xl object-cover border border-gray-100 shadow-sm"
+                          onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Actions Footer inside view modal */}

@@ -4,36 +4,51 @@ import axiosInstance from "../../../api/axios";
 const mapAdToFrontend = (ad) => {
   if (!ad) return null;
 
-  // targetAudience can be "Labs", "Dentists", or numeric (1 for Labs, 0 for Dentists)
-  const isLab = ad.targetAudience === 1 || 
-                ad.target === 1 || 
-                (ad.targetAudience && String(ad.targetAudience).toLowerCase().includes('lab')) ||
-                (ad.target && String(ad.target).toLowerCase().includes('lab'));
-  
-  const type = isLab ? 'labs' : 'dentists';
-
-  // Normalize image URL
-  let imageUrl = ad.image || ad.imageUrl || ad.imagePath;
-  if (!imageUrl && ad.attachments && ad.attachments.length > 0) {
-    imageUrl = ad.attachments[0].path;
+  // --- Target Audience ---
+  // The API returns a numeric field: 0 = Dentists, 1 = Labs, 2 = Both
+  // It might come as: targetAudience, target, or be embedded in the object
+  let type = 'dentists';
+  const targetRaw = ad.targetAudience ?? ad.target ?? ad.targetAudienceId ?? ad.audienceType;
+  if (targetRaw === 1 || targetRaw === '1' || (typeof targetRaw === 'string' && targetRaw.toLowerCase().includes('lab'))) {
+    type = 'labs';
+  } else if (targetRaw === 2 || targetRaw === '2' || (typeof targetRaw === 'string' && targetRaw.toLowerCase().includes('both'))) {
+    type = 'both';
   }
-  
+
+  // --- Image URL ---
+  // The API returns "images": ["uploads/advertisements/.../file.png"] — an array
+  let imageUrl = null;
+  if (ad.images && ad.images.length > 0) {
+    imageUrl = ad.images[0]; // Take the first image from the array
+  } else {
+    // Fallbacks for other possible field names
+    imageUrl = ad.image || ad.imageUrl || ad.imagePath || null;
+    if (!imageUrl && ad.attachments && ad.attachments.length > 0) {
+      imageUrl = ad.attachments[0].path || ad.attachments[0];
+    }
+  }
+
+  // Build absolute URL if relative path
   if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('data:')) {
-    // Relative path, prepend base URL
     const baseUrlClean = axiosInstance.defaults.baseURL.replace('/api', '');
     imageUrl = `${baseUrlClean}/${imageUrl.replace(/^\//, '')}`;
   }
 
+  // Final fallback placeholder
   if (!imageUrl) {
     imageUrl = 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80';
   }
 
-  // Map user/client details
-  const ownerName = ad.userName || ad.user?.name || ad.user?.userName || ad.storeName || "مستخدم غير معروف";
+  // --- Owner / Store Details ---
+  // Admin/all response does not include full user object; use userId as fallback
+  const userId = ad.userId || ad.user?.id || ad.user?.userId;
+  const ownerName = ad.userName || ad.user?.name || ad.user?.userName || ad.storeName
+    || (userId ? `مستخدم #${userId}` : "مستخدم غير معروف");
   const ownerPhone = ad.userPhone || ad.user?.phoneNumber || ad.user?.phone || ad.storePhone || "";
-  const ownerAvatar = ad.userAvatar || ad.user?.avatar || ad.storeAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(ownerName)}&background=random`;
+  const ownerAvatar = ad.userAvatar || ad.user?.avatar || ad.storeAvatar
+    || `https://ui-avatars.com/api/?name=${encodeURIComponent(ownerName)}&background=367AFF&color=fff`;
 
-  // Normalize approval status
+  // --- Approval Status ---
   let approvalStatus = 'pending';
   if (ad.isApproved === true || ad.approvalStatus === 'approved' || (ad.status && String(ad.status).toLowerCase() === 'approved')) {
     approvalStatus = 'approved';
@@ -41,25 +56,26 @@ const mapAdToFrontend = (ad) => {
     approvalStatus = 'rejected';
   }
 
-  // Normalize active status
+  // --- Active Status ---
   const isActive = ad.isActive !== undefined ? ad.isActive : (ad.status === 'active');
 
   return {
     id: ad.id || ad.advertisementId,
-    userId: ad.userId || ad.user?.id || ad.user?.userId || 2, // Used for accept-and-publish path
+    userId: ad.userId || ad.user?.id || ad.user?.userId || 2,
     title: ad.title || "",
     content: ad.content || "",
-    type: type, // 'labs' or 'dentists'
+    type: type,
     storeName: ownerName,
     storePhone: ownerPhone,
     storeAvatar: ownerAvatar,
-    approvalStatus: approvalStatus, // 'pending', 'approved', 'rejected'
+    approvalStatus: approvalStatus,
     status: isActive ? 'active' : 'inactive',
     image: imageUrl,
     expiresAt: ad.expiresAt ? ad.expiresAt.split('T')[0] : "",
     raw: ad
   };
 };
+
 
 export const adsApi = {
   getAds: async ({ page = 1, limit = 5, filters = {} } = {}) => {
@@ -139,7 +155,7 @@ export const adsApi = {
       if (updates.title) formData.append('Title', updates.title);
       if (updates.content) formData.append('Content', updates.content);
       
-      const targetVal = (updates.type === 'labs' || updates.type === 'labs' || updates.targetAudience === 1) ? '1' : '0';
+      const targetVal = updates.type === 'labs' ? '1' : updates.type === 'both' ? '2' : '0';
       formData.append('Target', targetVal);
       
       if (updates.expiresAt) formData.append('ExpiresAt', updates.expiresAt);
@@ -207,13 +223,15 @@ export const adsApi = {
       adFormData.append('Title', ad.storeName);
       adFormData.append('Content', ad.type === 'product' ? 'إعلان عن منتج' : 'إعلان عن متجر');
       
-      const targetVal = (ad.type === 'labs' || ad.type === 'labs' || ad.targetAudience === 1) ? '1' : '0';
+      const targetVal = ad.type === 'labs' ? '1' : ad.type === 'both' ? '2' : '0';
       adFormData.append('Target', targetVal);
       
       const oneYearLater = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
       adFormData.append('expiresAt', ad.expiresAt || oneYearLater);
 
-      if (imageBlob) {
+      if (ad.image instanceof File) {
+        adFormData.append('ImageFiles', ad.image);
+      } else if (imageBlob) {
         adFormData.append('ImageFiles', imageBlob, 'ad_image.jpg');
       }
 
@@ -243,13 +261,15 @@ export const adsApi = {
       adFormData.append('Title', ad.title || "إعلان جديد");
       adFormData.append('Content', ad.content || "محتوى الإعلان");
       
-      const targetVal = (ad.type === 'labs' || ad.targetAudience === 1) ? '1' : '0';
+      const targetVal = ad.type === 'labs' ? '1' : ad.type === 'both' ? '2' : '0';
       adFormData.append('Target', targetVal);
       
       const oneYearLater = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
       adFormData.append('expiresAt', ad.expiresAt || oneYearLater);
 
-      if (imageBlob) {
+      if (ad.image instanceof File) {
+        adFormData.append('ImageFiles', ad.image);
+      } else if (imageBlob) {
         adFormData.append('ImageFiles', imageBlob, 'ad_image.jpg');
       }
 

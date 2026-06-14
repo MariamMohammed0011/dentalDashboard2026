@@ -12,13 +12,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const PRESET_IMAGES = [
-  { name: 'عيادة حديثة', url: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=800&q=80' },
-  { name: 'كرسي أسنان متطور', url: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80' },
-  { name: 'أدوات ومعدات طبية', url: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?auto=format&fit=crop&w=800&q=80' },
-  { name: 'مخبر تعويضات سنية', url: 'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=800&q=80' },
-  { name: 'عناية بالأسنان', url: 'https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=800&q=80' }
-];
+// Preset images removed to support device uploads
 
 const AddAdForUserModal = ({ isOpen, onClose, onCreateAd, user, isSubmitting }) => {
   const [form, setForm] = useState({
@@ -26,13 +20,17 @@ const AddAdForUserModal = ({ isOpen, onClose, onCreateAd, user, isSubmitting }) 
     content: '',
     type: 'dentists',
     expiresAt: '',
-    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80'
+    image: null
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.title.trim()) {
       toast.error('يرجى كتابة عنوان الإعلان');
+      return;
+    }
+    if (!form.image) {
+      toast.error('يرجى اختيار صورة الإعلان من الجهاز');
       return;
     }
 
@@ -43,7 +41,7 @@ const AddAdForUserModal = ({ isOpen, onClose, onCreateAd, user, isSubmitting }) 
         content: '',
         type: 'dentists',
         expiresAt: '',
-        image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80'
+        image: null
       });
     } catch (err) {
       console.error(err);
@@ -134,8 +132,9 @@ const AddAdForUserModal = ({ isOpen, onClose, onCreateAd, user, isSubmitting }) 
                         className="bg-gray-50 border border-gray-200/80 rounded-2xl pr-10 pl-4 py-2.5 text-gray-700 font-bold text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full cursor-pointer appearance-none text-right"
                         disabled={isSubmitting}
                       >
-                        <option value="dentists">أطباء الأسنان</option>
-                        <option value="labs">المختبرات</option>
+                        <option value="dentists">أطباء الأسنان فقط</option>
+                        <option value="labs">مخابر الأسنان فقط</option>
+                        <option value="both">الأطباء والمخابر معاً</option>
                       </select>
                       <Layers className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
                     </div>
@@ -156,48 +155,41 @@ const AddAdForUserModal = ({ isOpen, onClose, onCreateAd, user, isSubmitting }) 
                   </div>
                 </div>
 
-                {/* Image Selection presets */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-gray-600 font-bold text-xs sm:text-sm mr-1">اختر صورة توضيحية للإعلان</label>
-                  <div className="grid grid-cols-5 gap-2">
-                    {PRESET_IMAGES.map((img, i) => (
-                      <button
-                        key={i}
-                        type="button"
-                        onClick={() => setForm({ ...form, image: img.url })}
-                        className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
-                          form.image === img.url 
-                            ? 'border-[#367AFF] scale-95 shadow-md shadow-blue-500/10' 
-                            : 'border-transparent hover:scale-105'
-                        }`}
-                        title={img.name}
-                        disabled={isSubmitting}
-                      >
-                        <img src={img.url} alt={img.name} className="w-full h-full object-cover" />
-                        {form.image === img.url && (
-                          <div className="absolute inset-0 bg-[#367AFF]/25 flex items-center justify-center text-white">
-                            <CheckCircle size={16} strokeWidth={3} />
-                          </div>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Custom Image URL input */}
+                {/* Image Selection - File Input */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-gray-600 font-bold text-xs sm:text-sm mr-1">أو الصق رابط صورة مخصص</label>
-                  <div className="relative">
+                  <label className="text-gray-600 font-bold text-xs sm:text-sm mr-1">صورة الإعلان <span className="text-red-500">*</span></label>
+                  <div className="flex flex-col items-center gap-3 bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-5 hover:border-[#367AFF] transition-colors relative cursor-pointer group">
                     <input
-                      type="url"
-                      placeholder="https://example.com/ad-image.jpg"
-                      value={form.image}
-                      onChange={(e) => setForm({ ...form, image: e.target.value })}
-                      className="bg-gray-50 border border-gray-200/80 rounded-2xl pr-10 pl-4 py-2.5 text-gray-700 font-medium text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full pl-10"
-                      dir="ltr"
+                      type="file"
+                      accept="image/*"
+                      required
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          setForm({ ...form, image: file });
+                        }
+                      }}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
                       disabled={isSubmitting}
                     />
-                    <ImageIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                    {form.image ? (
+                      <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-gray-100">
+                        <img 
+                          src={URL.createObjectURL(form.image)} 
+                          alt="Ad Preview" 
+                          className="w-full h-full object-cover" 
+                        />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity font-bold text-sm">
+                          تغيير الصورة
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center gap-2 text-gray-400">
+                        <ImageIcon size={36} className="text-gray-300 group-hover:text-[#367AFF] transition-colors" />
+                        <span className="text-xs font-semibold group-hover:text-[#367AFF] transition-colors">اضغط هنا لاختيار صورة من جهازك</span>
+                        <span className="text-[10px] text-gray-400">تدعم صيغ PNG, JPG, JPEG</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 

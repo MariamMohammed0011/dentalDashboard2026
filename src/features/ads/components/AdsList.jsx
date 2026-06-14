@@ -9,7 +9,8 @@ import {
   Trash2, 
   Eye, 
   ChevronRight, 
-  ChevronLeft 
+  ChevronLeft,
+  Users
 } from 'lucide-react';
 
 const AdsList = ({ 
@@ -65,15 +66,20 @@ const AdsList = ({
                   
                   {/* الجمهور المستهدف */}
                   <td className="py-5 px-4 border-b border-gray-50">
-                    {ad.type === 'labs' || ad.type === 'lab' ? (
+                    {ad.type === 'labs' ? (
                       <div className="inline-flex items-center gap-1.5 text-amber-600 bg-amber-50 border border-amber-100/50 px-3.5 py-1 rounded-full text-xs font-bold">
                         <Building2 size={14} className="text-amber-500" />
-                        <span>المختبرات</span>
+                        <span>مخابر الأسنان فقط</span>
+                      </div>
+                    ) : ad.type === 'both' ? (
+                      <div className="inline-flex items-center gap-1.5 text-indigo-600 bg-indigo-50 border border-indigo-100/50 px-3.5 py-1 rounded-full text-xs font-bold">
+                        <Users size={14} className="text-indigo-500" />
+                        <span>الأطباء والمخابر معاً</span>
                       </div>
                     ) : (
                       <div className="inline-flex items-center gap-1.5 text-sky-600 bg-sky-50 border border-sky-100/50 px-3.5 py-1 rounded-full text-xs font-bold">
                         <CheckCircle2 size={14} className="text-sky-500" />
-                        <span>أطباء الأسنان</span>
+                        <span>أطباء الأسنان فقط</span>
                       </div>
                     )}
                   </td>
@@ -263,15 +269,20 @@ const AdsList = ({
                     <span className="text-xs text-gray-400 font-mono mt-0.5" dir="ltr">{ad.storePhone}</span>
                   </div>
                   <div>
-                    {ad.type === 'labs' || ad.type === 'lab' ? (
+                    {ad.type === 'labs' ? (
                       <div className="inline-flex items-center gap-1 text-amber-600 bg-amber-50 border border-amber-100/50 px-3 py-1 rounded-full text-xs font-bold">
                         <Building2 size={12} />
-                        <span>مختبرات</span>
+                        <span>مخابر فقط</span>
+                      </div>
+                    ) : ad.type === 'both' ? (
+                      <div className="inline-flex items-center gap-1 text-indigo-600 bg-indigo-50 border border-indigo-100/50 px-3 py-1 rounded-full text-xs font-bold">
+                        <Users size={12} />
+                        <span>الجميع</span>
                       </div>
                     ) : (
                       <div className="inline-flex items-center gap-1 text-sky-600 bg-sky-50 border border-sky-100/50 px-3 py-1 rounded-full text-xs font-bold">
                         <CheckCircle2 size={12} />
-                        <span>أطباء أسنان</span>
+                        <span>أطباء فقط</span>
                       </div>
                     )}
                   </div>

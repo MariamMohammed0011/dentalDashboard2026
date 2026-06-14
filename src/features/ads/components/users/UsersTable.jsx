@@ -4,13 +4,15 @@ import {
   MapPin, 
   Plus, 
   ArrowUpRight, 
-  ArrowDownLeft 
+  ArrowDownLeft,
+  Eye
 } from 'lucide-react';
 
 const UsersTable = ({ 
   users, 
   isLoading, 
-  onAddAdClick 
+  onAddAdClick,
+  onViewClick
 }) => {
   return (
     <div className="bg-bg-card rounded-2xl border border-border-main/40 shadow-sm overflow-hidden flex-grow flex flex-col">
@@ -78,14 +80,9 @@ const UsersTable = ({
 
                     {/* بيانات التواصل (Contact Info) */}
                     <td className="py-4.5 px-6 text-right">
-                      <div className="flex flex-col justify-start">
-                        <span className="font-bold text-text-main text-sm font-mono" dir="ltr">
-                          {user.phone || "-"}
-                        </span>
-                        <span className="text-xs text-text-muted font-medium mt-0.5">
-                          {user.email || "لا يوجد بريد إلكتروني"}
-                        </span>
-                      </div>
+                      <span className="font-bold text-text-main text-sm font-mono" dir="ltr">
+                        {user.phone || "-"}
+                      </span>
                     </td>
 
                     {/* الإعلانات النشطة (Active Ads Status) */}
@@ -110,7 +107,17 @@ const UsersTable = ({
 
                     {/* العمليات (Actions) */}
                     <td className="py-4.5 px-6 text-center">
-                      <div className="flex items-center justify-center">
+                      <div className="flex items-center justify-center gap-2">
+                        {/* View Details Button (Eye icon) */}
+                        <button
+                          onClick={() => onViewClick(user)}
+                          className="w-9 h-9 flex items-center justify-center rounded-xl bg-bg-main/40 border border-border-main/40 text-text-muted hover:text-primary hover:bg-primary/10 hover:border-primary/20 transition-all duration-300 cursor-pointer"
+                          title="عرض تفاصيل العميل"
+                        >
+                          <Eye size={16} />
+                        </button>
+
+                        {/* Add Ad Button */}
                         <button
                           onClick={() => onAddAdClick(user)}
                           className="bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-white px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all duration-300 hover:scale-[1.02] active:scale-95 whitespace-nowrap justify-center cursor-pointer shadow-sm"
@@ -155,13 +162,25 @@ const UsersTable = ({
                   <div className="flex justify-between items-center pb-3 border-b border-border-main/30">
                     <span className="text-xs font-bold text-text-muted bg-bg-main/50 px-3 py-1 rounded-xl">ID: #{user.id}</span>
                     
-                    <button 
-                      onClick={() => onAddAdClick(user)}
-                      className="bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-white px-3 py-1.5 rounded-xl font-bold text-xs transition-all duration-300 flex items-center gap-1 cursor-pointer"
-                    >
-                      <Plus size={12} strokeWidth={2.5} />
-                      إضافة إعلان
-                    </button>
+                    <div className="flex items-center gap-1.5">
+                      {/* View Details Button */}
+                      <button 
+                        onClick={() => onViewClick(user)}
+                        className="w-8 h-8 flex items-center justify-center rounded-xl bg-bg-main/40 border border-border-main/40 text-text-muted hover:text-primary hover:bg-primary/10 hover:border-primary/20 transition-all cursor-pointer"
+                        title="عرض"
+                      >
+                        <Eye size={14} />
+                      </button>
+
+                      {/* Add Ad Button */}
+                      <button 
+                        onClick={() => onAddAdClick(user)}
+                        className="bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-white px-3 py-1.5 rounded-xl font-bold text-xs transition-all duration-300 flex items-center gap-1 cursor-pointer"
+                      >
+                        <Plus size={12} strokeWidth={2.5} />
+                        إضافة إعلان
+                      </button>
+                    </div>
                   </div>
 
                   {/* Body Content */}

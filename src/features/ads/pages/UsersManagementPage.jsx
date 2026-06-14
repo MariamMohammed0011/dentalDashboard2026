@@ -7,12 +7,14 @@ import { adsApi } from '../services/adsApi';
 import UsersTable from '../components/users/UsersTable';
 import AddAdClientModal from '../components/AddAdClientModal';
 import AddAdForUserModal from '../components/AddAdForUserModal';
+import ViewUserModal from '../components/users/ViewUserModal';
 
 const UsersManagementPage = () => {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddClientOpen, setIsAddClientOpen] = useState(false);
   const [selectedUserForAd, setSelectedUserForAd] = useState(null);
+  const [selectedUserForView, setSelectedUserForView] = useState(null);
 
   // 1. Fetch Users Query
   const { data: users = [], isLoading } = useQuery({
@@ -140,6 +142,7 @@ const UsersManagementPage = () => {
         users={filteredUsers}
         isLoading={isLoading}
         onAddAdClick={(user) => setSelectedUserForAd(user)}
+        onViewClick={(user) => setSelectedUserForView(user)}
       />
 
       {/* ====================================================== */}
@@ -161,6 +164,13 @@ const UsersManagementPage = () => {
         user={selectedUserForAd}
         isSubmitting={createAdMutation.isPending}
         onCreateAd={(adData) => createAdMutation.mutateAsync({ userId: selectedUserForAd.id, adData })}
+      />
+
+      {/* C. View User Details Modal */}
+      <ViewUserModal
+        isOpen={!!selectedUserForView}
+        onClose={() => setSelectedUserForView(null)}
+        user={selectedUserForView}
       />
 
     </div>
