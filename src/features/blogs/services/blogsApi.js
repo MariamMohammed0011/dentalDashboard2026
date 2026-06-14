@@ -4,8 +4,37 @@ export const blogsApi = {
   // جلب جميع منشورات المدونات المعلقة مع الفلاتر والبحث
   getBlogs: async ({ search = "", role = "all", page = 1, limit = 6 } = {}) => {
     try {
-      const response = await axiosInstance.get("/DoctorBlog/pending-posts");
-      const rawPosts = response.data || [];
+      let rawPosts = [];
+
+      // إذا كان هناك نص بحث، نستخدم API البحث الخاص بالباك إند
+      if (search.trim() !== "") {
+        const formData = new FormData();
+        formData.append("query", search);
+
+        const response = await axiosInstance.post("/DoctorBlog/search", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        const categorizedPosts = response.data?.categorizedPosts || {};
+        
+        // دمج وتطبيع المنشورات المصنفة من الباك إند
+        rawPosts = Object.entries(categorizedPosts).flatMap(([categoryKey, postsList]) => {
+          return postsList.map((post) => ({
+            ...post,
+            postId: post.id, // الباك إند يعيد id في البحث و postId في جلب المقالات المعلقة
+            type: categoryKey, // نستخدم اسم التصنيف لتحديد نوع الكاتب لاحقاً
+          }));
+        });
+
+        // فلترة المنشورات لتكون فقط المعلقة (Pending) لأن لوحة التحكم تعرض المقالات المعلقة للمراجعة
+        rawPosts = rawPosts.filter((post) => post.status === "Pending");
+      } else {
+        // إذا لم يكن هناك بحث، نجلب كل المنشورات المعلقة كالمعتاد
+        const response = await axiosInstance.get("/DoctorBlog/pending-posts");
+        rawPosts = response.data || [];
+      }
 
       // تطبيع البيانات لتتوافق مع مكونات الفرونت إند
       let blogs = rawPosts.map((post) => {
@@ -13,7 +42,7 @@ export const blogsApi = {
         const roleStr = isLab ? "lab" : "doctor";
         const specialtyStr = isLab ? "مختبر تعويضات سنية" : "أخصائي أسنان";
         
-        // جلب صورة المرفق إن وجدت، وإلا استخدام صورة افتراضية فخمة
+        // جلب صورة المرفق إن وجدت، وإلا استخدام صورة افتراضية
         let imageUrl = "https://images.unsplash.com/photo-1579684389782-64d84b5e905d?w=800&auto=format&fit=crop&q=80";
         if (post.attachments && post.attachments.length > 0) {
           imageUrl = `${axiosInstance.defaults.baseURL.replace("/api", "")}/${post.attachments[0].path}`;
@@ -40,17 +69,6 @@ export const blogsApi = {
           reviewMessage: post.reviewMessage
         };
       });
-
-      // تطبيق البحث العميل (Client-side search)
-      if (search.trim() !== "") {
-        const q = search.toLowerCase();
-        blogs = blogs.filter(
-          (blog) =>
-            blog.title.toLowerCase().includes(q) ||
-            blog.summary.toLowerCase().includes(q) ||
-            blog.author.name.toLowerCase().includes(q)
-        );
-      }
 
       // تطبيق فلترة الدور (طبيب / مخبر)
       if (role !== "all") {

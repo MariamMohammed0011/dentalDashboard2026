@@ -46,4 +46,14 @@ export const usersApi = {
       throw error;
     }
   },
+
+  deleteUser: async (id) => {
+    try {
+      const response = await axiosInstance.delete(`/Advertisement/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error deleting user ${id}:`, error);
+      throw error;
+    }
+  }
 };
