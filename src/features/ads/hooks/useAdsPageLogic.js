@@ -14,6 +14,7 @@ export const useAdsPageLogic = () => {
     updateAd,
     deleteAd,
     createAd,
+    isCreatingAd,
     createAdClient,
     isCreatingClient
   } = useAds();
@@ -116,6 +117,7 @@ export const useAdsPageLogic = () => {
     ads,
     pagination,
     isLoading,
+    isCreatingAd,
     isCreatingClient,
     createAd,
     createAdClient,

@@ -36,6 +36,20 @@ const UsersManagementPage = () => {
     placeholderData: (previousData) => previousData,
   });
 
+  // 1.5. Fetch Active Ads Count Query
+  const { data: activeAdsCount = 0, isLoading: isLoadingActiveAds } = useQuery({
+    queryKey: ['active-ads-count'],
+    queryFn: () => adsApi.getActiveAdsCount(),
+    placeholderData: (previousData) => previousData,
+  });
+
+  // 1.6. Fetch All Ads List Query (to calculate active ads count per user locally)
+  const { data: allAds = [] } = useQuery({
+    queryKey: ['admin-ads-all-list'],
+    queryFn: () => adsApi.getAllRawAds(),
+    placeholderData: (previousData) => previousData,
+  });
+
   // 2. Add Ad Client Mutation
   const createClientMutation = useMutation({
     mutationFn: (clientData) => adsApi.createAdClient(clientData),
@@ -52,6 +66,8 @@ const UsersManagementPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ads-users'] });
       queryClient.invalidateQueries({ queryKey: ['ads'] });
+      queryClient.invalidateQueries({ queryKey: ['active-ads-count'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-ads-all-list'] });
       toast.success('تمت إضافة الإعلان للمستخدم بنجاح');
       setSelectedUserForAd(null);
     },
@@ -67,6 +83,8 @@ const UsersManagementPage = () => {
     mutationFn: (userId) => usersApi.deleteUser(userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ads-users'] });
+      queryClient.invalidateQueries({ queryKey: ['active-ads-count'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-ads-all-list'] });
       toast.success('تم حذف المستخدم بنجاح');
       setIsDeleteModalOpen(false);
       setDeleteTarget(null);
@@ -78,11 +96,20 @@ const UsersManagementPage = () => {
     }
   });
 
-  // بما أن البحث يتم الآن عبر السيرفر مباشرة، فإن القائمة المصفاة هي نفس القائمة المعادة من الاستعلام
-  const filteredUsers = users;
+  // Compute live active ads count per user based on allAds from the backend
+  const filteredUsers = users.map(user => {
+    const userActiveAdsCount = allAds.filter(ad => {
+      const adUserId = ad.userId || ad.user?.id || ad.user?.userId;
+      const isUserMatch = String(adUserId) === String(user.id);
+      const isActive = ad.isActive === true || ad.status === 'active';
+      return isUserMatch && isActive;
+    }).length;
 
-  // Active ads count calculation
-  const totalAdsCount = users.reduce((sum, user) => sum + (user.advertisementsCount || 0), 0);
+    return {
+      ...user,
+      advertisementsCount: userActiveAdsCount
+    };
+  });
 
   return (
     <div className="p-4 sm:p-8 flex flex-col gap-6 bg-transparent" dir="rtl">
@@ -146,7 +173,7 @@ const UsersManagementPage = () => {
           <div className="flex flex-col items-center justify-center px-4 text-center">
             <span className="text-xs font-bold text-text-muted mb-1.5 block">الإعلانات النشطة</span>
             <div className="flex items-center gap-2">
-              <span className="text-xl sm:text-2xl font-black text-text-main">{isLoading ? '...' : totalAdsCount}</span>
+              <span className="text-xl sm:text-2xl font-black text-text-main">{isLoading || isLoadingActiveAds ? '...' : activeAdsCount}</span>
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 flex-shrink-0" />
             </div>
           </div>

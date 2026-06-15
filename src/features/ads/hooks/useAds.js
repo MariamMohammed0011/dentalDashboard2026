@@ -33,7 +33,7 @@ export const useAds = () => {
   });
 
   const createMutation = useMutation({
-    mutationFn: (newAd) => adsApi.createAd(newAd),
+    mutationFn: ({ userId, adData }) => adsApi.createAdForUser(userId, adData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ads'] });
     }
@@ -57,6 +57,7 @@ export const useAds = () => {
     updateAd: updateMutation.mutate,
     deleteAd: deleteMutation.mutate,
     createAd: createMutation.mutate,
+    isCreatingAd: createMutation.isPending,
     createAdClient: createClientMutation.mutate,
     isCreatingClient: createClientMutation.isPending
   };

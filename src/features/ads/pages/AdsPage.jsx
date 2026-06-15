@@ -16,6 +16,7 @@ const AdsPage = () => {
     ads,
     pagination,
     isLoading,
+    isCreatingAd,
     isCreatingClient,
     createAd,
     createAdClient,
@@ -116,6 +117,7 @@ const AdsPage = () => {
         isOpen={isAddModalOpen} 
         onClose={() => setIsAddModalOpen(false)} 
         onCreateAd={createAd} 
+        isSubmitting={isCreatingAd}
       />
 
       {/* D. ADD AD CLIENT MODAL */}

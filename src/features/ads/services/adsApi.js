@@ -100,6 +100,8 @@ const mapAdToFrontend = (ad, clients = []) => {
     image: imageUrl,
     images: adImages,
     expiresAt: ad.expiresAt ? ad.expiresAt.split('T')[0] : "",
+    createdAt: ad.createdAt || "",
+    price: ad.price ?? ad.cost ?? 0,
     raw: ad
   };
 };
@@ -354,29 +356,62 @@ export const adsApi = {
 
   getUserValidAds: async (userId) => {
     try {
-      const response = await axiosInstance.get(`/Advertisement/user/${userId}/valid-advertisements`);
-      const data = response.data || { totalCount: 0, advertisements: [] };
+      // Fetch all ads and clients in parallel
+      const [adsResponse, clientsResponse] = await Promise.allSettled([
+        axiosInstance.get("/Advertisement/admin/all"),
+        axiosInstance.get("/Advertisement/all")
+      ]);
+
+      const rawAds = adsResponse.status === "fulfilled" ? (adsResponse.value.data || []) : [];
+      const rawClients = clientsResponse.status === "fulfilled" ? (clientsResponse.value.data || []) : [];
+
+      // Map and filter ads belonging to target userId
+      const allMappedAds = rawAds.map(ad => mapAdToFrontend(ad, rawClients)).filter(Boolean);
+      const userAds = allMappedAds.filter(ad => String(ad.userId) === String(userId));
       
-      // Normalize image URLs
-      const ads = (data.advertisements || []).map(ad => {
-        let imgUrl = ad.imageUrl;
-        if (imgUrl && !imgUrl.startsWith('http') && !imgUrl.startsWith('data:')) {
-          const baseUrlClean = axiosInstance.defaults.baseURL.replace('/api', '');
-          imgUrl = `${baseUrlClean}/${imgUrl.replace(/^\//, '')}`;
-        }
-        return {
-          ...ad,
-          imageUrl: imgUrl || 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80'
-        };
-      });
+      // Filter for active ones (isActive === true or status === 'active')
+      const activeUserAds = userAds.filter(ad => ad.status === 'active' || ad.raw?.isActive === true);
+
+      // Map final formatted fields expected by the ViewUserModal component
+      const formattedAds = activeUserAds.map(ad => ({
+        id: ad.id,
+        imageUrl: ad.image || ad.imageUrl || 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80',
+        title: ad.title,
+        content: ad.content,
+        price: ad.price,
+        createdAt: ad.createdAt,
+        expiresAt: ad.expiresAt
+      }));
 
       return {
-        totalCount: data.totalCount ?? ads.length,
-        message: data.message || null,
-        advertisements: ads
+        totalCount: formattedAds.length,
+        message: formattedAds.length === 0 ? "لا يوجد إعلانات نشطة وصالحة لهذا المستخدم حالياً." : null,
+        advertisements: formattedAds
       };
     } catch (error) {
       console.error("Error in getUserValidAds:", error);
+      throw error;
+    }
+  },
+
+  getActiveAdsCount: async () => {
+    try {
+      const response = await axiosInstance.get("/Advertisement/admin/all");
+      const ads = response.data || [];
+      const activeCount = ads.filter(ad => ad.isActive === true || ad.status === 'active').length;
+      return activeCount;
+    } catch (error) {
+      console.error("Error in getActiveAdsCount:", error);
+      throw error;
+    }
+  },
+
+  getAllRawAds: async () => {
+    try {
+      const response = await axiosInstance.get("/Advertisement/admin/all");
+      return response.data || [];
+    } catch (error) {
+      console.error("Error in getAllRawAds:", error);
       throw error;
     }
   }
