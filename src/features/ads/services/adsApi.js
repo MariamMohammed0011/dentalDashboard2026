@@ -1,56 +1,83 @@
 import axiosInstance from "../../../api/axios";
 
 // Helper function to map backend advertisement models to frontend expectations
-const mapAdToFrontend = (ad) => {
+// Helper function to map backend advertisement models to frontend expectations
+const mapAdToFrontend = (ad, clients = []) => {
   if (!ad) return null;
+
+  // Find the matching client to pull rich details (name, phone, place name)
+  const userId = ad.userId || ad.user?.id || ad.user?.userId;
+  const matchingClient = clients.find((c) => String(c.id) === String(userId));
 
   // --- Target Audience ---
   // The API returns a numeric field: 0 = Dentists, 1 = Labs, 2 = Both
-  // It might come as: targetAudience, target, or be embedded in the object
   let type = 'dentists';
   const targetRaw = ad.targetAudience ?? ad.target ?? ad.targetAudienceId ?? ad.audienceType;
   if (targetRaw === 1 || targetRaw === '1' || (typeof targetRaw === 'string' && targetRaw.toLowerCase().includes('lab'))) {
     type = 'labs';
   } else if (targetRaw === 2 || targetRaw === '2' || (typeof targetRaw === 'string' && targetRaw.toLowerCase().includes('both'))) {
     type = 'both';
-  }
-
-  // --- Image URL ---
-  // The API returns "images": ["uploads/advertisements/.../file.png"] — an array
-  let imageUrl = null;
-  if (ad.images && ad.images.length > 0) {
-    imageUrl = ad.images[0]; // Take the first image from the array
-  } else {
-    // Fallbacks for other possible field names
-    imageUrl = ad.image || ad.imageUrl || ad.imagePath || null;
-    if (!imageUrl && ad.attachments && ad.attachments.length > 0) {
-      imageUrl = ad.attachments[0].path || ad.attachments[0];
+  } else if (targetRaw === undefined || targetRaw === null) {
+    // Fallback: Scan title and content to infer the target audience
+    const titleLower = (ad.title || "").toLowerCase();
+    const contentLower = (ad.content || "").toLowerCase();
+    if (titleLower.includes("مخابر") && (titleLower.includes("أطباء") || titleLower.includes("اطباء"))) {
+      type = "both";
+    } else if (titleLower.includes("مخابر") || titleLower.includes("مخبر")) {
+      type = "labs";
+    } else if (titleLower.includes("أطباء") || titleLower.includes("اطباء") || titleLower.includes("اسنان") || titleLower.includes("أسنان")) {
+      type = "dentists";
     }
   }
 
-  // Build absolute URL if relative path
-  if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('data:')) {
-    const baseUrlClean = axiosInstance.defaults.baseURL.replace('/api', '');
-    imageUrl = `${baseUrlClean}/${imageUrl.replace(/^\//, '')}`;
+  // --- Image URLs Handling ---
+  const baseUrlClean = axiosInstance.defaults.baseURL.replace('/api', '');
+  let adImages = [];
+
+  if (ad.images && ad.images.length > 0) {
+    adImages = ad.images.map(img => {
+      if (img.startsWith('http') || img.startsWith('data:')) {
+        return img;
+      }
+      return `${baseUrlClean}/${img.replace(/^\//, '')}`;
+    });
+  } else {
+    const fallbackImage = ad.image || ad.imageUrl || ad.imagePath || null;
+    if (fallbackImage) {
+      if (fallbackImage.startsWith('http') || fallbackImage.startsWith('data:')) {
+        adImages = [fallbackImage];
+      } else {
+        adImages = [`${baseUrlClean}/${fallbackImage.replace(/^\//, '')}`];
+      }
+    } else if (ad.attachments && ad.attachments.length > 0) {
+      adImages = ad.attachments.map(att => {
+        const path = att.path || att;
+        if (path.startsWith('http') || path.startsWith('data:')) {
+          return path;
+        }
+        return `${baseUrlClean}/${path.replace(/^\//, '')}`;
+      });
+    }
   }
 
-  // Final fallback placeholder
-  if (!imageUrl) {
-    imageUrl = 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80';
+  // Final fallback placeholder if no images found
+  if (adImages.length === 0) {
+    adImages = ['https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80'];
   }
+
+  const imageUrl = adImages[0];
 
   // --- Owner / Store Details ---
-  // Admin/all response does not include full user object; use userId as fallback
-  const userId = ad.userId || ad.user?.id || ad.user?.userId;
-  const ownerName = ad.userName || ad.user?.name || ad.user?.userName || ad.storeName
+  const ownerName = matchingClient?.name || ad.userName || ad.user?.name || ad.user?.userName || ad.storeName
     || (userId ? `مستخدم #${userId}` : "مستخدم غير معروف");
-  const ownerPhone = ad.userPhone || ad.user?.phoneNumber || ad.user?.phone || ad.storePhone || "";
+  const storeNameVal = matchingClient?.namePlace || ownerName;
+  const ownerPhone = matchingClient?.phone || ad.userPhone || ad.user?.phoneNumber || ad.user?.phone || ad.storePhone || "";
   const ownerAvatar = ad.userAvatar || ad.user?.avatar || ad.storeAvatar
     || `https://ui-avatars.com/api/?name=${encodeURIComponent(ownerName)}&background=367AFF&color=fff`;
 
   // --- Approval Status ---
   let approvalStatus = 'pending';
-  if (ad.isApproved === true || ad.approvalStatus === 'approved' || (ad.status && String(ad.status).toLowerCase() === 'approved')) {
+  if (ad.isApproved === true || ad.approvalStatus === 'approved' || (ad.status && String(ad.status).toLowerCase() === 'approved') || ad.isActive === true) {
     approvalStatus = 'approved';
   } else if (ad.isApproved === false && (ad.approvalStatus === 'rejected' || (ad.status && String(ad.status).toLowerCase() === 'rejected'))) {
     approvalStatus = 'rejected';
@@ -61,16 +88,17 @@ const mapAdToFrontend = (ad) => {
 
   return {
     id: ad.id || ad.advertisementId,
-    userId: ad.userId || ad.user?.id || ad.user?.userId || 2,
+    userId: userId || 2,
     title: ad.title || "",
     content: ad.content || "",
     type: type,
-    storeName: ownerName,
+    storeName: storeNameVal,
     storePhone: ownerPhone,
     storeAvatar: ownerAvatar,
     approvalStatus: approvalStatus,
     status: isActive ? 'active' : 'inactive',
     image: imageUrl,
+    images: adImages,
     expiresAt: ad.expiresAt ? ad.expiresAt.split('T')[0] : "",
     raw: ad
   };
@@ -89,11 +117,17 @@ export const adsApi = {
         endpoint = "/Advertisement/dentists";
       }
 
-      const response = await axiosInstance.get(endpoint);
-      const rawAds = response.data || [];
+      // Fetch ads and clients list in parallel to map user/store details
+      const [adsResponse, clientsResponse] = await Promise.allSettled([
+        axiosInstance.get(endpoint),
+        axiosInstance.get("/Advertisement/all")
+      ]);
+
+      const rawAds = adsResponse.status === "fulfilled" ? (adsResponse.value.data || []) : [];
+      const rawClients = clientsResponse.status === "fulfilled" ? (clientsResponse.value.data || []) : [];
       
       // Map and normalize all items
-      let adsList = rawAds.map(mapAdToFrontend).filter(Boolean);
+      let adsList = rawAds.map((ad) => mapAdToFrontend(ad, rawClients)).filter(Boolean);
 
       // Apply client-side filters (fallback if backend doesn't filter)
       if (filters.approvalStatus && filters.approvalStatus !== 'all') {

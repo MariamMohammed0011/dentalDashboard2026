@@ -23,10 +23,12 @@ export const useAdsPageLogic = () => {
   const [isAddClientModalOpen, setIsAddClientModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
 
   // Data state for specific operations
   const [selectedAd, setSelectedAd] = useState(null);
   const [deleteAdId, setDeleteAdId] = useState(null);
+  const [adToApprove, setAdToApprove] = useState(null);
 
   // Toggle active/inactive status
   const handleToggleStatus = (ad) => {
@@ -38,24 +40,28 @@ export const useAdsPageLogic = () => {
     toast.success(`تم تغيير حالة الإعلان إلى (${newStatus === 'active' ? 'نشط' : 'غير نشط'})`);
   };
 
-  // Approve advertisement
+  // Approve advertisement (opens custom price modal)
   const handleApproveAd = (ad) => {
-    const currentPrice = ad.raw?.price || ad.price || 0;
-    const inputPrice = prompt("يرجى إدخال/تأكيد سعر الحملة الإعلانية (ل.س):", currentPrice);
-    if (inputPrice === null) return; // cancel click
+    setAdToApprove(ad);
+    setIsApproveModalOpen(true);
+  };
 
-    const parsedPrice = parseFloat(inputPrice) || 0;
-
-    updateAd({ 
-      id: ad.id, 
-      updates: { 
-        approvalStatus: 'approved', 
-        status: 'active', 
-        userId: ad.userId,
-        price: parsedPrice
-      } 
-    });
-    toast.success('تمت الموافقة على الإعلان وتفعيله بنجاح');
+  // Confirm approval after setting price
+  const handleConfirmApprove = (price) => {
+    if (adToApprove) {
+      updateAd({ 
+        id: adToApprove.id, 
+        updates: { 
+          approvalStatus: 'approved', 
+          status: 'active', 
+          userId: adToApprove.userId,
+          price: price
+        } 
+      });
+      toast.success('تم قبول الإعلان وإرسال إشعار الدفع إلى الطبيب بنجاح');
+      setIsApproveModalOpen(false);
+      setAdToApprove(null);
+    }
   };
 
   // Reject advertisement
@@ -126,11 +132,15 @@ export const useAdsPageLogic = () => {
     setIsViewModalOpen,
     isDeleteModalOpen,
     setIsDeleteModalOpen,
+    isApproveModalOpen,
+    setIsApproveModalOpen,
     selectedAd,
+    adToApprove,
     
     // Actions / Handlers
     handleToggleStatus,
     handleApproveAd,
+    handleConfirmApprove,
     handleRejectAd,
     handleDeleteClick,
     handleViewClick,

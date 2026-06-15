@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Phone } from 'lucide-react';
 
 const ViewAdModal = ({ isOpen, onClose, selectedAd, handleApproveAd, handleRejectAd }) => {
+  const [activeImage, setActiveImage] = useState(null);
+
+  useEffect(() => {
+    if (selectedAd) {
+      setActiveImage(selectedAd.image);
+    }
+  }, [selectedAd]);
+
   if (typeof document === 'undefined') return null;
 
   return createPortal(
@@ -26,10 +34,10 @@ const ViewAdModal = ({ isOpen, onClose, selectedAd, handleApproveAd, handleRejec
 
             {/* Advertisement Image Header */}
             <div className="h-48 sm:h-72 w-full relative bg-gray-100 overflow-hidden flex-shrink-0">
-              <img 
-                src={selectedAd.image} 
+               <img 
+                src={activeImage || selectedAd.image} 
                 alt="Advertisement Banner" 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-all duration-500"
                 onError={(e) => {
                   e.target.src = 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80';
                 }}
@@ -121,23 +129,28 @@ const ViewAdModal = ({ isOpen, onClose, selectedAd, handleApproveAd, handleRejec
               </div>
 
               {/* Additional images if more than one */}
-              {selectedAd.raw?.images && selectedAd.raw.images.length > 1 && (
+              {selectedAd.images && selectedAd.images.length > 1 && (
                 <div className="flex flex-col gap-2">
-                  <span className="text-xs text-gray-400 font-bold">صور الإعلان</span>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedAd.raw.images.map((img, idx) => {
-                      const baseUrl = 'https://localhost:44334';
-                      const fullUrl = img.startsWith('http') ? img : `${baseUrl}/${img.replace(/^\//, '')}`;
-                      return (
+                  <span className="text-xs text-gray-400 font-bold">صور الإعلان ({selectedAd.images.length})</span>
+                  <div className="flex flex-wrap gap-2.5">
+                    {selectedAd.images.map((img, idx) => (
+                      <div 
+                        key={idx}
+                        onClick={() => setActiveImage(img)}
+                        className={`w-20 h-20 rounded-2xl overflow-hidden border-2 cursor-pointer transition-all duration-300 hover:scale-[1.05] shadow-sm ${
+                          (activeImage === img || (!activeImage && idx === 0))
+                            ? 'border-[#367AFF] scale-102 ring-2 ring-blue-500/10' 
+                            : 'border-transparent opacity-80 hover:opacity-100'
+                        }`}
+                      >
                         <img
-                          key={idx}
-                          src={fullUrl}
+                          src={img}
                           alt={`صورة ${idx + 1}`}
-                          className="w-20 h-20 rounded-2xl object-cover border border-gray-100 shadow-sm"
+                          className="w-full h-full object-cover"
                           onError={(e) => { e.target.style.display = 'none'; }}
                         />
-                      );
-                    })}
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}

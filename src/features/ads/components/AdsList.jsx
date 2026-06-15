@@ -33,6 +33,7 @@ const AdsList = ({
             <tr className="bg-[#E8F1FF] text-[#1E40AF] font-black text-[14px]">
               <th className="py-4.5 px-6 rounded-r-3xl">ID</th>
               <th className="py-4.5 px-4">الجمهور المستهدف</th>
+              <th className="py-4.5 px-6 text-right">الإعلان</th>
               <th className="py-4.5 px-6 text-right">المتجر</th>
               <th className="py-4.5 px-4">حالة التأكيد</th>
               <th className="py-4.5 px-4">الحالة</th>
@@ -43,14 +44,14 @@ const AdsList = ({
             {isLoading ? (
               Array(5).fill(0).map((_, i) => (
                 <tr key={i} className="animate-pulse">
-                  <td colSpan="6" className="py-5 px-6 border-b border-gray-50">
+                  <td colSpan="7" className="py-5 px-6 border-b border-gray-50">
                     <div className="h-10 bg-gray-50 rounded-2xl w-full"></div>
                   </td>
                 </tr>
               ))
             ) : ads.length === 0 ? (
               <tr>
-                <td colSpan="6" className="py-16 text-center text-gray-400 font-bold">
+                <td colSpan="7" className="py-16 text-center text-gray-400 font-bold">
                   <Megaphone size={48} className="mx-auto mb-3 text-gray-300 opacity-80" />
                   لا توجد إعلانات مطابقة لخيارات البحث الحالية
                 </td>
@@ -82,6 +83,24 @@ const AdsList = ({
                         <span>أطباء الأسنان فقط</span>
                       </div>
                     )}
+                  </td>
+
+                  {/* الإعلان */}
+                  <td className="py-5 px-6 border-b border-gray-50 text-right">
+                    <div className="flex items-center gap-3 justify-start">
+                      <img 
+                        src={ad.image} 
+                        alt={ad.title} 
+                        className="w-12 h-12 rounded-2xl object-cover border border-gray-100 shadow-sm"
+                        onError={(e) => {
+                          e.target.src = 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80';
+                        }}
+                      />
+                      <div className="text-right flex flex-col max-w-[200px]">
+                        <span className="font-bold text-gray-800 text-sm truncate">{ad.title || "لا يوجد عنوان"}</span>
+                        <span className="text-xs text-gray-400 truncate mt-0.5">{ad.content || "لا يوجد محتوى"}</span>
+                      </div>
+                    </div>
                   </td>
 
                   {/* المتجر */}
@@ -216,115 +235,117 @@ const AdsList = ({
             {ads.map((ad) => (
               <div 
                 key={ad.id} 
-                className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden flex flex-col gap-4 hover:shadow-md transition-shadow"
+                className="bg-white rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden flex flex-col hover:shadow-md transition-shadow"
               >
-                {/* Top Bar: ID and Action Buttons */}
-                <div className="flex justify-between items-center pb-3 border-b border-gray-50">
-                  <span className="text-sm font-extrabold text-gray-700 bg-gray-100 px-3 py-1 rounded-xl">#{ad.id}</span>
-                  
-                  <div className="flex items-center gap-1.5">
-                    {/* View */}
-                    <button 
-                      onClick={() => handleViewClick(ad)}
-                      className="w-8 h-8 flex items-center justify-center rounded-xl bg-gray-50 text-gray-600 border border-gray-100"
-                      title="عرض"
-                    >
-                      <Eye size={14} />
-                    </button>
-
-                    {/* Approve */}
-                    <button 
-                      onClick={() => handleApproveAd(ad)}
-                      disabled={ad.approvalStatus === 'approved'}
-                      className={`w-8 h-8 flex items-center justify-center rounded-xl border ${
-                        ad.approvalStatus === 'approved'
-                          ? 'bg-gray-50 text-gray-300 border-gray-100'
-                          : 'bg-blue-50 text-blue-600 border-blue-100'
-                      }`}
-                      title="موافقة"
-                    >
-                      <Check size={14} strokeWidth={2.5} />
-                    </button>
-
-                    {/* Delete */}
-                    <button 
-                      onClick={() => handleDeleteClick(ad.id)}
-                      className="w-8 h-8 flex items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-100"
-                      title="حذف"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Body Content */}
-                <div className="flex gap-3 justify-start items-center">
+                {/* Image & Target Banner */}
+                <div className="w-full aspect-video relative overflow-hidden bg-gray-50">
                   <img 
-                    src={ad.storeAvatar} 
-                    alt={ad.storeName} 
-                    className="w-12 h-12 rounded-full object-cover border border-gray-100 shadow-sm"
+                    src={ad.image} 
+                    alt={ad.title} 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80';
+                    }}
                   />
-                  <div className="text-right flex flex-col flex-grow">
-                    <span className="font-extrabold text-gray-800 text-sm">{ad.storeName}</span>
-                    <span className="text-xs text-gray-400 font-mono mt-0.5" dir="ltr">{ad.storePhone}</span>
-                  </div>
-                  <div>
+                  {/* Target Audience Badge Overlay */}
+                  <div className="absolute top-3 right-3 z-10">
                     {ad.type === 'labs' ? (
-                      <div className="inline-flex items-center gap-1 text-amber-600 bg-amber-50 border border-amber-100/50 px-3 py-1 rounded-full text-xs font-bold">
+                      <div className="inline-flex items-center gap-1.5 text-amber-600 bg-white/95 backdrop-blur-sm border border-amber-100/50 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
                         <Building2 size={12} />
                         <span>مخابر فقط</span>
                       </div>
                     ) : ad.type === 'both' ? (
-                      <div className="inline-flex items-center gap-1 text-indigo-600 bg-indigo-50 border border-indigo-100/50 px-3 py-1 rounded-full text-xs font-bold">
+                      <div className="inline-flex items-center gap-1.5 text-indigo-600 bg-white/95 backdrop-blur-sm border border-indigo-100/50 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
                         <Users size={12} />
                         <span>الجميع</span>
                       </div>
                     ) : (
-                      <div className="inline-flex items-center gap-1 text-sky-600 bg-sky-50 border border-sky-100/50 px-3 py-1 rounded-full text-xs font-bold">
+                      <div className="inline-flex items-center gap-1.5 text-sky-600 bg-white/95 backdrop-blur-sm border border-sky-100/50 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
                         <CheckCircle2 size={12} />
                         <span>أطباء فقط</span>
                       </div>
                     )}
                   </div>
+                  
+                  {/* ID Tag overlay */}
+                  <span className="absolute bottom-3 right-3 z-10 text-xs font-extrabold text-white bg-black/60 backdrop-blur-sm px-2.5 py-1 rounded-lg">
+                    #{ad.id}
+                  </span>
                 </div>
 
-                {/* Footer Status Indicators */}
-                <div className="flex justify-between items-center pt-3 border-t border-gray-50 mt-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-400 font-bold">تفعيل الحساب</span>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        checked={ad.status === 'active'} 
-                        onChange={() => handleToggleStatus(ad)} 
-                        className="sr-only peer" 
-                      />
-                      <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full rtl:peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2.5px] after:start-[2.5px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#367AFF]"></div>
-                    </label>
+                <div className="p-5 flex flex-col gap-4 flex-grow">
+                  {/* Ad Title & Content */}
+                  <div className="text-right flex flex-col gap-1">
+                    <h4 className="font-black text-gray-800 text-base line-clamp-1">{ad.title || "بدون عنوان"}</h4>
+                    <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">{ad.content || "لا يوجد تفاصيل إضافية لهذا الإعلان."}</p>
                   </div>
 
-                  <div>
-                    {ad.approvalStatus === 'pending' && (
-                      <span className="inline-flex items-center gap-1 text-amber-500 bg-[#FFFDF5] border border-amber-100/30 px-3 py-1 rounded-full text-xs font-bold">
-                        <Clock size={11} className="animate-pulse" />
-                        قيد الانتظار
-                      </span>
-                    )}
-                    {ad.approvalStatus === 'approved' && (
-                      <span className="inline-flex items-center gap-1 text-blue-600 bg-blue-50 border border-blue-100/30 px-3 py-1 rounded-full text-xs font-bold">
-                        <CheckCircle2 size={11} />
-                        الموافقة
-                      </span>
-                    )}
-                    {ad.approvalStatus === 'rejected' && (
-                      <span className="inline-flex items-center gap-1 text-rose-600 bg-rose-50 border border-rose-100/30 px-3 py-1 rounded-full text-xs font-bold">
-                        <AlertCircle size={11} />
-                        مرفوض
-                      </span>
-                    )}
+                  {/* Publisher / Store Info */}
+                  <div className="flex gap-3 justify-start items-center bg-gray-50/50 border border-gray-100/40 p-3 rounded-2xl">
+                    <img 
+                      src={ad.storeAvatar} 
+                      alt={ad.storeName} 
+                      className="w-10 h-10 rounded-full object-cover border border-gray-200 shadow-sm"
+                      onError={(e) => {
+                        e.target.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80';
+                      }}
+                    />
+                    <div className="text-right flex flex-col flex-grow">
+                      <span className="font-extrabold text-gray-700 text-xs sm:text-sm">{ad.storeName}</span>
+                      <span className="text-[11px] text-gray-400 font-mono mt-0.5" dir="ltr">{ad.storePhone}</span>
+                    </div>
+                  </div>
+
+                  {/* Settings / Controls */}
+                  <div className="flex justify-between items-center pt-3 border-t border-gray-100 mt-auto">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-400 font-bold">الحالة</span>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          checked={ad.status === 'active'} 
+                          onChange={() => handleToggleStatus(ad)} 
+                          className="sr-only peer" 
+                        />
+                        <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full rtl:peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2.5px] after:start-[2.5px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#367AFF]"></div>
+                      </label>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      {/* View */}
+                      <button 
+                        onClick={() => handleViewClick(ad)}
+                        className="w-8 h-8 flex items-center justify-center rounded-xl bg-gray-50 text-gray-600 border border-gray-100 hover:bg-[#367AFF] hover:text-white transition-colors"
+                        title="عرض"
+                      >
+                        <Eye size={14} />
+                      </button>
+
+                      {/* Approve */}
+                      <button 
+                        onClick={() => handleApproveAd(ad)}
+                        disabled={ad.approvalStatus === 'approved'}
+                        className={`w-8 h-8 flex items-center justify-center rounded-xl border transition-colors ${
+                          ad.approvalStatus === 'approved'
+                            ? 'bg-gray-50 text-gray-300 border-gray-100 cursor-not-allowed'
+                            : 'bg-blue-50 text-blue-600 border-blue-100 hover:bg-[#367AFF] hover:text-white'
+                        }`}
+                        title="موافقة"
+                      >
+                        <Check size={14} strokeWidth={2.5} />
+                      </button>
+
+                      {/* Delete */}
+                      <button 
+                        onClick={() => handleDeleteClick(ad.id)}
+                        className="w-8 h-8 flex items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-600 hover:text-white transition-colors"
+                        title="حذف"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </div>
                 </div>
-
               </div>
             ))}
           </div>
