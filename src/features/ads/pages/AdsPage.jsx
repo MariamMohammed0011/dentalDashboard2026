@@ -9,6 +9,7 @@ import AdsFilter from '../components/AdsFilter';
 import ViewAdModal from '../components/ViewAdModal';
 import AdsList from '../components/AdsList';
 import ApproveAdModal from '../components/ApproveAdModal';
+import EditAdModal from '../components/EditAdModal';
 
 const AdsPage = () => {
   // استدعاء كافة الحالات والدوال من الهوك الصافي
@@ -32,8 +33,11 @@ const AdsPage = () => {
     setIsDeleteModalOpen,
     isApproveModalOpen,
     setIsApproveModalOpen,
+    isEditModalOpen,
+    setIsEditModalOpen,
     selectedAd,
     adToApprove,
+    adToEdit,
     handleToggleStatus,
     handleApproveAd,
     handleConfirmApprove,
@@ -41,6 +45,8 @@ const AdsPage = () => {
     handleDeleteClick,
     handleViewClick,
     handleConfirmDelete,
+    handleEditClick,
+    handleConfirmEdit,
     handleResetFilters,
     handleApplyFilters
   } = useAdsPageLogic();
@@ -97,6 +103,7 @@ const AdsPage = () => {
         handleToggleStatus={handleToggleStatus} 
         handleDeleteClick={handleDeleteClick} 
         handleViewClick={handleViewClick} 
+        handleEditClick={handleEditClick}
       />
 
       {/* ====================================================== */}
@@ -126,6 +133,14 @@ const AdsPage = () => {
         onClose={() => setIsAddClientModalOpen(false)}
         onCreateClient={createAdClient}
         isSubmitting={isCreatingClient}
+      />
+
+      {/* F. EDIT ADVERTISEMENT MODAL */}
+      <EditAdModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        ad={adToEdit}
+        onUpdateAd={handleConfirmEdit}
       />
 
       {/* E. APPROVE & SET PRICE MODAL */}

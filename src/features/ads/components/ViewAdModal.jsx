@@ -112,6 +112,12 @@ const ViewAdModal = ({ isOpen, onClose, selectedAd, handleApproveAd, handleRejec
                     {selectedAd.approvalStatus === 'rejected' && <span className="text-rose-500 font-bold text-sm">مرفوض</span>}
                   </div>
                 </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs text-gray-400 font-bold">سعر الحملة الإعلانية</span>
+                  <span className="text-sm font-extrabold text-gray-800">
+                    {selectedAd.price ? `${Number(selectedAd.price).toLocaleString()} ل.س` : 'غير محدد'}
+                  </span>
+                </div>
                 {selectedAd.expiresAt && (
                   <div className="flex flex-col gap-1">
                     <span className="text-xs text-gray-400 font-bold">تاريخ الانتهاء</span>

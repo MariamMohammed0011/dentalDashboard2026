@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { 
   Bell, CheckCircle2, Trash2, X, UserPlus, FileEdit, Calendar, 
   BellRing, MessageSquare, MessageCircle, Clock, ChevronLeft,
-  Check, CheckCheck
+  Check, CheckCheck, Megaphone
 } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -58,13 +58,13 @@ export default function NotificationMenu() {
   ];
 const getTabCount = (tabId) => {
   if (tabId === 'all') return notifications.length;
-  if (tabId === 'update') return notifications.filter(n => n.type === 'update' || n.type === 'comment').length;
+  if (tabId === 'update') return notifications.filter(n => n.type === 'update' || n.type === 'comment' || n.type === 'ad').length;
   return notifications.filter(n => n.type === tabId).length;
 };
 
 const getFilteredNotifications = () => {
   if (activeTab === 'all') return notifications;
-  if (activeTab === 'update') return notifications.filter(n => n.type === 'update' || n.type === 'comment');
+  if (activeTab === 'update') return notifications.filter(n => n.type === 'update' || n.type === 'comment' || n.type === 'ad');
   return notifications.filter(n => n.type === activeTab);
 };
 
@@ -91,6 +91,9 @@ const getFilteredNotifications = () => {
         case 'reminder':
           colorClass = "bg-rose-500/10 text-rose-600 border-rose-500/10 dark:bg-rose-500/20 dark:border-rose-500/20";
           break;
+        case 'ad':
+          colorClass = "bg-sky-500/10 text-sky-600 border-sky-500/10 dark:bg-sky-500/20 dark:border-sky-500/20";
+          break;
         default:
           colorClass = "bg-primary/10 text-primary border-primary/10 dark:bg-primary/20 dark:border-primary/20";
       }
@@ -104,6 +107,7 @@ const getFilteredNotifications = () => {
       case 'update': return <div className={`${baseClass} ${colorClass}`}><FileEdit {...iconProps} /></div>;
       case 'comment': return <div className={`${baseClass} ${colorClass}`}><MessageCircle {...iconProps} /></div>;
       case 'reminder': return <div className={`${baseClass} ${colorClass}`}><Calendar {...iconProps} /></div>;
+      case 'ad': return <div className={`${baseClass} ${colorClass}`}><Megaphone {...iconProps} /></div>;
       default: return <div className={`${baseClass} ${colorClass}`}><BellRing {...iconProps} /></div>;
     }
   };
@@ -120,6 +124,8 @@ const getFilteredNotifications = () => {
         return { label: "عرض التقارير", url: "/dashboard/reports" };
       case 'reminder':
         return { label: "عرض المواعيد", url: "/dashboard/appointments" };
+      case 'ad':
+        return { label: "عرض الإعلانات للمراجعة", url: "/dashboard/ads" };
       default:
         return null;
     }
@@ -130,7 +136,8 @@ const getFilteredNotifications = () => {
     message: { label: "رسالة جديدة", color: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20 dark:border-blue-500/10" },
     update: { label: "تحديث حالة", color: "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20 dark:border-amber-500/10" },
     reminder: { label: "تنبيه هام", color: "bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20 dark:border-rose-500/10" },
-    comment: { label: "تعليق جديد", color: "bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/20 dark:border-purple-500/10" }
+    comment: { label: "تعليق جديد", color: "bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/20 dark:border-purple-500/10" },
+    ad: { label: "طلب إعلان", color: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20 dark:border-blue-500/10" }
   };
 
   const filteredNotifications = getFilteredNotifications();

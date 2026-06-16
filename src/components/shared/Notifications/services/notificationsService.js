@@ -43,6 +43,15 @@ const mapNotificationType = (type, blogPostType, message) => {
   const lowerType = currentType.toLowerCase();
   const lowerMessage = message ? message.toLowerCase() : "";
   
+  if (
+    lowerType.includes("ad") || 
+    lowerType.includes("advertisement") || 
+    lowerMessage.includes("إعلان") || 
+    lowerMessage.includes("اعلان")
+  ) {
+    return "ad";
+  }
+
   if (lowerType.includes("status") || lowerType.includes("update")) {
     return "update";
   }
@@ -112,13 +121,37 @@ export const notificationsService = {
   // دالة تنسيق وتوحيد شكل الإشعار
   formatNotification: (n) => {
     const localReadIds = getLocalReadIds();
+    
+    let adObj = n.advertisement || null;
+    let text = n.message || "";
+
+    // محاولة فك رسالة JSON (خاصة بإشعارات الإعلانات حيث تكون الرسالة كاملة بصيغة JSON)
+    if (!adObj && typeof n.message === 'string') {
+      try {
+        const parsed = JSON.parse(n.message);
+        if (parsed && parsed.advertisement) {
+          adObj = parsed.advertisement;
+          text = parsed.message || text;
+        }
+      } catch (e) {
+        // ليست JSON، نستخدم الرسالة كما هي
+      }
+    }
+
+    const rawId = n.id || Math.floor(Math.random() * 1000000);
+
+    if (adObj && adObj.title) {
+      text = `طلب إعلان جديد: "${adObj.title}"`;
+    }
+
+    const type = mapNotificationType(n.type || (adObj ? "ad" : ""), n.blogPostType, text);
+
     return {
-      id: n.id,
-      // 🎯 تعديل: تمرير n.blogPostType إلى دالة التصنيف لحل مشكلة التبويبات والأيقونات المخفية
-      type: mapNotificationType(n.type, n.blogPostType, n.message),
-      text: n.message || "",
+      id: rawId,
+      type: type,
+      text: text,
       time: formatTimeArabic(n.createdAt),
-      read: n.isRead || localReadIds.includes(n.id),
+      read: n.isRead || localReadIds.includes(rawId),
       createdAt: n.createdAt
     };
   },

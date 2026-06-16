@@ -208,6 +208,10 @@ export const adsApi = {
         formData.append('ExpiresAt', updates.expiresAt);
         formData.append('expiresAt', updates.expiresAt);
       }
+
+      if (updates.image instanceof File) {
+        formData.append('ImageFiles', updates.image);
+      }
       
       // Standard backend PUT admin/update/{id}
       const response = await axiosInstance.put(`/Advertisement/admin/update/${id}`, formData, {

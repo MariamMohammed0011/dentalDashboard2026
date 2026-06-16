@@ -25,11 +25,13 @@ export const useAdsPageLogic = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // Data state for specific operations
   const [selectedAd, setSelectedAd] = useState(null);
   const [deleteAdId, setDeleteAdId] = useState(null);
   const [adToApprove, setAdToApprove] = useState(null);
+  const [adToEdit, setAdToEdit] = useState(null);
 
   // Toggle active/inactive status
   const handleToggleStatus = (ad) => {
@@ -85,6 +87,23 @@ export const useAdsPageLogic = () => {
     setIsViewModalOpen(true);
   };
 
+  const handleEditClick = (ad) => {
+    setAdToEdit(ad);
+    setIsEditModalOpen(true);
+  };
+
+  const handleConfirmEdit = (updatedData) => {
+    if (adToEdit) {
+      updateAd({ 
+        id: adToEdit.id, 
+        updates: updatedData 
+      });
+      toast.success('تم تعديل الإعلان بنجاح');
+      setIsEditModalOpen(false);
+      setAdToEdit(null);
+    }
+  };
+
   // Confirm delete handler
   const handleConfirmDelete = () => {
     if (deleteAdId) {
@@ -136,8 +155,11 @@ export const useAdsPageLogic = () => {
     setIsDeleteModalOpen,
     isApproveModalOpen,
     setIsApproveModalOpen,
+    isEditModalOpen,
+    setIsEditModalOpen,
     selectedAd,
     adToApprove,
+    adToEdit,
     
     // Actions / Handlers
     handleToggleStatus,
@@ -147,6 +169,8 @@ export const useAdsPageLogic = () => {
     handleDeleteClick,
     handleViewClick,
     handleConfirmDelete,
+    handleEditClick,
+    handleConfirmEdit,
     handleResetFilters,
     handleApplyFilters
   };
