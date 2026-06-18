@@ -69,8 +69,9 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                       <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full border border-white/20">
                         <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                         <p className="text-white text-xs font-bold uppercase tracking-widest">
-                          {request.role === 'dentist' || request.type === 'doctor' ? 'طبيب أسنان' : 'مخبر تعويضات'}
-                        </p>
+                         {request.role?.toLowerCase() === 'dentist' || request.type === 'doctor'
+  ? 'طبيب أسنان'
+  : 'مخبر تعويضات'}  </p>
                       </div>
                     </motion.div>
                   </div>

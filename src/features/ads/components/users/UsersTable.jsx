@@ -6,7 +6,8 @@ import {
   ArrowUpRight, 
   ArrowDownLeft,
   Eye,
-  Trash2
+  Trash2,
+  Pencil
 } from 'lucide-react';
 
 const UsersTable = ({ 
@@ -14,6 +15,7 @@ const UsersTable = ({
   isLoading, 
   onAddAdClick,
   onViewClick,
+  onEditClick,
   onDeleteClick
 }) => {
   return (
@@ -24,11 +26,11 @@ const UsersTable = ({
         <table className="w-full text-center border-collapse table-fixed">
           <thead>
             <tr className="border-b border-border-main/30 text-text-muted font-bold text-xs sm:text-sm bg-gray-50/50 dark:bg-slate-800/30">
-              <th className="py-4 px-4 text-right font-bold text-text-muted w-[25%]">العميل</th>
-              <th className="py-4 px-4 text-right font-bold text-text-muted w-[22%]">المنشأة / العيادة</th>
-              <th className="py-4 px-4 text-right font-bold text-text-muted w-[18%]">بيانات التواصل</th>
+              <th className="py-4 px-4 text-right font-bold text-text-muted w-[23%]">العميل</th>
+              <th className="py-4 px-4 text-right font-bold text-text-muted w-[20%]">المنشأة / العيادة</th>
+              <th className="py-4 px-4 text-right font-bold text-text-muted w-[17%]">بيانات التواصل</th>
               <th className="py-4 px-4 text-center font-bold text-text-muted w-[13%]">الإعلانات النشطة</th>
-              <th className="py-4 px-4 text-center font-bold text-text-muted w-[22%]">العمليات</th>
+              <th className="py-4 px-4 text-center font-bold text-text-muted w-[27%]">العمليات</th>
             </tr>
           </thead>
           <tbody>
@@ -50,6 +52,8 @@ const UsersTable = ({
             ) : (
               users.map((user) => {
                 const hasAds = (user.advertisementsCount || 0) > 0;
+                const isAdmin = Number(user.id) === 1;
+
                 return (
                   <tr key={user.id} className="bg-transparent hover:bg-primary/5 transition-colors border-b border-border-main/10 group">
                     
@@ -90,7 +94,6 @@ const UsersTable = ({
                     {/* الإعلانات النشطة (Active Ads Status) */}
                     <td className="py-3.5 px-4 text-center">
                       <div className="inline-flex items-center gap-1.5 justify-center">
-                        {/* Status Icon Indicator */}
                         <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
                           hasAds 
                             ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20" 
@@ -98,7 +101,6 @@ const UsersTable = ({
                         }`}>
                           {hasAds ? <ArrowUpRight size={12} /> : <ArrowDownLeft size={12} />}
                         </div>
-                        {/* Badge */}
                         <span className={`text-[12px] font-black whitespace-nowrap ${
                           hasAds ? "text-emerald-500" : "text-primary"
                         }`}>
@@ -107,10 +109,10 @@ const UsersTable = ({
                       </div>
                     </td>
 
-                    {/* العمليات (Actions) */}
+                    {/* 🛠️ العمليات - تم دمج وتنظيف كافة الأزرار هنا لتكون متناسقة */}
                     <td className="py-3.5 px-4 text-center">
-                      <div className="flex items-center justify-center gap-1.5 flex-nowrap">
-                        {/* View Details Button (Eye icon) */}
+                      <div className="flex items-center justify-center gap-2 flex-nowrap">
+                        {/* View Details Button */}
                         <button
                           onClick={() => onViewClick(user)}
                           className="w-8 h-8 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-primary/10 text-gray-500 hover:text-primary transition-all duration-200 cursor-pointer active:scale-95 flex-shrink-0"
@@ -119,11 +121,25 @@ const UsersTable = ({
                           <Eye size={14} />
                         </button>
 
-                        {/* Delete User Button (Trash icon) */}
+                        {/* Edit User Button */}
                         <button
-                          onClick={() => onDeleteClick(user)}
-                          className="w-8 h-8 flex items-center justify-center rounded-xl bg-red-500/10 dark:bg-red-950/20 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200 cursor-pointer active:scale-95 flex-shrink-0"
-                          title="حذف المستخدم"
+                          onClick={() => onEditClick(user)}
+                          className="w-8 h-8 flex items-center justify-center rounded-xl bg-blue-500/10 dark:bg-blue-950/20 border border-blue-500/20 text-blue-500 hover:bg-blue-500 hover:text-white transition-all duration-200 cursor-pointer active:scale-95 flex-shrink-0"
+                          title="تعديل بيانات المستخدم"
+                        >
+                          <Pencil size={13} />
+                        </button>
+
+                        {/* Delete User Button */}
+                        <button
+                          onClick={() => !isAdmin && onDeleteClick(user)}
+                          disabled={isAdmin}
+                          className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all duration-200 flex-shrink-0 ${
+                            isAdmin
+                              ? "bg-gray-100 dark:bg-slate-800/50 text-gray-400 dark:text-slate-600 cursor-not-allowed opacity-50"
+                              : "bg-red-500/10 dark:bg-red-950/20 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white cursor-pointer active:scale-95"
+                          }`}
+                          title={isAdmin ? "لا يمكن حذف المسؤول الأساسي" : "حذف المستخدم"}
                         >
                           <Trash2 size={14} />
                         </button>
@@ -164,12 +180,14 @@ const UsersTable = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {users.map((user) => {
               const hasAds = (user.advertisementsCount || 0) > 0;
+              const isAdmin = Number(user.id) === 1;
+
               return (
                 <div 
                   key={user.id} 
                   className="bg-bg-card p-5 rounded-2xl border border-border-main/40 shadow-sm relative overflow-hidden flex flex-col gap-4 hover:shadow-md transition-shadow"
                 >
-                  {/* Top Bar: ID and Action Button */}
+                  {/* Top Bar: ID and Action Buttons */}
                   <div className="flex justify-between items-center pb-3 border-b border-border-main/30">
                     <span className="text-xs font-bold text-text-muted bg-bg-main/50 px-3 py-1 rounded-xl">ID: #{user.id}</span>
                     
@@ -183,11 +201,25 @@ const UsersTable = ({
                         <Eye size={14} />
                       </button>
 
+                      {/* Edit Button */}
+                      <button 
+                        onClick={() => onEditClick(user)}
+                        className="w-8 h-8 flex items-center justify-center rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-500 hover:bg-blue-500 hover:text-white transition-all cursor-pointer active:scale-95"
+                        title="تعديل"
+                      >
+                        <Pencil size={13} />
+                      </button>
+
                       {/* Delete User Button */}
                       <button 
-                        onClick={() => onDeleteClick(user)}
-                        className="w-8 h-8 flex items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white transition-all cursor-pointer active:scale-95"
-                        title="حذف"
+                        onClick={() => !isAdmin && onDeleteClick(user)}
+                        disabled={isAdmin}
+                        className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all ${
+                          isAdmin
+                            ? "bg-gray-100 dark:bg-slate-800/50 text-gray-400 dark:text-slate-600 cursor-not-allowed opacity-50"
+                            : "bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white cursor-pointer active:scale-95"
+                        }`}
+                        title={isAdmin ? "لا يمكن حذف المسؤول الأساسي" : "حذف"}
                       >
                         <Trash2 size={14} />
                       </button>

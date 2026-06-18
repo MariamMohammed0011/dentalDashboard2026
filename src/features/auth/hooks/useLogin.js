@@ -1,4 +1,3 @@
-
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -9,25 +8,34 @@ export const useLogin = () => {
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (credentials) => {
+    // استبدلنا المعامل بـ كائن يستقبل credentials و rememberMe
+    mutationFn: async ({ credentials, rememberMe }) => {
       const formData = new FormData();
       formData.append("email", credentials.username);
       formData.append("password", credentials.password);
       
       const response = await axiosInstance.post("/auth/login", formData);
-      return response.data;
+      
+      // ندمج rememberMe مع النتيجة الراجعة لتصل كاملة إلى onSuccess دون حذف شيء
+      return { ...response.data, rememberMe };
     },
 
     onSuccess: (data) => {
   // للبيئة المحلية، نكتفي بوضع الإعدادات القياسية لضمان قراءتها من نفس المتصفح دون حجب حماية
   const isLocalhost = window.location.hostname === "localhost";
+
+  /* منطق ميزة تذكرني: 
+     إذا تم تفعيل الخيار نعتمد القيم الأصلية (7 و 30)، وإذا لم يتم تفعيله نتركها undefined لتصبح Session Cookies */
+  const tokenExpiry = data.rememberMe ? 7 : undefined;
+  const refreshExpiry = data.rememberMe ? 30 : undefined;
+
   const cookieConfig = isLocalhost 
-    ? { expires: 7 } // إعدادات محلية مرنة لتفادي انهيار الـ CORS
-    : { expires: 7, secure: true, sameSite: "none" }; // الإنتاج
+    ? (tokenExpiry ? { expires: tokenExpiry } : {}) // إعدادات محلية مرنة لتفادي انهيار الـ CORS
+    : { expires: tokenExpiry, secure: true, sameSite: "none" }; // الإنتاج
 
   const refreshConfig = isLocalhost 
-    ? { expires: 30 } 
-    : { expires: 30, secure: true, sameSite: "none" };
+    ? (refreshExpiry ? { expires: refreshExpiry } : {}) 
+    : { expires: refreshExpiry, secure: true, sameSite: "none" };
 
   // 1. تعيين الأكسس توكن في الكوكيز
   Cookies.set("auth_token", data.accessToken, cookieConfig);
@@ -51,6 +59,9 @@ export const useLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    
+    // فحص حالة checkbox "تذكر حسابي" من الفورم
+    const rememberMe = formData.has("rememberMe");
     const payload = Object.fromEntries(formData);
 
     if (!payload.username || !payload.password) {
@@ -58,7 +69,8 @@ export const useLogin = () => {
       return;
     }
 
-    mutate(payload);
+    // تمرير الـ payload مع حالة الـ rememberMe إلى الـ mutate
+    mutate({ credentials: payload, rememberMe });
   };
 
   return { handleLogin, isPending };

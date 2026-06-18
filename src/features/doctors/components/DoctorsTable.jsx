@@ -1,7 +1,59 @@
 import React from 'react';
-import { MapPin, Phone, Mail, Calendar, Building2, Users } from 'lucide-react';
+import { MapPin, Phone, Mail, Calendar, Building2, Users, ToggleLeft, ToggleRight, Loader2 } from 'lucide-react';
 
-const DoctorsTable = ({ doctors, isLoading }) => {
+// 💡 أضفنا البروب onToggleStatus والدالة الاختيارية isUpdatingStatus للـ Loading
+const DoctorsTable = ({ doctors, isLoading, onToggleStatus, updatingDoctorId }) => {
+  
+  // دالة موحدة لإنشاء شارة الحالة بناءً على القيم القادمة من الـ API
+  const renderStatusBadge = (status) => {
+    const currentStatus = status?.toLowerCase();
+
+    if (currentStatus === 'active') {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black border bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          نشط
+        </span>
+      );
+    }
+
+    if (currentStatus === 'suspended') {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black border bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-900/30">
+          <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+          معلق
+        </span>
+      );
+    }
+
+    if (currentStatus === 'pendingadminapproval') {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black border bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-900/30">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+          قيد المراجعة
+        </span>
+      );
+    }
+
+    return (
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black border bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700">
+        {status || 'غير محدد'}
+      </span>
+    );
+  };
+
+  // 💡 دالة معالجة ضغط زر الـ Toggle (تبديل الحالة بين Active و Suspended)
+  const handleToggleClick = (docId, currentStatus) => {
+    if (!onToggleStatus) return;
+    
+    const normalizedStatus = currentStatus?.toLowerCase();
+    if (normalizedStatus === 'active') {
+      onToggleStatus(docId, 'Suspended');
+    } else if (normalizedStatus === 'suspended') {
+      onToggleStatus(docId, 'Active');
+    }
+  };
+
   return (
     <div className="w-full" dir="rtl">
       
@@ -15,31 +67,36 @@ const DoctorsTable = ({ doctors, isLoading }) => {
               <th className="py-3 px-3 text-right">التواصل</th>
               <th className="py-3 px-3 text-right">تاريخ الانضمام</th>
               <th className="py-3 px-3 text-center">الحالة</th>
+              {/* 💡 إضافة هيدر لعمود الإجراءات */}
+              <th className="py-3 px-3 text-center">تغيير الحالة</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800/40">
             {isLoading ? (
               Array(5).fill(0).map((_, i) => (
                 <tr key={i} className="animate-pulse">
-                  <td colSpan="5" className="py-4 px-3">
+                  <td colSpan="6" className="py-4 px-3">
                     <div className="h-9 bg-bg-main/30 dark:bg-slate-800/30 rounded-xl w-full"></div>
                   </td>
                 </tr>
               ))
             ) : doctors.length === 0 ? (
               <tr>
-                <td colSpan="5" className="py-12 text-center text-text-muted dark:text-slate-500 font-bold">
+                <td colSpan="6" className="py-12 text-center text-text-muted dark:text-slate-500 font-bold">
                   <Users size={36} className="mx-auto mb-2 text-text-muted/40 dark:text-slate-600" />
                   لا يوجد أطباء مسجلون حالياً
                 </td>
               </tr>
             ) : (
               doctors.map((doc) => {
-                const isStatusActive = doc.status?.toLowerCase() === 'active';
                 const formattedDate = doc.createdAt 
                   ? new Date(doc.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'numeric', day: 'numeric' }) 
                   : 'غير محدد';
                 
+                const isPending = doc.status?.toLowerCase() === 'pendingadminapproval';
+                const isActive = doc.status?.toLowerCase() === 'active';
+                const isCurrentlyUpdating = updatingDoctorId === doc.id;
+
                 return (
                   <tr key={doc.id} className="hover:bg-white/40 dark:hover:bg-slate-800/20 transition-all duration-200">
                     
@@ -106,14 +163,29 @@ const DoctorsTable = ({ doctors, isLoading }) => {
 
                     {/* Status Badge */}
                     <td className="py-3.5 px-3 text-center">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black border ${
-                        isStatusActive 
-                          ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30" 
-                          : "bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-900/30"
-                      }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${isStatusActive ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
-                        {isStatusActive ? 'نشط' : 'معلق'}
-                      </span>
+                      {renderStatusBadge(doc.status)}
+                    </td>
+
+                    {/* 💡 عمود الـ Toggle المضاف للديسكتوب */}
+                    <td className="py-3.5 px-3 text-center">
+                      {isCurrentlyUpdating ? (
+                        <Loader2 size={18} className="animate-spin mx-auto text-primary" />
+                      ) : isPending ? (
+                        <span className="text-[11px] text-gray-400 dark:text-slate-500 font-medium select-none">—</span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleToggleClick(doc.id, doc.status)}
+                          className="focus:outline-none transition-transform active:scale-95 duration-150 inline-block align-middle"
+                          title={isActive ? "تعليق الحساب" : "تنشيط الحساب"}
+                        >
+                          {isActive ? (
+                            <ToggleRight size={28} className="text-emerald-500 hover:text-emerald-600 transition-colors cursor-pointer" />
+                          ) : (
+                            <ToggleLeft size={28} className="text-slate-300 dark:text-slate-600 hover:text-rose-400 transition-colors cursor-pointer" />
+                          )}
+                        </button>
+                      )}
                     </td>
 
                   </tr>
@@ -140,10 +212,13 @@ const DoctorsTable = ({ doctors, isLoading }) => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {doctors.map((doc) => {
-              const isStatusActive = doc.status?.toLowerCase() === 'active';
               const formattedDate = doc.createdAt 
                 ? new Date(doc.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'numeric', day: 'numeric' }) 
                 : 'غير محدد';
+
+              const isPending = doc.status?.toLowerCase() === 'pendingadminapproval';
+              const isActive = doc.status?.toLowerCase() === 'active';
+              const isCurrentlyUpdating = updatingDoctorId === doc.id;
 
               return (
                 <div 
@@ -153,14 +228,7 @@ const DoctorsTable = ({ doctors, isLoading }) => {
                   {/* Top Header: ID & Status */}
                   <div className="flex justify-between items-center pb-2 border-b border-slate-100 dark:border-slate-800/50">
                     <span className="text-xs font-bold text-text-muted dark:text-slate-400 bg-slate-50 dark:bg-slate-800/40 px-3 py-1 rounded-xl">ID: #{doc.id}</span>
-                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black border ${
-                      isStatusActive 
-                        ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30" 
-                        : "bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-900/30"
-                    }`}>
-                      <span className={`w-1 h-1 rounded-full ${isStatusActive ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
-                      {isStatusActive ? 'نشط' : 'معلق'}
-                    </span>
+                    {renderStatusBadge(doc.status)}
                   </div>
 
                   {/* Doctor Info */}
@@ -207,9 +275,33 @@ const DoctorsTable = ({ doctors, isLoading }) => {
                       </div>
                     )}
 
-                    <div className="flex items-center gap-2 pt-1 border-t border-slate-50 dark:border-slate-800/30 text-[10px] text-gray-400 dark:text-slate-500">
-                      <Calendar size={12} className="text-violet-500 dark:text-violet-400 shrink-0" />
-                      <span>انضم في: {formattedDate}</span>
+                    {/* 💡 قسم التبديل المضاف أسفل كارد الجوال */}
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-50 dark:border-slate-800/30">
+                      <div className="flex items-center gap-2 text-[10px] text-gray-400 dark:text-slate-500">
+                        <Calendar size={12} className="text-violet-500 dark:text-violet-400 shrink-0" />
+                        <span>انضم في: {formattedDate}</span>
+                      </div>
+
+                      {!isPending && (
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] font-black text-text-muted dark:text-slate-400">تغيير الحالة:</span>
+                          {isCurrentlyUpdating ? (
+                            <Loader2 size={14} className="animate-spin text-primary" />
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleToggleClick(doc.id, doc.status)}
+                              className="focus:outline-none"
+                            >
+                              {isActive ? (
+                                <ToggleRight size={24} className="text-emerald-500" />
+                              ) : (
+                                <ToggleLeft size={24} className="text-slate-300 dark:text-slate-600" />
+                              )}
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
 
                   </div>

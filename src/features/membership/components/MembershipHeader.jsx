@@ -4,21 +4,22 @@ const tabs = [
   { id: 'all', label: 'الكل' },
   { id: 'doctor', label: 'الأطباء' },
   { id: 'lab', label: 'المخابر' },
-  
 ];
 
 const MembershipHeader = ({ activeTab, onTabChange, searchQuery, onSearchChange }) => {
   return (
     <>
-      <div className="flex flex-col xl:flex-row justify-between items-center pt-0 pb-2 sm:pb-3 px-4 sm:px-8 gap-6" dir="rtl">
+      {/* التعديل الرئيسي: ينزل تحت بعض بشكل افتراضي (flex-col)، ويصبح سطر واحد ابتداءً من الشاشات المتوسطة (md:flex-row) */}
+      <div className="flex flex-col md:flex-row justify-between items-center pt-0 pb-2 sm:pb-3 px-4 sm:px-8 gap-4 md:gap-6 w-full md:mt-2 sm:mt-2 " dir="rtl">
         
         {/* التبويبات - يمين */}
-        <div className="flex items-end bg-transparent px-1 shrink-0 overflow-x-auto custom-scrollbar w-full xl:w-auto pb-1 xl:pb-0">
+        {/* جعلنا الـ w-full تتغير إلى w-auto عند الـ md ليفسح مجالاً للسيرش بجانبه */}
+        <div className="flex items-end bg-transparent px-1 overflow-x-auto custom-scrollbar w-full md:w-auto pb-1 md:pb-0 shrink-0">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
-              className={`relative px-8 sm:px-12 py-2.5 text-[14px] sm:text-[15px] font-bold transition-all duration-500 whitespace-nowrap ${
+              className={`relative px-6 sm:px-10 py-2.5 text-[14px] sm:text-[15px] font-bold transition-all duration-500 whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'text-white z-20 tab-active-clip bg-[#367AFF]'
                   : 'text-text-muted hover:text-primary z-10'
@@ -30,14 +31,17 @@ const MembershipHeader = ({ activeTab, onTabChange, searchQuery, onSearchChange 
         </div>
 
         {/* حقل البحث - يسار */}
-        <Search 
-          value={searchQuery}
-          onChange={onSearchChange}
-          placeholder="بحث عن طلب..."
-          width="350px"
-          className="w-full xl:w-[350px]"
-          onClear={() => onSearchChange('')}
-        />
+        {/* في الموبايل يأخذ العرض الكامل w-full، وفي الشاشات المتوسطة والكبيرة يتحدد بـ md:max-w-[350px] لكي لا يتمطط بشكل زائد */}
+        <div className="w-full md:w-[350px] md:max-w-[350px] shrink-0">
+          <Search 
+            value={searchQuery}
+            onChange={onSearchChange}
+            placeholder="بحث عن طلب..."
+            width="100%" 
+            className="w-full"
+            onClear={() => onSearchChange('')}
+          />
+        </div>
       </div>
         
       {/* الـ SVG المطلوب للقص الانسيابي (Clip Path) */}

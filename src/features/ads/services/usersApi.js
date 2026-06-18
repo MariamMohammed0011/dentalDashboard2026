@@ -68,7 +68,28 @@ export const usersApi = {
       throw error;
     }
   },
+  updateUser: async (id, userData) => {
+    try {
+      const formData = new FormData();
+      
+      // تحويل الكائن المرسل إلى FormData متوافق مع الباك إند
+      Object.keys(userData).forEach((key) => {
+        if (userData[key] !== null && userData[key] !== undefined) {
+          formData.append(key, userData[key]);
+        }
+      });
 
+      const response = await axiosInstance.put(`/Advertisement/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating user ${id}:`, error);
+      throw error;
+    }
+  },
   deleteUser: async (id) => {
     try {
       const response = await axiosInstance.delete(`/Advertisement/${id}`);

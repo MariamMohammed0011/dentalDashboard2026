@@ -125,7 +125,7 @@ export const NavItem = ({ to, label, icon: Icon, isCollapsed, onClick, children 
 };
 
 export const navItems = [
-  { to: "/dashboard", label: "الداشبورد", icon: LayoutDashboard },
+  { to: "/dashboard", label: "الرئيسية", icon: LayoutDashboard },
   { to: "/dashboard/orders", label: "الطلبات", icon: ClipboardList },
   { to: "/dashboard/membership-requests", label: "طلبات الانتساب", icon: UserPlus },
   { to: "/dashboard/doctors", label: "الاطباء", icon: UserCog },

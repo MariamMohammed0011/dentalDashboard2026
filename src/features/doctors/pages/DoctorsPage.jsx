@@ -6,34 +6,45 @@ import { useDoctors } from '../hooks/useDoctors';
 import { motion } from 'framer-motion';
 
 const DoctorsPage = () => {
+  // 💡 تم إضافة toggleStatus و updatingDoctorId هنا ليعمل الكود بشكل صحيح
   const {
     doctors,
     pagination,
     isLoading,
-    searchQuery,
-    setSearchQuery,
+    selectedStatus,     
+    setSelectedStatus,  
     currentPage,
-    setCurrentPage
+    setCurrentPage,
+    toggleStatus,       // 👈 أضفنا هذا
+    updatingDoctorId,   // 👈 أضفنا هذا
   } = useDoctors();
+
+  // دالة وسيطة يتم تمريرها للجدول
+  const handleToggleStatus = (id, nextStatus) => {
+    toggleStatus({ id, nextStatus });
+  };
 
   return (
     <div className="flex flex-col gap-6 px-4 sm:px-10 lg:px-12 pb-10 min-h-full" dir="rtl">
-      {/* هيدر الصفحة مباشرة على الخلفية */}
+      
+      {/* تمرير قيم الفلترة المستخرجة بشكل صحيح للهيدر */}
       <DoctorsHeader 
-        searchQuery={searchQuery} 
-        onSearchChange={setSearchQuery} 
+        selectedStatus={selectedStatus} 
+        onStatusChange={setSelectedStatus} 
       />
 
-      {/* محتوى الجدول والترقيم مباشرة بدون كارد خارجي */}
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full flex flex-col gap-6"
       >
-        {/* عرض الأطباء بجدول احترافي مسطح */}
-        <DoctorsTable doctors={doctors} isLoading={isLoading} />
-
-        {/* الترقيم */}
+        <DoctorsTable 
+          doctors={doctors} 
+          isLoading={isLoading} 
+          onToggleStatus={handleToggleStatus}
+          updatingDoctorId={updatingDoctorId} // 👈 الآن المتغير معرف ولن يسبب أي خطأ
+        />
+        
         {pagination.totalPages > 1 && (
           <div className="flex justify-center mt-4">
             <MembershipPagination 

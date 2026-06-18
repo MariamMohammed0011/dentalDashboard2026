@@ -9,7 +9,7 @@ import AddAdClientModal from '../components/AddAdClientModal';
 import AddAdForUserModal from '../components/AddAdForUserModal';
 import ViewUserModal from '../components/users/ViewUserModal';
 import ConfirmationModal from '../../../components/shared/ConfirmationModal';
-
+import EditUserModal from '../components/users/EditUserModal'; // 🛠️ استيراد مودل التعديل المكتوب سابقاً
 const UsersManagementPage = () => {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
@@ -17,6 +17,7 @@ const UsersManagementPage = () => {
   const [isAddClientOpen, setIsAddClientOpen] = useState(false);
   const [selectedUserForAd, setSelectedUserForAd] = useState(null);
   const [selectedUserForView, setSelectedUserForView] = useState(null);
+  const [selectedUserForEdit, setSelectedUserForEdit] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -77,7 +78,20 @@ const UsersManagementPage = () => {
       toast.error(serverMessage);
     }
   });
-
+const updateUserMutation = useMutation({
+    mutationFn: ({ userId, userData }) => usersApi.updateUser(userId, userData),
+    onSuccess: () => {
+      // عمل تحديث فوري للكاش لإعادة جلب البيانات المعدلة من الباك إند تلقائياً
+      queryClient.invalidateQueries({ queryKey: ['ads-users'] });
+      toast.success('تم تحديث بيانات العميل بنجاح');
+      setSelectedUserForEdit(null); // إغلاق المودل
+    },
+    onError: (error) => {
+      console.error("Failed to update user:", error);
+      const serverMessage = error.response?.data?.message || 'حدث خطأ أثناء تحديث بيانات العميل';
+      toast.error(serverMessage);
+    }
+  });
   // 4. Delete User Mutation
   const deleteUserMutation = useMutation({
     mutationFn: (userId) => usersApi.deleteUser(userId),
@@ -195,6 +209,7 @@ const UsersManagementPage = () => {
         isLoading={isLoading}
         onAddAdClick={(user) => setSelectedUserForAd(user)}
         onViewClick={(user) => setSelectedUserForView(user)}
+        onEditClick={(user) => setSelectedUserForEdit(user)}
         onDeleteClick={(user) => {
           setDeleteTarget(user);
           setIsDeleteModalOpen(true);
@@ -229,7 +244,15 @@ const UsersManagementPage = () => {
         user={selectedUserForView}
       />
 
-      {/* D. Delete User Confirmation Modal */}
+      {/* D. Edit User Modal */}
+      <EditUserModal
+        isOpen={!!selectedUserForEdit}
+        onClose={() => setSelectedUserForEdit(null)}
+        user={selectedUserForEdit}
+        onSave={(id, userData) => updateUserMutation.mutateAsync({ userId: id, userData })} 
+/>
+
+      {/* E. Delete User Confirmation Modal */}
       <ConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={() => {
