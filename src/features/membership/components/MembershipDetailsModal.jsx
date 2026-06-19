@@ -7,6 +7,8 @@ import axiosInstance from '../../../api/axios';
 const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
   if (typeof document === 'undefined') return null;
 
+  const isDoctor = request ? (request.role?.toLowerCase() === 'dentist' || request.type === 'doctor') : true;
+
   return createPortal(
     <AnimatePresence>
       {isOpen && (
@@ -44,26 +46,30 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
             ) : request ? (
               <>
                 {/* Header */}
-                <div className="relative h-40 bg-gradient-to-br from-[#367AFF] via-[#367AFF] to-[#0051FF] p-10 flex items-end justify-between overflow-hidden">
+                <div className={`relative h-40 bg-gradient-to-br ${
+                  isDoctor 
+                    ? 'from-[#367AFF] via-[#367AFF] to-[#0051FF]' 
+                    : 'from-[#10B981] via-[#059669] to-[#047857]'
+                } p-10 flex items-end justify-between overflow-hidden`}>
                   <div className="absolute top-[-20%] left-[-10%] w-64 h-64 bg-white/10 rounded-full blur-3xl animate-pulse" />
                   <div className="absolute bottom-[-20%] right-[-10%] w-48 h-48 bg-black/20 rounded-full blur-2xl" />
                   
-                  <div className="relative z-10 flex items-center gap-6">
+                  <div className="relative z-10 flex items-center gap-4 sm:gap-6 pl-14 sm:pl-0">
                     <motion.div 
                       initial={{ x: 30, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: 0.15 }}
-                      className="w-20 h-20 bg-white/20 backdrop-blur-xl rounded-[2rem] flex items-center justify-center text-white border border-white/30 shadow-2xl"
+                      className="w-14 h-14 sm:w-20 sm:h-20 bg-white/20 backdrop-blur-xl rounded-2xl sm:rounded-[2rem] flex items-center justify-center text-white border border-white/30 shadow-2xl shrink-0"
                     >
-                      <User size={40} />
+                      <User size={28} className="sm:w-10 sm:h-10" />
                     </motion.div>
                     <motion.div
                       initial={{ x: 30, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: 0.25 }}
-                      className="text-white"
+                      className="text-white min-w-0"
                     >
-                      <h2 className="text-3xl font-black tracking-tight leading-none mb-2">
+                      <h2 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight leading-tight mb-1.5 truncate">
                         {request.fullName || request.name || 'اسم غير معروف'}
                       </h2>
                       <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full border border-white/20">
@@ -77,10 +83,11 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                   </div>
                   
                   <button 
+                    type="button"
                     onClick={onClose}
-                    className="absolute top-8 left-8 p-3 bg-white/10 hover:bg-white/20 rounded-2xl text-white transition-all hover:rotate-90 backdrop-blur-xl border border-white/10"
+                    className="absolute top-6 left-6 sm:top-8 sm:left-8 p-2.5 sm:p-3 bg-white/10 hover:bg-white/20 rounded-2xl text-white transition-all hover:rotate-90 backdrop-blur-xl border border-white/10 z-[60] cursor-pointer"
                   >
-                    <X size={24} />
+                    <X size={20} className="sm:w-6 sm:h-6" />
                   </button>
                 </div>
 
@@ -101,7 +108,11 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                       </h3>
                       
                       <div className="flex items-center gap-4 group cursor-default">
-                        <div className="p-3.5 bg-gray-50 rounded-2xl text-gray-400 group-hover:bg-primary/10 group-hover:text-primary transition-all duration-300 group-hover:scale-110">
+                        <div className={`p-3.5 rounded-2xl transition-all duration-300 group-hover:scale-110 ${
+                          isDoctor 
+                            ? 'bg-primary/10 text-primary' 
+                            : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                        }`}>
                           <Mail size={20} />
                         </div>
                         <div className="flex flex-col">
@@ -111,7 +122,7 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                       </div>
 
                       <div className="flex items-center gap-4 group cursor-default">
-                        <div className="p-3.5 bg-gray-50 rounded-2xl text-gray-400 group-hover:bg-green-50 group-hover:text-green-600 transition-all duration-300 group-hover:scale-110">
+                        <div className="p-3.5 bg-green-50 dark:bg-emerald-950/30 rounded-2xl text-green-600 dark:text-emerald-400 transition-all duration-300 group-hover:scale-110">
                           <Phone size={20} />
                         </div>
                         <div className="flex flex-col">
@@ -121,7 +132,7 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                       </div>
 
                       <div className="flex items-center gap-4 group cursor-default">
-                        <div className="p-3.5 bg-gray-50 rounded-2xl text-gray-400 group-hover:bg-blue-50 group-hover:text-blue-600 transition-all duration-300 group-hover:scale-110">
+                        <div className="p-3.5 bg-blue-50 dark:bg-blue-950/30 rounded-2xl text-blue-600 dark:text-blue-400 transition-all duration-300 group-hover:scale-110">
                           <Calendar size={20} />
                         </div>
                         <div className="flex flex-col">
@@ -146,7 +157,7 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                       </h3>
                       
                       <div className="flex items-center gap-4 group cursor-default">
-                        <div className="p-3.5 bg-gray-50 rounded-2xl text-gray-400 group-hover:bg-purple-50 group-hover:text-purple-600 transition-all duration-300 group-hover:scale-110">
+                        <div className="p-3.5 bg-purple-50 dark:bg-purple-950/30 rounded-2xl text-purple-600 dark:text-purple-400 transition-all duration-300 group-hover:scale-110">
                           <Building2 size={20} />
                         </div>
                         <div className="flex flex-col">
@@ -156,7 +167,7 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                       </div>
 
                       <div className="flex items-center gap-4 group cursor-default">
-                        <div className="p-3.5 bg-gray-50 rounded-2xl text-gray-400 group-hover:bg-orange-50 group-hover:text-orange-600 transition-all duration-300 group-hover:scale-110">
+                        <div className="p-3.5 bg-orange-50 dark:bg-orange-950/30 rounded-2xl text-orange-600 dark:text-orange-400 transition-all duration-300 group-hover:scale-110">
                           <MapPin size={20} />
                         </div>
                         <div className="flex flex-col">
@@ -166,7 +177,7 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                       </div>
 
                       <div className="flex items-center gap-4 group cursor-default">
-                        <div className="p-3.5 bg-gray-50 rounded-2xl text-gray-400 group-hover:bg-cyan-50 group-hover:text-cyan-600 transition-all duration-300 group-hover:scale-110">
+                        <div className="p-3.5 bg-cyan-50 dark:bg-cyan-950/30 rounded-2xl text-cyan-600 dark:text-cyan-400 transition-all duration-300 group-hover:scale-110">
                           <Globe size={20} />
                         </div>
                         <div className="flex flex-col">
@@ -209,7 +220,11 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                           href={fullImageUrl} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="px-8 py-4 bg-[#367AFF] text-white text-[13px] font-black rounded-2xl shadow-[0_10px_30px_rgba(54,122,255,0.3)] hover:bg-[#0051FF] hover:-translate-y-1 transition-all active:scale-95"
+                          className={`px-8 py-4 text-white text-[13px] font-black rounded-2xl transition-all hover:-translate-y-1 active:scale-95 ${
+                            isDoctor 
+                              ? 'bg-[#367AFF] shadow-[0_10px_30px_rgba(54,122,255,0.3)] hover:bg-[#0051FF]' 
+                              : 'bg-[#10B981] shadow-[0_10px_30px_rgba(16,185,129,0.3)] hover:bg-[#047857]'
+                          }`}
                         >
                           معاينة الوثيقة في علامة تبويب جديدة
                         </a>

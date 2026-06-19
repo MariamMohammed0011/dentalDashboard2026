@@ -50,7 +50,8 @@ export const membershipApi = {
     const actionMap = {
       'accepted': 'approve',
       'rejected': 'reject',
-      'suspended': 'suspend'
+      'suspended': 'suspend',
+      'pending': 'pending' // مضاف للتعامل مع نقل الحالة إلى قيد المراجعة مستقبلاً
     };
 
     const action = actionMap[status];

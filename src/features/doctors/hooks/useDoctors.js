@@ -20,9 +20,18 @@ export const useDoctors = () => {
   // 2. 💡 إضافة الـ Mutation لتغيير الحالة بالتكامل مع الـ membershipApi
   const toggleStatusMutation = useMutation({
     mutationFn: async ({ id, nextStatus }) => {
-      // خريطة التحويل بما يتوافق مع عمل الـ actionMap في الـ API لديكِ
-      // الـ API يتوقع 'accepted' ليحولها إلى 'approve'، و 'suspended' ليحولها إلى 'suspend'
-      const apiActionStatus = nextStatus === 'Active' ? 'accepted' : 'suspended';
+      let apiActionStatus;
+      const normalizedStatus = nextStatus?.toLowerCase();
+
+      if (normalizedStatus === 'active' || normalizedStatus === 'accepted') {
+        apiActionStatus = 'accepted';
+      } else if (normalizedStatus === 'suspended') {
+        apiActionStatus = 'suspended';
+      } else if (normalizedStatus === 'pendingadminapproval' || normalizedStatus === 'pending') {
+        apiActionStatus = 'pending';
+      } else {
+        apiActionStatus = nextStatus;
+      }
       
       return await membershipApi.updateRequestStatus(id, apiActionStatus, 'doctor');
     },
