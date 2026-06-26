@@ -42,9 +42,9 @@ const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) =>
             }`}
         >
           <SlidersHorizontal size={18} />
-          {/* <span className="text-[11px] font-bold px-0.5">
+          <span className="text-[11px] font-bold px-0.5">
             {sortOrder === 'asc' ? 'تصاعدي' : 'تنازلي'}
-          </span> */}
+          </span>
         </button>
       </div>
     </div>

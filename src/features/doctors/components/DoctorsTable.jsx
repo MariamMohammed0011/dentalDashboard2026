@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Calendar, Building2, Users, Loader2, ChevronDown } from 'lucide-react';
-import DoctorStatusModal from './DoctorStatusModal';
+import UserStatusModal from '../../../components/shared/UserStatusModal';
 
 // مكون شارة الحالة التفاعلية
 const StatusBadge = ({ doc, updatingDoctorId, onOpenModal }) => {
@@ -269,9 +269,10 @@ const DoctorsTable = ({ doctors, isLoading, onToggleStatus, updatingDoctorId }) 
       </div>
 
       {/* ── Status Modification Popup Modal ── */}
-      <DoctorStatusModal
+      <UserStatusModal
         isOpen={!!selectedDocForStatus}
-        doctor={selectedDocForStatus}
+        user={selectedDocForStatus}
+        type="doctor"
         onClose={() => setSelectedDocForStatus(null)}
         tempStatus={tempStatus}
         setTempStatus={setTempStatus}

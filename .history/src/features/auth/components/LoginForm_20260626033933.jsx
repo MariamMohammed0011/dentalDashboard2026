@@ -24,10 +24,10 @@ export default function LoginForm() {
 
 
             <InputField
-              label="البريد الالكتروني "
+              label="اسم المستخدم"
               name="username"
-              type="text"
-              placeholder="ادخل بريدك الالكتروني  "
+              type="text
+              placeholder="أدخل اسم المستخدم"
               icon={User}
               required
             />

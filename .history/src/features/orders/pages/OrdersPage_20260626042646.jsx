@@ -6,12 +6,11 @@ import { useOrders } from '../hooks/useOrders';
 const OrdersPage = () => {
   const { data: orders, isLoading } = useOrders();
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortOrder, setSortOrder] = useState('asc');
 
-  // 1. دالة الفلترة والبحث الذكي
+  // دالة الفلترة والبحث الذكي
   const filteredOrders = orders?.filter((order) => {
     const term = searchTerm.toLowerCase().trim();
-    if (!term) return true; 
+    if (!term) return true; // إذا كان حقل البحث فارغاً، اعرض كل الطلبات
 
     const matchesId = order.id?.toString().includes(term);
     const matchesDoctor = order.doctor?.toLowerCase().includes(term);
@@ -19,33 +18,26 @@ const OrdersPage = () => {
 
     return matchesId || matchesDoctor || matchesLab;
   });
-
-  // 2. ترتيب البيانات بناءً على خيار المستخدم (تصاعدي أو تنازلي)
-  // تم استخدام سبريد أوبريتور [...filteredOrders] لحماية المصفوفة الأصلية من التعديل المباشر
-  const sortedAndFilteredOrders = filteredOrders ? [...filteredOrders].sort((a, b) => {
+  // 2. ترتيب البيانات المفلترة بناءً على خيار المستخدم (تصاعدي أو تنازلي)
+  const sortedAndFilteredOrders = filteredOrders?.sort((a, b) => {
     if (sortOrder === 'asc') {
       return a.id - b.id; // من الأصغر للأكبر
     } else {
       return b.id - a.id; // من الأكبر للأصغر
     }
-  }) : [];
-
+  });
   return (
-    <div className="flex flex-col w-full gap-8 px-6 sm:px-12 lg:px-16 pb-10 min-h-full" dir="rtl">
+    <div className="flex flex-col w-full gap-8 px-6 sm:px-12 lg:px-16 pb-10 min-h-full " dir="rtl" >
+      {/* الحاوية الرئيسية للهيدر والجدول */}
       <div className="flex flex-col w-full">
         {/* هيدر الصفحة */}
         <div className="w-full mb-4">
-          <OrdersHeader 
-            searchTerm={searchTerm} 
-            setSearchTerm={setSearchTerm} 
-            sortOrder={sortOrder}
-            setSortOrder={setSortOrder}
-          />
+          <OrdersHeader searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </div>
 
-        {/* جدول الطلبات - تم التعديل هنا لتمرير sortedAndFilteredOrders */}
+        {/* جدول الطلبات */}
         <div className="w-full">
-          <OrdersTable orders={sortedAndFilteredOrders} isLoading={isLoading} />
+          <OrdersTable orders={filteredOrders} isLoading={isLoading} />
         </div>
       </div>
     </div>

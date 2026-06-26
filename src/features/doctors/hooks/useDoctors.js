@@ -1,10 +1,9 @@
 import { useState, useMemo } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { doctorsApi } from '../services/doctorsApi';
-import { membershipApi } from '../../membership/services/membershipApi'; // 💡 استيراد السيرفس الموجود مسبقاً
+import { useUpdateUserStatus } from '../../../hooks/useUpdateUserStatus';
 
 export const useDoctors = () => {
-  const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatus, setSelectedStatus] = useState('all');
 
@@ -17,32 +16,8 @@ export const useDoctors = () => {
     refetchIntervalInBackground: true,
   });
 
-  // 2. 💡 إضافة الـ Mutation لتغيير الحالة بالتكامل مع الـ membershipApi
-  const toggleStatusMutation = useMutation({
-    mutationFn: async ({ id, nextStatus }) => {
-      let apiActionStatus;
-      const normalizedStatus = nextStatus?.toLowerCase();
-
-      if (normalizedStatus === 'active' || normalizedStatus === 'accepted') {
-        apiActionStatus = 'accepted';
-      } else if (normalizedStatus === 'suspended') {
-        apiActionStatus = 'suspended';
-      } else if (normalizedStatus === 'pendingadminapproval' || normalizedStatus === 'pending') {
-        apiActionStatus = 'pending';
-      } else {
-        apiActionStatus = nextStatus;
-      }
-      
-      return await membershipApi.updateRequestStatus(id, apiActionStatus, 'doctor');
-    },
-    onSuccess: () => {
-      // تحديث فوري للقائمة بدون انتظار الـ 5 ثواني الخاصة بالـ refetch
-      queryClient.invalidateQueries({ queryKey: ['doctors-list'] });
-    },
-    onError: (error) => {
-      console.error("خطأ أثناء تحديث حالة الطبيب:", error);
-    }
-  });
+  // 2. استخدام الهوك الموحد لتغيير الحالة
+  const { updateStatus, isPending, updatingId } = useUpdateUserStatus(['doctors-list']);
 
   const allDoctors = data?.doctors || [];
 
@@ -88,7 +63,7 @@ export const useDoctors = () => {
     selectedStatus,     
     setSelectedStatus,   
     // 💡 تصدير دالة التحديث وحالة التحميل لتمريرها للجدول
-    toggleStatus: toggleStatusMutation.mutate,
-    updatingDoctorId: toggleStatusMutation.isPending ? toggleStatusMutation.variables?.id : null,
+    toggleStatus: ({ id, nextStatus }) => updateStatus({ id, status: nextStatus, type: 'doctor' }),
+    updatingDoctorId: updatingId,
   };
 };

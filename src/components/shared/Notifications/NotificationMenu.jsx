@@ -149,7 +149,7 @@ console.log("Mapped Notifications:", notifications);
           <motion.button 
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className="flex items-center justify-center text-primary relative p-3 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200/60 dark:border-gray-800/60 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer pointer-events-auto"
+            className="flex items-center justify-center text-primary relative p-2 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200/60 dark:border-gray-800/60 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer pointer-events-auto"
           >
             <Bell size={21} className={`${unreadCount > 0 ? 'text-primary animate-[wiggle_1s_ease-in-out_infinite]' : 'text-gray-500 dark:text-gray-400'}`} />
             {unreadCount > 0 && (

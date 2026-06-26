@@ -11,6 +11,7 @@ import {
   FileText
 } from 'lucide-react';
 import { toast } from 'sonner';
+import CalendarPicker from '../../../components/ui/CalendarPicker';
 
 // Preset images removed to support device uploads
 
@@ -143,12 +144,11 @@ const AddAdForUserModal = ({ isOpen, onClose, onCreateAd, user, isSubmitting }) 
                   <div className="flex flex-col gap-1.5">
                     <label className="text-gray-600 font-bold text-xs sm:text-sm mr-1">تاريخ الانتهاء</label>
                     <div className="relative">
-                      <input
-                        type="date"
+                      <CalendarPicker
                         value={form.expiresAt}
-                        onChange={(e) => setForm({ ...form, expiresAt: e.target.value })}
-                        className="bg-gray-50 border border-gray-200/80 rounded-2xl pr-10 pl-4 py-2.5 text-gray-700 font-medium text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full cursor-pointer"
+                        onChange={(val) => setForm({ ...form, expiresAt: val })}
                         disabled={isSubmitting}
+                        placeholder="اختر تاريخ الانتهاء"
                       />
                       <Calendar className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
                     </div>

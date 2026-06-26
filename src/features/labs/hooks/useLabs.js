@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { labsApi } from '../services/labsApi';
 import { useSearch } from '../../../components/shared/Search/hooks/useSearch';
+import { useUpdateUserStatus } from '../../../hooks/useUpdateUserStatus';
 
 export const useLabs = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -14,6 +15,9 @@ export const useLabs = () => {
     refetchInterval: 15000,
     refetchIntervalInBackground: true,
   });
+
+  // 1.5. استخدام الهوك الموحد لتغيير الحالة
+  const { updateStatus, isPending, updatingId } = useUpdateUserStatus(['labs-list', 'lab-card-details', 'lab-details']);
 
   // 2. Client-side search by lab name
   const { searchQuery, setSearchQuery, filteredData: filteredLabs } = useSearch(
@@ -81,5 +85,9 @@ export const useLabs = () => {
     isErrorDetails,
     handleShowDetails,
     handleCloseDetails,
+
+    // Status modification
+    toggleStatus: ({ id, nextStatus }) => updateStatus({ id, status: nextStatus, type: 'lab' }),
+    updatingLabId: updatingId,
   };
 };

@@ -1,14 +1,7 @@
 import React from 'react';
 import { Search, SlidersHorizontal } from 'lucide-react';
 
-// استقبال الـ props الخاصة بالترتيب من المكون الأب
-const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) => {
-  
-  // دالة التبديل بين التصاعدي والتنازلي
-  const handleToggleSort = () => {
-    setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
-  };
-
+const OrdersHeader = ({ searchTerm, setSearchTerm }) => {
   return (
     <div className="flex flex-col sm:flex-row justify-between items-center py-2 sm:py-3 px-2 sm:px-4 bg-transparent border-b border-gray-200/50 gap-4 mb-2" dir="rtl">
       {/* عنوان الصفحة */}
@@ -30,21 +23,8 @@ const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) =>
           />
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
         </div>
-
-        {/* زر الترتيب التفاعلي المعدل */}
-        <button 
-          onClick={handleToggleSort}
-          title={sortOrder === 'asc' ? "ترتيب تنازلي (الأحدث أولاً)" : "ترتيب تصاعدي (الأقدم أولاً)"}
-          className={`p-2.5 rounded-full border transition-all shadow-sm flex-shrink-0 flex items-center gap-1.5 cursor-pointer
-            ${sortOrder === 'desc' 
-              ? 'bg-primary/10 text-primary border-primary/30' 
-              : 'bg-white text-gray-500 border-gray-200 hover:text-primary hover:border-primary/30'
-            }`}
-        >
-          <SlidersHorizontal size={18} />
-          {/* <span className="text-[11px] font-bold px-0.5">
-            {sortOrder === 'asc' ? 'تصاعدي' : 'تنازلي'}
-          </span> */}
+        <button className="p-2.5 bg-white border border-gray-200 rounded-full text-gray-500 hover:text-primary hover:border-primary/30 transition-all shadow-sm flex-shrink-0">
+          <SlidersHorizontal size={20} />
         </button>
       </div>
     </div>

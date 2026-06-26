@@ -31,8 +31,9 @@ export const fetchOrders = async () => {
     const response = await axiosInstance.get("/CaseOrders/all-with-details");
     const rawOrders = response.data || [];
 
-    // التعديل السحري هنا: الترتيب تصاعدياً من الرقم الأصغر إلى الرقم الأكبر (1، 2، 3...)
-    const sortedOrders = rawOrders.sort((a, b) => a.orderId - b.orderId);
+    // الأفضل: ترتيب الطلبيات تنازلياً (من الأحدث إلى الأقدم) بناءً على تاريخ الإنشاء الفعلي
+    // ملاحظة: إذا كنت تفضل الترتيب التنازلي حسب الرقم المباشر، استبدلها بـ: (b.orderId - a.orderId)
+    const sortedOrders = rawOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     // مطابقة وتنسيق بيانات الطلبيات لتتوافق مع الأعمدة المعروضة في جدول الواجهة
     return sortedOrders.map(order => ({

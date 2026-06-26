@@ -1,14 +1,16 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Building2, CheckCircle2, AlertTriangle, Clock, Check } from 'lucide-react';
+import { X, Building2, CheckCircle2, AlertTriangle, Clock, Check, FlaskConical, MapPin } from 'lucide-react';
 
-const DoctorStatusModal = ({ isOpen, doctor, onClose, tempStatus, setTempStatus, onConfirm }) => {
+const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatus, onConfirm }) => {
   if (typeof document === 'undefined' || !document.body) return null;
+
+  const isDoctor = type === 'doctor';
 
   return createPortal(
     <AnimatePresence>
-      {isOpen && doctor && (
+      {isOpen && user && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
           {/* Backdrop Blur Overlay */}
           <motion.div
@@ -31,8 +33,12 @@ const DoctorStatusModal = ({ isOpen, doctor, onClose, tempStatus, setTempStatus,
             {/* Modal Header */}
             <div className="flex justify-between items-center px-6 py-5 border-b border-slate-100 dark:border-slate-800/80">
               <div className="flex flex-col gap-1">
-                <h3 className="text-[15px] font-black text-gray-800 dark:text-gray-100">تعديل حالة حساب الطبيب</h3>
-                <p className="text-[11px] text-gray-400 dark:text-slate-400 font-medium">اختر الحالة الجديدة لحساب الطبيب المحدد أدناه</p>
+                <h3 className="text-[15px] font-black text-gray-800 dark:text-gray-100">
+                  {isDoctor ? 'تعديل حالة حساب الطبيب' : 'تعديل حالة حساب المخبر'}
+                </h3>
+                <p className="text-[11px] text-gray-400 dark:text-slate-400 font-medium">
+                  {isDoctor ? 'اختر الحالة الجديدة لحساب الطبيب المحدد أدناه' : 'اختر الحالة الجديدة لحساب المخبر المحدد أدناه'}
+                </p>
               </div>
               <button
                 type="button"
@@ -43,20 +49,37 @@ const DoctorStatusModal = ({ isOpen, doctor, onClose, tempStatus, setTempStatus,
               </button>
             </div>
 
-            {/* Doctor Details Quick Card */}
+            {/* Details Quick Card */}
             <div className="mx-6 mt-5 p-3.5 rounded-2xl bg-sky-50/40 dark:bg-slate-800/30 border border-sky-100/20 dark:border-slate-800/40 flex items-center gap-3">
-              <div className="w-11 h-11 rounded-2xl overflow-hidden border border-primary/20 shrink-0 bg-sky-100 dark:bg-sky-950 flex items-center justify-center font-bold">
-                <img
-                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(doctor.name || 'طبيب')}&background=e0f2fe&color=367AFF&bold=true&size=64`}
-                  alt={doctor.name}
-                  className="w-full h-full object-cover"
-                />
+              <div className={`w-11 h-11 rounded-2xl overflow-hidden border shrink-0 flex items-center justify-center font-bold ${
+                isDoctor 
+                  ? 'border-primary/20 bg-sky-100 dark:bg-sky-950 text-primary' 
+                  : 'border-emerald-500/20 bg-emerald-50/80 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-450'
+              }`}>
+                {isDoctor ? (
+                  <img
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'طبيب')}&background=e0f2fe&color=367AFF&bold=true&size=64`}
+                    alt={user.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <FlaskConical size={20} className="text-emerald-600 dark:text-emerald-400" />
+                )}
               </div>
               <div className="flex flex-col min-w-0">
-                <span className="font-extrabold text-gray-800 dark:text-gray-100 text-xs leading-tight">{doctor.name}</span>
+                <span className="font-extrabold text-gray-800 dark:text-gray-100 text-xs leading-tight">{user.name}</span>
                 <span className="text-[10px] text-gray-400 dark:text-slate-400 font-semibold mt-1 flex items-center gap-1">
-                  <Building2 size={11} className="text-sky-500" />
-                  {doctor.clinicName || 'عيادة غير محددة'}
+                  {isDoctor ? (
+                    <>
+                      <Building2 size={11} className="text-sky-500" />
+                      {user.clinicName || 'عيادة غير محددة'}
+                    </>
+                  ) : (
+                    <>
+                      <MapPin size={11} className="text-emerald-500" />
+                      {user.address || 'عنوان غير محدد'}
+                    </>
+                  )}
                 </span>
               </div>
             </div>
@@ -79,7 +102,11 @@ const DoctorStatusModal = ({ isOpen, doctor, onClose, tempStatus, setTempStatus,
                 </div>
                 <div className="flex-grow min-w-0 flex flex-col gap-0.5">
                   <span className="text-xs font-black text-gray-800 dark:text-gray-100">نشط (Active)</span>
-                  <span className="text-[10px] text-gray-400 dark:text-slate-400 font-medium leading-relaxed">تفعيل الحساب ليتمكن الطبيب من استخدام خدمات المنصة والعيادة.</span>
+                  <span className="text-[10px] text-gray-400 dark:text-slate-400 font-medium leading-relaxed font-sans">
+                    {isDoctor 
+                      ? 'تفعيل الحساب ليتمكن الطبيب من استخدام خدمات المنصة والعيادة.'
+                      : 'تفعيل الحساب ليتمكن المخبر من استخدام خدمات المنصة واستلام الطلبات.'}
+                  </span>
                 </div>
                 {tempStatus?.toLowerCase() === 'active' && (
                   <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center text-white shrink-0 self-center">
@@ -103,7 +130,11 @@ const DoctorStatusModal = ({ isOpen, doctor, onClose, tempStatus, setTempStatus,
                 </div>
                 <div className="flex-grow min-w-0 flex flex-col gap-0.5">
                   <span className="text-xs font-black text-gray-800 dark:text-gray-100">معلق (Suspended)</span>
-                  <span className="text-[10px] text-gray-400 dark:text-slate-400 font-medium leading-relaxed">تعطيل الحساب مؤقتاً ولن يتمكن الطبيب من تسجيل الدخول للمنصة.</span>
+                  <span className="text-[10px] text-gray-400 dark:text-slate-400 font-medium leading-relaxed font-sans">
+                    {isDoctor
+                      ? 'تعطيل الحساب مؤقتاً ولن يتمكن الطبيب من تسجيل الدخول للمنصة.'
+                      : 'تعطيل الحساب مؤقتاً ولن يتمكن المخبر من تسجيل الدخول للمنصة.'}
+                  </span>
                 </div>
                 {tempStatus?.toLowerCase() === 'suspended' && (
                   <div className="w-4 h-4 rounded-full bg-rose-500 flex items-center justify-center text-white shrink-0 self-center">
@@ -127,7 +158,11 @@ const DoctorStatusModal = ({ isOpen, doctor, onClose, tempStatus, setTempStatus,
                 </div>
                 <div className="flex-grow min-w-0 flex flex-col gap-0.5">
                   <span className="text-xs font-black text-gray-800 dark:text-gray-100">قيد المراجعة (Pending)</span>
-                  <span className="text-[10px] text-gray-400 dark:text-slate-400 font-medium leading-relaxed">إعادة الطبيب لمرحلة مراجعة الوثائق بانتظار موافقة الإدارة.</span>
+                  <span className="text-[10px] text-gray-400 dark:text-slate-400 font-medium leading-relaxed font-sans">
+                    {isDoctor
+                      ? 'إعادة الطبيب لمرحلة مراجعة الوثائق بانتظار موافقة الإدارة.'
+                      : 'إعادة المخبر لمرحلة مراجعة الوثائق بانتظار موافقة الإدارة.'}
+                  </span>
                 </div>
                 {(tempStatus?.toLowerCase() === 'pendingadminapproval' || tempStatus?.toLowerCase() === 'pending') && (
                   <div className="w-4 h-4 rounded-full bg-amber-500 flex items-center justify-center text-white shrink-0 self-center">
@@ -149,9 +184,9 @@ const DoctorStatusModal = ({ isOpen, doctor, onClose, tempStatus, setTempStatus,
               <button
                 type="button"
                 onClick={onConfirm}
-                disabled={tempStatus === doctor.status}
+                disabled={tempStatus === user.status}
                 className={`px-5 py-2 rounded-xl text-xs font-bold text-white shadow-sm active:scale-95 transition-all cursor-pointer ${
-                  tempStatus === doctor.status
+                  tempStatus === user.status
                     ? 'bg-slate-200 dark:bg-slate-800 cursor-not-allowed text-gray-400 dark:text-slate-500 shadow-none'
                     : 'bg-primary hover:bg-primary/95'
                 }`}
@@ -167,4 +202,4 @@ const DoctorStatusModal = ({ isOpen, doctor, onClose, tempStatus, setTempStatus,
   );
 };
 
-export default DoctorStatusModal;
+export default UserStatusModal;

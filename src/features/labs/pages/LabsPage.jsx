@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import LabCard from '../components/LabCard';
 import LabDetailsModal from '../components/LabDetailsModal';
+import UserStatusModal from '../../../components/shared/UserStatusModal';
 import { useLabs } from '../hooks/useLabs';
 import MembershipPagination from '../../membership/components/MembershipPagination';
 import Search from '../../../components/shared/Search/Search';
@@ -22,7 +23,33 @@ const LabsPage = () => {
     selectedLabId,
     handleShowDetails,
     handleCloseDetails,
+
+    // Status modification
+    toggleStatus,
+    updatingLabId,
   } = useLabs();
+
+  const [selectedLabForStatus, setSelectedLabForStatus] = useState(null);
+  const [tempStatus, setTempStatus] = useState(null);
+
+  // دالة تغيير الحالة النهائية
+  const handleStatusChange = (labId, nextStatus) => {
+    if (!toggleStatus) return;
+    toggleStatus({ id: labId, nextStatus });
+  };
+
+  // فتح المودال وتخزين الحالة المؤقتة
+  const openStatusModal = (lab) => {
+    setSelectedLabForStatus(lab);
+    setTempStatus(lab.status);
+  };
+
+  // تأكيد التعديل وإغلاق المودال
+  const handleConfirmStatusChange = () => {
+    if (!selectedLabForStatus) return;
+    handleStatusChange(selectedLabForStatus.id, tempStatus);
+    setSelectedLabForStatus(null);
+  };
 
   return (
     <div className="flex flex-col gap-6 px-4 sm:px-10 lg:px-12 pb-10 min-h-full" dir="rtl">
@@ -62,6 +89,8 @@ const LabsPage = () => {
                 id={lab.id} 
                 name={lab.name} 
                 onShowDetails={handleShowDetails} 
+                onEditStatus={openStatusModal}
+                updatingLabId={updatingLabId}
               />
             ))
           ) : (
@@ -88,6 +117,17 @@ const LabsPage = () => {
         isOpen={!!selectedLabId}
         onClose={handleCloseDetails}
         isLoading={isLoadingDetails}
+      />
+
+      {/* مودال تعديل حالة المخبر الموحد */}
+      <UserStatusModal
+        isOpen={!!selectedLabForStatus}
+        user={selectedLabForStatus}
+        type="lab"
+        onClose={() => setSelectedLabForStatus(null)}
+        tempStatus={tempStatus}
+        setTempStatus={setTempStatus}
+        onConfirm={handleConfirmStatusChange}
       />
     </div>
   );

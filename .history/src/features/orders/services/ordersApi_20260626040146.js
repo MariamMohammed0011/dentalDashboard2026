@@ -26,16 +26,14 @@ const formatDate = (dateString) => {
     return dateString;
   }
 };
+
 export const fetchOrders = async () => {
   try {
     const response = await axiosInstance.get("/CaseOrders/all-with-details");
     const rawOrders = response.data || [];
 
-    // التعديل السحري هنا: الترتيب تصاعدياً من الرقم الأصغر إلى الرقم الأكبر (1، 2، 3...)
-    const sortedOrders = rawOrders.sort((a, b) => a.orderId - b.orderId);
-
     // مطابقة وتنسيق بيانات الطلبيات لتتوافق مع الأعمدة المعروضة في جدول الواجهة
-    return sortedOrders.map(order => ({
+    return rawOrders.map(order => ({
       id: order.orderId,
       doctor: order.dentistName || "طبيب غير معروف",
       lab: order.labName || "مخبر غير معروف",

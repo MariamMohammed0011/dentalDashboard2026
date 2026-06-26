@@ -27,7 +27,7 @@ export default function LoginForm() {
               label="البريد الالكتروني "
               name="username"
               type="text"
-              placeholder="ادخل بريدك الالكتروني  "
+              placeholder="ا  "
               icon={User}
               required
             />

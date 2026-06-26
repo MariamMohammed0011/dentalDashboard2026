@@ -1,12 +1,10 @@
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { membershipApi } from '../services/membershipApi';
-import { toast } from 'sonner';
 import { useSearch } from '../../../components/shared/Search/hooks/useSearch';
+import { useUpdateUserStatus } from '../../../hooks/useUpdateUserStatus';
 
 export const useMembership = () => {
-  const queryClient = useQueryClient();
-  
   // ── حالات التحكم في القائمة والفلترة ──
   const [activeTab, setActiveTab] = useState('doctor'); 
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,28 +39,13 @@ export const useMembership = () => {
     staleTime: 1000 * 60 * 5, 
   });
 
-  // 3. ميوتيشن تحديث الحالة (قبول، رفض، تعليق)
-  const updateStatusMutation = useMutation({
-    mutationFn: ({ id, status, type }) => membershipApi.updateRequestStatus(id, status, type),
-    onSuccess: (data, variables) => {
-      queryClient.invalidateQueries(['membership-requests']);
-      const successMessages = {
-        accepted: 'تم قبول الطلب بنجاح',
-        rejected: 'تم رفض الطلب بنجاح',
-        suspended: 'تم تعليق الحساب بنجاح'
-      };
-      toast.success(successMessages[variables.status] || 'تم تحديث الحالة');
-    },
-    onError: (error) => {
-      const errorMsg = error.response?.data?.message || 'حدث خطأ أثناء تحديث الحالة';
-      toast.error(errorMsg);
-    }
-  });
+  // 3. استخدام الهوك الموحد لتحديث الحالة (قبول، رفض، تعليق)
+  const { updateStatus, isPending } = useUpdateUserStatus(['membership-requests']);
 
   // ── دالات المعالجة (Handlers) ──
 
   const handleUpdateStatus = (id, status, type) => {
-    updateStatusMutation.mutate({ id, status, type: type || activeTab });
+    updateStatus({ id, status, type: type || activeTab });
   };
 
   const handleShowDetails = (request) => {
@@ -103,6 +86,6 @@ export const useMembership = () => {
     handleUpdateStatus,
     handleShowDetails,
     handleCloseDetails,
-    isUpdating: updateStatusMutation.isPending, 
+    isUpdating: isPending, 
   };
 };
