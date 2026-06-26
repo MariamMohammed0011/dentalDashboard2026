@@ -406,7 +406,7 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                   <div className="mt-8 pt-4 border-t border-slate-50 dark:border-slate-800/40 text-center text-xs text-gray-400 dark:text-slate-500">
                     <span className="flex items-center justify-center gap-1.5">
                       <Calendar size={14} />
-                      تاريخ التسجيل المعتمد: {lab.owner?.createdAt ? new Date(lab.owner.createdAt).toLocaleDateString('en-US', { dateStyle: 'long' }) : 'غير متوفر'}
+                      تاريخ التسجيل المعتمد: {lab.owner?.createdAt ? new Date(lab.owner.createdAt).toLocaleDateString('ar-EG', { dateStyle: 'long' }) : 'غير متوفر'}
                     </span>
                   </div>
 

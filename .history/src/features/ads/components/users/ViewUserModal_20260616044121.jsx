@@ -24,7 +24,7 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
   const formatDate = (dateString) => {
     if (!dateString) return '-';
     try {
-      return new Date(dateString).toLocaleDateString('en-US', {
+      return new Date(dateString).toLocaleDateString('ar-SY', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',

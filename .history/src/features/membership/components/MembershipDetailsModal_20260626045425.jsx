@@ -138,7 +138,7 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                         <div className="flex flex-col">
                           <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter mb-0.5">تاريخ الانضمام</span>
                           <span className="text-[15px] text-text-main font-bold">
-                            {request.createdAt ? new Date(request.createdAt).toLocaleDateString('en-US', { dateStyle: 'long' }) : 'غير متوفر'}
+                            {request.createdAt ? new Date(request.createdAt).toLocaleDateString('en_', { dateStyle: 'long' }) : 'غير متوفر'}
                           </span>
                         </div>
                       </div>

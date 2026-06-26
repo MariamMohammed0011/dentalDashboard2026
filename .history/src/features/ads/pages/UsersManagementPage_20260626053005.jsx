@@ -126,7 +126,7 @@ const updateUserMutation = useMutation({
   });
 
   return (
-    <div className="p-2 flex flex-col gap-6 bg-transparent" dir="rtl">
+    <div className=" flex flex-col gap-6 bg-transparent" dir="rtl">
       
       {/* 1. Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4">

@@ -108,7 +108,7 @@ const DoctorsTable = ({ doctors, isLoading, onToggleStatus, updatingDoctorId }) 
         ) : (
           doctors.map((doc) => {
             const formattedDate = doc.createdAt 
-              ? new Date(doc.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' }) 
+              ? new Date(doc.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'numeric', day: 'numeric' }) 
               : 'غير محدد';
 
             return (

@@ -41,7 +41,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
     if (!dateString) return 'غير محدد';
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', {
+      return date.toLocaleDateString('ar-EG', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
