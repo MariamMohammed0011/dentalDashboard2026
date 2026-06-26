@@ -10,7 +10,7 @@ const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) =>
   };
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-center py-2 sm:py-3  bg-transparent border-b border-gray-200/50 gap-4 mb-2" dir="rtl">
+    <div className="flex flex-col sm:flex-row justify-between items-center py-2 sm:py-3 px-2 sm:px-4 bg-transparent border-b border-gray-200/50 gap-4 mb-2" dir="rtl">
       {/* عنوان الصفحة */}
       <div className="shrink-0 w-full sm:w-auto text-right flex items-center gap-2">
         
@@ -18,8 +18,10 @@ const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) =>
             <ClipboardList size={28} className="text-[#367AFF]" />
           </div>
         
+        {/* إضافة الأيقونة هنا قبل النص مباشرة */}
+        <ClipboardList size={24} className="text-gray-700" />
         <h1 className="text-[18px] sm:text-[22px] font-bold text-gray-700">
-          ادارة طلبات الأطباء
+          إدارة الطلبات
         </h1>
       </div>
 

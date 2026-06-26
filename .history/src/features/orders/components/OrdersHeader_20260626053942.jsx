@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClipboardList, Search, SlidersHorizontal } from 'lucide-react';
+import { Search, SlidersHorizontal, ClipboardList } from 'lucide-react';
 
 // استقبال الـ props الخاصة بالترتيب من المكون الأب
 const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) => {
@@ -10,20 +10,9 @@ const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) =>
   };
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-center py-2 sm:py-3  bg-transparent border-b border-gray-200/50 gap-4 mb-2" dir="rtl">
-      {/* عنوان الصفحة */}
-      <div className="shrink-0 w-full sm:w-auto text-right flex items-center gap-2">
-        
-         <div className="p-3.5 bg-[#E8F1FF] text-[#367AFF] rounded-2xl shadow-sm border border-[#D2E4FF]/50 flex items-center justify-center">
-            <ClipboardList size={28} className="text-[#367AFF]" />
-          </div>
-        
-        <h1 className="text-[18px] sm:text-[22px] font-bold text-gray-700">
-          ادارة طلبات الأطباء
-        </h1>
-      </div>
-
-      {/* حقل البحث والفلتر */}
+    <div className="flex flex-col-reverse sm:flex-row justify-between items-stretch sm:items-center w-full mb-6 sm:mb-8 gap-4 sm:gap-6 px-0" dir="rtl">
+      
+      {/* حقل البحث والفلتر (أصبح في جهة الأزرار السابقة لتطابق الهيكل) */}
       <div className="flex items-center gap-3 w-full sm:w-auto flex-grow max-w-lg">
         <div className="relative flex-grow">
           <input
@@ -36,7 +25,7 @@ const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) =>
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
         </div>
 
-        {/* زر الترتيب التفاعلي المعدل */}
+        {/* زر الترتيب التفاعلي */}
         <button 
           onClick={handleToggleSort}
           title={sortOrder === 'asc' ? "ترتيب تنازلي (الأحدث أولاً)" : "ترتيب تصاعدي (الأقدم أولاً)"}
@@ -47,11 +36,15 @@ const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) =>
             }`}
         >
           <SlidersHorizontal size={18} />
-          {/* <span className="text-[11px] font-bold px-0.5">
-            {sortOrder === 'asc' ? 'تصاعدي' : 'تنازلي'}
-          </span> */}
         </button>
       </div>
+
+      {/* حاوية العنوان المحدثة بالكامل لتطابق بطاقة الإعلانات (نفس الخلفية، الحواف، الخط، واللون السكني الداكن) */}
+      <div className="bg-white px-4 sm:px-10 py-3 rounded-2xl font-black text-text-main text-base sm:text-lg border border-gray-100 shadow-sm flex items-center justify-center gap-2 w-full sm:w-auto">
+        <ClipboardList size={20} className="text-text-main" /> {/* الأيقونة تأخذ نفس مقاس ولون النص تماماً */}
+        <span>إدارة الطلبات</span>
+      </div>
+      
     </div>
   );
 };

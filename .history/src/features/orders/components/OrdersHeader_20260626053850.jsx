@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClipboardList, Search, SlidersHorizontal } from 'lucide-react';
+import { Search, SlidersHorizontal, ClipboardList } from 'lucide-react';
 
 // استقبال الـ props الخاصة بالترتيب من المكون الأب
 const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) => {
@@ -10,16 +10,13 @@ const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) =>
   };
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-center py-2 sm:py-3  bg-transparent border-b border-gray-200/50 gap-4 mb-2" dir="rtl">
-      {/* عنوان الصفحة */}
+    <div className="flex flex-col sm:flex-row justify-between items-center py-2 sm:py-3 px-2 sm:px-4 bg-transparent border-b border-gray-200/50 gap-4 mb-2" dir="rtl">
+      {/* عنوان الصفحة مع الأيقونة */}
       <div className="shrink-0 w-full sm:w-auto text-right flex items-center gap-2">
-        
-         <div className="p-3.5 bg-[#E8F1FF] text-[#367AFF] rounded-2xl shadow-sm border border-[#D2E4FF]/50 flex items-center justify-center">
-            <ClipboardList size={28} className="text-[#367AFF]" />
-          </div>
-        
+        {/* إضافة الأيقونة هنا قبل النص مباشرة */}
+        <ClipboardList size={24} className="text-gray-700" />
         <h1 className="text-[18px] sm:text-[22px] font-bold text-gray-700">
-          ادارة طلبات الأطباء
+          إدارة الطلبات
         </h1>
       </div>
 
@@ -47,9 +44,6 @@ const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) =>
             }`}
         >
           <SlidersHorizontal size={18} />
-          {/* <span className="text-[11px] font-bold px-0.5">
-            {sortOrder === 'asc' ? 'تصاعدي' : 'تنازلي'}
-          </span> */}
         </button>
       </div>
     </div>

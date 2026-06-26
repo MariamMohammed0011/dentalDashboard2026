@@ -19,7 +19,7 @@ const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) =>
           </div>
         
         <h1 className="text-[18px] sm:text-[22px] font-bold text-gray-700">
-          ادارة طلبات الأطباء
+          إدارة 
         </h1>
       </div>
 
