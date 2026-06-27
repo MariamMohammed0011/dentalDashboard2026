@@ -14,7 +14,8 @@ import {
   Settings,
   ChevronRight,
   ChevronLeft,
-  BookOpen
+  BookOpen,
+  Bell
 } from 'lucide-react';
 
 export const NavItem = ({ to, label, icon: Icon, isCollapsed, onClick, children }) => {
@@ -142,6 +143,20 @@ export const navItems = [
       {
         to: "/dashboard/ads/users",
         label: "إدارة المستخدمين",
+      },
+    ],
+  },
+  {
+    label: "الإشعارات",
+    icon: Bell,
+    children: [
+      {
+        to: "/dashboard/notifications/send",
+        label: "إرسال إشعار",
+      },
+      {
+        to: "/dashboard/notifications",
+        label: "أرشيف الإشعارات",
       },
     ],
   },

@@ -19,6 +19,8 @@ import ReportsPage from "./features/reports/pages/ReportsPage";
 import InterventionPage from "./features/interventions/pages/InterventionPage";
 import SettingsPage from "./features/dashboard/pages/SettingsPage";
 import BlogsPage from "./features/blogs/pages/BlogsPage";
+import NotificationsListPage from "./features/notifications/pages/NotificationsListPage";
+import SendNotificationPage from "./features/notifications/pages/SendNotificationPage";
 
 const queryClient = new QueryClient();
 import Cookies from "js-cookie";
@@ -70,6 +72,8 @@ function App() {
               <Route path="delivery-companies" element={<DeliveryCompaniesPage />} />
               <Route path="ads" element={<AdsPage />} />
               <Route path="ads/users" element={<UsersManagementPage />} />
+              <Route path="notifications" element={<NotificationsListPage />} />
+              <Route path="notifications/send" element={<SendNotificationPage />} />
               <Route path="reports" element={<ReportsPage />} />
               <Route path="intervention-log" element={<InterventionPage />} />
               <Route path="settings" element={<SettingsPage />} />

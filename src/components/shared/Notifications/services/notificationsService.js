@@ -161,30 +161,84 @@ export const notificationsService = {
 // داخل ملف notificationsService.js، عدلي دالة الجلب لتصبح كالتالي:
 getNotifications: async () => {
     try {
-        // استخدمي axiosInstance إذا كان هو المعرف بـ BaseURL و Tokens
         const response = await axiosInstance.get('/DoctorBlog/notifications'); 
         console.log("البيانات الخام من الـ API:", response.data); 
         
-        return response.data.map(n => notificationsService.formatNotification(n));
+        const apiNotifs = response.data.map(n => notificationsService.formatNotification(n));
+        
+        // جلب الإشعارات المحلية المضافة عبر نموذج الإرسال
+        const localNotifsRaw = JSON.parse(localStorage.getItem("mock_notifications") || "[]");
+        const deletedIds = getLocalDeletedIds();
+        const localNotifs = localNotifsRaw
+          .filter(n => !deletedIds.includes(n.id))
+          .map(n => notificationsService.formatNotification(n));
+          
+        return [...localNotifs, ...apiNotifs];
     } catch (error) {
         console.error("خطأ في الخدمة:", error);
-        return [];
+        const localNotifsRaw = JSON.parse(localStorage.getItem("mock_notifications") || "[]");
+        const deletedIds = getLocalDeletedIds();
+        const localNotifs = localNotifsRaw
+          .filter(n => !deletedIds.includes(n.id))
+          .map(n => notificationsService.formatNotification(n));
+        return localNotifs;
     }
-},
+  },
+
+  // إنشاء إشعار جديد
+  createNotification: async (notificationData) => {
+    const rawId = Math.floor(Math.random() * 1000000);
+    const newNotif = {
+      id: rawId,
+      message: notificationData.message || notificationData.text,
+      type: notificationData.type || "reminder",
+      createdAt: new Date().toISOString(),
+      isRead: false
+    };
+
+    // محاولة إرسال الإشعار للباك إند
+    try {
+      await axiosInstance.post('/DoctorBlog/notifications', {
+        message: newNotif.message,
+        type: newNotif.type
+      });
+    } catch (error) {
+      console.warn("فشل الإرسال للسيرفر، سيتم حفظ الإشعار محلياً:", error);
+    }
+
+    // حفظ محلي لضمان ظهوره فوراً في الجدول وجرس الإشعارات
+    const localNotifs = JSON.parse(localStorage.getItem("mock_notifications") || "[]");
+    localNotifs.unshift(newNotif);
+    localStorage.setItem("mock_notifications", JSON.stringify(localNotifs));
+
+    return newNotif;
+  },
 
   // تحديث حالة إشعار معين ليصبح مقروءاً
   markAsRead: async (id) => {
     addLocalReadId(id);
     try {
+      const localNotifs = JSON.parse(localStorage.getItem("mock_notifications") || "[]");
+      const updated = localNotifs.map(n => n.id === id ? { ...n, isRead: true } : n);
+      localStorage.setItem("mock_notifications", JSON.stringify(updated));
+    } catch (e) {}
+    
+    try {
       await axiosInstance.put(`/DoctorBlog/notifications/${id}/read`);
     } catch (error) {
-      // تجاهل الخطأ في حال عدم توفر الميثود بالخادم
+      // تجاهل الخطأ
     }
     return await notificationsService.getNotifications();
   },
 
   // قراءة جميع الإشعارات
   markAllAsRead: async () => {
+    try {
+      const localNotifs = JSON.parse(localStorage.getItem("mock_notifications") || "[]");
+      const updated = localNotifs.map(n => ({ ...n, isRead: true }));
+      localStorage.setItem("mock_notifications", JSON.stringify(updated));
+    } catch (e) {}
+    
     try {
       const notifications = await notificationsService.getNotifications();
       notifications.forEach(n => addLocalReadId(n.id));
@@ -200,6 +254,12 @@ getNotifications: async () => {
   deleteNotification: async (id) => {
     addLocalDeletedId(id);
     try {
+      const localNotifs = JSON.parse(localStorage.getItem("mock_notifications") || "[]");
+      const filtered = localNotifs.filter(n => n.id !== id);
+      localStorage.setItem("mock_notifications", JSON.stringify(filtered));
+    } catch (e) {}
+    
+    try {
       await axiosInstance.delete(`/DoctorBlog/notifications/${id}`);
     } catch (error) {
       // تجاهل الخطأ
@@ -209,6 +269,7 @@ getNotifications: async () => {
 
   // مسح جميع الإشعارات
   clearAllNotifications: async () => {
+    localStorage.removeItem("mock_notifications");
     try {
       const notifications = await notificationsService.getNotifications();
       notifications.forEach(n => addLocalDeletedId(n.id));
