@@ -61,8 +61,7 @@ function App() {
               <Route path="membership-requests" element={<MembershipRequestsPage />} />
               <Route path="doctors" element={<DoctorsPage />} />
               <Route path="labs" element={<LabsPage />} />
-              <Route path="blogs" element={<BlogsPage />} />
-              <Route path="ads" element={<AdsPage />} />
+              <Route path="blogs" element={<BlogsPage />} /><Route path="ads" element={<AdsPage />} />
               <Route path="ads/users" element={<UsersManagementPage />} />
               <Route path="notifications" element={<NotificationsListPage />} />
               <Route path="notifications/send" element={<SendNotificationPage />} />

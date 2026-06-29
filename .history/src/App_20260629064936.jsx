@@ -12,6 +12,7 @@ import OrdersPage from "./features/orders/pages/OrdersPage";
 import MembershipRequestsPage from "./features/membership/pages/MembershipRequestsPage";
 import DoctorsPage from "./features/doctors/pages/DoctorsPage";
 import LabsPage from "./features/labs/pages/LabsPage";
+import DeliveryCompaniesPage from "./features/dashboard/pages/DeliveryCompaniesPage";
 import AdsPage from "./features/ads/pages/AdsPage";
 import UsersManagementPage from "./features/ads/pages/UsersManagementPage";
 import ReportsPage from "./features/reports/pages/ReportsPage";
@@ -62,6 +63,7 @@ function App() {
               <Route path="doctors" element={<DoctorsPage />} />
               <Route path="labs" element={<LabsPage />} />
               <Route path="blogs" element={<BlogsPage />} />
+              {/* <Route path="delivery-companies" element={<DeliveryCompaniesPage />} /> */}
               <Route path="ads" element={<AdsPage />} />
               <Route path="ads/users" element={<UsersManagementPage />} />
               <Route path="notifications" element={<NotificationsListPage />} />
