@@ -104,7 +104,7 @@ export const NavItem = ({ to, label, icon: Icon, isCollapsed, onClick, children 
   }
 
   return (
-    <div className="relative w-full ">
+    <div className="relative w-full bg-red-300 h-full">
       <Link 
         to={to} 
         onClick={onClick}
@@ -188,7 +188,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
       </div>
 
       
-      <nav className="flex flex-col justify-between flex-grow pb-4 overflow-y-auto custom-scrollbar">
+      <nav className="flex flex-col justify-between flex-grow pb-4 overflow-hidden">
         <div className="flex flex-col">
           {navItems.map((item) => (
             <NavItem key={item.to} {...item} isCollapsed={isCollapsed} />

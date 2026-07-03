@@ -104,7 +104,7 @@ export const NavItem = ({ to, label, icon: Icon, isCollapsed, onClick, children 
   }
 
   return (
-    <div className="relative w-full ">
+    <div className="relative w-full bg-red-300 h-full">
       <Link 
         to={to} 
         onClick={onClick}
@@ -169,7 +169,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
 
   return (
     <aside 
-      className={`h-screen   flex-col py-4 bg-bg-main z-20 transition-all duration-300 relative border-l border-border-main hidden lg:flex flex-shrink-0 ${
+      className={`h-screen  moi flex-col py-4 bg-bg-main z-20 transition-all duration-300 relative border-l border-border-main hidden lg:flex flex-shrink-0 ${
         isCollapsed ? "w-[80px] min-w-[80px] max-w-[80px]" : "w-[260px] min-w-[260px] max-w-[260px]"
       }`} 
       dir="rtl"
@@ -188,7 +188,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
       </div>
 
       
-      <nav className="flex flex-col justify-between flex-grow pb-4 overflow-y-auto custom-scrollbar">
+      <nav className="flex flex-col justify-between flex-grow pb-4 overflow-hidden">
         <div className="flex flex-col">
           {navItems.map((item) => (
             <NavItem key={item.to} {...item} isCollapsed={isCollapsed} />

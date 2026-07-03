@@ -18,6 +18,7 @@ import ReportsPage from "./features/reports/pages/ReportsPage";
 import InterventionPage from "./features/interventions/pages/InterventionPage";
 import SettingsPage from "./features/dashboard/pages/SettingsPage";
 import BlogsPage from "./features/blogs/pages/BlogsPage";
+import SubscriptionsPage from "./features/subscription/pages/SubscriptionsPage";
 import NotificationsListPage from "./features/notifications/pages/NotificationsListPage";
 import SendNotificationPage from "./features/notifications/pages/SendNotificationPage";
 
@@ -61,6 +62,7 @@ function App() {
               <Route path="membership-requests" element={<MembershipRequestsPage />} />
               <Route path="doctors" element={<DoctorsPage />} />
               <Route path="labs" element={<LabsPage />} />
+              <Route path="subscriptions" element={<SubscriptionsPage />} />
               <Route path="blogs" element={<BlogsPage />} />
               <Route path="ads" element={<AdsPage />} />
               <Route path="ads/users" element={<UsersManagementPage />} />

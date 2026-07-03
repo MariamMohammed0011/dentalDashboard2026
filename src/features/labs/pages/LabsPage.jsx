@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import LabCard from '../components/LabCard';
 import LabDetailsModal from '../components/LabDetailsModal';
+import LabsFilter from '../components/LabsFilter';
 import UserStatusModal from '../../../components/shared/UserStatusModal';
 import { useLabs } from '../hooks/useLabs';
 import MembershipPagination from '../../membership/components/MembershipPagination';
@@ -27,6 +28,20 @@ const LabsPage = () => {
     
     toggleStatus,
     updatingLabId,
+
+    // ── Filter props ──
+    statusFilter,
+    setStatusFilter,
+    ratingSort,
+    setRatingSort,
+    materialFilter,
+    setMaterialFilter,
+    serviceFilter,
+    setServiceFilter,
+    availableMaterials,
+    availableServices,
+    hasActiveFilters,
+    resetFilters,
   } = useLabs();
 
   const [selectedLabForStatus, setSelectedLabForStatus] = useState(null);
@@ -57,7 +72,7 @@ const LabsPage = () => {
       <div className="flex flex-col sm:flex-row justify-between items-center py-2 px-0 gap-4 w-full" dir="rtl">
         <div className="shrink-0 w-full sm:w-auto text-right">
           <h1 className="text-[18px] sm:text-[20px] font-bold text-gray-700 dark:text-gray-200">
-            المخابر المعتمدة
+            المخابر 
           </h1>  
         </div>
         
@@ -71,12 +86,45 @@ const LabsPage = () => {
         />
       </div>
 
+      {/* ── Filters Section ── */}
+      <div className="relative z-20">
+        <LabsFilter
+          statusFilter={statusFilter}
+          onStatusChange={setStatusFilter}
+          ratingSort={ratingSort}
+          onRatingSortChange={setRatingSort}
+          materialFilter={materialFilter}
+          onMaterialChange={setMaterialFilter}
+          serviceFilter={serviceFilter}
+          onServiceChange={setServiceFilter}
+          availableMaterials={availableMaterials}
+          availableServices={availableServices}
+          onResetFilters={resetFilters}
+          hasActiveFilters={hasActiveFilters}
+        />
+      </div>
+
       
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full flex flex-col gap-6"
+        className="w-full flex flex-col gap-6 relative z-0"
       >
+        {/* Active filters summary */}
+        {hasActiveFilters && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-slate-400"
+          >
+            <span className="text-emerald-600 dark:text-emerald-400">
+              {pagination.total}
+            </span>
+            <span>نتيجة مطابقة للفلاتر المحددة</span>
+          </motion.div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
           {isLoading ? (
             Array(6).fill(0).map((_, i) => (
@@ -95,7 +143,9 @@ const LabsPage = () => {
             ))
           ) : (
             <div className="col-span-full py-16 text-center text-gray-400 dark:text-slate-500 font-bold">
-              لم يتم العثور على أي مخابر مطابقة لعملية البحث.
+              {hasActiveFilters 
+                ? 'لم يتم العثور على مخابر مطابقة للفلاتر المحددة.'
+                : 'لم يتم العثور على أي مخابر مطابقة لعملية البحث.'}
             </div>
           )}
         </div>
