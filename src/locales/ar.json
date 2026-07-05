@@ -181,6 +181,7 @@
     "noMatchingFilters": "لم يتم العثور على مخابر مطابقة للفلاتر المحددة.",
     "noMatchingSearch": "لم يتم العثور على أي مخابر مطابقة لعملية البحث.",
     "labType": "مخبر تعويضات",
+    "averageRating": "متوسط التقييم",
     "labNumber": "مخبر رقم:",
     "detailsModal": {
       "loadingData": "جاري جلب بيانات المخبر",
