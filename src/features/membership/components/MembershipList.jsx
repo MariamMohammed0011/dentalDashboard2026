@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import MembershipCard from './MembershipCard';
 import MembershipPagination from './MembershipPagination';
 
 const MembershipList = ({ requests, isLoading, onUpdateStatus, onShowDetails }) => {
+  const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
@@ -21,7 +23,7 @@ const MembershipList = ({ requests, isLoading, onUpdateStatus, onShowDetails }) 
   if (!requests || requests.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 bg-white/30 rounded-[2rem] border border-dashed border-gray-200">
-        <p className="text-gray-400 font-medium">لا توجد طلبات انتساب حالياً</p>
+        <p className="text-gray-400 font-medium">{t('membership.noRequests')}</p>
       </div>
     );
   }

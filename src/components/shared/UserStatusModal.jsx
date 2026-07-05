@@ -1,9 +1,12 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { X, Building2, CheckCircle2, AlertTriangle, Clock, Check, FlaskConical, MapPin } from 'lucide-react';
 
 const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatus, onConfirm }) => {
+  const { t } = useTranslation();
+
   if (typeof document === 'undefined' || !document.body) return null;
 
   const isDoctor = type === 'doctor';
@@ -34,10 +37,10 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
             <div className="flex justify-between items-center px-6 py-5 border-b border-slate-100 dark:border-slate-800/80">
               <div className="flex flex-col gap-1">
                 <h3 className="text-[15px] font-black text-gray-800 dark:text-gray-100">
-                  {isDoctor ? 'تعديل حالة حساب الطبيب' : 'تعديل حالة حساب المخبر'}
+                  {isDoctor ? t('userStatusModal.editDoctorStatus') : t('userStatusModal.editLabStatus')}
                 </h3>
                 <p className="text-[11px] text-gray-400 dark:text-slate-400 font-medium">
-                  {isDoctor ? 'اختر الحالة الجديدة لحساب الطبيب المحدد أدناه' : 'اختر الحالة الجديدة لحساب المخبر المحدد أدناه'}
+                  {isDoctor ? t('userStatusModal.chooseDoctorStatus') : t('userStatusModal.chooseLabStatus')}
                 </p>
               </div>
               <button
@@ -58,7 +61,7 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
               }`}>
                 {isDoctor ? (
                   <img
-                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'طبيب')}&background=e0f2fe&color=367AFF&bold=true&size=64`}
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || t('userStatusModal.unknownDoctor'))}&background=e0f2fe&color=367AFF&bold=true&size=64`}
                     alt={user.name}
                     className="w-full h-full object-cover"
                   />
@@ -72,12 +75,12 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
                   {isDoctor ? (
                     <>
                       <Building2 size={11} className="text-sky-500" />
-                      {user.clinicName || 'عيادة غير محددة'}
+                      {user.clinicName || t('userStatusModal.clinicNotSpecified')}
                     </>
                   ) : (
                     <>
                       <MapPin size={11} className="text-emerald-500" />
-                      {user.address || 'عنوان غير محدد'}
+                      {user.address || t('userStatusModal.addressNotSpecified')}
                     </>
                   )}
                 </span>
@@ -97,15 +100,15 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
                     : 'border-slate-100 dark:border-slate-800/60 bg-transparent hover:bg-slate-50/50 dark:hover:bg-slate-800/30'
                 }`}
               >
-                <div className={`w-8 h-8 rounded-xl shrink-0 flex items-center justify-center ${tempStatus?.toLowerCase() === 'active' ? 'bg-emerald-500 text-white' : 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400'}`}>
+                <div className={`w-8 h-8 rounded-xl shrink-0 flex items-center justify-center ${tempStatus?.toLowerCase() === 'active' ? 'bg-emerald-500 text-white' : 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-450'}`}>
                   <CheckCircle2 size={15} />
                 </div>
                 <div className="flex-grow min-w-0 flex flex-col gap-0.5">
-                  <span className="text-xs font-black text-gray-800 dark:text-gray-100">نشط (Active)</span>
+                  <span className="text-xs font-black text-gray-800 dark:text-gray-100">{t('userStatusModal.activeStatus')}</span>
                   <span className="text-[10px] text-gray-400 dark:text-slate-400 font-medium leading-relaxed font-sans">
                     {isDoctor 
-                      ? 'تفعيل الحساب ليتمكن الطبيب من استخدام خدمات المنصة والعيادة.'
-                      : 'تفعيل الحساب ليتمكن المخبر من استخدام خدمات المنصة واستلام الطلبات.'}
+                      ? t('userStatusModal.activeDoctorDesc')
+                      : t('userStatusModal.activeLabDesc')}
                   </span>
                 </div>
                 {tempStatus?.toLowerCase() === 'active' && (
@@ -128,11 +131,11 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
                   <AlertTriangle size={15} />
                 </div>
                 <div className="flex-grow min-w-0 flex flex-col gap-0.5">
-                  <span className="text-xs font-black text-gray-800 dark:text-gray-100">معلق (Suspended)</span>
+                  <span className="text-xs font-black text-gray-800 dark:text-gray-100">{t('userStatusModal.suspendedStatus')}</span>
                   <span className="text-[10px] text-gray-400 dark:text-slate-400 font-medium leading-relaxed font-sans">
                     {isDoctor
-                      ? 'تعطيل الحساب مؤقتاً ولن يتمكن الطبيب من تسجيل الدخول للمنصة.'
-                      : 'تعطيل الحساب مؤقتاً ولن يتمكن المخبر من تسجيل الدخول للمنصة.'}
+                      ? t('userStatusModal.suspendedDoctorDesc')
+                      : t('userStatusModal.suspendedLabDesc')}
                   </span>
                 </div>
                 {tempStatus?.toLowerCase() === 'suspended' && (
@@ -155,11 +158,11 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
                   <Clock size={15} />
                 </div>
                 <div className="flex-grow min-w-0 flex flex-col gap-0.5">
-                  <span className="text-xs font-black text-gray-800 dark:text-gray-100">قيد المراجعة (Pending)</span>
+                  <span className="text-xs font-black text-gray-800 dark:text-gray-100">{t('userStatusModal.pendingStatus')}</span>
                   <span className="text-[10px] text-gray-400 dark:text-slate-400 font-medium leading-relaxed font-sans">
                     {isDoctor
-                      ? 'إعادة الطبيب لمرحلة مراجعة الوثائق بانتظار موافقة الإدارة.'
-                      : 'إعادة المخبر لمرحلة مراجعة الوثائق بانتظار موافقة الإدارة.'}
+                      ? t('userStatusModal.pendingDoctorDesc')
+                      : t('userStatusModal.pendingLabDesc')}
                   </span>
                 </div>
                 {(tempStatus?.toLowerCase() === 'pendingadminapproval' || tempStatus?.toLowerCase() === 'pending') && (
@@ -177,7 +180,7 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
                 onClick={onClose}
                 className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-gray-500 dark:text-slate-455 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800/80 active:scale-95 transition-all cursor-pointer"
               >
-                إلغاء
+                {t('common.cancel')}
               </button>
               <button
                 type="button"
@@ -189,7 +192,7 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
                     : 'bg-primary hover:bg-primary/95'
                 }`}
               >
-                حفظ الحالة
+                {t('userStatusModal.saveStatus')}
               </button>
             </div>
           </motion.div>

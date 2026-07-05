@@ -1,48 +1,50 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { FlaskConical, ChevronLeft, Star, ChevronDown, Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { labsApi } from '../services/labsApi';
 import framerImg from '../../../assets/framer.png';
 
-const getStatusConfig = (status) => {
+const getStatusConfig = (status, t) => {
   const cleanStatus = typeof status === 'string' ? status.toLowerCase() : '';
   if (cleanStatus === 'active') {
     return {
-      label: 'نشط',
+      label: t('common.active'),
       color: 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100/50 dark:border-emerald-900/30 hover:bg-emerald-100/50 dark:hover:bg-emerald-950/50',
       dot: 'bg-emerald-500 animate-pulse'
     };
   }
   if (cleanStatus === 'pendingadminapproval' || cleanStatus === 'pending') {
     return {
-      label: 'قيد المراجعة',
+      label: t('common.pending'),
       color: 'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-100/50 dark:border-amber-900/30 hover:bg-amber-100/50 dark:hover:bg-amber-950/50',
       dot: 'bg-amber-500 animate-pulse'
     };
   }
   if (cleanStatus === 'suspended') {
     return {
-      label: 'معلق',
+      label: t('common.suspended'),
       color: 'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border-rose-100/50 dark:border-rose-900/30 hover:bg-rose-100/50 dark:hover:bg-rose-950/50',
       dot: 'bg-rose-500'
     };
   }
   if (cleanStatus === 'rejected') {
     return {
-      label: 'مرفوض',
+      label: t('common.rejected'),
       color: 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-900/30',
       dot: 'bg-rose-500'
     };
   }
   return {
-    label: status || 'غير محدد',
+    label: status || t('common.unknown'),
     color: 'bg-gray-50 dark:bg-gray-800/40 text-gray-500 dark:text-gray-400 border-gray-100 dark:border-gray-800',
     dot: 'bg-gray-400'
   };
 };
 
 const LabCard = ({ id, name, onShowDetails, onEditStatus, updatingLabId }) => {
+  const { t } = useTranslation();
 
   const { data: details, isLoading } = useQuery({
     queryKey: ['lab-card-details', id],
@@ -99,7 +101,7 @@ const LabCard = ({ id, name, onShowDetails, onEditStatus, updatingLabId }) => {
             </div>
 
             <div className="flex flex-col gap-0.5 min-w-0">
-              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-black tracking-widest uppercase">مخبر تعويضات</span>
+              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-black tracking-widest uppercase">{t('labs.labType')}</span>
               <h3 className="font-bold text-text-main dark:text-gray-100 text-[15px] tracking-tight truncate leading-tight">
                 {name}
               </h3>
@@ -113,12 +115,12 @@ const LabCard = ({ id, name, onShowDetails, onEditStatus, updatingLabId }) => {
               return (
                 <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black border bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border-slate-100 dark:border-slate-850 animate-pulse select-none shrink-0">
                   <Loader2 size={10} className="animate-spin text-primary shrink-0" />
-                  <span>جاري...</span>
+                  <span>{t('common.processing')}</span>
                 </div>
               );
             }
 
-            const statusCfg = getStatusConfig(details.owner.status);
+            const statusCfg = getStatusConfig(details.owner.status, t);
             return (
               <button
                 type="button"
@@ -149,7 +151,7 @@ const LabCard = ({ id, name, onShowDetails, onEditStatus, updatingLabId }) => {
           </div>
           <div className='flex flex-col gap-1 '>
             <span className="text-[10px] text-gray-400 dark:text-slate-500 font-black uppercase tracking-wider">
-              متوسط التقييم
+              {t('labs.averageRating')}
             </span>
             <div className="flex items-center gap-1.5 mt-0.5">
               {isLoading ? (
@@ -169,13 +171,13 @@ const LabCard = ({ id, name, onShowDetails, onEditStatus, updatingLabId }) => {
         </div>
 
         <div className="flex items-center justify-between mt-auto">
-          <span className="text-xs text-gray-400 dark:text-slate-500 font-medium">مخبر رقم: #{id}</span>
+          <span className="text-xs text-gray-400 dark:text-slate-500 font-medium">{t('labs.labNumber')} #{id}</span>
 
           <button
             onClick={() => onShowDetails(id)}
-            className="flex items-center gap-1.5 px-4 py-2 bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white dark:bg-emerald-950/40 dark:hover:bg-emerald-600 dark:text-emerald-400 dark:hover:text-white rounded-xl text-xs font-black transition-all active:scale-95 group/btn"
+            className="flex items-center gap-1.5 px-4 py-2 bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white dark:bg-emerald-950/40 dark:hover:bg-emerald-600 dark:text-emerald-450 dark:hover:text-white rounded-xl text-xs font-black transition-all active:scale-95 group/btn"
           >
-            عرض التفاصيل
+            {t('common.details')}
             <ChevronLeft size={14} className="group-hover/btn:-translate-x-1 transition-transform" />
           </button>
         </div>

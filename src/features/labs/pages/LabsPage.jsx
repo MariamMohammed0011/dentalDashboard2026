@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import LabCard from '../components/LabCard';
 import LabDetailsModal from '../components/LabDetailsModal';
 import LabsFilter from '../components/LabsFilter';
@@ -9,6 +10,7 @@ import MembershipPagination from '../../membership/components/MembershipPaginati
 import Search from '../../../components/shared/Search/Search';
 
 const LabsPage = () => {
+  const { t } = useTranslation();
   const {
     labs,
     pagination,
@@ -72,14 +74,14 @@ const LabsPage = () => {
       <div className="flex flex-col sm:flex-row justify-between items-center py-2 px-0 gap-4 w-full" dir="rtl">
         <div className="shrink-0 w-full sm:w-auto text-right">
           <h1 className="text-[18px] sm:text-[20px] font-bold text-gray-700 dark:text-gray-200">
-            المخابر 
+            {t('labs.title')}
           </h1>  
         </div>
         
         <Search 
           value={searchQuery}
           onChange={setSearchQuery}
-          placeholder="بحث باسم المخبر.."
+          placeholder={t('labs.searchPlaceholder')}
           width="320px"
           className="w-full sm:w-[320px]"
           onClear={() => setSearchQuery('')}
@@ -121,7 +123,7 @@ const LabsPage = () => {
             <span className="text-emerald-600 dark:text-emerald-400">
               {pagination.total}
             </span>
-            <span>نتيجة مطابقة للفلاتر المحددة</span>
+            <span>{t('labs.filterResult')}</span>
           </motion.div>
         )}
 
@@ -144,8 +146,8 @@ const LabsPage = () => {
           ) : (
             <div className="col-span-full py-16 text-center text-gray-400 dark:text-slate-500 font-bold">
               {hasActiveFilters 
-                ? 'لم يتم العثور على مخابر مطابقة للفلاتر المحددة.'
-                : 'لم يتم العثور على أي مخابر مطابقة لعملية البحث.'}
+                ? t('labs.noMatchingFilters')
+                : t('labs.noMatchingSearch')}
             </div>
           )}
         </div>

@@ -1,7 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Eye, Download } from 'lucide-react';
 
 const ReportsTable = ({ reports, isLoading }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="w-full bg-[#F2F4F7] rounded-[2rem] sm:rounded-[2.5rem] p-4 sm:p-6 lg:p-10 border border-gray-200/50 shadow-inner" dir="rtl">
       
@@ -9,13 +12,13 @@ const ReportsTable = ({ reports, isLoading }) => {
         <table className="w-full border-separate border-spacing-y-0 text-center">
           <thead>
             <tr className="text-gray-600 font-bold text-[15px]">
-              <th className="pb-6 px-4">رقم التقرير</th>
-              <th className="pb-6 px-4">نوع التقرير</th>
-              <th className="pb-6 px-4">المدة الزمنية</th>
-              <th className="pb-6 px-4">حالة الطلب</th>
-              <th className="pb-6 px-4">حالة التوصيل</th>
-              <th className="pb-6 px-4">عرض التقرير</th>
-              <th className="pb-6 px-4">تحميل التقرير</th>
+              <th className="pb-6 px-4">{t('reports.reportNumber')}</th>
+              <th className="pb-6 px-4">{t('reports.reportType')}</th>
+              <th className="pb-6 px-4">{t('reports.duration')}</th>
+              <th className="pb-6 px-4">{t('reports.orderStatus')}</th>
+              <th className="pb-6 px-4">{t('reports.deliveryStatus')}</th>
+              <th className="pb-6 px-4">{t('reports.viewReport')}</th>
+              <th className="pb-6 px-4">{t('reports.downloadReport')}</th>
             </tr>
           </thead>
           <tbody>
@@ -67,10 +70,10 @@ const ReportsTable = ({ reports, isLoading }) => {
                  <div className="flex justify-between items-center pb-3 border-b border-gray-50">
                   <span className="text-sm font-black text-gray-700 bg-gray-50 px-3 py-1 rounded-xl"># {report.id}</span>
                   <div className="flex items-center gap-2">
-                    <button className="w-9 h-9 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm" title="عرض التقرير">
+                    <button className="w-9 h-9 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm" title={t('reports.viewReport')}>
                       <Eye size={18} />
                     </button>
-                    <button className="w-9 h-9 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm" title="تحميل التقرير">
+                    <button className="w-9 h-9 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm" title={t('reports.downloadReport')}>
                       <Download size={18} />
                     </button>
                   </div>
@@ -79,19 +82,19 @@ const ReportsTable = ({ reports, isLoading }) => {
               
                 <div className="grid grid-cols-2 gap-3 text-right">
                   <div className="flex flex-col">
-                    <span className="text-[11px] text-gray-400">نوع التقرير</span>
+                    <span className="text-[11px] text-gray-400">{t('reports.reportType')}</span>
                     <span className="text-[13px] font-bold text-gray-700">{report.type}</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[11px] text-gray-400">المدة الزمنية</span>
+                    <span className="text-[11px] text-gray-400">{t('reports.duration')}</span>
                     <span className="text-[13px] font-bold text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">{report.duration}</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[11px] text-gray-400">حالة الطلب</span>
+                    <span className="text-[11px] text-gray-400">{t('reports.orderStatus')}</span>
                     <span className="text-[13px] font-bold text-primary">{report.orderStatus}</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[11px] text-gray-400">حالة التوصيل</span>
+                    <span className="text-[11px] text-gray-400">{t('reports.deliveryStatus')}</span>
                     <span className="text-[13px] font-bold text-gray-600">{report.deliveryStatus}</span>
                   </div>
                 </div>

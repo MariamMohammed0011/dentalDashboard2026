@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronDown, Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useMembership } from '../../membership/hooks/useMembership';
 
 const DoctorsHeader = ({ selectedStatus, onStatusChange }) => {
@@ -8,18 +9,19 @@ const DoctorsHeader = ({ selectedStatus, onStatusChange }) => {
   const { requests, isLoading } = useMembership();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const { t } = useTranslation();
   
   const pendingDoctorRequests = requests?.filter(r => r.status === 'pending' && r.type === 'doctor') || [];
   const count = pendingDoctorRequests.length;
 
-const filters = [
-  { id: 'all', label: 'كل الأطباء' },
-  { id: 'active', label: 'الأطباء النشطين' },
-  { id: 'suspended', label: 'الأطباء المعلقين' }, 
-  { id: 'pendingadminapproval', label: 'بانتظار موافقة المسؤول' }, 
-];
+  const filters = [
+    { id: 'all', label: t('doctors.filters.all') },
+    { id: 'active', label: t('doctors.filters.active') },
+    { id: 'suspended', label: t('doctors.filters.suspended') }, 
+    { id: 'pendingadminapproval', label: t('doctors.filters.pending') }, 
+  ];
 
-  const currentLabel = filters.find(f => f.id === selectedStatus)?.label || 'تصفية حسب الحالة';
+  const currentLabel = filters.find(f => f.id === selectedStatus)?.label || t('doctors.filters.title');
 
   
   useEffect(() => {
@@ -37,7 +39,7 @@ const filters = [
       
       <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-start">
         <h1 className="text-[18px] sm:text-[20px] font-black text-gray-700 dark:text-gray-200">
-          الاطباء
+          {t('doctors.title')}
         </h1>  
 
         {!isLoading && count > 0 && (
@@ -46,7 +48,7 @@ const filters = [
             className="flex items-center justify-between gap-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl px-4 py-2 hover:shadow-md hover:border-primary/20 dark:hover:border-primary/30 transition-all duration-300 cursor-pointer group select-none shadow-sm"
           >
             <span className="text-xs font-black text-primary">
-              طلبات بانتظار الموافقة
+              {t('doctors.pendingApprovalRequests')}
             </span>
             
             <div className="flex items-center gap-3">

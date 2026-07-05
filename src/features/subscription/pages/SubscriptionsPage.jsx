@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { fetchActiveSubscriptions, activateSubscription, renewSubscription } from '../services/subscriptionApi';
 import SubscriptionCard from '../components/SubscriptionCard';
 import { Loader2 } from 'lucide-react';
 
 export default function SubscriptionsPage() {
+  const { t } = useTranslation();
   const [subs, setSubs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,9 +46,9 @@ export default function SubscriptionsPage() {
 
   return (
     <div className="p-6 space-y-4">
-      <h1 className="text-2xl font-bold text-text-main">الاشتراكات الحالية</h1>
+      <h1 className="text-2xl font-bold text-text-main">{t('subscription.headerTitle')}</h1>
       {subs.length === 0 ? (
-        <p className="text-text-muted">لا توجد اشتراكات نشطة.</p>
+        <p className="text-text-muted">{t('subscription.noActive')}</p>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {subs.map((sub) => (

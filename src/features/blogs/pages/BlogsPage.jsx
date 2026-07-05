@@ -1,6 +1,7 @@
 import React from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { 
   Search, 
   Trash2, 
@@ -71,6 +72,7 @@ const BlogCardSkeleton = () => (
 );
 
 export default function BlogsPage() {
+  const { t } = useTranslation();
   const {
     blogs,
     stats,
@@ -102,21 +104,21 @@ export default function BlogsPage() {
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <BlogStatCard
-          title="إجمالي المقالات المنشورة"
+          title={t('blogs.stats.total')}
           count={stats.total}
           icon={BookOpen}
           colorClass="bg-blue-500 text-blue-500"
           gradientClass="from-blue-500 to-indigo-500"
         />
         <BlogStatCard
-          title="مقالات الأطباء"
+          title={t('blogs.stats.doctorCount')}
           count={stats.doctorCount}
           icon={User}
           colorClass="bg-amber-500 text-amber-500"
           gradientClass="from-amber-500 to-orange-500"
         />
         <BlogStatCard
-          title="مقالات المخابر"
+          title={t('blogs.stats.labCount')}
           count={stats.labCount}
           icon={FlaskConical}
           colorClass="bg-emerald-500 text-emerald-500"
@@ -137,7 +139,7 @@ export default function BlogsPage() {
                 : "text-text-muted hover:text-text-main"
             }`}
           >
-            جميع المدونات
+            {t('blogs.tabs.all')}
           </button>
           <button
             onClick={() => { setSelectedRole("doctor"); setCurrentPage(1); }}
@@ -147,7 +149,7 @@ export default function BlogsPage() {
                 : "text-text-muted hover:text-text-main"
             }`}
           >
-            مدونات الأطباء
+            {t('blogs.tabs.doctors')}
           </button>
           <button
             onClick={() => { setSelectedRole("lab"); setCurrentPage(1); }}
@@ -157,7 +159,7 @@ export default function BlogsPage() {
                 : "text-text-muted hover:text-text-main"
             }`}
           >
-            مدونات المخابر
+            {t('blogs.tabs.labs')}
           </button>
         </div>
 
@@ -166,7 +168,7 @@ export default function BlogsPage() {
           <Search size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted/60" />
           <input
             type="text"
-            placeholder="ابحث بالعنوان، الكاتب، المحتوى..."
+            placeholder={t('blogs.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-4 pr-12 py-3 rounded-2xl border border-gray-200 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm font-bold text-text-main"
@@ -235,7 +237,7 @@ export default function BlogsPage() {
                         ? "bg-blue-50/50 dark:bg-blue-950/30 text-blue-500 border-blue-200/50 dark:border-blue-900/30"
                         : "bg-emerald-50/50 dark:bg-emerald-950/30 text-emerald-500 border-emerald-200/50 dark:border-emerald-900/30"
                     }`}>
-                      {blog.author.role === "doctor" ? "طبيب" : "مخبر"}
+                      {blog.author.role === "doctor" ? t('doctors.doctor') : t('common.lab')}
                     </span>
                   </div>
 
@@ -254,11 +256,11 @@ export default function BlogsPage() {
                   <div className="flex gap-4 text-text-muted">
                     <div className="flex items-center gap-1 text-xs">
                       <Heart size={14} className="text-red-500/80 fill-red-500/10" />
-                      <span>{blog.likes}</span>
+                      <span>{t('blogs.likesCount', { count: blog.likes })}</span>
                     </div>
                     <div className="flex items-center gap-1 text-xs">
                       <MessageCircle size={14} className="text-blue-500/80" />
-                      <span>{blog.comments}</span>
+                      <span>{t('blogs.commentsCount', { count: blog.comments })}</span>
                     </div>
                   </div>
 
@@ -267,10 +269,10 @@ export default function BlogsPage() {
                     <button
                       onClick={() => setActiveArticle(blog)}
                       className="px-3 py-2 bg-primary/5 hover:bg-primary/10 text-primary rounded-xl text-xs font-bold flex items-center gap-1 transition-all active:scale-95 cursor-pointer"
-                      title="مراجعة التفاصيل"
+                      title={t('blogs.actions.review')}
                     >
                       <Eye size={14} />
-                      <span>مراجعة</span>
+                      <span>{t('blogs.actions.reviewLabel')}</span>
                     </button>
                     <button
                       onClick={() => {
@@ -278,7 +280,7 @@ export default function BlogsPage() {
                         setIsApproveModalOpen(true);
                       }}
                       className="p-2 bg-emerald-50 dark:bg-emerald-950/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 text-emerald-500 rounded-xl transition-all active:scale-95 cursor-pointer"
-                      title="قبول المنشور"
+                      title={t('blogs.actions.approve')}
                     >
                       <Check size={15} />
                     </button>
@@ -288,7 +290,7 @@ export default function BlogsPage() {
                         setIsRejectModalOpen(true);
                       }}
                       className="p-2 bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-500 rounded-xl transition-all active:scale-95 cursor-pointer"
-                      title="رفض المنشور"
+                      title={t('blogs.actions.reject')}
                     >
                       <X size={15} />
                     </button>
@@ -304,9 +306,9 @@ export default function BlogsPage() {
             <div className="w-16 h-16 bg-amber-500/10 text-amber-500 rounded-[1.5rem] flex items-center justify-center">
               <AlertCircle size={32} />
             </div>
-            <h3 className="text-lg font-bold text-text-main">لا توجد منشورات</h3>
+            <h3 className="text-lg font-bold text-text-main">{t('blogs.emptyState.title')}</h3>
             <p className="text-text-muted text-sm max-w-sm">
-              لم نجد أي مقالات تطابق خيارات التصفية أو البحث الحالي. يرجى تجربة كلمات بحث أخرى.
+              {t('blogs.emptyState.desc')}
             </p>
             <button
               onClick={() => {
@@ -315,7 +317,7 @@ export default function BlogsPage() {
               }}
               className="mt-2 px-5 py-2.5 bg-primary text-white rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all"
             >
-              إعادة تعيين الفلاتر
+              {t('blogs.emptyState.reset')}
             </button>
           </div>
         )}
@@ -377,7 +379,7 @@ export default function BlogsPage() {
                           ? "bg-blue-500 text-white"
                           : "bg-emerald-500 text-white"
                       }`}>
-                        {activeArticle.author.role === "doctor" ? "طبيب" : "مخبر"}
+                        {activeArticle.author.role === "doctor" ? t('doctors.doctor') : t('common.lab')}
                       </span>
                       <h2 className="text-xl sm:text-2xl font-black mt-1 leading-snug line-clamp-2">
                         {activeArticle.title}
@@ -405,7 +407,7 @@ export default function BlogsPage() {
                     
                     <div className="flex items-center gap-1.5 text-text-muted text-sm font-bold bg-gray-50 dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-border-main/30">
                       <Calendar size={14} />
-                      <span>تاريخ النشر: {activeArticle.publishDate}</span>
+                      <span>{t('blogs.publishDate')}: {activeArticle.publishDate}</span>
                     </div>
                   </div>
                   
@@ -418,11 +420,11 @@ export default function BlogsPage() {
                     <div className="flex gap-4">
                       <span className="flex items-center gap-1 font-bold">
                         <Heart size={16} className="text-red-500/80" />
-                        <span>{activeArticle.likes} إعجاب</span>
+                        <span>{t('blogs.likesCount', { count: activeArticle.likes })}</span>
                       </span>
                       <span className="flex items-center gap-1 font-bold">
                         <MessageCircle size={16} className="text-blue-500/80" />
-                        <span>{activeArticle.comments} تعليق</span>
+                        <span>{t('blogs.commentsCount', { count: activeArticle.comments })}</span>
                       </span>
                     </div>
                   </div>
@@ -435,7 +437,7 @@ export default function BlogsPage() {
                     onClick={() => setActiveArticle(null)}
                     className="px-6 py-3 bg-gray-100 dark:bg-slate-700 text-text-muted dark:text-gray-300 font-bold rounded-2xl hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors"
                   >
-                    إغلاق المراجعة
+                    {t('blogs.actions.closeReview')}
                   </button>
                   
                   <div className="flex gap-3">
@@ -447,7 +449,7 @@ export default function BlogsPage() {
                       className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl flex items-center gap-2 shadow-lg shadow-emerald-500/10 hover:shadow-xl hover:shadow-emerald-500/20 transition-all active:scale-95"
                     >
                       <Check size={16} />
-                      <span>قبول المنشور</span>
+                      <span>{t('blogs.actions.approve')}</span>
                     </button>
                     
                     <button
@@ -458,7 +460,7 @@ export default function BlogsPage() {
                       className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-2xl flex items-center gap-2 shadow-lg shadow-red-500/10 hover:shadow-xl hover:shadow-red-500/20 transition-all active:scale-95"
                     >
                       <Trash2 size={16} />
-                      <span>رفض المنشور</span>
+                      <span>{t('blogs.actions.reject')}</span>
                     </button>
                   </div>
                 </div>
@@ -478,10 +480,10 @@ export default function BlogsPage() {
           setRejectTarget(null);
         }}
         onConfirm={handleRejectConfirm}
-        title="رفض منشور المدونة"
-        message={`هل أنت متأكد من رغبتك في رفض المقال "${rejectTarget?.title}"؟ لا يمكن التراجع عن هذا الإجراء.`}
-        confirmText="رفض المنشور"
-        cancelText="تراجع"
+        title={t('blogs.rejectModal.title')}
+        message={t('blogs.rejectModal.desc', { title: rejectTarget?.title })}
+        confirmText={t('blogs.actions.reject')}
+        cancelText={t('membership.confirmNo')}
         type="danger"
       />
 
@@ -493,10 +495,10 @@ export default function BlogsPage() {
           setApproveTarget(null);
         }}
         onConfirm={handleApproveConfirm}
-        title="قبول ونشر المنشور"
-        message={`هل أنت متأكد من رغبتك في الموافقة على نشر المقال "${approveTarget?.title}"؟ سيصبح مرئياً للجميع.`}
-        confirmText="قبول ونشر"
-        cancelText="تراجع"
+        title={t('blogs.approveModal.title')}
+        message={t('blogs.approveModal.desc', { title: approveTarget?.title })}
+        confirmText={t('blogs.approveModal.confirm')}
+        cancelText={t('membership.confirmNo')}
         type="success"
       />
 

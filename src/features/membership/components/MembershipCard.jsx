@@ -1,14 +1,17 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Eye, CheckCircle2, XCircle, Clock, User, Microscope } from 'lucide-react';
 
 const statusConfig = {
-  pending: { label: 'قيد الانتظار', color: 'text-amber-600', bgColor: 'bg-amber-50', icon: <Clock size={14} className="animate-spin-slow" />, border: 'border-amber-100' },
-  accepted: { label: 'مقبول', color: 'text-emerald-600', bgColor: 'bg-emerald-50', icon: <CheckCircle2 size={14} />, border: 'border-emerald-100' },
-  rejected: { label: 'مرفوض', color: 'text-rose-600', bgColor: 'bg-rose-50', icon: <XCircle size={14} />, border: 'border-rose-100' },
-  suspended: { label: 'معلق', color: 'text-slate-500', bgColor: 'bg-slate-50', icon: <Clock size={14} />, border: 'border-slate-100' },
+  pending: { labelKey: 'common.pending', color: 'text-amber-600', bgColor: 'bg-amber-50', icon: <Clock size={14} className="animate-spin-slow" />, border: 'border-amber-100' },
+  accepted: { labelKey: 'common.active', color: 'text-emerald-600', bgColor: 'bg-emerald-50', icon: <CheckCircle2 size={14} />, border: 'border-emerald-100' },
+  rejected: { labelKey: 'common.rejected', color: 'text-rose-600', bgColor: 'bg-rose-50', icon: <XCircle size={14} />, border: 'border-rose-100' },
+  suspended: { labelKey: 'common.suspended', color: 'text-slate-500', bgColor: 'bg-slate-50', icon: <Clock size={14} />, border: 'border-slate-100' },
 };
 
 const MembershipCard = ({ request, onUpdateStatus, onShowDetails }) => {
+  const { t } = useTranslation();
+
   if (!request) return null;
 
   const { id, name, type, status } = request;
@@ -34,7 +37,7 @@ const MembershipCard = ({ request, onUpdateStatus, onShowDetails }) => {
 
           <div className="flex flex-col">
             <span className={`text-[10px] font-black uppercase tracking-widest mb-1 ${isDoctor ? 'text-blue-600' : 'text-emerald-600'}`}>
-              {isDoctor ? 'طبيب أسنان' : 'مخبر تعويضات'}
+              {isDoctor ? t('doctors.doctor') : t('labs.labType')}
             </span>
             <h4 className="text-lg font-bold text-slate-800 leading-tight">{name}</h4>
           </div>
@@ -48,7 +51,7 @@ const MembershipCard = ({ request, onUpdateStatus, onShowDetails }) => {
                 <button
                   onClick={() => onUpdateStatus(id, 'rejected', type)}
                   className={`group/btn w-12 h-10 flex items-center justify-center rounded-full transition-all duration-500 ${status === 'rejected' ? 'bg-rose-500 text-white shadow-lg shadow-rose-100' : 'bg-white/50 text-rose-400 hover:bg-rose-50 hover:text-rose-600 border border-transparent hover:border-rose-100'}`}
-                  title="رفض الطلب"
+                  title={t('membership.reject')}
                 >
                   <XCircle size={18} className="group-hover/btn:rotate-90 transition-transform duration-500" />
                 </button>
@@ -57,7 +60,7 @@ const MembershipCard = ({ request, onUpdateStatus, onShowDetails }) => {
                 <button
                   onClick={() => onUpdateStatus(id, 'suspended', type)}
                   className={`group/btn w-12 h-10 flex items-center justify-center rounded-full transition-all duration-500 ${status === 'suspended' ? 'bg-amber-500 text-white shadow-lg shadow-amber-100' : 'bg-white/50 text-amber-500 hover:bg-amber-50 hover:text-amber-600 border border-transparent hover:border-amber-100'}`}
-                  title="تعليق الطلب"
+                  title={t('membership.suspend')}
                 >
                   <Clock size={18} className="group-hover/btn:rotate-12 transition-transform" />
                 </button>
@@ -69,13 +72,13 @@ const MembershipCard = ({ request, onUpdateStatus, onShowDetails }) => {
                 >
                   <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover/accept:translate-x-0 transition-transform duration-500 ease-out" />
                   <CheckCircle2 size={18} strokeWidth={3} className="relative z-10 group-hover/accept:scale-110 transition-transform" />
-                  <span className="relative z-10 uppercase tracking-tighter"> قبول </span>
+                  <span className="relative z-10 uppercase tracking-tighter"> {t('membership.approve')} </span>
                 </button>
               </>
             ) : (
               <div className={`w-full flex items-center justify-center h-10 gap-3 text-[13px] font-black rounded-full bg-white shadow-sm border border-slate-100 ${config.color}`}>
                 <div className={`p-1.5 rounded-full ${config.bgColor}`}>{config.icon}</div>
-                هذا الملف {config.label}
+                {t('membership.fileStatus', { status: t(config.labelKey) })}
               </div>
             )}
           </div>

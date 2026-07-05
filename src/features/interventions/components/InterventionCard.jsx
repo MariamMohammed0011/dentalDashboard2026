@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 
 const InterventionCard = ({ intervention }) => {
+  const { t } = useTranslation();
   const { problemType, affectedParty, orderNumber, failedOperation } = intervention;
 
   
@@ -26,18 +28,18 @@ const InterventionCard = ({ intervention }) => {
 
         <div className="text-right flex flex-col gap-2 sm:gap-3 relative z-10">
           <div className="text-[14px] sm:text-[15px] font-bold text-gray-700 leading-tight">
-            نوع المشكلة: <span className={`${problemColor} block sm:inline mt-0.5 sm:mt-0`}>{problemType}</span>
+            {t('interventions.problemType')}: <span className={`${problemColor} block sm:inline mt-0.5 sm:mt-0`}>{problemType}</span>
           </div>
           
           <div className="flex flex-col gap-1.5 border-t border-gray-50 pt-2 sm:pt-0 sm:border-0">
             <div className="text-[13px] sm:text-[14px] text-gray-600 font-medium">
-              الطرف المتأثر: <span className="text-gray-500 font-bold">{affectedParty}</span>
+              {t('interventions.affectedParty')}: <span className="text-gray-500 font-bold">{affectedParty}</span>
             </div>
             <div className="text-[13px] sm:text-[14px] text-gray-600 font-medium">
-              رقم الطلب: <span className="text-gray-500 font-bold">{orderNumber}</span>
+              {t('orders.orderNumber')}: <span className="text-gray-500 font-bold">{orderNumber}</span>
             </div>
             <div className="text-[13px] sm:text-[14px] text-gray-600 font-medium leading-relaxed">
-              العملية التي فشلت: <span className="text-gray-500 block mt-0.5">{failedOperation}</span>
+              {t('interventions.failedOperation')}: <span className="text-gray-500 block mt-0.5">{failedOperation}</span>
             </div>
           </div>
         </div>
@@ -45,7 +47,7 @@ const InterventionCard = ({ intervention }) => {
 
       
       <button className="bg-[#E8F1FF] py-3 sm:py-2.5 text-primary font-bold text-[13px] sm:text-[14px] hover:bg-primary hover:text-white transition-all group-hover:bg-primary/5">
-        عرض التفاصيل
+        {t('interventions.viewDetails')}
       </button>
     </motion.div>
   );

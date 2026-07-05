@@ -1,9 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Phone, Mail, MapPin, Building2, Calendar } from 'lucide-react';
 import framerImg from '../../../assets/framer.png';
 
-const DoctorCard = ({ name, email, phone, clinicName, clinicAddress, city, country, status, createdAt }) => {
+const DoctorCard = ({ id, name, email, phone, clinicName, clinicAddress, city, country, status, createdAt, statusBadge }) => {
+  const { t } = useTranslation();
   const isStatusActive = status?.toLowerCase() === 'active';
   const formattedDate = createdAt ? new Date(createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
 
@@ -25,12 +27,20 @@ const DoctorCard = ({ name, email, phone, clinicName, clinicAddress, city, count
       </div>
 
       <div className="relative z-10 flex flex-col justify-between h-full flex-grow gap-4">
+        {(id || statusBadge) && (
+          <div className="flex justify-between items-center pb-2 border-b border-slate-100 dark:border-slate-800/50">
+            {id ? (
+              <span className="text-xs font-bold text-text-muted dark:text-slate-400 bg-slate-50 dark:bg-slate-800/40 px-3 py-1 rounded-xl">ID: #{id}</span>
+            ) : <div />}
+            {statusBadge}
+          </div>
+        )}
         
         <div className="flex items-start gap-4">
           
           <div className="relative w-16 h-16 rounded-[1.25rem] overflow-hidden border-2 border-white dark:border-slate-700 shadow-md bg-sky-50 dark:bg-sky-950 flex-shrink-0 flex items-center justify-center">
             <img 
-              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'طبيب')}&background=e0f2fe&color=367AFF&bold=true&size=128`} 
+              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(name || t('doctors.doctor'))}&background=e0f2fe&color=367AFF&bold=true&size=128`} 
               alt={name} 
               className="w-full h-full object-cover" 
             />
@@ -41,12 +51,14 @@ const DoctorCard = ({ name, email, phone, clinicName, clinicAddress, city, count
             <h3 className="font-black text-text-main dark:text-gray-100 text-[16px] tracking-tight truncate leading-tight">
               {name}
             </h3>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <span className={`flex h-2 w-2 rounded-full ${isStatusActive ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
-              <span className={`text-[12px] font-bold ${isStatusActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400'}`}>
-                {isStatusActive ? 'حساب نشط' : 'معلق / غير نشط'}
-              </span>
-            </div>
+            {!statusBadge && (
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className={`flex h-2 w-2 rounded-full ${isStatusActive ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
+                <span className={`text-[12px] font-bold ${isStatusActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400'}`}>
+                  {isStatusActive ? t('doctors.activeAccount') : t('doctors.inactiveAccount')}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -99,7 +111,7 @@ const DoctorCard = ({ name, email, phone, clinicName, clinicAddress, city, count
           <div className="flex items-center justify-between mt-1 pt-2 border-t border-slate-50 dark:border-slate-800/40 text-[11px] text-gray-400 dark:text-slate-500">
             <span className="flex items-center gap-1">
               <Calendar size={12} />
-              انضم في: {formattedDate}
+              {t('doctors.joinedAt')}: {formattedDate}
             </span>
           </div>
         )}

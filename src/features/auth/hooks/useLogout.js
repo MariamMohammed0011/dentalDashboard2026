@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import axiosInstance from "../../../api/axios";
 import { toast } from "sonner";
+import i18n from "../../../i18n";
 
 export const useLogout = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ export const useLogout = () => {
       
       queryClient.clear();
 
-      toast.success("تم تسجيل الخروج بنجاح");
+      toast.success(i18n.t("auth.logoutSuccess"));
       
       
       navigate("/login", { replace: true });

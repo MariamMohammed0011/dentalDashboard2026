@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import logoImg from "../../assets/logo.png";
 import { 
   LayoutDashboard, 
@@ -19,9 +20,9 @@ import {
   CreditCard
 } from 'lucide-react';
 
-export const NavItem = ({ to, label, icon: Icon, isCollapsed, onClick, children }) => {
+export const NavItem = ({ to, labelKey, icon: Icon, isCollapsed, onClick, children }) => {
   const location = useLocation();
-  
+  const { t } = useTranslation();
   
   const isAnyChildActive = children
     ? children.some(child => location.pathname === child.to || (child.to !== "/dashboard" && location.pathname.startsWith(child.to)))
@@ -55,7 +56,7 @@ export const NavItem = ({ to, label, icon: Icon, isCollapsed, onClick, children 
             <Icon size={isCollapsed ? 22 : 20} className={`transition-all duration-300 ${isActive ? "text-primary scale-110" : "text-text-muted/60"} group-hover:rotate-[15deg] group-hover:scale-110`} />
             {!isCollapsed && (
               <span className="whitespace-nowrap text-sm font-black">
-                {label}
+                {t(labelKey)}
               </span>
             )}
           </div>
@@ -92,7 +93,7 @@ export const NavItem = ({ to, label, icon: Icon, isCollapsed, onClick, children 
                         : "text-text-muted hover:text-primary hover:bg-white/10 dark:hover:bg-white/5"
                     }`}
                   >
-                    {child.label}
+                    {t(child.labelKey)}
                   </Link>
                 );
               })}
@@ -117,7 +118,7 @@ export const NavItem = ({ to, label, icon: Icon, isCollapsed, onClick, children 
         <Icon size={isCollapsed ? 22 : 20} className={`transition-all duration-300 ${isActive ? "text-primary scale-110" : "text-text-muted/60"} group-hover:rotate-[15deg] group-hover:scale-110`} />
         {!isCollapsed && (
           <span className={`whitespace-nowrap transition-transform duration-300 origin-right text-sm ${isActive ? "scale-110 translate-x-1" : ""}`}>
-            {label}
+            {t(labelKey)}
           </span>
         )}
       </Link>
@@ -126,43 +127,43 @@ export const NavItem = ({ to, label, icon: Icon, isCollapsed, onClick, children 
 };
 
 export const navItems = [
-  { to: "/dashboard", label: "الرئيسية", icon: LayoutDashboard },
-  { to: "/dashboard/orders", label: "الطلبات", icon: ClipboardList },
-  { to: "/dashboard/membership-requests", label: "طلبات الانتساب", icon: UserPlus },
-  { to: "/dashboard/doctors", label: "الاطباء", icon: UserCog },
-  { to: "/dashboard/labs", label: "المخابر", icon: FlaskConical },
-  { to: "/dashboard/subscriptions", label: "الاشتراكات", icon: CreditCard },
-  { to: "/dashboard/blogs", label: "المدونات", icon: BookOpen },
+  { to: "/dashboard", labelKey: "sidebar.dashboard", icon: LayoutDashboard },
+  { to: "/dashboard/orders", labelKey: "sidebar.orders", icon: ClipboardList },
+  { to: "/dashboard/membership-requests", labelKey: "sidebar.membershipRequests", icon: UserPlus },
+  { to: "/dashboard/doctors", labelKey: "sidebar.doctors", icon: UserCog },
+  { to: "/dashboard/labs", labelKey: "sidebar.labs", icon: FlaskConical },
+  { to: "/dashboard/subscriptions", labelKey: "sidebar.subscriptions", icon: CreditCard },
+  { to: "/dashboard/blogs", labelKey: "sidebar.blogs", icon: BookOpen },
   {
-    label: "الإعلانات",
+    labelKey: "sidebar.ads",
     icon: Megaphone,
     children: [
       {
         to: "/dashboard/ads",
-        label: "إعلانات المنصة",
+        labelKey: "sidebar.platformAds",
       },
       {
         to: "/dashboard/ads/users",
-        label: "إدارة المستخدمين",
+        labelKey: "sidebar.userManagement",
       },
     ],
   },
   {
-    label: "الإشعارات",
+    labelKey: "sidebar.notifications",
     icon: Bell,
     children: [
       {
         to: "/dashboard/notifications/send",
-        label: "إرسال إشعار",
+        labelKey: "sidebar.sendNotification",
       },
       {
         to: "/dashboard/notifications",
-        label: "أرشيف الإشعارات",
+        labelKey: "sidebar.notificationArchive",
       },
     ],
   },
-   { to: "/dashboard/reports", label: "التقارير", icon: FileText },
-  { to: "/dashboard/intervention-log", label: "سجل التدخلات", icon: History },
+   { to: "/dashboard/reports", labelKey: "sidebar.reports", icon: FileText },
+  { to: "/dashboard/intervention-log", labelKey: "sidebar.interventionLog", icon: History },
 ];
 
 export default function Sidebar({ isCollapsed, setIsCollapsed }) {
@@ -191,11 +192,11 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
       <nav className="flex flex-col justify-between flex-grow pb-4 overflow-y-auto custom-scrollbar">
         <div className="flex flex-col">
           {navItems.map((item) => (
-            <NavItem key={item.to} {...item} isCollapsed={isCollapsed} />
+            <NavItem key={item.labelKey} {...item} isCollapsed={isCollapsed} />
           ))}
         </div>
         
-        <NavItem to="/dashboard/settings" label="الاعدادات" icon={Settings} isCollapsed={isCollapsed} />
+        <NavItem to="/dashboard/settings" labelKey="sidebar.settings" icon={Settings} isCollapsed={isCollapsed} />
       </nav>
     </aside>
   );

@@ -1,10 +1,12 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { X, User, Mail, Phone, MapPin, Building2, Globe, FileText, Calendar, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axiosInstance from '../../../api/axios';
 
 const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
+  const { t } = useTranslation();
   if (typeof document === 'undefined') return null;
 
   const isDoctor = request ? (request.role?.toLowerCase() === 'dentist' || request.type === 'doctor') : true;
@@ -36,8 +38,8 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                   <div className="absolute inset-0 blur-2xl bg-primary/20 animate-pulse rounded-full" />
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl font-black text-text-main mb-1">جاري جلب البيانات</h3>
-                  <p className="text-gray-400 text-sm font-bold">يرجى الانتظار قليلاً...</p>
+                  <h3 className="text-xl font-black text-text-main mb-1">{t('membership.detailsModal.loadingData')}</h3>
+                  <p className="text-gray-400 text-sm font-bold">{t('membership.detailsModal.pleaseWait')}</p>
                 </div>
               </div>
             ) : request ? (
@@ -66,14 +68,14 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                       className="text-white min-w-0"
                     >
                       <h2 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight leading-tight mb-1.5 truncate">
-                        {request.fullName || request.name || 'اسم غير معروف'}
+                        {request.fullName || request.name || t('membership.detailsModal.unknownName')}
                       </h2>
                       <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full border border-white/20">
                         <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                         <p className="text-white text-xs font-bold uppercase tracking-widest">
                           {request.role?.toLowerCase() === 'dentist' || request.type === 'doctor'
-                            ? 'طبيب أسنان'
-                            : 'مخبر تعويضات'}  </p>
+                            ? t('membership.detailsModal.dentist')
+                            : t('membership.detailsModal.lab')}  </p>
                       </div>
                     </motion.div>
                   </div>
@@ -100,7 +102,7 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                     >
                       <h3 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-3 mb-6">
                         <span className="w-8 h-[1px] bg-gray-200" />
-                        معلومات التواصل
+                        {t('membership.detailsModal.contactInfo')}
                       </h3>
 
                       <div className="flex items-center gap-4 group cursor-default">
@@ -111,8 +113,8 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                           <Mail size={20} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter mb-0.5">البريد الإلكتروني</span>
-                          <span className="text-[15px] text-text-main font-bold truncate max-w-[200px]">{request.email || 'غير متوفر'}</span>
+                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter mb-0.5">{t('membership.detailsModal.email')}</span>
+                          <span className="text-[15px] text-text-main font-bold truncate max-w-[200px]">{request.email || t('membership.detailsModal.notAvailable')}</span>
                         </div>
                       </div>
 
@@ -121,8 +123,8 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                           <Phone size={20} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter mb-0.5">رقم الهاتف</span>
-                          <span className="text-[15px] text-text-main font-bold">{request.phoneNumber || request.phone || 'غير متوفر'}</span>
+                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter mb-0.5">{t('membership.detailsModal.phone')}</span>
+                          <span className="text-[15px] text-text-main font-bold">{request.phoneNumber || request.phone || t('membership.detailsModal.notAvailable')}</span>
                         </div>
                       </div>
 
@@ -131,9 +133,9 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                           <Calendar size={20} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter mb-0.5">تاريخ الانضمام</span>
+                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter mb-0.5">{t('membership.detailsModal.joinDate')}</span>
                           <span className="text-[15px] text-text-main font-bold">
-                            {request.createdAt ? new Date(request.createdAt).toLocaleDateString('en-US', { dateStyle: 'long' }) : 'غير متوفر'}
+                            {request.createdAt ? new Date(request.createdAt).toLocaleDateString('en-US', { dateStyle: 'long' }) : t('membership.detailsModal.notAvailable')}
                           </span>
                         </div>
                       </div>
@@ -148,7 +150,7 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                     >
                       <h3 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-3 mb-6">
                         <span className="w-8 h-[1px] bg-gray-200" />
-                        تفاصيل المقر
+                        {t('membership.detailsModal.locationDetails')}
                       </h3>
 
                       <div className="flex items-center gap-4 group cursor-default">
@@ -156,8 +158,8 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                           <Building2 size={20} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter mb-0.5">اسم المنشأة</span>
-                          <span className="text-[15px] text-text-main font-bold">{request.workplaceName || request.namePlace || 'غير متوفر'}</span>
+                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter mb-0.5">{t('membership.detailsModal.facilityName')}</span>
+                          <span className="text-[15px] text-text-main font-bold">{request.workplaceName || request.namePlace || t('membership.detailsModal.notAvailable')}</span>
                         </div>
                       </div>
 
@@ -166,8 +168,8 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                           <MapPin size={20} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter mb-0.5">العنوان</span>
-                          <span className="text-[15px] text-text-main font-bold truncate max-w-[200px]">{request.address || request.addressPlace || 'غير متوفر'}</span>
+                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter mb-0.5">{t('membership.detailsModal.address')}</span>
+                          <span className="text-[15px] text-text-main font-bold truncate max-w-[200px]">{request.address || request.addressPlace || t('membership.detailsModal.notAvailable')}</span>
                         </div>
                       </div>
 
@@ -176,7 +178,7 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                           <Globe size={20} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter mb-0.5">المنطقة</span>
+                          <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter mb-0.5">{t('membership.detailsModal.region')}</span>
                           <span className="text-[15px] text-text-main font-bold">
                             {request.city || request.cityPlace} {request.country || request.countryPlace ? `/ ${request.country || request.countryPlace}` : ''}
                           </span>
@@ -205,8 +207,8 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                               <FileText size={32} />
                             </div>
                             <div>
-                              <h4 className="text-lg font-black text-text-main mb-1 tracking-tight">وثيقة التحقق</h4>
-                              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">تحقق من صحة المستندات المرفقة</p>
+                              <h4 className="text-lg font-black text-text-main mb-1 tracking-tight">{t('membership.detailsModal.verificationDoc')}</h4>
+                              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{t('membership.detailsModal.verifyDocDesc')}</p>
                             </div>
                           </div>
 
@@ -219,7 +221,7 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                                 : 'bg-[#10B981] shadow-[0_10px_30px_rgba(16,185,129,0.3)] hover:bg-[#047857]'
                               }`}
                           >
-                            معاينة الوثيقة في علامة تبويب جديدة
+                            {t('membership.detailsModal.previewDoc')}
                           </a>
                         </div>
 
@@ -230,7 +232,7 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                             className="w-full h-auto max-h-60 object-contain rounded-xl"
                             onError={(e) => {
                               e.target.onerror = null;
-                              e.target.src = 'https://placehold.co/600x400?text=خطأ+في+تحميل+الصورة';
+                              e.target.src = `https://placehold.co/600x400?text=${encodeURIComponent(t('membership.detailsModal.imageLoadError'))}`;
                             }}
                           />
                         </div>

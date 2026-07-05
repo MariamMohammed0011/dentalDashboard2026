@@ -6,10 +6,11 @@ import { useQuery } from '@tanstack/react-query';
 import { adsApi } from '../../services/adsApi';
 
 const roleTranslations = {
-  ADSClient: 'عميل إعلانات',
-  Dentist: 'طبيب أسنان',
-  Lab: 'مختبر أسنان',
-  Admin: 'مسؤول النظام',
+  adsclient: 'عميل إعلانات',
+  dentist: 'طبيب أسنان',
+  lab: 'مختبر أسنان',
+  admin: 'مسؤول النظام',
+  superadmin: 'مسؤول النظام الرئيسي',
 };
 
 const ViewUserModal = ({ isOpen, onClose, user }) => {
@@ -24,7 +25,7 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
   const formatDate = (dateString) => {
     if (!dateString) return '-';
     try {
-      return new Date(dateString).toLocaleDateString('en-US', {
+      return new Date(dateString).toLocaleDateString('ar-SY', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -70,10 +71,15 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
                 </div>
                 <div className="flex flex-col gap-1.5 items-end">
                   
-                  {user.status === 'Active' ? (
+                  {user.status?.toLowerCase() === 'active' ? (
                     <span className="inline-flex items-center gap-1 text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full text-xs font-bold">
                       <CheckCircle2 size={12} />
                       نشط
+                    </span>
+                  ) : user.status?.toLowerCase() === 'suspended' ? (
+                    <span className="inline-flex items-center gap-1 text-rose-500 bg-rose-500/10 border border-rose-500/20 px-2.5 py-1 rounded-full text-xs font-bold">
+                      <X size={12} />
+                      معلق
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1 text-amber-500 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full text-xs font-bold">
@@ -84,7 +90,7 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
                   
                   <span className="inline-flex items-center gap-1 text-primary bg-primary/10 border border-primary/20 px-2.5 py-1 rounded-full text-xs font-bold">
                     <Shield size={12} />
-                    {roleTranslations[user.role] || user.role}
+                    {roleTranslations[user.role?.toLowerCase()] || user.role}
                   </span>
                 </div>
               </div>
@@ -185,11 +191,11 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
                               className="w-full h-full object-cover"
                             />
                             <div className="absolute top-2.5 right-2.5 bg-black/60 backdrop-blur-md text-white text-[10px] font-black px-2 py-1 rounded-lg">
-                              ID: #{ad.id}
+                              معرف الإعلان: #{ad.id}
                             </div>
                             {ad.price && (
                               <div className="absolute bottom-2.5 left-2.5 bg-emerald-500 text-white text-[10px] font-black px-2 py-1 rounded-lg">
-                                سعر الحملة: {ad.price.toLocaleString()} ر.س
+                                سعر الحملة: {ad.price.toLocaleString()} ل.س
                               </div>
                             )}
                           </div>

@@ -1,21 +1,24 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 
-const tabs = [
-  { id: 'all', label: 'الكل' },
-  { id: 'doctor', label: 'أطباء' },
-  { id: 'lab', label: 'المخابر' },
-];
-
 const InterventionHeader = ({ activeTab, onTabChange }) => {
+  const { t } = useTranslation();
+
+  const tabs = [
+    { id: 'all', label: t('common.all') },
+    { id: 'doctor', label: t('doctors.doctor') },
+    { id: 'lab', label: t('common.lab') },
+  ];
+
   return (
     <div className="flex flex-col w-full lg:flex-row justify-between items-start lg:items-center mb-6 sm:mb-8 gap-6 px-0" dir="rtl">
       
       
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 w-full lg:w-auto">
         <h1 className="text-2xl font-black text-slate-800 tracking-tight">
-          طلبات التدخل
+          {t('interventions.interventionRequests')}
         </h1>
         
         
@@ -52,7 +55,7 @@ const InterventionHeader = ({ activeTab, onTabChange }) => {
         
         <div className="relative z-10 flex items-center gap-2">
           <Plus className="w-5 h-5 transition-transform group-hover:rotate-90 duration-300" />
-          <span className="text-sm sm:text-base">إنشاء طلب يدوي</span>
+          <span className="text-sm sm:text-base">{t('interventions.createManualRequest')}</span>
         </div>
       </motion.button>
       

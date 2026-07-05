@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Calendar, Building2, Users, Loader2, ChevronDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import UserStatusModal from '../../../components/shared/UserStatusModal';
+import DoctorCard from './DoctorCard';
 
 
 const StatusBadge = ({ doc, updatingDoctorId, onOpenModal }) => {
+  const { t } = useTranslation();
   const isCurrentlyUpdating = updatingDoctorId === doc.id;
   const currentStatus = doc.status?.toLowerCase();
 
@@ -11,7 +14,7 @@ const StatusBadge = ({ doc, updatingDoctorId, onOpenModal }) => {
     return (
       <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-black border bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border-slate-100 dark:border-slate-850 animate-pulse select-none">
         <Loader2 size={11} className="animate-spin text-primary shrink-0" />
-        <span>جاري...</span>
+        <span>{t('common.processing')}</span>
       </div>
     );
   }
@@ -30,10 +33,10 @@ const StatusBadge = ({ doc, updatingDoctorId, onOpenModal }) => {
   };
 
   const getStatusLabel = () => {
-    if (currentStatus === 'active') return "نشط";
-    if (currentStatus === 'suspended') return "معلق";
-    if (currentStatus === 'pendingadminapproval' || currentStatus === 'pending') return "قيد المراجعة";
-    return doc.status || 'غير محدد';
+    if (currentStatus === 'active') return t('common.active');
+    if (currentStatus === 'suspended') return t('common.suspended');
+    if (currentStatus === 'pendingadminapproval' || currentStatus === 'pending') return t('common.pending');
+    return doc.status || t('common.unknown');
   };
 
   const getDotColor = () => {
@@ -60,6 +63,7 @@ const StatusBadge = ({ doc, updatingDoctorId, onOpenModal }) => {
 };
 
 const DoctorsTable = ({ doctors, isLoading, onToggleStatus, updatingDoctorId }) => {
+  const { t } = useTranslation();
   const [selectedDocForStatus, setSelectedDocForStatus] = useState(null);
   const [tempStatus, setTempStatus] = useState(null);
 
@@ -86,11 +90,11 @@ const DoctorsTable = ({ doctors, isLoading, onToggleStatus, updatingDoctorId }) 
     <div className="w-full flex flex-col gap-3" dir="rtl">
 
       <div className="hidden md:flex items-center w-full px-6 py-2 text-slate-400 dark:text-slate-500 font-extrabold text-[12px] uppercase select-none">
-        <div className="w-[26%] text-right">الطبيب</div>
-        <div className="w-[26%] text-right">العيادة / العنوان</div>
-        <div className="w-[26%] text-right">التواصل</div>
-        <div className="w-[11%] text-right">تاريخ الانضمام</div>
-        <div className="w-[11%] text-center">الحالة</div>
+        <div className="w-[26%] text-right">{t('doctors.doctor')}</div>
+        <div className="w-[26%] text-right">{t('doctors.clinicAndAddress')}</div>
+        <div className="w-[26%] text-right">{t('doctors.contact')}</div>
+        <div className="w-[11%] text-right">{t('doctors.joinDate')}</div>
+        <div className="w-[11%] text-center">{t('common.status')}</div>
       </div>
 
 
@@ -102,13 +106,13 @@ const DoctorsTable = ({ doctors, isLoading, onToggleStatus, updatingDoctorId }) 
         ) : doctors.length === 0 ? (
           <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-12 text-center text-text-muted dark:text-slate-500 font-bold w-full">
             <Users size={36} className="mx-auto mb-2 text-text-muted/40 dark:text-slate-600" />
-            لا يوجد أطباء مسجلون حالياً
+            {t('doctors.noRegisteredDoctors')}
           </div>
         ) : (
           doctors.map((doc) => {
             const formattedDate = doc.createdAt
               ? new Date(doc.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' })
-              : 'غير محدد';
+              : t('common.unknown');
 
             return (
               <div
@@ -119,7 +123,7 @@ const DoctorsTable = ({ doctors, isLoading, onToggleStatus, updatingDoctorId }) 
                 <div className="w-[26%] flex items-center gap-2.5 min-w-0">
                   <div className="w-8 h-8 rounded-full border border-primary/20 shrink-0 overflow-hidden shadow-sm bg-sky-50 dark:bg-slate-850 flex items-center justify-center">
                     <img
-                      src={`https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name || 'طبيب')}&background=e0f2fe&color=367AFF&bold=true&size=64`}
+                      src={`https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name || t('doctors.doctor'))}&background=e0f2fe&color=367AFF&bold=true&size=64`}
                       alt={doc.name}
                       className="w-full h-full object-cover"
                     />
@@ -134,7 +138,7 @@ const DoctorsTable = ({ doctors, isLoading, onToggleStatus, updatingDoctorId }) 
                 <div className="w-[26%] flex flex-col min-w-0">
                   <span className="font-bold text-text-main dark:text-gray-200 text-[13px] truncate flex items-center gap-1">
                     <Building2 size={12} className="text-sky-500 dark:text-sky-400 shrink-0" />
-                    {doc.clinicName || "غير محدد"}
+                    {doc.clinicName || t('common.unknown')}
                   </span>
                   {(doc.city || doc.country || doc.clinicAddress) && (
                     <div className="flex items-center gap-0.5 text-text-muted dark:text-slate-400 font-medium text-[11px] truncate mt-0.5">
@@ -189,80 +193,28 @@ const DoctorsTable = ({ doctors, isLoading, onToggleStatus, updatingDoctorId }) 
         ) : doctors.length === 0 ? (
           <div className="py-12 text-center text-text-muted dark:text-slate-500 font-bold">
             <Users size={36} className="mx-auto mb-2 text-text-muted/40 dark:text-slate-600" />
-            لا يوجد أطباء مسجلون حالياً
+            {t('doctors.noRegisteredDoctors')}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {doctors.map((doc) => {
-              const formattedDate = doc.createdAt
-                ? new Date(doc.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'numeric', day: 'numeric' })
-                : 'غير محدد';
-
-              return (
-                <div
-                  key={doc.id}
-                  className="bg-white/70 dark:bg-slate-900/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-sm relative overflow-hidden flex flex-col gap-3.5 hover:shadow-md hover:border-primary/25 transition-all duration-300"
-                >
-                  {/* Top Header: ID & Interactive Status Badge */}
-                  <div className="flex justify-between items-center pb-2 border-b border-slate-100 dark:border-slate-800/50 z-10">
-                    <span className="text-xs font-bold text-text-muted dark:text-slate-400 bg-slate-50 dark:bg-slate-800/40 px-3 py-1 rounded-xl">ID: #{doc.id}</span>
-                    <StatusBadge doc={doc} updatingDoctorId={updatingDoctorId} onOpenModal={openStatusModal} />
-                  </div>
-
-                  
-                  <div className="flex gap-3 items-center">
-                    <div className="w-10 h-10 rounded-full border border-primary/25 text-primary flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden">
-                      <img
-                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name || 'طبيب')}&background=e0f2fe&color=367AFF&bold=true&size=64`}
-                        alt={doc.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="text-right flex flex-col min-w-0">
-                      <span className="font-extrabold text-text-main dark:text-gray-100 text-sm leading-tight truncate">{doc.name}</span>
-                      <span className="text-xs text-sky-500 dark:text-sky-400 font-bold mt-1 flex items-center gap-1">
-                        <Building2 size={11} className="text-sky-500 dark:text-sky-400" />
-                        {doc.clinicName || "عيادة غير محددة"}
-                      </span>
-                    </div>
-                  </div>
-
-
-                  <div className="flex flex-col gap-2 pt-2.5 border-t border-slate-100 dark:border-slate-800/50 text-[11px] text-right">
-
-                    {(doc.city || doc.country || doc.clinicAddress) && (
-                      <div className="flex items-center gap-2">
-                        <MapPin size={12} className="text-rose-500 dark:text-rose-400 shrink-0" />
-                        <span className="font-medium text-text-main dark:text-gray-300 truncate">
-                          {[doc.clinicAddress, doc.city, doc.country].filter(Boolean).join('، ')}
-                        </span>
-                      </div>
-                    )}
-
-                    {doc.phone && (
-                      <div className="flex items-center gap-2">
-                        <Phone size={12} className="text-emerald-500 dark:text-emerald-400 shrink-0" />
-                        <span className="font-medium font-sans text-text-main dark:text-gray-300" dir="ltr">{doc.phone}</span>
-                      </div>
-                    )}
-
-                    {doc.email && (
-                      <div className="flex items-center gap-2">
-                        <Mail size={12} className="text-indigo-500 dark:text-indigo-400 shrink-0" />
-                        <span className="font-medium font-sans text-text-muted dark:text-slate-400 truncate max-w-[190px]" dir="ltr">{doc.email}</span>
-                      </div>
-                    )}
-
-
-                    <div className="flex items-center gap-2 text-[10px] text-gray-400 dark:text-slate-500 pt-2 border-t border-slate-50 dark:border-slate-800/30">
-                      <Calendar size={12} className="text-violet-500 dark:text-violet-400 shrink-0" />
-                      <span>انضم في: {formattedDate}</span>
-                    </div>
-
-                  </div>
-                </div>
-              );
-            })}
+            {doctors.map((doc) => (
+              <DoctorCard
+                key={doc.id}
+                id={doc.id}
+                name={doc.name}
+                email={doc.email}
+                phone={doc.phone}
+                clinicName={doc.clinicName}
+                clinicAddress={doc.clinicAddress}
+                city={doc.city}
+                country={doc.country}
+                status={doc.status}
+                createdAt={doc.createdAt}
+                statusBadge={
+                  <StatusBadge doc={doc} updatingDoctorId={updatingDoctorId} onOpenModal={openStatusModal} />
+                }
+              />
+            ))}
           </div>
         )}
       </div>

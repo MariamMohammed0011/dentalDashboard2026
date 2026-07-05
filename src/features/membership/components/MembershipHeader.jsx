@@ -1,12 +1,16 @@
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 import Search from '../../../components/shared/Search/Search';
 
-const tabs = [
-  { id: 'all', label: 'الكل' },
-  { id: 'doctor', label: 'الأطباء' },
-  { id: 'lab', label: 'المخابر' },
-];
-
 const MembershipHeader = ({ activeTab, onTabChange, searchQuery, onSearchChange }) => {
+  const { t } = useTranslation();
+
+  const tabs = [
+    { id: 'all', label: t('common.all') },
+    { id: 'doctor', label: t('doctors.title') },
+    { id: 'lab', label: t('labs.title') },
+  ];
+
   return (
     <>
       <div className="flex flex-col md:flex-row justify-between items-center pt-0 pb-2 sm:pb-3 px-4 sm:px-8 gap-4 md:gap-6 w-full md:mt-2 sm:mt-2 " dir="rtl">
@@ -31,7 +35,7 @@ const MembershipHeader = ({ activeTab, onTabChange, searchQuery, onSearchChange 
           <Search 
             value={searchQuery}
             onChange={onSearchChange}
-            placeholder="بحث عن طلب..."
+            placeholder={t('membership.searchPlaceholder')}
             width="100%" 
             className="w-full"
             onClear={() => onSearchChange('')}

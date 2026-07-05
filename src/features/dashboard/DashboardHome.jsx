@@ -3,6 +3,7 @@ import { Pie, Column, Line, Area, Bar } from '@ant-design/plots';
 import WelcomeHeader from './components/WelcomeHeader';
 import { useTheme } from '../../context/ThemeContext';
 import { useDashboardStats } from './hooks/useDashboardStats';
+import { useTranslation } from 'react-i18next';
 import {
   Users,
   FlaskConical,
@@ -33,6 +34,7 @@ const StatCard = ({ title, count, icon: Icon, color, subDetails }) => (
 
 export default function DashboardHome() {
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   const {
     dentistsOrdersData,
@@ -101,11 +103,11 @@ export default function DashboardHome() {
   };
 
   const lifecycleData = [
-    { type: 'معلقة بانتظار القبول', value: 18 },
-    { type: 'قيد التصنيع في المخابر', value: 34 },
-    { type: 'بانتظار تسليم الماسح', value: 12 },
-    { type: 'مكتملة ومسلمة', value: 45 },
-    { type: 'ملغاة من الطبيب/المخبر', value: 8 },
+    { type: t('dashboard.lifecycle.pending'), value: 18 },
+    { type: t('dashboard.lifecycle.progress'), value: 34 },
+    { type: t('dashboard.lifecycle.scanner'), value: 12 },
+    { type: t('dashboard.lifecycle.completed'), value: 45 },
+    { type: t('dashboard.lifecycle.cancelled'), value: 8 },
   ];
 
   const lifecycleConfig = {
@@ -145,10 +147,10 @@ export default function DashboardHome() {
 
   // 2. مخطط اتجاهات مواد التعويضات (Column Chart)
   const trendsData = [
-    { material: 'زيركون', count: 145 },
-    { material: 'فينير', count: 82 },
-    { material: 'كريستال', count: 64 },
-    { material: 'بورسلان', count: 38 },
+    { material: t('dashboard.materials.zircon'), count: 145 },
+    { material: t('dashboard.materials.veneer'), count: 82 },
+    { material: t('dashboard.materials.crystal'), count: 64 },
+    { material: t('dashboard.materials.porcelain'), count: 38 },
   ];
 
   const trendsConfig = {
@@ -181,16 +183,16 @@ export default function DashboardHome() {
   };
 
   const labData = [
-    { lab: 'مخبر الفا', metric: 'معدل التأخير عن المواعيد (%)', value: 5 },
-    { lab: 'مخبر الفا', metric: 'معدل رفض الطلبات (%)', value: 2 },
-    { lab: 'مخبر السلام', metric: 'معدل التأخير عن المواعيد (%)', value: 12 },
-    { lab: 'مخبر السلام', metric: 'معدل رفض الطلبات (%)', value: 8 },
-    { lab: 'مخبر الابتسامة', metric: 'معدل التأخير عن المواعيد (%)', value: 4 },
-    { lab: 'مخبر الابتسامة', metric: 'معدل رفض الطلبات (%)', value: 1 },
-    { lab: 'مخبر النخبة', metric: 'معدل التأخير عن المواعيد (%)', value: 8 },
-    { lab: 'مخبر النخبة', metric: 'معدل رفض الطلبات (%)', value: 3 },
-    { lab: 'مخبر المستقبل', metric: 'معدل التأخير عن المواعيد (%)', value: 15 },
-    { lab: 'مخبر المستقبل', metric: 'معدل رفض الطلبات (%)', value: 6 },
+    { lab: t('dashboard.labs.alpha'), metric: t('dashboard.metrics.delayRate'), value: 5 },
+    { lab: t('dashboard.labs.alpha'), metric: t('dashboard.metrics.rejectRate'), value: 2 },
+    { lab: t('dashboard.labs.salam'), metric: t('dashboard.metrics.delayRate'), value: 12 },
+    { lab: t('dashboard.labs.salam'), metric: t('dashboard.metrics.rejectRate'), value: 8 },
+    { lab: t('dashboard.labs.smile'), metric: t('dashboard.metrics.delayRate'), value: 4 },
+    { lab: t('dashboard.labs.smile'), metric: t('dashboard.metrics.rejectRate'), value: 1 },
+    { lab: t('dashboard.labs.elite'), metric: t('dashboard.metrics.delayRate'), value: 8 },
+    { lab: t('dashboard.labs.elite'), metric: t('dashboard.metrics.rejectRate'), value: 3 },
+    { lab: t('dashboard.labs.future'), metric: t('dashboard.metrics.delayRate'), value: 15 },
+    { lab: t('dashboard.labs.future'), metric: t('dashboard.metrics.rejectRate'), value: 6 },
   ];
 
   const labConfig = {
@@ -225,18 +227,18 @@ export default function DashboardHome() {
   };
 
   const revenueData = [
-    { month: 'ديسمبر', type: 'عوائد الإعلانات ($)', value: 1200 },
-    { month: 'ديسمبر', type: 'اشتراكات المخابر ($)', value: 7500 },
-    { month: 'يناير', type: 'عوائد الإعلانات ($)', value: 1500 },
-    { month: 'يناير', type: 'اشتراكات المخابر ($)', value: 8000 },
-    { month: 'فبراير', type: 'عوائد الإعلانات ($)', value: 1800 },
-    { month: 'فبراير', type: 'اشتراكات المخابر ($)', value: 9200 },
-    { month: 'مارس', type: 'عوائد الإعلانات ($)', value: 2100 },
-    { month: 'مارس', type: 'اشتراكات المخابر ($)', value: 10500 },
-    { month: 'أبريل', type: 'عوائد الإعلانات ($)', value: 2300 },
-    { month: 'أبريل', type: 'اشتراكات المخابر ($)', value: 11800 },
-    { month: 'مايو', type: 'عوائد الإعلانات ($)', value: 2400 },
-    { month: 'مايو', type: 'اشتراكات المخابر ($)', value: 12840 },
+    { month: t('dashboard.months.december'), type: t('dashboard.revenue.ads'), value: 1200 },
+    { month: t('dashboard.months.december'), type: t('dashboard.revenue.subs'), value: 7500 },
+    { month: t('dashboard.months.january'), type: t('dashboard.revenue.ads'), value: 1500 },
+    { month: t('dashboard.months.january'), type: t('dashboard.revenue.subs'), value: 8000 },
+    { month: t('dashboard.months.february'), type: t('dashboard.revenue.ads'), value: 1800 },
+    { month: t('dashboard.months.february'), type: t('dashboard.revenue.subs'), value: 9200 },
+    { month: t('dashboard.months.march'), type: t('dashboard.revenue.ads'), value: 2100 },
+    { month: t('dashboard.months.march'), type: t('dashboard.revenue.subs'), value: 10500 },
+    { month: t('dashboard.months.april'), type: t('dashboard.revenue.ads'), value: 2300 },
+    { month: t('dashboard.months.april'), type: t('dashboard.revenue.subs'), value: 11800 },
+    { month: t('dashboard.months.may'), type: t('dashboard.revenue.ads'), value: 2400 },
+    { month: t('dashboard.months.may'), type: t('dashboard.revenue.subs'), value: 12840 },
   ];
 
   const revenueConfig = {
@@ -270,83 +272,83 @@ export default function DashboardHome() {
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 pb-8 text-right" dir="rtl">
       <WelcomeHeader
-        name="مى محمد"
-        role="SuperAdmin"
-        date="30 نيسان 2026"
+        name={t('header.adminName')}
+        role={t('header.adminRole')}
+        date={t('dashboard.dateValue')}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
 
         <StatCard
-          title="إجمالي الأطباء"
+          title={t('dashboard.totalDoctors')}
           count="209"
           icon={Users}
           color="bg-blue-500 text-blue-500"
           subDetails={
             <>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-text-muted">حسابات نشطة:</span>
-                <span className="font-bold text-green-500">185 طبيب</span>
+                <span className="text-text-muted">{t('dashboard.activeAccounts')}</span>
+                <span className="font-bold text-green-500">{t('dashboard.doctorsCount')}</span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-text-muted">بانتظار التحقق (النقابة):</span>
-                <span className="font-bold text-amber-500">24 حساب</span>
+                <span className="text-text-muted">{t('dashboard.pendingVerificationSyndicate')}</span>
+                <span className="font-bold text-amber-500">{t('dashboard.pendingAccountsCount')}</span>
               </div>
             </>
           }
         />
 
         <StatCard
-          title="إجمالي المخابر"
+          title={t('dashboard.totalLabs')}
           count="42"
           icon={FlaskConical}
           color="bg-emerald-500 text-emerald-500"
           subDetails={
             <>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-text-muted">مخابر نشطة ومشتركة:</span>
-                <span className="font-bold text-green-500">35 مخبر</span>
+                <span className="text-text-muted">{t('dashboard.activeSubscribedLabs')}</span>
+                <span className="font-bold text-green-500">{t('dashboard.activeLabsCount')}</span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-text-muted">حسابات معلقة/منتهية:</span>
-                <span className="font-bold text-text-muted">7 مخابر</span>
+                <span className="text-text-muted">{t('dashboard.suspendedExpiredAccounts')}</span>
+                <span className="font-bold text-text-muted">{t('dashboard.suspendedLabsCount')}</span>
               </div>
             </>
           }
         />
 
         <StatCard
-          title="الحالات النشطة (Active Cases)"
+          title={t('dashboard.activeCases')}
           count="86"
           icon={Activity}
           color="bg-amber-500 text-amber-500"
           subDetails={
             <>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-text-muted">قيد التصنيع بالمخابر:</span>
-                <span className="font-bold text-primary">58 حالة</span>
+                <span className="text-text-muted">{t('dashboard.inProgressLabs')}</span>
+                <span className="font-bold text-primary">{t('dashboard.casesInProgressCount')}</span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-text-muted">بانتظار تسليم الماسح:</span>
-                <span className="font-bold text-purple-500">28 حالة</span>
+                <span className="text-text-muted">{t('dashboard.waitingScannerDelivery')}</span>
+                <span className="font-bold text-purple-500">{t('dashboard.casesWaitingScannerCount')}</span>
               </div>
             </>
           }
         />
 
         <StatCard
-          title="الأرباح الشهرية"
+          title={t('dashboard.monthlyRevenue')}
           count="$15,240"
           icon={DollarSign}
           color="bg-violet-500 text-violet-500"
           subDetails={
             <>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-text-muted">اشتراكات المخابر:</span>
+                <span className="text-text-muted">{t('dashboard.labSubscriptionsLabel')}</span>
                 <span className="font-bold text-text-main">$12,840</span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-text-muted">عوائد المساحات الإعلانية:</span>
+                <span className="text-text-muted">{t('dashboard.adSpacesRevenue')}</span>
                 <span className="font-bold text-purple-500">$2,400</span>
               </div>
             </>
@@ -360,27 +362,27 @@ export default function DashboardHome() {
         <div className="bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
           <div className="flex justify-between items-center mb-6">
             <div className="text-right">
-              <h3 className="text-base sm:text-lg font-bold text-text-main">طلبات أطباء الأسنان {getPeriodText(dentistsOrdersData)}</h3>
-              <p className="text-xs text-text-muted">الأطباء الأكثر طلباً وتداولاً للحالات عبر المنصة</p>
+              <h3 className="text-base sm:text-lg font-bold text-text-main">{t('dashboard.dentistsOrders')} {getPeriodText(dentistsOrdersData)}</h3>
+              <p className="text-xs text-text-muted">{t('dashboard.dentistsOrdersDesc')}</p>
             </div>
             <div className="flex items-center gap-1.5 text-xs text-violet-500 bg-violet-500/10 px-2 py-1 rounded-lg font-bold">
               <TrendingUp size={14} />
-              <span>نشاط مرتفع</span>
+              <span>{t('dashboard.highActivity')}</span>
             </div>
           </div>
           <div className="h-[300px] flex items-center justify-center">
             {isLoading ? (
               <div className="flex flex-col items-center gap-2">
                 <Loader2 className="animate-spin text-primary" size={32} />
-                <span className="text-sm text-text-muted">جاري تحميل البيانات...</span>
+                <span className="text-sm text-text-muted">{t('common.loading')}</span>
               </div>
             ) : isError ? (
               <div className="flex flex-col items-center gap-2 text-red-500">
                 <AlertTriangle size={32} />
-                <span className="text-sm">فشل في تحميل إحصائيات الأطباء</span>
+                <span className="text-sm">{t('dashboard.failedLoadDoctorsStats')}</span>
               </div>
             ) : dentistsOrdersData.length === 0 ? (
-              <span className="text-sm text-text-muted">لا توجد بيانات متوفرة حالياً</span>
+              <span className="text-sm text-text-muted">{t('common.noData')}</span>
             ) : (
               <div className="w-full h-full">
                 <Column {...dentistsColumnConfig} />
@@ -392,27 +394,27 @@ export default function DashboardHome() {
         <div className="bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
           <div className="flex justify-between items-center mb-6">
             <div className="text-right">
-              <h3 className="text-base sm:text-lg font-bold text-text-main">طلبات المختبرات {getPeriodText(labsOrdersData)}</h3>
-              <p className="text-xs text-text-muted">المخابر الأكثر استقبالاً وتصنيعاً للحالات السنية</p>
+              <h3 className="text-base sm:text-lg font-bold text-text-main">{t('dashboard.labsOrders')} {getPeriodText(labsOrdersData)}</h3>
+              <p className="text-xs text-text-muted">{t('dashboard.labsOrdersDesc')}</p>
             </div>
             <div className="flex items-center gap-1.5 text-xs text-green-500 bg-green-500/10 px-2 py-1 rounded-lg font-bold">
               <TrendingUp size={14} />
-              <span>إنتاجية عالية</span>
+              <span>{t('dashboard.highProductivity')}</span>
             </div>
           </div>
           <div className="h-[300px] flex items-center justify-center">
             {isLoading ? (
               <div className="flex flex-col items-center gap-2">
                 <Loader2 className="animate-spin text-primary" size={32} />
-                <span className="text-sm text-text-muted">جاري تحميل البيانات...</span>
+                <span className="text-sm text-text-muted">{t('common.loading')}</span>
               </div>
             ) : isError ? (
               <div className="flex flex-col items-center gap-2 text-red-500">
                 <AlertTriangle size={32} />
-                <span className="text-sm">فشل في تحميل إحصائيات المختبرات</span>
+                <span className="text-sm">{t('dashboard.failedLoadLabsStats')}</span>
               </div>
             ) : labsOrdersData.length === 0 ? (
-              <span className="text-sm text-text-muted">لا توجد بيانات متوفرة حالياً</span>
+              <span className="text-sm text-text-muted">{t('common.noData')}</span>
             ) : (
               <div className="w-full h-full">
                 <Column {...labsColumnConfig} />
@@ -428,12 +430,12 @@ export default function DashboardHome() {
         <div className="lg:col-span-6 bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
           <div className="flex justify-between items-center mb-6">
             <div className="text-right">
-              <h3 className="text-base sm:text-lg font-bold text-text-main">اتجاهات مواد التعويضات (Market Trends)</h3>
-              <p className="text-xs text-text-muted">المواد الأكثر طلباً وتداولاً من قبل الأطباء عبر المنصة</p>
+              <h3 className="text-base sm:text-lg font-bold text-text-main">{t('dashboard.marketTrends')}</h3>
+              <p className="text-xs text-text-muted">{t('dashboard.marketTrendsDesc')}</p>
             </div>
             <div className="flex items-center gap-1.5 text-xs text-green-500 bg-green-500/10 px-2 py-1 rounded-lg font-bold">
               <TrendingUp size={14} />
-              <span>نمو متزايد</span>
+              <span>{t('dashboard.growing')}</span>
             </div>
           </div>
           <div className="h-[300px]">
@@ -443,8 +445,8 @@ export default function DashboardHome() {
 
         <div className="lg:col-span-4 bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
           <div className="text-right">
-            <h3 className="text-base sm:text-lg font-bold text-text-main">دورة حياة الحالات (Order Lifecycle)</h3>
-            <p className="text-xs text-text-muted">توزيع الطلبات الحالية في النظام بناءً على الحالة التشغيلية</p>
+            <h3 className="text-base sm:text-lg font-bold text-text-main">{t('dashboard.orderLifecycle')}</h3>
+            <p className="text-xs text-text-muted">{t('dashboard.orderLifecycleDesc')}</p>
           </div>
           <div className="h-[300px] flex items-center justify-center">
             <Pie {...lifecycleConfig} />
@@ -457,8 +459,8 @@ export default function DashboardHome() {
 
         <div className="bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
           <div className="text-right">
-            <h3 className="text-base sm:text-lg font-bold text-text-main">أداء المخابر والالتزام بالمواعيد</h3>
-            <p className="text-xs text-text-muted">مقارنة معدلات التأخر عن المواعيد النهائية (Deadlines) ومعدلات الرفض لأعلى المخابر حركة في النظام</p>
+            <h3 className="text-base sm:text-lg font-bold text-text-main">{t('dashboard.labsPerformance')}</h3>
+            <p className="text-xs text-text-muted">{t('dashboard.labsPerformanceDesc')}</p>
           </div>
           <div className="h-[300px] mt-6">
             <Line {...labConfig} />
@@ -467,8 +469,8 @@ export default function DashboardHome() {
 
         <div className="bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
           <div className="text-right">
-            <h3 className="text-base sm:text-lg font-bold text-text-main">التحليل المالي ونمو الاشتراكات</h3>
-            <p className="text-xs text-text-muted">نمو أرباح المنصة الناتجة عن اشتراكات المخابر وعوائد المساحات الإعلانية المعتمدة</p>
+            <h3 className="text-base sm:text-lg font-bold text-text-main">{t('dashboard.financialAnalysis')}</h3>
+            <p className="text-xs text-text-muted">{t('dashboard.financialAnalysisDesc')}</p>
           </div>
           <div className="h-[300px] mt-6">
             <Area {...revenueConfig} />

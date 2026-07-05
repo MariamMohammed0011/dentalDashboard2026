@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Eye, Clock, User, Building2, Truck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import framerImg from '../../../assets/framer.png';
 import OrderDetailsModal from './OrderDetailsModal';
 
 const OrdersTable = ({ orders, isLoading }) => {
+  const { t } = useTranslation();
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -22,12 +24,12 @@ const OrdersTable = ({ orders, isLoading }) => {
         <table className="w-full text-center border-collapse  table-auto">
           <thead>
             <tr className="bg-[#F0F0F0] border-b border-gray-300">
-              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300 last:border-l-0">رقم الطلب</th>
-              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">الطبيب</th>
-              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">المخبر</th>
-              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">حالة الطلب</th>
-              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">تاريخ الإنشاء</th>
-              <th className="px-4 py-5 font-bold text-gray-700 text-sm">عرض</th>
+              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300 last:border-l-0">{t('orders.orderNumber')}</th>
+              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">{t('orders.doctor')}</th>
+              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">{t('orders.lab')}</th>
+              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">{t('orders.orderStatus')}</th>
+              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">{t('orders.createdAt')}</th>
+              <th className="px-4 py-5 font-bold text-gray-700 text-sm">{t('orders.view')}</th>
             </tr>
           </thead>
           <tbody>
@@ -105,12 +107,12 @@ const OrdersTable = ({ orders, isLoading }) => {
                       <User size={14} />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-[11px] text-gray-400">الطبيب</span>
+                      <span className="text-[11px] text-gray-400">{t('orders.doctor')}</span>
                       <span className="text-[14px] font-bold text-gray-700">{order.doctor}</span>
                     </div>
                   </div>
                   <div className="flex flex-col items-end">
-                    <span className="text-[11px] text-gray-400">حالة الطلب</span>
+                    <span className="text-[11px] text-gray-400">{t('orders.orderStatus')}</span>
                     <span className="text-[13px] font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-lg mt-1">{order.orderStatus}</span>
                   </div>
                 </div>
@@ -119,7 +121,7 @@ const OrdersTable = ({ orders, isLoading }) => {
                   <div className="flex items-center gap-2">
                     <Building2 size={14} className="text-gray-300" />
                     <div className="flex flex-col">
-                      <span className="text-[10px] text-gray-400">المخبر</span>
+                      <span className="text-[10px] text-gray-400">{t('orders.lab')}</span>
                       <span className="text-[12px] font-semibold text-gray-600 truncate">{order.lab}</span>
                     </div>
                   </div>

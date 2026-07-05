@@ -1,8 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ClipboardList, Search, SlidersHorizontal } from 'lucide-react';
 
 
 const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) => {
+  const { t } = useTranslation();
 
 
   const handleToggleSort = () => {
@@ -19,7 +21,7 @@ const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) =>
         </div>
 
         <h1 className="text-[18px] sm:text-[22px] font-bold text-gray-700">
-          ادارة طلبات الأطباء
+          {t('orders.headerTitle')}
         </h1>
       </div>
 
@@ -29,7 +31,7 @@ const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) =>
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="بحث عن طريق رقم الطلب، الطبيب، أو المخبر..."
+            placeholder={t('orders.searchPlaceholder')}
             className="w-full bg-white border border-gray-200 py-2.5 pr-4 pl-10 rounded-full shadow-sm focus:outline-none focus:ring-4 focus:ring-primary/5 text-[13px] sm:text-[14px] font-medium text-text-main placeholder-gray-400 text-right"
           />
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
@@ -37,7 +39,7 @@ const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) =>
 
         <button
           onClick={handleToggleSort}
-          title={sortOrder === 'asc' ? "ترتيب تنازلي (الأحدث أولاً)" : "ترتيب تصاعدي (الأقدم أولاً)"}
+          title={sortOrder === 'asc' ? t('orders.sortDesc') : t('orders.sortAsc')}
           className={`p-2.5 rounded-full border transition-all shadow-sm flex-shrink-0 flex items-center gap-1.5 cursor-pointer
             ${sortOrder === 'desc'
               ? 'bg-primary/10 text-primary border-primary/30'

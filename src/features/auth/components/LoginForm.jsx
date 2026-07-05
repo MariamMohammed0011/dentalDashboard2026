@@ -1,5 +1,6 @@
 import React from "react";
 import { User, Loader } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useLogin } from "../hooks/useLogin";
 import PasswordInput from "./PasswordInput";
 import InputField from "./InputField";
@@ -7,6 +8,7 @@ import LoginIllustration from "./LoginIllustration";
 
 export default function LoginForm() {
   const { handleLogin, isPending, error } = useLogin();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-primary-bg p-4" dir="rtl">
@@ -14,7 +16,7 @@ export default function LoginForm() {
 
 
         <div className="text-center pt-8 pb-2 bg-white/10 backdrop-blur-md ">
-          <h1 className="text-3xl font-bold text-gray-800">ابتسامتك، إدارتنا</h1>
+          <h1 className="text-3xl font-bold text-gray-800">{t('auth.subtitle')}</h1>
         </div>
 
         <div className="flex flex-col md:flex-row flex-grow">
@@ -24,20 +26,20 @@ export default function LoginForm() {
 
 
               <InputField
-                label="البريد الالكتروني "
+                label={t('auth.emailLabel')}
                 name="username"
                 type="text"
-                placeholder="ادخل بريدك الالكتروني  "
+                placeholder={t('auth.emailPlaceholder')}
                 icon={User}
                 required
               />
 
               <div className="space-y-3">
-                <label className="block text-sm font-bold text-gray-700 mr-2">كلمة السر</label>
+                <label className="block text-sm font-bold text-gray-700 mr-2">{t('auth.passwordLabel')}</label>
                 <PasswordInput
                   name="password"
                   className="h-12 border-none shadow-inner"
-                  placeholder="أدخل كلمة المرور"
+                  placeholder={t('auth.passwordPlaceholder')}
                   required
                 />
               </div>
@@ -46,7 +48,7 @@ export default function LoginForm() {
                 <label className="flex items-center gap-2 cursor-pointer group">
                   <input type="checkbox" name="rememberMe" className="w-4 h-4 rounded border-none text-primary focus:ring-0 shadow-sm" />
 
-                  <span className="text-xs font-bold text-gray-600 group-hover:text-primary">تذكر حسابي</span>
+                  <span className="text-xs font-bold text-gray-600 group-hover:text-primary">{t('auth.rememberMe')}</span>
                 </label>
               </div>
 
@@ -59,10 +61,10 @@ export default function LoginForm() {
                   {isPending ? (
                     <>
                       <Loader className="animate-spin text-white" size={24} strokeWidth={3} />
-                      <span className="tracking-wide">جاري التحقق...</span>
+                      <span className="tracking-wide">{t('auth.checking')}</span>
                     </>
                   ) : (
-                    "تسجيل دخول"
+                    t('auth.loginButton')
                   )}
                 </button>
               </div>

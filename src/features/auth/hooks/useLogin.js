@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie"; 
 import axiosInstance from "../../../api/axios";
+import i18n from "../../../i18n";
 
 export const useLogin = () => {
   const navigate = useNavigate();
@@ -44,11 +45,11 @@ export const useLogin = () => {
   Cookies.set("user_id", data.userId, cookieConfig);
   Cookies.set("user_role", data.role, cookieConfig);
 
-  toast.success("تم تسجيل الدخول بنجاح");
+  toast.success(i18n.t("auth.loginSuccess"));
   setTimeout(() => navigate("/dashboard"), 500);
 },
     onError: (error) => {
-      const errorMessage = error.response?.data?.message || "حدث خطأ غير متوقع";
+      const errorMessage = error.response?.data?.message || i18n.t("auth.unexpectedError");
       toast.error(errorMessage);
     },
   });
@@ -62,7 +63,7 @@ export const useLogin = () => {
     const payload = Object.fromEntries(formData);
 
     if (!payload.username || !payload.password) {
-      toast.warning("يرجى إدخال جميع البيانات");
+      toast.warning(i18n.t("auth.fillAllFields"));
       return;
     }
 

@@ -65,7 +65,7 @@ const UsersTable = ({
                         </div>
                         <div className="text-right flex flex-col min-w-0">
                           <span className="font-bold text-text-main text-xs sm:text-sm truncate">{user.name || "بدون اسم"}</span>
-                          <span className="text-[10px] text-text-muted font-semibold mt-0.5">ID: #{user.id}</span>
+                          <span className="text-[10px] text-text-muted font-semibold mt-0.5">المعرف: #{user.id}</span>
                         </div>
                       </div>
                     </td>
@@ -188,7 +188,7 @@ const UsersTable = ({
                 >
                   {/* Top Bar: ID and Action Buttons */}
                   <div className="flex justify-between items-center pb-3 border-b border-border-main/30">
-                    <span className="text-xs font-bold text-text-muted bg-bg-main/50 px-3 py-1 rounded-xl">ID: #{user.id}</span>
+                    <span className="text-xs font-bold text-text-muted bg-bg-main/50 px-3 py-1 rounded-xl">المعرف: #{user.id}</span>
                     
                     <div className="flex items-center gap-1.5">
                       {/* View Details Button */}

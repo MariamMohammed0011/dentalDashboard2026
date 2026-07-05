@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import MembershipHeader from '../components/MembershipHeader';
 import MembershipList from '../components/MembershipList';
 import MembershipDetailsModal from '../components/MembershipDetailsModal';
@@ -6,6 +7,7 @@ import ConfirmationModal from '../../../components/shared/ConfirmationModal';
 import { useMembership } from '../hooks/useMembership';
 
 const MembershipRequestsPage = () => {
+  const { t } = useTranslation();
   const {
     requests,
     isLoading,
@@ -36,9 +38,9 @@ const MembershipRequestsPage = () => {
   
   const triggerUpdateStatus = (id, status, type) => {
     const configMap = {
-      accepted: { title: 'قبول الطلب', message: 'هل أنت متأكد من قبول هذا العضو؟ سيتم تفعيل حسابه فوراً.', type: 'success' },
-      rejected: { title: 'رفض الطلب', message: 'هل أنت متأكد من رفض هذا الطلب؟ لن يتمكن العضو من الدخول.', type: 'danger' },
-      suspended: { title: 'تعليق الحساب', message: 'هل أنت متأكد من تعليق هذا الحساب مؤقتاً؟', type: 'warning' },
+      accepted: { title: t('membership.approve'), message: t('membership.confirmApproveMessage'), type: 'success' },
+      rejected: { title: t('membership.reject'), message: t('membership.confirmRejectMessage'), type: 'danger' },
+      suspended: { title: t('membership.suspend'), message: t('membership.confirmSuspendMessage'), type: 'warning' },
     };
 
     const config = configMap[status];
@@ -97,8 +99,8 @@ const MembershipRequestsPage = () => {
         title={confirmConfig.title}
         message={confirmConfig.message}
         type={confirmConfig.confirmType}
-        confirmText="نعم، متأكد"
-        cancelText="تراجع"
+        confirmText={t('membership.confirmYes')}
+        cancelText={t('membership.confirmNo')}
       />
     </div>
   );
