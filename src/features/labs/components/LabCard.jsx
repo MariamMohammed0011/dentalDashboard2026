@@ -2,77 +2,15 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { FlaskConical, ChevronLeft, Star, ChevronDown, Loader2 } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
-import { labsApi } from '../services/labsApi';
+import { useLabDetails } from '../hooks/useLabDetails';
+import { useLabStatusConfig } from '../hooks/useLabStatusConfig';
+import StarRating from '../../../components/shared/StarRating';
 import framerImg from '../../../assets/framer.png';
-
-const getStatusConfig = (status, t) => {
-  const cleanStatus = typeof status === 'string' ? status.toLowerCase() : '';
-  if (cleanStatus === 'active') {
-    return {
-      label: t('common.active'),
-      color: 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100/50 dark:border-emerald-900/30 hover:bg-emerald-100/50 dark:hover:bg-emerald-950/50',
-      dot: 'bg-emerald-500 animate-pulse'
-    };
-  }
-  if (cleanStatus === 'pendingadminapproval' || cleanStatus === 'pending') {
-    return {
-      label: t('common.pending'),
-      color: 'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-100/50 dark:border-amber-900/30 hover:bg-amber-100/50 dark:hover:bg-amber-950/50',
-      dot: 'bg-amber-500 animate-pulse'
-    };
-  }
-  if (cleanStatus === 'suspended') {
-    return {
-      label: t('common.suspended'),
-      color: 'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border-rose-100/50 dark:border-rose-900/30 hover:bg-rose-100/50 dark:hover:bg-rose-950/50',
-      dot: 'bg-rose-500'
-    };
-  }
-  if (cleanStatus === 'rejected') {
-    return {
-      label: t('common.rejected'),
-      color: 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-900/30',
-      dot: 'bg-rose-500'
-    };
-  }
-  return {
-    label: status || t('common.unknown'),
-    color: 'bg-gray-50 dark:bg-gray-800/40 text-gray-500 dark:text-gray-400 border-gray-100 dark:border-gray-800',
-    dot: 'bg-gray-400'
-  };
-};
 
 const LabCard = ({ id, name, onShowDetails, onEditStatus, updatingLabId }) => {
   const { t } = useTranslation();
-
-  const { data: details, isLoading } = useQuery({
-    queryKey: ['lab-card-details', id],
-    queryFn: () => labsApi.getLabDetails(id),
-    staleTime: 1000 * 60 * 5,
-  });
-
-  const renderStars = (rating = 0) => {
-    const stars = [];
-    const roundedRating = Math.round(rating * 2) / 2;
-    for (let i = 1; i <= 5; i++) {
-      if (i <= roundedRating) {
-        stars.push(<Star key={i} size={16} fill="#F59E0B" className="text-amber-500" />);
-      } else if (i - 0.5 === roundedRating) {
-        stars.push(
-          <div key={i} className="relative inline-block" style={{ width: 16, height: 16 }}>
-            <Star size={16} className="text-gray-200 dark:text-slate-700" />
-            <div className="absolute top-0 right-0 left-0 bottom-0 overflow-hidden" style={{ width: '50%' }}>
-              <Star size={16} fill="#F59E0B" className="text-amber-500" />
-            </div>
-          </div>
-        );
-      } else {
-        stars.push(<Star key={i} size={16} className="text-gray-200 dark:text-slate-700" />);
-      }
-    }
-    return stars;
-  };
+  const { data: details, isLoading } = useLabDetails(id);
+  const getStatusConfig = useLabStatusConfig();
 
   return (
     <motion.div
@@ -120,7 +58,7 @@ const LabCard = ({ id, name, onShowDetails, onEditStatus, updatingLabId }) => {
               );
             }
 
-            const statusCfg = getStatusConfig(details.owner.status, t);
+            const statusCfg = getStatusConfig(details.owner.status);
             return (
               <button
                 type="button"
@@ -158,7 +96,7 @@ const LabCard = ({ id, name, onShowDetails, onEditStatus, updatingLabId }) => {
                 <div className="h-4 bg-slate-100 dark:bg-slate-800/80 rounded animate-pulse w-40 mt-1" />
               ) : (
                 <>
-                  <div className="flex gap-0.5">{renderStars(details?.averageRating)}</div>
+                  <StarRating rating={details?.averageRating} size={16} />
                   <span className="text-[13px] font-black text-slate-700 dark:text-gray-200 font-sans">
                     ({details?.averageRating?.toFixed(1) || '0.0'})
                   </span>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import LabCard from '../components/LabCard';
@@ -20,15 +20,20 @@ const LabsPage = () => {
     currentPage,
     setCurrentPage,
 
-    
     labDetails,
     isLoadingDetails,
     selectedLabId,
     handleShowDetails,
     handleCloseDetails,
 
-    
-    toggleStatus,
+    // Status Modal from hook
+    selectedLabForStatus,
+    setSelectedLabForStatus,
+    tempStatus,
+    setTempStatus,
+    openStatusModal,
+    handleConfirmStatusChange,
+
     updatingLabId,
 
     // ── Filter props ──
@@ -45,28 +50,6 @@ const LabsPage = () => {
     hasActiveFilters,
     resetFilters,
   } = useLabs();
-
-  const [selectedLabForStatus, setSelectedLabForStatus] = useState(null);
-  const [tempStatus, setTempStatus] = useState(null);
-
-  
-  const handleStatusChange = (labId, nextStatus) => {
-    if (!toggleStatus) return;
-    toggleStatus({ id: labId, nextStatus });
-  };
-
-  
-  const openStatusModal = (lab) => {
-    setSelectedLabForStatus(lab);
-    setTempStatus(lab.status);
-  };
-
-  
-  const handleConfirmStatusChange = () => {
-    if (!selectedLabForStatus) return;
-    handleStatusChange(selectedLabForStatus.id, tempStatus);
-    setSelectedLabForStatus(null);
-  };
 
   return (
     <div className="flex flex-col gap-6 px-4 sm:px-10 lg:px-12 pb-10 min-h-full" dir="rtl">

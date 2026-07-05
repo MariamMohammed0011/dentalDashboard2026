@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { labsApi } from '../services/labsApi';
+import { useLabDetails } from './useLabDetails';
 import { useSearch } from '../../../components/shared/Search/hooks/useSearch';
 import { useUpdateUserStatus } from '../../../hooks/useUpdateUserStatus';
 
@@ -162,12 +163,7 @@ export const useLabs = () => {
     data: labDetails, 
     isLoading: isLoadingDetails,
     isError: isErrorDetails 
-  } = useQuery({
-    queryKey: ['lab-details', selectedLabId],
-    queryFn: () => labsApi.getLabDetails(selectedLabId),
-    enabled: !!selectedLabId,
-    staleTime: 1000 * 60 * 5, 
-  });
+  } = useLabDetails(selectedLabId);
 
   const handleShowDetails = (id) => {
     setSelectedLabId(id);
@@ -175,6 +171,21 @@ export const useLabs = () => {
 
   const handleCloseDetails = () => {
     setSelectedLabId(null);
+  };
+
+  // ── Status Modal State & Handlers ──
+  const [selectedLabForStatus, setSelectedLabForStatus] = useState(null);
+  const [tempStatus, setTempStatus] = useState(null);
+
+  const openStatusModal = (lab) => {
+    setSelectedLabForStatus(lab);
+    setTempStatus(lab.status);
+  };
+
+  const handleConfirmStatusChange = () => {
+    if (!selectedLabForStatus) return;
+    updateStatus({ id: selectedLabForStatus.id, status: tempStatus, type: 'lab' });
+    setSelectedLabForStatus(null);
   };
 
   return {
@@ -192,6 +203,14 @@ export const useLabs = () => {
     isErrorDetails,
     handleShowDetails,
     handleCloseDetails,
+    
+    // Status Modal exports
+    selectedLabForStatus,
+    setSelectedLabForStatus,
+    tempStatus,
+    setTempStatus,
+    openStatusModal,
+    handleConfirmStatusChange,
     
     toggleStatus: ({ id, nextStatus }) => updateStatus({ id, status: nextStatus, type: 'lab' }),
     updatingLabId: updatingId,

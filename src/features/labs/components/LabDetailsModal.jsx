@@ -1,99 +1,21 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, User, Mail, Phone, MapPin, Building2, Calendar, 
   Loader2, Star, CheckCircle2, XCircle, Award, Sparkles, Shield
 } from 'lucide-react';
-
-const getStatusConfig = (status) => {
-  const cleanStatus = typeof status === 'string' ? status.toLowerCase() : '';
-  if (cleanStatus === 'active') {
-    return {
-      label: 'نشط',
-      color: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30',
-      dot: 'bg-emerald-500 animate-pulse'
-    };
-  }
-  if (cleanStatus === 'pendingadminapproval' || cleanStatus === 'pending') {
-    return {
-      label: 'بانتظار الموافقة',
-      color: 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-900/30',
-      dot: 'bg-amber-500'
-    };
-  }
-  if (cleanStatus === 'suspended') {
-    return {
-      label: 'معلق',
-      color: 'bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-800',
-      dot: 'bg-slate-400'
-    };
-  }
-  if (cleanStatus === 'rejected') {
-    return {
-      label: 'مرفوض',
-      color: 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-900/30',
-      dot: 'bg-rose-500'
-    };
-  }
-  return {
-    label: status || 'غير محدد',
-    color: 'bg-gray-50 dark:bg-gray-800/40 text-gray-500 dark:text-gray-400 border-gray-100 dark:border-gray-800',
-    dot: 'bg-gray-400'
-  };
-};
+import { useLabStatusConfig } from '../hooks/useLabStatusConfig';
+import { useLabAvailability } from '../hooks/useLabAvailability';
+import StarRating from '../../../components/shared/StarRating';
 
 const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
+  const { t } = useTranslation();
+  const getStatusConfig = useLabStatusConfig();
+  const getAvailabilityInfo = useLabAvailability();
+
   if (typeof document === 'undefined') return null;
-
-  // Rating Stars Renderer
-  const renderStars = (rating = 0) => {
-    const stars = [];
-    const roundedRating = Math.round(rating * 2) / 2; // round to nearest 0.5
-    for (let i = 1; i <= 5; i++) {
-      if (i <= roundedRating) {
-        stars.push(<Star key={i} size={18} fill="#F59E0B" className="text-amber-500" />);
-      } else if (i - 0.5 === roundedRating) {
-        stars.push(
-          <div key={i} className="relative inline-block">
-            <Star size={18} className="text-gray-200 dark:text-slate-700" />
-            <div className="absolute top-0 right-0 left-0 bottom-0 overflow-hidden w-[50%]">
-              <Star size={18} fill="#F59E0B" className="text-amber-500" />
-            </div>
-          </div>
-        );
-      } else {
-        stars.push(<Star key={i} size={18} className="text-gray-200 dark:text-slate-700" />);
-      }
-    }
-    return stars;
-  };
-
-  // Availability Translater
-  const getAvailabilityInfo = (status) => {
-    // AvailabilityStatus: Available = 0, Busy = 1, NotAvailable = 2
-    // It can also come as strings: 'Available', 'Busy', 'NotAvailable'
-    const cleanStatus = typeof status === 'string' ? status.toLowerCase() : status;
-    if (cleanStatus === 'available' || cleanStatus === 0) {
-      return {
-        label: 'متوفر للعمل',
-        color: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-100 dark:border-emerald-900/40',
-        dot: 'bg-emerald-500'
-      };
-    }
-    if (cleanStatus === 'busy' || cleanStatus === 1) {
-      return {
-        label: 'مشغول حالياً',
-        color: 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-100 dark:border-amber-900/40',
-        dot: 'bg-amber-500'
-      };
-    }
-    return {
-      label: 'غير متاح حالياً',
-      color: 'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border-rose-100 dark:border-rose-900/40',
-      dot: 'bg-rose-500'
-    };
-  };
 
   const availability = lab ? getAvailabilityInfo(lab.availability) : null;
 
@@ -127,8 +49,8 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                   <div className="absolute inset-0 blur-2xl bg-emerald-500/20 animate-pulse rounded-full" />
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl font-black text-text-main dark:text-gray-100 mb-1">جاري جلب بيانات المخبر</h3>
-                  <p className="text-gray-400 dark:text-slate-500 text-sm font-bold">يرجى الانتظار قليلاً...</p>
+                  <h3 className="text-xl font-black text-text-main dark:text-gray-100 mb-1">{t('labs.detailsModal.loadingData')}</h3>
+                  <p className="text-gray-400 dark:text-slate-500 text-sm font-bold">{t('labs.detailsModal.pleaseWait')}</p>
                 </div>
               </div>
             ) : lab ? (
@@ -155,20 +77,20 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                     >
                       <div className="flex flex-wrap items-center gap-2 mb-2">
                         <span className="text-[10px] bg-white/25 backdrop-blur-md border border-white/30 text-white font-bold py-1.5 px-3.5 rounded-full tracking-widest leading-none inline-block">
-                          مخبر رقم #{lab.id}
+                          {t('labs.detailsModal.labNumber', { id: lab.id })}
                         </span>
                         {lab.owner?.status && (() => {
                           const statusCfg = getStatusConfig(lab.owner.status);
                           return (
                             <span className="text-[10px] bg-white/25 backdrop-blur-md border border-white/30 text-white font-bold py-1.5 px-3.5 rounded-full tracking-widest leading-none inline-flex items-center gap-1.5">
                               <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                              الحالة: {statusCfg.label}
+                              {t('labs.detailsModal.status', { status: statusCfg.label })}
                             </span>
                           );
                         })()}
                       </div>
                       <h2 className="text-2xl sm:text-3xl font-black tracking-tight leading-none truncate mb-1">
-                        {lab.owner?.namePlace || lab.owner?.name || 'مخبر تعويضات'}
+                        {lab.owner?.namePlace || lab.owner?.name || t('labs.detailsModal.defaultLabType')}
                       </h2>
                     </motion.div>
                   </div>
@@ -194,7 +116,7 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                     >
                       <h3 className="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-[0.2em] flex items-center gap-3 mb-6">
                         <span className="w-8 h-[1px] bg-gray-200 dark:bg-slate-800" />
-                        الملف المهني للمخبر
+                        {t('labs.detailsModal.professionalProfile')}
                       </h3>
                       
                       {/* Availability Tag */}
@@ -203,7 +125,7 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                           <Shield size={20} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-gray-400 font-black mb-1">حالة التوفر</span>
+                          <span className="text-[10px] text-gray-400 font-black mb-1">{t('labs.detailsModal.availabilityStatus')}</span>
                           <span className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full border ${availability.color}`}>
                             <span className={`w-2 h-2 rounded-full ${availability.dot}`} />
                             {availability.label}
@@ -220,7 +142,7 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                               <Shield size={20} />
                             </div>
                             <div className="flex flex-col">
-                              <span className="text-[10px] text-gray-400 font-black mb-1">حالة الحساب</span>
+                              <span className="text-[10px] text-gray-400 font-black mb-1">{t('labs.detailsModal.accountStatus')}</span>
                               <span className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full border ${statusCfg.color}`}>
                                 <span className={`w-2 h-2 rounded-full ${statusCfg.dot}`} />
                                 {statusCfg.label}
@@ -236,9 +158,9 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                           <Star size={20} className="text-amber-500" />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-gray-400 font-black mb-1">متوسط التقييم</span>
+                          <span className="text-[10px] text-gray-400 font-black mb-1">{t('labs.averageRating')}</span>
                           <div className="flex items-center gap-1.5">
-                            <div className="flex">{renderStars(lab.averageRating)}</div>
+                            <StarRating rating={lab.averageRating} size={18} />
                             <span className="text-sm font-bold text-text-main dark:text-gray-300">({lab.averageRating?.toFixed(1) || '0.0'})</span>
                           </div>
                         </div>
@@ -250,9 +172,9 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                           <Award size={20} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-gray-400 font-black mb-0.5">سنوات الخبرة</span>
+                          <span className="text-[10px] text-gray-400 font-black mb-0.5">{t('labs.detailsModal.yearsOfExperience')}</span>
                           <span className="text-[15px] text-text-main dark:text-gray-200 font-bold">
-                            {lab.yearsOfExperience} سنوات خبرة عملية
+                            {t('labs.detailsModal.yearsOfExperienceValue', { years: lab.yearsOfExperience })}
                           </span>
                         </div>
                       </div>
@@ -263,17 +185,17 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                           <Sparkles size={20} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-gray-400 font-black mb-0.5">خدمة زيارة الفحص الرقمي (Scan Visit)</span>
+                          <span className="text-[10px] text-gray-400 font-black mb-0.5">{t('labs.detailsModal.scanVisitService')}</span>
                           <span className="flex items-center gap-1.5 text-sm font-bold text-text-main dark:text-gray-200">
                             {lab.hasScanVisitService ? (
                               <>
                                 <CheckCircle2 size={16} className="text-emerald-500" />
-                                يدعم خدمة الزيارة الرقمية للعيادة
+                                {t('labs.detailsModal.supportsScanVisit')}
                               </>
                             ) : (
                               <>
                                 <XCircle size={16} className="text-gray-400" />
-                                لا يوفر هذه الخدمة حالياً
+                                {t('labs.detailsModal.doesNotSupportScanVisit')}
                               </>
                             )}
                           </span>
@@ -290,7 +212,7 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                     >
                       <h3 className="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-[0.2em] flex items-center gap-3 mb-6">
                         <span className="w-8 h-[1px] bg-gray-200 dark:bg-slate-800" />
-                        بيانات المالك والتواصل
+                        {t('labs.detailsModal.ownerInfo')}
                       </h3>
 
                       {/* Owner Name */}
@@ -299,8 +221,8 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                           <User size={20} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-gray-400 font-black mb-0.5">اسم المسؤول</span>
-                          <span className="text-[15px] text-text-main dark:text-gray-200 font-bold">{lab.owner?.name || 'غير متوفر'}</span>
+                          <span className="text-[10px] text-gray-400 font-black mb-0.5">{t('labs.detailsModal.ownerName')}</span>
+                          <span className="text-[15px] text-text-main dark:text-gray-200 font-bold">{lab.owner?.name || t('labs.detailsModal.notAvailableValue')}</span>
                         </div>
                       </div>
 
@@ -310,38 +232,38 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                           <Mail size={20} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-gray-400 font-black mb-0.5">البريد الإلكتروني</span>
-                          <span className="text-[14px] text-text-main dark:text-gray-300 font-bold truncate max-w-[220px] font-sans">{lab.owner?.email || 'غير متوفر'}</span>
+                          <span className="text-[10px] text-gray-400 font-black mb-0.5">{t('labs.detailsModal.email')}</span>
+                          <span className="text-[14px] text-text-main dark:text-gray-300 font-bold truncate max-w-[220px] font-sans">{lab.owner?.email || t('labs.detailsModal.notAvailableValue')}</span>
                         </div>
                       </div>
 
-                      
+                      {/* Phone */}
                       <div className="flex items-center gap-4">
                         <div className="p-3.5 bg-gray-50 dark:bg-slate-800 rounded-2xl text-gray-400 shrink-0">
                           <Phone size={20} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-gray-400 font-black mb-0.5">رقم الهاتف</span>
-                          <span className="text-[15px] text-text-main dark:text-gray-200 font-bold font-sans">{lab.owner?.phone || 'غير متوفر'}</span>
+                          <span className="text-[10px] text-gray-400 font-black mb-0.5">{t('labs.detailsModal.phone')}</span>
+                          <span className="text-[15px] text-text-main dark:text-gray-200 font-bold font-sans">{lab.owner?.phone || t('labs.detailsModal.notAvailableValue')}</span>
                         </div>
                       </div>
 
-                      
+                      {/* Address */}
                       <div className="flex items-center gap-4">
                         <div className="p-3.5 bg-gray-50 dark:bg-slate-800 rounded-2xl text-gray-400 shrink-0">
                           <MapPin size={20} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-gray-400 font-black mb-0.5">العنوان والمنطقة</span>
+                          <span className="text-[10px] text-gray-400 font-black mb-0.5">{t('labs.detailsModal.addressAndRegion')}</span>
                           <span className="text-[14px] text-text-main dark:text-gray-200 font-bold">
-                            {[lab.owner?.addressPlace, lab.owner?.cityPlace, lab.owner?.countryPlace].filter(Boolean).join('، ') || 'غير متوفر'}
+                            {[lab.owner?.addressPlace, lab.owner?.cityPlace, lab.owner?.countryPlace].filter(Boolean).join('، ') || t('labs.detailsModal.notAvailableValue')}
                           </span>
                         </div>
                       </div>
                     </motion.section>
                   </div>
 
-                  
+                  {/* Specialties & Materials */}
                   <motion.div 
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
@@ -350,7 +272,7 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                   >
                     
                     <div className="flex flex-col gap-3">
-                      <h4 className="text-[13px] font-black text-text-main dark:text-gray-300">التخصصات والخدمات الموفرة:</h4>
+                      <h4 className="text-[13px] font-black text-text-main dark:text-gray-300">{t('labs.detailsModal.specialtiesAndServices')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {lab.specialties && lab.specialties.length > 0 ? (
                           lab.specialties.map((spec, index) => (
@@ -362,14 +284,13 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                             </span>
                           ))
                         ) : (
-                          <span className="text-xs text-gray-400">غير محدد</span>
+                          <span className="text-xs text-gray-400">{t('labs.detailsModal.undefined')}</span>
                         )}
                       </div>
                     </div>
 
-                   
                     <div className="flex flex-col gap-3">
-                      <h4 className="text-[13px] font-black text-text-main dark:text-gray-300">المواد المستخدمة والأجهزة:</h4>
+                      <h4 className="text-[13px] font-black text-text-main dark:text-gray-300">{t('labs.detailsModal.materialsAndDevices')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {lab.materials && lab.materials.length > 0 ? (
                           lab.materials.map((mat, index) => (
@@ -381,7 +302,7 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                             </span>
                           ))
                         ) : (
-                          <span className="text-xs text-gray-400">غير محدد</span>
+                          <span className="text-xs text-gray-400">{t('labs.detailsModal.undefined')}</span>
                         )}
                       </div>
                     </div>
@@ -394,18 +315,19 @@ const LabDetailsModal = ({ lab, isOpen, onClose, isLoading }) => {
                       transition={{ delay: 0.6 }}
                       className="mt-8 p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800"
                     >
-                      <h4 className="text-xs font-black text-gray-400 dark:text-slate-500 uppercase mb-2">وصف وتعريف بالمخبر:</h4>
+                      <h4 className="text-xs font-black text-gray-400 dark:text-slate-500 uppercase mb-2">{t('labs.detailsModal.labDescription')}</h4>
                       <p className="text-sm font-bold text-gray-700 dark:text-gray-300 leading-relaxed">
                         {lab.description}
                       </p>
                     </motion.div>
                   )}
 
-                  
                   <div className="mt-8 pt-4 border-t border-slate-50 dark:border-slate-800/40 text-center text-xs text-gray-400 dark:text-slate-500">
                     <span className="flex items-center justify-center gap-1.5">
                       <Calendar size={14} />
-                      تاريخ التسجيل المعتمد: {lab.owner?.createdAt ? new Date(lab.owner.createdAt).toLocaleDateString('en-US', { dateStyle: 'long' }) : 'غير متوفر'}
+                      {t('labs.detailsModal.registrationDate', {
+                        date: lab.owner?.createdAt ? new Date(lab.owner.createdAt).toLocaleDateString('en-US', { dateStyle: 'long' }) : t('labs.detailsModal.notAvailableValue')
+                      })}
                     </span>
                   </div>
 
