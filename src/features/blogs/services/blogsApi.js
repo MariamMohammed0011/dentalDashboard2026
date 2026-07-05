@@ -2,11 +2,10 @@ import axiosInstance from "../../../api/axios";
 
 export const blogsApi = {
   
-  getBlogs: async ({ search = "", role = "all", page = 1, limit = 6 } = {}) => {
+  getBlogs: async ({ search = "", role = "all", status = "pending", page = 1, limit = 6 } = {}) => {
     try {
       let rawPosts = [];
 
-      
       if (search.trim() !== "") {
         const formData = new FormData();
         formData.append("query", search);
@@ -19,21 +18,45 @@ export const blogsApi = {
 
         const categorizedPosts = response.data?.categorizedPosts || {};
         
-        
         rawPosts = Object.entries(categorizedPosts).flatMap(([categoryKey, postsList]) => {
-          return postsList.map((post) => ({
+          return Array.isArray(postsList) ? postsList.map((post) => ({
             ...post,
             postId: post.id, 
             type: categoryKey, 
-          }));
+          })) : [];
         });
 
-        
-        rawPosts = rawPosts.filter((post) => post.status === "Pending");
+        const statusMap = {
+          pending: "Pending",
+          approved: "Approved",
+          rejected: "Rejected"
+        };
+        const targetStatusStr = statusMap[status] || "Pending";
+        rawPosts = rawPosts.filter((post) => post.status === targetStatusStr);
       } else {
-        
-        const response = await axiosInstance.get("/DoctorBlog/pending-posts");
-        rawPosts = response.data || [];
+        const cleanStatus = typeof status === 'string' ? status.toLowerCase() : 'pending';
+        let endpoint = "";
+
+        if (cleanStatus === "pending") {
+          if (role === "all") endpoint = "/DoctorBlog/all-pending-posts";
+          else if (role === "doctor") endpoint = "/DoctorBlog/pending-posts";
+          else if (role === "lab") endpoint = "/DoctorBlog/pending-lab-posts";
+        } 
+        else if (cleanStatus === "approved") {
+          if (role === "all") endpoint = "/DoctorBlog/approved-all-posts";
+          else if (role === "doctor") endpoint = "/DoctorBlog/approved-doctor-posts";
+          else if (role === "lab") endpoint = "/DoctorBlog/approved-lab-posts";
+        } 
+        else if (cleanStatus === "rejected") {
+          if (role === "all") endpoint = "/DoctorBlog/rejected-all-posts";
+          else if (role === "doctor") endpoint = "/DoctorBlog/rejected-doctor-posts";
+          else if (role === "lab") endpoint = "/DoctorBlog/rejected-lab-posts";
+        }
+
+        if (endpoint) {
+          const response = await axiosInstance.get(endpoint).catch(() => ({ data: [] }));
+          rawPosts = Array.isArray(response.data) ? response.data : [];
+        }
       }
 
       
@@ -109,17 +132,17 @@ export const blogsApi = {
   
   getStats: async () => {
     try {
-      const response = await axiosInstance.get("/DoctorBlog/pending-posts");
-      const rawPosts = response.data || [];
-      
-      const total = rawPosts.length;
-      const doctorCount = rawPosts.filter((p) => !p.type?.toLowerCase().includes("lab")).length;
-      const labCount = rawPosts.filter((p) => p.type?.toLowerCase().includes("lab")).length;
+      const [docsRes, labsRes] = await Promise.all([
+        axiosInstance.get("/DoctorBlog/pending-posts").catch(() => ({ data: [] })),
+        axiosInstance.get("/DoctorBlog/pending-lab-posts").catch(() => ({ data: [] }))
+      ]);
+      const docsPosts = Array.isArray(docsRes.data) ? docsRes.data : [];
+      const labsPosts = Array.isArray(labsRes.data) ? labsRes.data : [];
       
       return {
-        total,
-        doctorCount,
-        labCount,
+        total: docsPosts.length + labsPosts.length,
+        doctorCount: docsPosts.length,
+        labCount: labsPosts.length,
       };
     } catch (error) {
       console.error("Error in getStats:", error);

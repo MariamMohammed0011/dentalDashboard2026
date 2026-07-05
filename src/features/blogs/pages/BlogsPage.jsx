@@ -82,6 +82,8 @@ export default function BlogsPage() {
     setSearchQuery,
     selectedRole,
     setSelectedRole,
+    selectedStatus,
+    setSelectedStatus,
     currentPage,
     setCurrentPage,
     activeArticle,
@@ -127,44 +129,79 @@ export default function BlogsPage() {
       </div>
 
       
-      <div className="bg-white dark:bg-bg-card rounded-[2rem] p-6 border border-border-main/50 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
-        
-        
-        <div className="flex bg-gray-100 dark:bg-slate-800 p-1.5 rounded-2xl w-full md:w-auto">
-          <button
-            onClick={() => { setSelectedRole("all"); setCurrentPage(1); }}
-            className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-              selectedRole === "all"
-                ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
-                : "text-text-muted hover:text-text-main"
-            }`}
-          >
-            {t('blogs.tabs.all')}
-          </button>
-          <button
-            onClick={() => { setSelectedRole("doctor"); setCurrentPage(1); }}
-            className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-              selectedRole === "doctor"
-                ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
-                : "text-text-muted hover:text-text-main"
-            }`}
-          >
-            {t('blogs.tabs.doctors')}
-          </button>
-          <button
-            onClick={() => { setSelectedRole("lab"); setCurrentPage(1); }}
-            className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-              selectedRole === "lab"
-                ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
-                : "text-text-muted hover:text-text-main"
-            }`}
-          >
-            {t('blogs.tabs.labs')}
-          </button>
+      <div className="bg-white dark:bg-bg-card rounded-[2rem] p-6 border border-border-main/50 shadow-sm flex flex-col xl:flex-row gap-6 items-center justify-between">
+        <div className="flex flex-col md:flex-row gap-4 w-full xl:w-auto">
+          {/* Roles Selector */}
+          <div className="flex bg-gray-100 dark:bg-slate-800 p-1.5 rounded-2xl">
+            <button
+              onClick={() => { setSelectedRole("all"); setCurrentPage(1); }}
+              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+                selectedRole === "all"
+                  ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
+                  : "text-text-muted hover:text-text-main cursor-pointer"
+              }`}
+            >
+              {t('blogs.tabs.all')}
+            </button>
+            <button
+              onClick={() => { setSelectedRole("doctor"); setCurrentPage(1); }}
+              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+                selectedRole === "doctor"
+                  ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
+                  : "text-text-muted hover:text-text-main cursor-pointer"
+              }`}
+            >
+              {t('blogs.tabs.doctors')}
+            </button>
+            <button
+              onClick={() => { setSelectedRole("lab"); setCurrentPage(1); }}
+              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+                selectedRole === "lab"
+                  ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
+                  : "text-text-muted hover:text-text-main cursor-pointer"
+              }`}
+            >
+              {t('blogs.tabs.labs')}
+            </button>
+          </div>
+
+          {/* Post Status Selector */}
+          <div className="flex bg-gray-100 dark:bg-slate-800 p-1.5 rounded-2xl">
+            <button
+              onClick={() => { setSelectedStatus("pending"); setCurrentPage(1); }}
+              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+                selectedStatus === "pending"
+                  ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
+                  : "text-text-muted hover:text-text-main cursor-pointer"
+              }`}
+            >
+              {t('blogs.tabs.pending')}
+            </button>
+            <button
+              onClick={() => { setSelectedStatus("approved"); setCurrentPage(1); }}
+              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+                selectedStatus === "approved"
+                  ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
+                  : "text-text-muted hover:text-text-main cursor-pointer"
+              }`}
+            >
+              {t('blogs.tabs.approved')}
+            </button>
+            <button
+              onClick={() => { setSelectedStatus("rejected"); setCurrentPage(1); }}
+              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+                selectedStatus === "rejected"
+                  ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
+                  : "text-text-muted hover:text-text-main cursor-pointer"
+              }`}
+            >
+              {t('blogs.tabs.rejected')}
+            </button>
+          </div>
         </div>
 
-        
-        <div className="relative w-full md:w-80">
+        {/* Search */}
+        <div className="relative w-full xl:w-80">
           <Search size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted/60" />
           <input
             type="text"
@@ -274,26 +311,30 @@ export default function BlogsPage() {
                       <Eye size={14} />
                       <span>{t('blogs.actions.reviewLabel')}</span>
                     </button>
-                    <button
-                      onClick={() => {
-                        setApproveTarget(blog);
-                        setIsApproveModalOpen(true);
-                      }}
-                      className="p-2 bg-emerald-50 dark:bg-emerald-950/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 text-emerald-500 rounded-xl transition-all active:scale-95 cursor-pointer"
-                      title={t('blogs.actions.approve')}
-                    >
-                      <Check size={15} />
-                    </button>
-                    <button
-                      onClick={() => {
-                        setRejectTarget(blog);
-                        setIsRejectModalOpen(true);
-                      }}
-                      className="p-2 bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-500 rounded-xl transition-all active:scale-95 cursor-pointer"
-                      title={t('blogs.actions.reject')}
-                    >
-                      <X size={15} />
-                    </button>
+                    {selectedStatus !== "approved" && (
+                      <button
+                        onClick={() => {
+                          setApproveTarget(blog);
+                          setIsApproveModalOpen(true);
+                        }}
+                        className="p-2 bg-emerald-50 dark:bg-emerald-950/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 text-emerald-500 rounded-xl transition-all active:scale-95 cursor-pointer"
+                        title={t('blogs.actions.approve')}
+                      >
+                        <Check size={15} />
+                      </button>
+                    )}
+                    {selectedStatus !== "rejected" && (
+                      <button
+                        onClick={() => {
+                          setRejectTarget(blog);
+                          setIsRejectModalOpen(true);
+                        }}
+                        className="p-2 bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-500 rounded-xl transition-all active:scale-95 cursor-pointer"
+                        title={t('blogs.actions.reject')}
+                      >
+                        <X size={15} />
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -441,27 +482,31 @@ export default function BlogsPage() {
                   </button>
                   
                   <div className="flex gap-3">
-                    <button
-                      onClick={() => {
-                        setApproveTarget(activeArticle);
-                        setIsApproveModalOpen(true);
-                      }}
-                      className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl flex items-center gap-2 shadow-lg shadow-emerald-500/10 hover:shadow-xl hover:shadow-emerald-500/20 transition-all active:scale-95"
-                    >
-                      <Check size={16} />
-                      <span>{t('blogs.actions.approve')}</span>
-                    </button>
+                    {selectedStatus !== "approved" && (
+                      <button
+                        onClick={() => {
+                          setApproveTarget(activeArticle);
+                          setIsApproveModalOpen(true);
+                        }}
+                        className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl flex items-center gap-2 shadow-lg shadow-emerald-500/10 hover:shadow-xl hover:shadow-emerald-500/20 transition-all active:scale-95 cursor-pointer"
+                      >
+                        <Check size={16} />
+                        <span>{t('blogs.actions.approve')}</span>
+                      </button>
+                    )}
                     
-                    <button
-                      onClick={() => {
-                        setRejectTarget(activeArticle);
-                        setIsRejectModalOpen(true);
-                      }}
-                      className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-2xl flex items-center gap-2 shadow-lg shadow-red-500/10 hover:shadow-xl hover:shadow-red-500/20 transition-all active:scale-95"
-                    >
-                      <Trash2 size={16} />
-                      <span>{t('blogs.actions.reject')}</span>
-                    </button>
+                    {selectedStatus !== "rejected" && (
+                      <button
+                        onClick={() => {
+                          setRejectTarget(activeArticle);
+                          setIsRejectModalOpen(true);
+                        }}
+                        className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-2xl flex items-center gap-2 shadow-lg shadow-red-500/10 hover:shadow-xl hover:shadow-red-500/20 transition-all active:scale-95 cursor-pointer"
+                      >
+                        <Trash2 size={16} />
+                        <span>{t('blogs.actions.reject')}</span>
+                      </button>
+                    )}
                   </div>
                 </div>
 

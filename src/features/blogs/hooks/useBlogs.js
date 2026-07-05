@@ -8,24 +8,20 @@ export const useBlogs = () => {
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 });
   const [isLoading, setIsLoading] = useState(true);
 
-  
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedRole, setSelectedRole] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("pending"); // "pending" | "approved" | "rejected"
   const [currentPage, setCurrentPage] = useState(1);
 
-  
   const [activeArticle, setActiveArticle] = useState(null);
 
-  
   const [rejectTarget, setRejectTarget] = useState(null);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
 
-  
   const [approveTarget, setApproveTarget] = useState(null);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
 
-  
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchQuery);
@@ -35,7 +31,6 @@ export const useBlogs = () => {
     return () => clearTimeout(handler);
   }, [searchQuery]);
 
-  
   const fetchBlogsData = async (isSilent = false) => {
     if (!isSilent) setIsLoading(true);
     try {
@@ -43,6 +38,7 @@ export const useBlogs = () => {
         blogsApi.getBlogs({
           search: debouncedSearch,
           role: selectedRole,
+          status: selectedStatus,
           page: currentPage,
           limit: 6
         }),
@@ -63,7 +59,7 @@ export const useBlogs = () => {
 
   useEffect(() => {
     fetchBlogsData();
-  }, [debouncedSearch, selectedRole, currentPage]);
+  }, [debouncedSearch, selectedRole, selectedStatus, currentPage]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -71,9 +67,9 @@ export const useBlogs = () => {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [debouncedSearch, selectedRole, currentPage]);
+  }, [debouncedSearch, selectedRole, selectedStatus, currentPage]);
 
-   const handleRejectConfirm = async () => {
+  const handleRejectConfirm = async () => {
     if (!rejectTarget) return;
 
     try {
@@ -92,7 +88,6 @@ export const useBlogs = () => {
     }
   };
 
-  
   const handleApproveConfirm = async () => {
     if (!approveTarget) return;
 
@@ -104,7 +99,7 @@ export const useBlogs = () => {
         setActiveArticle(null);
       }
 
-            fetchBlogsData();
+      fetchBlogsData();
     } catch (error) {
       toast.error("فشل في قبول ونشر المقال.");
     } finally {
@@ -121,6 +116,8 @@ export const useBlogs = () => {
     setSearchQuery,
     selectedRole,
     setSelectedRole,
+    selectedStatus,
+    setSelectedStatus,
     currentPage,
     setCurrentPage,
     activeArticle,
