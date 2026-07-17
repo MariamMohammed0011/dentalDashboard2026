@@ -39,6 +39,7 @@ export default function DashboardHome() {
   const {
     dentistsOrdersData,
     labsOrdersData,
+    kpiStats,
     isLoading,
     isError,
     getPeriodText
@@ -277,85 +278,103 @@ export default function DashboardHome() {
         date={t('dashboard.dateValue')}
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          {Array(4).fill(0).map((_, i) => (
+            <div key={i} className="animate-pulse bg-bg-card border border-border-main rounded-[2rem] p-6 h-48 w-full flex flex-col justify-between">
+              <div className="flex justify-between items-start">
+                <div className="space-y-3 w-2/3">
+                  <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                  <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded-full w-1/2"></div>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-gray-200 dark:bg-gray-800"></div>
+              </div>
+              <div className="border-t border-border-main/50 pt-3 space-y-2">
+                <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded-full w-full"></div>
+                <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded-full w-5/6"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <StatCard
+            title={t('dashboard.totalDoctors')}
+            count={kpiStats.doctors.total}
+            icon={Users}
+            color="bg-blue-500 text-blue-500"
+            subDetails={
+              <>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-text-muted">{t('dashboard.activeAccounts')}</span>
+                  <span className="font-bold text-green-500">{kpiStats.doctors.active} طبيب</span>
+                </div>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-text-muted">{t('dashboard.pendingVerificationSyndicate')}</span>
+                  <span className="font-bold text-amber-500">{kpiStats.doctors.pending} حساب</span>
+                </div>
+              </>
+            }
+          />
 
-        <StatCard
-          title={t('dashboard.totalDoctors')}
-          count="209"
-          icon={Users}
-          color="bg-blue-500 text-blue-500"
-          subDetails={
-            <>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-text-muted">{t('dashboard.activeAccounts')}</span>
-                <span className="font-bold text-green-500">{t('dashboard.doctorsCount')}</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-text-muted">{t('dashboard.pendingVerificationSyndicate')}</span>
-                <span className="font-bold text-amber-500">{t('dashboard.pendingAccountsCount')}</span>
-              </div>
-            </>
-          }
-        />
+          <StatCard
+            title={t('dashboard.totalLabs')}
+            count={kpiStats.labs.total}
+            icon={FlaskConical}
+            color="bg-emerald-500 text-emerald-500"
+            subDetails={
+              <>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-text-muted">{t('dashboard.activeSubscribedLabs')}</span>
+                  <span className="font-bold text-green-500">{kpiStats.labs.active} مخبر</span>
+                </div>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-text-muted">{t('dashboard.suspendedExpiredAccounts')}</span>
+                  <span className="font-bold text-text-muted">{kpiStats.labs.suspended} مخبر</span>
+                </div>
+              </>
+            }
+          />
 
-        <StatCard
-          title={t('dashboard.totalLabs')}
-          count="42"
-          icon={FlaskConical}
-          color="bg-emerald-500 text-emerald-500"
-          subDetails={
-            <>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-text-muted">{t('dashboard.activeSubscribedLabs')}</span>
-                <span className="font-bold text-green-500">{t('dashboard.activeLabsCount')}</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-text-muted">{t('dashboard.suspendedExpiredAccounts')}</span>
-                <span className="font-bold text-text-muted">{t('dashboard.suspendedLabsCount')}</span>
-              </div>
-            </>
-          }
-        />
+          <StatCard
+            title={t('dashboard.activeCases')}
+            count={kpiStats.cases.total}
+            icon={Activity}
+            color="bg-amber-500 text-amber-500"
+            subDetails={
+              <>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-text-muted">{t('dashboard.inProgressLabs')}</span>
+                  <span className="font-bold text-primary">{kpiStats.cases.inProgress} حالة</span>
+                </div>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-text-muted">{t('dashboard.waitingScannerDelivery')}</span>
+                  <span className="font-bold text-purple-500">{kpiStats.cases.waitingScanner} حالة</span>
+                </div>
+              </>
+            }
+          />
 
-        <StatCard
-          title={t('dashboard.activeCases')}
-          count="86"
-          icon={Activity}
-          color="bg-amber-500 text-amber-500"
-          subDetails={
-            <>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-text-muted">{t('dashboard.inProgressLabs')}</span>
-                <span className="font-bold text-primary">{t('dashboard.casesInProgressCount')}</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-text-muted">{t('dashboard.waitingScannerDelivery')}</span>
-                <span className="font-bold text-purple-500">{t('dashboard.casesWaitingScannerCount')}</span>
-              </div>
-            </>
-          }
-        />
-
-        <StatCard
-          title={t('dashboard.monthlyRevenue')}
-          count="$15,240"
-          icon={DollarSign}
-          color="bg-violet-500 text-violet-500"
-          subDetails={
-            <>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-text-muted">{t('dashboard.labSubscriptionsLabel')}</span>
-                <span className="font-bold text-text-main">$12,840</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-text-muted">{t('dashboard.adSpacesRevenue')}</span>
-                <span className="font-bold text-purple-500">$2,400</span>
-              </div>
-            </>
-          }
-        />
-
-      </div>
+          <StatCard
+            title={t('dashboard.monthlyRevenue')}
+            count={"$" + kpiStats.revenue.total.toLocaleString()}
+            icon={DollarSign}
+            color="bg-violet-500 text-violet-500"
+            subDetails={
+              <>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-text-muted">{t('dashboard.labSubscriptionsLabel')}</span>
+                  <span className="font-bold text-text-main">${kpiStats.revenue.subscriptions.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-text-muted">{t('dashboard.adSpacesRevenue')}</span>
+                  <span className="font-bold text-purple-500">${kpiStats.revenue.ads.toLocaleString()}</span>
+                </div>
+              </>
+            }
+          />
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 

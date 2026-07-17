@@ -37,12 +37,23 @@ const addLocalDeletedId = (id) => {
 };
 
 // 🎯 تعديل: استقبال الحقل المرجعي blogPostType القادم من الباك إند
+// 🎯 تعديل: استقبال الحقل المرجعي blogPostType القادم من الباك إند وتخصيص نوع للمدونات وطلبات الموافقة
 const mapNotificationType = (type, blogPostType, message) => {
   // فحص الحقلين لضمان التقاط النوع أياً كان مسماه من السيرفر
   const currentType = blogPostType || type || "";
   const lowerType = currentType.toLowerCase();
   const lowerMessage = message ? message.toLowerCase() : "";
   
+  // مطابقة المدونات أو طلبات موافقة المدونة أولاً لتأخذ الأولوية
+  if (
+    lowerType.includes("blog") || 
+    lowerType.includes("post") || 
+    lowerMessage.includes("طلب موافقة") ||
+    lowerMessage.includes("موافقة")
+  ) {
+    return "blog";
+  }
+
   if (
     lowerType.includes("ad") || 
     lowerType.includes("advertisement") || 
@@ -55,13 +66,13 @@ const mapNotificationType = (type, blogPostType, message) => {
   if (lowerType.includes("status") || lowerType.includes("update")) {
     return "update";
   }
+
   // مطابقة الأنواع الخاصة بطلبات الموافقة أو حقول السيرفر (مثل CommunityDiscussionDoctor)
   if (
     lowerType.includes("join") || 
     lowerType.includes("membership") || 
     lowerType.includes("community") || 
     lowerType.includes("discussion") || 
-    lowerMessage.includes("طلب موافقة") ||
     lowerMessage.includes("انضمام")
   ) {
     return "join";
@@ -75,13 +86,39 @@ const mapNotificationType = (type, blogPostType, message) => {
   return "reminder";
 };
 
-// دالة تنسيق الوقت بشكل نسبي فخم باللغة العربية
+// دالة تنسيق الوقت بشكل نسبي فخم باللغة العربية مع معالجة فرق التوقيت
 const formatTimeArabic = (dateString) => {
   if (!dateString) return "";
   try {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now - date;
+    let s = dateString.trim().replace(" ", "T");
+    
+    // فحص ما إذا كان النص يحتوي على منطقة زمنية بالفعل (Z أو +00:00)
+    const hasTimezone = s.includes("Z") || /[+-]\d{2}:?\d{2}$/.test(s);
+    if (!hasTimezone) {
+      // إلحاق Z ليعامل كـ UTC افتراضياً إذا لم يتم تحديد توقيت
+      s += "Z";
+    }
+
+    let date = new Date(s);
+    let now = new Date();
+
+    if (isNaN(date.getTime())) {
+      date = new Date(dateString);
+    }
+
+    let diffMs = now - date;
+
+    // إذا كانت النتيجة سالبة (المستقبل) بسبب فرق المنطقة الزمنية بين المخدم والعميل
+    // نقوم بتجربة قراءتها كزمن محلي للعميل (بدون Z) لتصحيح الفرق
+    if (diffMs < 0) {
+      const localDate = new Date(dateString.trim().replace(" ", "T"));
+      const localDiff = now - localDate;
+      if (localDiff >= 0) {
+        date = localDate;
+        diffMs = localDiff;
+      }
+    }
+
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);

@@ -58,13 +58,13 @@ export default function NotificationMenu() {
   ];
 const getTabCount = (tabId) => {
   if (tabId === 'all') return notifications.length;
-  if (tabId === 'update') return notifications.filter(n => n.type === 'update' || n.type === 'comment' || n.type === 'ad').length;
+  if (tabId === 'update') return notifications.filter(n => n.type === 'update' || n.type === 'comment' || n.type === 'ad' || n.type === 'blog').length;
   return notifications.filter(n => n.type === tabId).length;
 };
 
 const getFilteredNotifications = () => {
   if (activeTab === 'all') return notifications;
-  if (activeTab === 'update') return notifications.filter(n => n.type === 'update' || n.type === 'comment' || n.type === 'ad');
+  if (activeTab === 'update') return notifications.filter(n => n.type === 'update' || n.type === 'comment' || n.type === 'ad' || n.type === 'blog');
   return notifications.filter(n => n.type === activeTab);
 };
 
@@ -82,6 +82,7 @@ const getFilteredNotifications = () => {
         case 'message':
           colorClass = "bg-blue-500/10 text-blue-600 border-blue-500/10 dark:bg-blue-500/20 dark:border-blue-500/20";
           break;
+        case 'blog':
         case 'update':
           colorClass = "bg-amber-500/10 text-amber-600 border-amber-500/10 dark:bg-amber-500/20 dark:border-amber-500/20";
           break;
@@ -104,6 +105,7 @@ const getFilteredNotifications = () => {
     switch (type) {
       case 'join': return <div className={`${baseClass} ${colorClass}`}><UserPlus {...iconProps} /></div>;
       case 'message': return <div className={`${baseClass} ${colorClass}`}><MessageSquare {...iconProps} /></div>;
+      case 'blog':
       case 'update': return <div className={`${baseClass} ${colorClass}`}><FileEdit {...iconProps} /></div>;
       case 'comment': return <div className={`${baseClass} ${colorClass}`}><MessageCircle {...iconProps} /></div>;
       case 'reminder': return <div className={`${baseClass} ${colorClass}`}><Calendar {...iconProps} /></div>;
@@ -114,6 +116,8 @@ const getFilteredNotifications = () => {
 
   const getActionLink = (type) => {
     switch (type) {
+      case 'blog':
+        return { label: "الذهاب للمدونة", url: "/dashboard/blogs" };
       case 'join':
         return { label: "معاينة طلب الانتساب", url: "/dashboard/membership-requests" };
       case 'message':
@@ -132,6 +136,7 @@ const getFilteredNotifications = () => {
   };
 
   const notifBadge = {
+    blog: { label: "طلب موافقة", color: "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20 dark:border-amber-500/10" },
     join: { label: "انضمام جديد", color: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20 dark:border-emerald-500/10" },
     message: { label: "رسالة جديدة", color: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20 dark:border-blue-500/10" },
     update: { label: "تحديث حالة", color: "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20 dark:border-amber-500/10" },
@@ -153,7 +158,7 @@ console.log("Mapped Notifications:", notifications);
           >
             <Bell size={21} className={`${unreadCount > 0 ? 'text-primary animate-[wiggle_1s_ease-in-out_infinite]' : 'text-gray-500 dark:text-gray-400'}`} />
             {unreadCount > 0 && (
-              <span className="absolute top-2 end-2 w-3.5 h-3.5 bg-red-500 text-white text-[8px] font-black flex items-center justify-center rounded-full ring-2 ring-white dark:ring-gray-900 animate-pulse">
+              <span className="absolute -top-1.5 -end-1.5 w-5 h-5 bg-red-500 text-white text-[10px] font-black flex items-center justify-center rounded-full ring-2 ring-white dark:ring-gray-900 animate-pulse z-10">
                 {unreadCount}
               </span>
             )}

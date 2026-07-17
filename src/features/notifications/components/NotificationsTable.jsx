@@ -26,11 +26,9 @@ const NotificationsTable = ({
         case 'message':
           colorClass = "bg-blue-500/10 text-blue-600 border-blue-500/10 dark:bg-blue-500/20 dark:border-blue-500/20";
           break;
+        case 'blog':
         case 'update':
           colorClass = "bg-amber-500/10 text-amber-600 border-amber-500/10 dark:bg-amber-500/20 dark:border-amber-500/20";
-          break;
-        case 'comment':
-          colorClass = "bg-purple-500/10 text-purple-600 border-purple-500/10 dark:bg-purple-500/20 dark:border-purple-500/20";
           break;
         case 'reminder':
           colorClass = "bg-rose-500/10 text-rose-600 border-rose-500/10 dark:bg-rose-500/20 dark:border-rose-500/20";
@@ -48,6 +46,7 @@ const NotificationsTable = ({
     switch (type) {
       case 'join': return <div className={`${baseClass} ${colorClass}`}><UserPlus {...iconProps} /></div>;
       case 'message': return <div className={`${baseClass} ${colorClass}`}><MessageSquare {...iconProps} /></div>;
+      case 'blog':
       case 'update': return <div className={`${baseClass} ${colorClass}`}><FileEdit {...iconProps} /></div>;
       case 'reminder': return <div className={`${baseClass} ${colorClass}`}><Calendar {...iconProps} /></div>;
       case 'ad': return <div className={`${baseClass} ${colorClass}`}><Megaphone {...iconProps} /></div>;
@@ -56,11 +55,12 @@ const NotificationsTable = ({
   };
 
   const notifBadge = {
+    blog: { label: "طلب موافقة", color: "bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-200/50 dark:border-amber-900/30" },
     join: { label: "طلب انضمام", color: "bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-200/50 dark:border-emerald-900/30" },
     message: { label: "رسالة جديدة", color: "bg-blue-50 dark:bg-blue-950/20 text-blue-700 dark:text-blue-400 border-blue-200/50 dark:border-blue-900/30" },
     update: { label: "تحديث نظام", color: "bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-200/50 dark:border-amber-900/30" },
     reminder: { label: "تنبيه هام", color: "bg-rose-50 dark:bg-rose-950/20 text-rose-700 dark:text-rose-400 border-rose-200/50 dark:border-rose-900/30" },
-    ad: { label: "سعر الإعلان", color: "bg-sky-50 dark:bg-sky-950/20 text-sky-700 dark:text-sky-400 border-sky-200/50 dark:border-sky-900/30" }
+    ad: { label: "طلب إعلان", color: "bg-sky-50 dark:bg-sky-950/20 text-sky-700 dark:text-sky-400 border-sky-200/50 dark:border-sky-900/30" }
   };
 
   return (
