@@ -16,8 +16,8 @@ const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) =>
 
       <div className="shrink-0 w-full sm:w-auto text-right flex items-center gap-2">
 
-        <div className="p-3.5 bg-[#E8F1FF] text-[#367AFF] rounded-2xl shadow-sm border border-[#D2E4FF]/50 flex items-center justify-center">
-          <ClipboardList size={28} className="text-[#367AFF]" />
+        <div className="p-3.5 bg-brand-blue-light text-brand-blue rounded-2xl shadow-sm border border-brand-blue-border/50 flex items-center justify-center">
+          <ClipboardList size={28} className="text-brand-blue" />
         </div>
 
         <h1 className="text-[18px] sm:text-[22px] font-bold text-gray-700">

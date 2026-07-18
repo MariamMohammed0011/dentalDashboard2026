@@ -8,7 +8,7 @@ export default function MainComponent({ children }) {
     <div className="bg-bg-main min-h-screen flex flex-col">
 
       <FolderWrapper bgColor="bg-white" isExternal={true} cutoutPointB={400}>
-        <FolderWrapper bgColor="bg-[#F0F0F0]" cutoutPointB={360}>
+        <FolderWrapper bgColor="bg-neutral-light-gray" cutoutPointB={360}>
 
 
           <div className="w-full h-full bg-transparent px-3">

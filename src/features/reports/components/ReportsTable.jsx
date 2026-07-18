@@ -6,7 +6,7 @@ const ReportsTable = ({ reports, isLoading }) => {
   const { t } = useTranslation();
 
   return (
-    <div className="w-full bg-[#F2F4F7] rounded-[2rem] sm:rounded-[2.5rem] p-4 sm:p-6 lg:p-10 border border-gray-200/50 shadow-inner" dir="rtl">
+    <div className="w-full bg-neutral-reports-bg rounded-[2rem] sm:rounded-[2.5rem] p-4 sm:p-6 lg:p-10 border border-gray-200/50 shadow-inner" dir="rtl">
       
       <div className="hidden md:block overflow-x-auto custom-scrollbar">
         <table className="w-full border-separate border-spacing-y-0 text-center">

@@ -23,7 +23,7 @@ const OrdersTable = ({ orders, isLoading }) => {
       <div className="hidden md:block overflow-hidden">
         <table className="w-full text-center border-collapse  table-auto">
           <thead>
-            <tr className="bg-[#F0F0F0] border-b border-gray-300">
+            <tr className="bg-neutral-light-gray border-b border-gray-300">
               <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300 last:border-l-0">{t('orders.orderNumber')}</th>
               <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">{t('orders.doctor')}</th>
               <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">{t('orders.lab')}</th>

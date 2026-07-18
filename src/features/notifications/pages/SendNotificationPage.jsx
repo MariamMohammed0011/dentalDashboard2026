@@ -171,8 +171,8 @@ const SendNotificationPage = () => {
       {/* 1. Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4 mt-2">
         <div className="flex items-center gap-4">
-          <div className="p-3.5 bg-[#E8F1FF] text-[#367AFF] rounded-2xl shadow-sm border border-[#D2E4FF]/50 flex items-center justify-center">
-            <Bell size={28} className="text-[#367AFF]" />
+          <div className="p-3.5 bg-brand-blue-light text-brand-blue rounded-2xl shadow-sm border border-brand-blue-border/50 flex items-center justify-center">
+            <Bell size={28} className="text-brand-blue" />
           </div>
           <div className="text-right">
             <h1 className="text-2xl sm:text-3xl font-black text-gray-800 tracking-tight">إدارة الإشعارات</h1>
@@ -194,7 +194,7 @@ const SendNotificationPage = () => {
       <div className="flex border-b border-gray-200 dark:border-slate-800/80 -mb-2 mt-2 gap-6">
         <button
           onClick={() => setActiveTab('send')}
-          className="pb-3 text-sm font-black border-b-2 border-[#367AFF] text-[#367AFF] transition-all relative px-1 cursor-pointer"
+          className="pb-3 text-sm font-black border-b-2 border-brand-blue text-brand-blue transition-all relative px-1 cursor-pointer"
         >
           إرسال إشعار جديد
         </button>
@@ -221,7 +221,7 @@ const SendNotificationPage = () => {
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-250 font-bold text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full cursor-pointer"
+                  className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-250 font-bold text-sm focus:outline-none focus:border-brand-blue transition-colors w-full cursor-pointer"
                 >
                   <option value="reminder">تنبيه هام / تذكير</option>
                   <option value="ad">إشعار سعر الإعلان (للموافقة والدفع)</option>
@@ -240,7 +240,7 @@ const SendNotificationPage = () => {
                       setRecipientType(e.target.value);
                       setSelectedRecipientId('');
                     }}
-                    className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-250 font-bold text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full cursor-pointer"
+                    className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-250 font-bold text-sm focus:outline-none focus:border-brand-blue transition-colors w-full cursor-pointer"
                   >
                     <option value="all">الجميع (أطباء ومخابر)</option>
                     <option value="doctors">جميع الأطباء</option>
@@ -264,13 +264,13 @@ const SendNotificationPage = () => {
                 <div className="flex flex-col gap-1.5 text-right animate-fade-in">
                   <label className="text-gray-600 dark:text-gray-300 font-bold text-xs sm:text-sm mr-1">اختر الطبيب المستلم</label>
                   {isLoadingDoctors ? (
-                    <div className="flex items-center gap-2 text-gray-400 text-xs py-2"><Loader2 size={14} className="animate-spin text-[#367AFF]" /> جاري تحميل الأطباء...</div>
+                    <div className="flex items-center gap-2 text-gray-400 text-xs py-2"><Loader2 size={14} className="animate-spin text-brand-blue" /> جاري تحميل الأطباء...</div>
                   ) : (
                     <select
                       value={selectedRecipientId}
                       required
                       onChange={(e) => setSelectedRecipientId(e.target.value)}
-                      className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-250 font-bold text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full cursor-pointer"
+                      className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-250 font-bold text-sm focus:outline-none focus:border-brand-blue transition-colors w-full cursor-pointer"
                     >
                       <option value="">-- اختر طبيباً --</option>
                       {doctors.map(doc => (
@@ -286,13 +286,13 @@ const SendNotificationPage = () => {
                 <div className="flex flex-col gap-1.5 text-right animate-fade-in">
                   <label className="text-gray-600 dark:text-gray-300 font-bold text-xs sm:text-sm mr-1">اختر المخبر المستلم</label>
                   {isLoadingLabs ? (
-                    <div className="flex items-center gap-2 text-gray-400 text-xs py-2"><Loader2 size={14} className="animate-spin text-[#367AFF]" /> جاري تحميل المخابر...</div>
+                    <div className="flex items-center gap-2 text-gray-400 text-xs py-2"><Loader2 size={14} className="animate-spin text-brand-blue" /> جاري تحميل المخابر...</div>
                   ) : (
                     <select
                       value={selectedRecipientId}
                       required
                       onChange={(e) => setSelectedRecipientId(e.target.value)}
-                      className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-250 font-bold text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full cursor-pointer"
+                      className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-250 font-bold text-sm focus:outline-none focus:border-brand-blue transition-colors w-full cursor-pointer"
                     >
                       <option value="">-- اختر مخبراً --</option>
                       {labs.map(lab => (
@@ -306,15 +306,15 @@ const SendNotificationPage = () => {
               {/* Specific Recipient Select - Ad Client */}
               {recipientType === 'ad_client' && type !== 'ad' && (
                 <div className="flex flex-col gap-1.5 text-right animate-fade-in">
-                  <label className="text-gray-600 dark:text-gray-300 font-bold text-xs sm:text-sm mr-1">اختر عميل الإعلانات</label>
+                  <label className="text-gray-600 dark:text-gray-300 font-bold text-xs sm:text-sm mr-1">اختر العميل المستلم</label>
                   {isLoadingAdClients ? (
-                    <div className="flex items-center gap-2 text-gray-400 text-xs py-2"><Loader2 size={14} className="animate-spin text-[#367AFF]" /> جاري تحميل العملاء...</div>
+                    <div className="flex items-center gap-2 text-gray-400 text-xs py-2"><Loader2 size={14} className="animate-spin text-brand-blue" /> جاري تحميل العملاء...</div>
                   ) : (
                     <select
                       value={selectedRecipientId}
                       required
                       onChange={(e) => setSelectedRecipientId(e.target.value)}
-                      className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-250 font-bold text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full cursor-pointer"
+                      className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-250 font-bold text-sm focus:outline-none focus:border-brand-blue transition-colors w-full cursor-pointer"
                     >
                       <option value="">-- اختر عميلاً --</option>
                       {adClients.map(client => (
@@ -330,7 +330,7 @@ const SendNotificationPage = () => {
                 <div className="flex flex-col gap-1.5 text-right animate-fade-in">
                   <label className="text-gray-600 dark:text-gray-300 font-bold text-xs sm:text-sm mr-1">اختر الإعلان المعلق المرتبط</label>
                   {isLoadingAds ? (
-                    <div className="flex items-center gap-2 text-gray-400 text-xs py-2"><Loader2 size={14} className="animate-spin text-[#367AFF]" /> جاري تحميل الإعلانات المعلقة...</div>
+                    <div className="flex items-center gap-2 text-gray-400 text-xs py-2"><Loader2 size={14} className="animate-spin text-brand-blue" /> جاري تحميل الإعلانات المعلقة...</div>
                   ) : pendingAds.length === 0 ? (
                     <div className="text-red-500 text-xs font-bold py-2 bg-red-50/50 dark:bg-red-950/10 border border-red-100 dark:border-red-950/20 px-4 rounded-xl">لا توجد إعلانات معلقة حالياً تحتاج لتحديد السعر.</div>
                   ) : (
@@ -338,7 +338,7 @@ const SendNotificationPage = () => {
                       value={selectedAdId}
                       required
                       onChange={(e) => setSelectedAdId(e.target.value)}
-                      className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-250 font-bold text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full cursor-pointer"
+                      className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-250 font-bold text-sm focus:outline-none focus:border-brand-blue transition-colors w-full cursor-pointer"
                     >
                       <option value="">-- اختر إعلاناً معلقاً --</option>
                       {pendingAds.map(ad => (
@@ -353,7 +353,7 @@ const SendNotificationPage = () => {
               {type === 'ad' && (
                 <div className="flex flex-col gap-1.5 text-right animate-fade-in">
                   <label className="text-gray-600 dark:text-gray-300 font-bold text-xs sm:text-sm mr-1 flex items-center gap-1.5">
-                    <Coins size={14} className="text-[#367AFF]" />
+                    <Coins size={14} className="text-brand-blue" />
                     سعر الحملة المقترح (ل.س)
                   </label>
                   <div className="relative">
@@ -364,7 +364,7 @@ const SendNotificationPage = () => {
                       placeholder="أدخل السعر بالليرة السورية"
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
-                      className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl pl-16 pr-4 py-3 text-gray-700 dark:text-gray-250 font-extrabold text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full text-left"
+                      className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl pl-16 pr-4 py-3 text-gray-700 dark:text-gray-250 font-extrabold text-sm focus:outline-none focus:border-brand-blue transition-colors w-full text-left"
                       dir="ltr"
                     />
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 pointer-events-none">
@@ -388,7 +388,7 @@ const SendNotificationPage = () => {
                   placeholder="أدخل عنواناً واضحاً ومختصراً للإشعار"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-250 font-bold text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full text-right"
+                  className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-250 font-bold text-sm focus:outline-none focus:border-brand-blue transition-colors w-full text-right"
                 />
               </div>
 
@@ -401,7 +401,7 @@ const SendNotificationPage = () => {
                   placeholder="اكتب مضمون وتفاصيل الرسالة التي ستصل للمستخدم..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-250 font-bold text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full text-right resize-none flex-grow"
+                  className="bg-gray-50 dark:bg-slate-850 border border-gray-200/80 dark:border-slate-800 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-250 font-bold text-sm focus:outline-none focus:border-brand-blue transition-colors w-full text-right resize-none flex-grow"
                 />
               </div>
 
@@ -411,7 +411,7 @@ const SendNotificationPage = () => {
 
           {/* Alert Tip Box */}
           <div className="bg-blue-50/50 dark:bg-blue-950/10 border border-blue-100/60 dark:border-blue-900/20 p-4 rounded-2xl flex items-start gap-3 text-right mt-2">
-            <Info size={18} className="text-[#367AFF] mt-0.5 shrink-0" />
+            <Info size={18} className="text-brand-blue mt-0.5 shrink-0" />
             <div className="text-xs text-blue-700 dark:text-blue-400 font-medium space-y-1">
               {type === 'ad' ? (
                 <p>
@@ -443,7 +443,7 @@ const SendNotificationPage = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="py-3 px-8 bg-[#367AFF] text-white hover:bg-[#2563EB] font-bold rounded-2xl shadow-lg shadow-blue-500/10 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="py-3 px-8 bg-brand-blue text-white hover:bg-brand-blue-hover font-bold rounded-2xl shadow-lg shadow-blue-500/10 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>

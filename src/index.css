@@ -15,12 +15,17 @@
   --primary-dark: #0000CA;
   --primary-bg: #e0f2fe;
   --danger: #ef4444;          /* أحمر صريح */
-  --danger-bg: rgba(239, 68, 68, 0.1); /* خلفية حمراء خفيف
-         /* أحمر أفتح يناسب الخلفيات الغامقة */
-  --danger-bg: rgba(248, 113, 113, 0.15); /* خلفية حمراء خفيفة للهوفر */
+  --danger-bg: rgba(239, 68, 68, 0.1); /* خلفية حمراء خفيفة */
+
+  /* المستخرجة والموحدة */
+  --brand-blue: #367AFF;
+  --brand-blue-hover: #2563EB;
+  --brand-blue-light: #E8F1FF;
+  --brand-blue-border: #D2E4FF;
+  --neutral-light-gray: #F0F0F0;
+  --neutral-reports-bg: #F2F4F7;
 }
 .dark{
-  
   --bg-main: #020617;
   --bg-card: #0f172a;
   --bg-header: rgba(15, 23, 42, 0.4);
@@ -35,6 +40,13 @@
   --primary-bg: #1e3a8a;
   --danger: #f87171;          /* أحمر أفتح يناسب الخلفيات الغامقة */
   
+  /* المستخرجة والموحدة */
+  --brand-blue: #3b82f6;
+  --brand-blue-hover: #2563eb;
+  --brand-blue-light: #1e3a8a;
+  --brand-blue-border: rgba(59, 130, 246, 0.2);
+  --neutral-light-gray: #1e293b;
+  --neutral-reports-bg: #0f172a;
 }
 @theme {
   --font-sans: "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
@@ -57,6 +69,14 @@
 
   --color-danger: var(--danger);
   --color-danger-bg: var(--danger-bg);
+
+  /* المستخرجة والموحدة في التيم */
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-blue-hover: var(--brand-blue-hover);
+  --color-brand-blue-light: var(--brand-blue-light);
+  --color-brand-blue-border: var(--brand-blue-border);
+  --color-neutral-light-gray: var(--neutral-light-gray);
+  --color-neutral-reports-bg: var(--neutral-reports-bg);
 }
 
 @layer utilities {

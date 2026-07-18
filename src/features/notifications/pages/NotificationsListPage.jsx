@@ -114,8 +114,8 @@ const NotificationsListPage = () => {
       {/* 1. Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4 mt-2">
         <div className="flex items-center gap-4">
-          <div className="p-3.5 bg-[#E8F1FF] text-[#367AFF] rounded-2xl shadow-sm border border-[#D2E4FF]/50 flex items-center justify-center">
-            <Bell size={28} className="text-[#367AFF]" />
+          <div className="p-3.5 bg-brand-blue-light text-brand-blue rounded-2xl shadow-sm border border-brand-blue-border/50 flex items-center justify-center">
+            <Bell size={28} className="text-brand-blue" />
           </div>
           <div className="text-right">
             <h1 className="text-2xl sm:text-3xl font-black text-gray-800 tracking-tight">أرشيف الإشعارات</h1>
@@ -126,7 +126,7 @@ const NotificationsListPage = () => {
         {/* Action Button */}
         <button
           onClick={() => navigate('/dashboard/notifications/send')}
-          className="bg-[#367AFF] text-white hover:bg-[#2563EB] shadow-lg shadow-blue-500/10 rounded-2xl flex items-center gap-2 px-6 py-3 font-bold text-sm transition-all duration-300 hover:scale-[1.02] active:scale-95 whitespace-nowrap w-full sm:w-auto justify-center cursor-pointer"
+          className="bg-brand-blue text-white hover:bg-brand-blue-hover shadow-lg shadow-blue-500/10 rounded-2xl flex items-center gap-2 px-6 py-3 font-bold text-sm transition-all duration-300 hover:scale-[1.02] active:scale-95 whitespace-nowrap w-full sm:w-auto justify-center cursor-pointer"
         >
           <Plus size={18} strokeWidth={2.5} />
           إرسال إشعار جديد
@@ -143,7 +143,7 @@ const NotificationsListPage = () => {
         </button>
         <button
           onClick={() => {}}
-          className="pb-3 text-sm font-black border-b-2 border-[#367AFF] text-[#367AFF] transition-all relative px-1 cursor-pointer"
+          className="pb-3 text-sm font-black border-b-2 border-brand-blue text-brand-blue transition-all relative px-1 cursor-pointer"
         >
           كل الإشعارات (الأرشيف)
         </button>
@@ -161,7 +161,7 @@ const NotificationsListPage = () => {
               placeholder="ابحث بمضمون الإشعار، أو الرقم المعرف..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pr-10 pl-4 py-2.5 rounded-2xl border border-gray-200 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-850 text-gray-800 dark:text-white placeholder-gray-400/80 dark:placeholder-slate-500 font-bold text-xs sm:text-sm focus:outline-none focus:border-[#367AFF] focus:ring-2 focus:ring-blue-500/10 transition-all text-right"
+              className="w-full pr-10 pl-4 py-2.5 rounded-2xl border border-gray-200 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-850 text-gray-800 dark:text-white placeholder-gray-400/80 dark:placeholder-slate-500 font-bold text-xs sm:text-sm focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-blue-500/10 transition-all text-right"
             />
             <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400/85" size={16} />
           </div>
