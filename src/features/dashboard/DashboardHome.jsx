@@ -271,13 +271,8 @@ export default function DashboardHome() {
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 pb-8 text-right" dir="rtl">
-      <WelcomeHeader
-        name={t('header.adminName')}
-        role={t('header.adminRole')}
-        date={t('dashboard.dateValue')}
-      />
-
+    <div className="space-y-6 sm:space-y-8  animate-in fade-in duration-500 pb-8 text-right" dir="rtl">
+      
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {Array(4).fill(0).map((_, i) => (

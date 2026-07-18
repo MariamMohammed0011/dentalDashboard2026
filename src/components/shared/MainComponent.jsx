@@ -11,7 +11,7 @@ export default function MainComponent({ children }) {
         <FolderWrapper bgColor="bg-[#F0F0F0]" cutoutPointB={360}>
 
 
-          <div className="w-full h-full bg-transparent">
+          <div className="w-full h-full bg-transparent px-3">
             {children}
           </div>
 
