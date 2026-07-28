@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pie, Column, Line, Area, Bar } from '@ant-design/plots';
+import { Pie, Column, Line, Area } from '@ant-design/plots';
 import WelcomeHeader from './components/WelcomeHeader';
 import { useTheme } from '../../context/ThemeContext';
 import { useDashboardStats } from './hooks/useDashboardStats';
@@ -49,6 +49,7 @@ export default function DashboardHome() {
     getPeriodText
   } = useDashboardStats();
 
+  // 1. مخطط طلبات الأطباء
   const dentistsColumnConfig = {
     data: dentistsOrdersData,
     xField: 'displayName',
@@ -78,6 +79,7 @@ export default function DashboardHome() {
     },
   };
 
+  // 2. مخطط طلبات المختبرات
   const labsColumnConfig = {
     data: labsOrdersData,
     xField: 'displayName',
@@ -107,6 +109,7 @@ export default function DashboardHome() {
     },
   };
 
+  // 3. مخطط دورة حياة الطلبات (Pie Chart)
   const lifecycleData = [
     { type: t('dashboard.lifecycle.pending'), value: 18 },
     { type: t('dashboard.lifecycle.progress'), value: 34 },
@@ -150,16 +153,9 @@ export default function DashboardHome() {
     },
   };
 
-  // 2. مخطط اتجاهات مواد التعويضات (Column Chart)
-  const trendsData = [
-    { material: t('dashboard.materials.zircon'), count: 145 },
-    { material: t('dashboard.materials.veneer'), count: 82 },
-    { material: t('dashboard.materials.crystal'), count: 64 },
-    { material: t('dashboard.materials.porcelain'), count: 38 },
-  ];
-
+  // 4. مخطط اتجاهات مواد التعويضات (مربوط تماماً ببيانات الـ API)
   const trendsConfig = {
-    data: compensationsChartData && compensationsChartData.length > 0 ? compensationsChartData : trendsData,
+    data: compensationsChartData,
     xField: 'material',
     yField: 'count',
     theme: theme === 'dark' ? 'dark' : 'light',
@@ -187,6 +183,7 @@ export default function DashboardHome() {
     },
   };
 
+  // 5. مخطط تقييم أداء المخابر
   const labData = [
     { lab: t('dashboard.labs.alpha'), metric: t('dashboard.metrics.delayRate'), value: 5 },
     { lab: t('dashboard.labs.alpha'), metric: t('dashboard.metrics.rejectRate'), value: 2 },
@@ -231,6 +228,7 @@ export default function DashboardHome() {
     },
   };
 
+  // 6. مخطط الإيرادات والنمو المالي
   const revenueData = [
     { month: t('dashboard.months.december'), type: t('dashboard.revenue.ads'), value: 1200 },
     { month: t('dashboard.months.december'), type: t('dashboard.revenue.subs'), value: 7500 },
@@ -275,7 +273,7 @@ export default function DashboardHome() {
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8  animate-in fade-in duration-500 pb-8 text-right" dir="rtl">
+    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 pb-8 text-right" dir="rtl">
       
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -375,6 +373,7 @@ export default function DashboardHome() {
         </div>
       )}
 
+      {/* صف المخططات الأول (الأطباء والمخابر) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         <div className="bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
@@ -441,8 +440,9 @@ export default function DashboardHome() {
           </div>
         </div>
 
-      </div>
+      </div> 
 
+      {/* صف المخططات الثاني (اتجاهات مواد التعويضات ودورة الحياة) */}
       <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
 
         <div className="lg:col-span-6 bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
@@ -456,8 +456,16 @@ export default function DashboardHome() {
               <span>{t('dashboard.growing')}</span>
             </div>
           </div>
-          <div className="h-[300px]">
-            <Column {...trendsConfig} />
+          <div className="h-[300px] flex items-center justify-center">
+            {isLoading ? (
+              <Loader2 className="animate-spin text-primary" size={32} />
+            ) : compensationsChartData.length === 0 ? (
+              <span className="text-sm text-text-muted">{t('common.noData')}</span>
+            ) : (
+              <div className="w-full h-full">
+                <Column {...trendsConfig} />
+              </div>
+            )}
           </div>
         </div>
 
@@ -473,6 +481,7 @@ export default function DashboardHome() {
 
       </div>
 
+      {/* صف المخططات الثالث (أداء المخابر والتحليل المالي) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         <div className="bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
@@ -495,7 +504,7 @@ export default function DashboardHome() {
           </div>
         </div>
 
-      </div>
+      </div> 
 
     </div>
   );

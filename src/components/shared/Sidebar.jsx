@@ -162,7 +162,7 @@ export const navItems = [
   //     },
   //   ],
   // },
-   { to: "/dashboard/reports", labelKey: "sidebar.reports", icon: FileText },
+  //  { to: "/dashboard/reports", labelKey: "sidebar.reports", icon: FileText },
   // { to: "/dashboard/intervention-log", labelKey: "sidebar.interventionLog", icon: History },
 ];
 
