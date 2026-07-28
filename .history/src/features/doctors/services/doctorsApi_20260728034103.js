@@ -11,7 +11,7 @@ export const doctorsApi = {
 
     // انتبهي للحرف الكبير S
     formData.append("Status", Number(status));
-console.log("Sending Status =", status);
+
     const response = await axiosInstance.patch(
       `/Users/${id}/status`,
       formData,

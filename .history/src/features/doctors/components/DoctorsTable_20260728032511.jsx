@@ -106,15 +106,25 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
   };
 
   // 💡 التعديل هنا: نستقبل newStatus القادم مباشرة من المودال عند الحفظ
-  const handleConfirmStatusChange = (statusFromModal) => {
-  if (!selectedDocForStatus) return;
+  const handleConfirmStatusChange = (newStatusFromModal) => {
+    // إذا مررت الدالة قيمة، نستخدمها مباشرة، وإلا نرجع لـ tempStatus
+    const statusToSend = (newStatusFromModal !== undefined && newStatusFromModal !== null) 
+      ? Number(newStatusFromModal) 
+      : Number(tempStatus);
 
-  console.log("Status Selected :", statusFromModal);
+    if (!selectedDocForStatus || isNaN(statusToSend)) return;
 
-  onToggleStatus(selectedDocForStatus.id, Number(statusFromModal));
+    console.log('🚀 Sending Status Update to Parent:', { 
+      docId: selectedDocForStatus.id, 
+      statusToSend 
+    });
 
-  setSelectedDocForStatus(null);
-};
+    if (onToggleStatus) {
+      onToggleStatus(selectedDocForStatus.id, statusToSend);
+    }
+    
+    setSelectedDocForStatus(null);
+  };
   return (
     <div className="w-full flex flex-col gap-3" dir="rtl">
       {/* Header Table */}

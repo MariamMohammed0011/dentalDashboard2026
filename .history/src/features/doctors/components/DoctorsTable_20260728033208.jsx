@@ -107,11 +107,12 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
 
   // 💡 التعديل هنا: نستقبل newStatus القادم مباشرة من المودال عند الحفظ
   const handleConfirmStatusChange = (statusFromModal) => {
-  if (!selectedDocForStatus) return;
+  // نتحقق بشكل صارم أن القيمة رقم (حتى لو كانت 0)
+  const finalStatus = (typeof statusFromModal === 'number') ? statusFromModal : Number(tempStatus);
 
-  console.log("Status Selected :", statusFromModal);
-
-  onToggleStatus(selectedDocForStatus.id, Number(statusFromModal));
+  if (selectedDocForStatus && !isNaN(finalStatus)) {
+    onToggleStatus(selectedDocForStatus.id, finalStatus);
+  }
 
   setSelectedDocForStatus(null);
 };

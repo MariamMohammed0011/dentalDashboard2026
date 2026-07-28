@@ -104,15 +104,10 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
     const key = String(val).toLowerCase().trim();
     return STATUS_LOOKUP[key] ?? null;
   };
-const currentTempNumeric =
-  typeof tempStatus === "number"
-    ? tempStatus
-    : normalizeStatus(tempStatus);
 
-const userOriginalNumeric =
-  typeof user?.status === "number"
-    ? user.status
-    : normalizeStatus(user?.status);
+  const currentTempNumeric = normalizeStatus(tempStatus);
+  const userOriginalNumeric = normalizeStatus(user?.status);
+
   // 🔍 طباعة تفاصيل الحالات في الكونسول بثبات وبدون خطأ الحجم
   useEffect(() => {
     if (isOpen && user) {
@@ -126,9 +121,7 @@ const userOriginalNumeric =
       console.log('==============================================');
     }
   }, [isOpen, user, tempStatus, currentTempNumeric, userOriginalNumeric]);
-useEffect(() => {
-  console.log("tempStatus Changed =", tempStatus);
-}, [tempStatus]);
+
   if (typeof document === 'undefined' || !document.body) return null;
 
   const isSaveDisabled = currentTempNumeric === userOriginalNumeric || currentTempNumeric === null;
@@ -254,12 +247,13 @@ useEffect(() => {
               >
                 {t('common.cancel')}
               </button>
-            {/* زر الحفظ داخل UserStatusModal.jsx */}
-<button
+             <button
   type="button"
-  onClick={() => {
-    console.log("Saving Status =", tempStatus);
-    onConfirm(tempStatus);
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // 💡 نمرر القيمة الرقمية المحددة صراحةً للدالة onConfirm
+    onConfirm(currentTempNumeric);
   }}
   disabled={isSaveDisabled}
   className={`px-5 py-2 rounded-xl text-xs font-bold text-white shadow-sm active:scale-95 transition-all cursor-pointer ${

@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { labsApi } from '../services/labsApi';
 import { useLabDetails } from './useLabDetails';
 import { useSearch } from '../../../components/shared/Search/hooks/useSearch';
-import { useUpdateUserStatus } from '../../../hooks/useUpdateUserStatus';
+import { useUpdateUserStatus } from '../../../hooks/useUpdateUserStatus.jsx';
 
 export const useLabs = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,7 +15,7 @@ export const useLabs = () => {
   const [materialFilter, setMaterialFilter] = useState('all');
   const [serviceFilter, setServiceFilter] = useState('all');
 
-  
+
   const { data: rawLabs = [], isLoading, isError } = useQuery({
     queryKey: ['labs-list'],
     queryFn: labsApi.getLabs,
@@ -23,12 +23,12 @@ export const useLabs = () => {
     refetchIntervalInBackground: true,
   });
 
-  
+
   const { updateStatus, isPending, updatingId } = useUpdateUserStatus(['labs-list', 'lab-card-details', 'lab-details']);
 
   // ── Fetch all lab details for filtering ──
   const labIds = useMemo(() => rawLabs.map(lab => lab.id), [rawLabs]);
-  
+
   const labDetailsQueries = useQuery({
     queryKey: ['all-lab-details', labIds],
     queryFn: async () => {
@@ -77,7 +77,7 @@ export const useLabs = () => {
     };
   }, [allLabDetails]);
 
-  
+
   const { searchQuery, setSearchQuery, filteredData: searchFilteredLabs } = useSearch(
     rawLabs,
     ['name']
@@ -139,14 +139,14 @@ export const useLabs = () => {
   const totalLabs = filteredLabs.length;
   const totalPages = Math.ceil(totalLabs / limit) || 1;
 
-  
+
   useMemo(() => {
     if (currentPage > totalPages) {
       setCurrentPage(1);
     }
   }, [totalPages, currentPage]);
 
-  
+
   const paginatedLabs = useMemo(() => {
     const start = (currentPage - 1) * limit;
     return filteredLabs.slice(start, start + limit);
@@ -158,11 +158,11 @@ export const useLabs = () => {
     totalPages,
   }), [totalLabs, currentPage, totalPages]);
 
-  
-  const { 
-    data: labDetails, 
+
+  const {
+    data: labDetails,
     isLoading: isLoadingDetails,
-    isError: isErrorDetails 
+    isError: isErrorDetails
   } = useLabDetails(selectedLabId);
 
   const handleShowDetails = (id) => {
@@ -203,7 +203,7 @@ export const useLabs = () => {
     isErrorDetails,
     handleShowDetails,
     handleCloseDetails,
-    
+
     // Status Modal exports
     selectedLabForStatus,
     setSelectedLabForStatus,
@@ -211,7 +211,7 @@ export const useLabs = () => {
     setTempStatus,
     openStatusModal,
     handleConfirmStatusChange,
-    
+
     toggleStatus: ({ id, nextStatus }) => updateStatus({ id, status: nextStatus, type: 'lab' }),
     updatingLabId: updatingId,
 

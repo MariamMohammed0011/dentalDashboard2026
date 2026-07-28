@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAds } from '../hooks/useAds'; 
+import { useAds } from './useAds'; 
 import { toast } from 'sonner';
 
 export const useAdsPageLogic = () => {

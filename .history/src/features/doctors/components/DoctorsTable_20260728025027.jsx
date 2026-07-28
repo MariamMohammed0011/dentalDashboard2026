@@ -105,16 +105,22 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
     setTempStatus(Number(initialNumericStatus));
   };
 
-  // 💡 التعديل هنا: نستقبل newStatus القادم مباشرة من المودال عند الحفظ
-  const handleConfirmStatusChange = (statusFromModal) => {
-  if (!selectedDocForStatus) return;
+  const handleConfirmStatusChange = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
-  console.log("Status Selected :", statusFromModal);
+    if (!selectedDocForStatus || tempStatus === null || tempStatus === undefined) return;
 
-  onToggleStatus(selectedDocForStatus.id, Number(statusFromModal));
+    const numericNextStatus = Number(tempStatus);
 
-  setSelectedDocForStatus(null);
-};
+    if (onToggleStatus) {
+      onToggleStatus(selectedDocForStatus.id, numericNextStatus);
+    }
+    setSelectedDocForStatus(null);
+  };
+
   return (
     <div className="w-full flex flex-col gap-3" dir="rtl">
       {/* Header Table */}

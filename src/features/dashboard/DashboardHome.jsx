@@ -39,6 +39,10 @@ export default function DashboardHome() {
   const {
     dentistsOrdersData,
     labsOrdersData,
+    financialGrowthData,
+    ratingsChartData,
+    compensationsChartData,
+    statusChartData,
     kpiStats,
     isLoading,
     isError,
@@ -112,14 +116,14 @@ export default function DashboardHome() {
   ];
 
   const lifecycleConfig = {
-    data: lifecycleData,
+    data: statusChartData && statusChartData.length > 0 ? statusChartData : lifecycleData,
     angleField: 'value',
     colorField: 'type',
     innerRadius: 0.6,
     radius: 0.8,
     scale: {
       color: {
-        range: ['#F59E0B', '#3B82F6', '#8B5CF6', '#10B981', '#EF4444'],
+        range: ['#F59E0B', '#3B82F6', '#8B5CF6', '#10B981', '#EF4444', '#EC4899', '#6366F1'],
       },
     },
     theme: theme === 'dark' ? 'dark' : 'light',
@@ -155,7 +159,7 @@ export default function DashboardHome() {
   ];
 
   const trendsConfig = {
-    data: trendsData,
+    data: compensationsChartData && compensationsChartData.length > 0 ? compensationsChartData : trendsData,
     xField: 'material',
     yField: 'count',
     theme: theme === 'dark' ? 'dark' : 'light',
@@ -197,7 +201,7 @@ export default function DashboardHome() {
   ];
 
   const labConfig = {
-    data: labData,
+    data: ratingsChartData && ratingsChartData.length > 0 ? ratingsChartData : labData,
     xField: 'lab',
     yField: 'value',
     colorField: 'metric',
@@ -207,7 +211,7 @@ export default function DashboardHome() {
     },
     scale: {
       color: {
-        range: ['#EF4444', '#F59E0B'],
+        range: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'],
       },
     },
     theme: theme === 'dark' ? 'dark' : 'light',
@@ -243,7 +247,7 @@ export default function DashboardHome() {
   ];
 
   const revenueConfig = {
-    data: revenueData,
+    data: financialGrowthData && financialGrowthData.length > 0 ? financialGrowthData : revenueData,
     xField: 'month',
     yField: 'value',
     colorField: 'type',

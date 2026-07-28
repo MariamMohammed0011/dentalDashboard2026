@@ -50,7 +50,7 @@ const MembershipCard = ({ request, onUpdateStatus, onShowDetails }) => {
                
                 <button
                   onClick={() => onUpdateStatus(id, 'rejected', type)}
-                  className={`group/btn w-12 h-10 flex items-center justify-center rounded-full transition-all duration-500 ${status === 'rejected' ? 'bg-rose-500 text-white shadow-lg shadow-rose-100' : 'bg-white/50 text-rose-400 hover:bg-rose-50 hover:text-rose-600 border border-transparent hover:border-rose-100'}`}
+                  className={`group/btn w-10 h-10 flex items-center justify-center rounded-full transition-all duration-500 ${status === 'rejected' ? 'bg-rose-500 text-white shadow-lg shadow-rose-100' : 'bg-white/50 text-rose-400 hover:bg-rose-50 hover:text-rose-600 border border-transparent hover:border-rose-100'}`}
                   title={t('membership.reject')}
                 >
                   <XCircle size={18} className="group-hover/btn:rotate-90 transition-transform duration-500" />
@@ -59,7 +59,7 @@ const MembershipCard = ({ request, onUpdateStatus, onShowDetails }) => {
                
                 <button
                   onClick={() => onUpdateStatus(id, 'suspended', type)}
-                  className={`group/btn w-12 h-10 flex items-center justify-center rounded-full transition-all duration-500 ${status === 'suspended' ? 'bg-amber-500 text-white shadow-lg shadow-amber-100' : 'bg-white/50 text-amber-500 hover:bg-amber-50 hover:text-amber-600 border border-transparent hover:border-amber-100'}`}
+                  className={`group/btn w-10 h-10 flex items-center justify-center rounded-full transition-all duration-500 ${status === 'suspended' ? 'bg-amber-500 text-white shadow-lg shadow-amber-100' : 'bg-white/50 text-amber-500 hover:bg-amber-50 hover:text-amber-600 border border-transparent hover:border-amber-100'}`}
                   title={t('membership.suspend')}
                 >
                   <Clock size={18} className="group-hover/btn:rotate-12 transition-transform" />

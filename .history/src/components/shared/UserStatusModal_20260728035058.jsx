@@ -257,10 +257,11 @@ useEffect(() => {
             {/* زر الحفظ داخل UserStatusModal.jsx */}
 <button
   type="button"
-  onClick={() => {
-    console.log("Saving Status =", tempStatus);
-    onConfirm(tempStatus);
-  }}
+ onClick={() => {
+    console.log(item.value);   // ❌ item غير موجود هنا
+   console.log("Saving Status =", tempStatus);
+onConfirm(tempStatus);
+}}
   disabled={isSaveDisabled}
   className={`px-5 py-2 rounded-xl text-xs font-bold text-white shadow-sm active:scale-95 transition-all cursor-pointer ${
     isSaveDisabled

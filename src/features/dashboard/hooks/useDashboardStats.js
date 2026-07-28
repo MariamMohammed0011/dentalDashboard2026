@@ -7,9 +7,42 @@ import { fetchActiveSubscriptions } from "../../subscription/services/subscripti
 import { fetchOrders } from "../../orders/services/ordersApi";
 import { adsApi } from "../../ads/services/adsApi";
 
+const monthNamesMap = {
+  Jan: "يناير",
+  Feb: "فبراير",
+  Mar: "مارس",
+  Apr: "أبريل",
+  May: "مايو",
+  Jun: "يونيو",
+  Jul: "يوليو",
+  Aug: "أغسطس",
+  Sep: "سبتمبر",
+  Oct: "أكتوبر",
+  Nov: "نوفمبر",
+  Dec: "ديسمبر"
+};
+
+const statusTranslationMap = {
+  Pennding: "قيد الانتظار",
+  Pending: "قيد الانتظار",
+  Accepted: "مقبولة",
+  RequestInfo: "طلب معلومات",
+  InDesign: "قيد التصميم",
+  InProduction: "قيد الإنتاج",
+  InColoring: "قيد التلوين",
+  Ready: "جاهزة",
+  Delivered: "تم التسليم",
+  WaitingForClarification: "بانتظار توضيح",
+  Cancelled: "ملغاة"
+};
+
 export const useDashboardStats = () => {
   const [dentistsOrdersData, setDentistsOrdersData] = useState([]);
   const [labsOrdersData, setLabsOrdersData] = useState([]);
+  const [financialGrowthData, setFinancialGrowthData] = useState([]);
+  const [ratingsChartData, setRatingsChartData] = useState([]);
+  const [compensationsChartData, setCompensationsChartData] = useState([]);
+  const [statusChartData, setStatusChartData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
@@ -25,6 +58,7 @@ export const useDashboardStats = () => {
     let isMounted = true;
     const fetchStatistics = async () => {
       try {
+        const currentYear = new Date().getFullYear();
         const [
           dentistsData,
           labsData,
@@ -33,7 +67,11 @@ export const useDashboardStats = () => {
           pendingRequests,
           activeSubscriptions,
           caseOrdersList,
-          rawAds
+          rawAds,
+          financialGrowthRes,
+          ratingsRes,
+          compensationsRes,
+          statusRes
         ] = await Promise.all([
           statisticsApi.getDentistsMonthlyOrders().catch(() => []),
           statisticsApi.getLabsMonthlyOrders().catch(() => []),
@@ -42,7 +80,11 @@ export const useDashboardStats = () => {
           membershipApi.getMembershipRequests({ type: 'all' }).catch(() => ({ data: [] })),
           fetchActiveSubscriptions().catch(() => []),
           fetchOrders().catch(() => []),
-          adsApi.getAllRawAds().catch(() => [])
+          adsApi.getAllRawAds().catch(() => []),
+          statisticsApi.getFinancialGrowth(currentYear).catch(() => null),
+          statisticsApi.getRatingsChartData().catch(() => null),
+          statisticsApi.getCompensationsChart().catch(() => null),
+          statisticsApi.getStatusChart().catch(() => null)
         ]);
 
         if (isMounted) {
@@ -59,34 +101,103 @@ export const useDashboardStats = () => {
           setDentistsOrdersData(formattedDentists);
           setLabsOrdersData(formattedLabs);
 
-          // 2. حساب إحصائيات الأطباء
+          // 2. معالجة بيانات النمو المالي (Financial Growth Chart)
+          const rawGrowthData = financialGrowthRes?.data || [];
+          const formattedRevenue = [];
+          let growthTotalAds = 0;
+          let growthTotalOrders = 0;
+
+          rawGrowthData.forEach(item => {
+            const mName = monthNamesMap[item.monthName] || item.monthName || `شهر ${item.month}`;
+            growthTotalAds += item.adsRevenue || 0;
+            growthTotalOrders += item.ordersRevenue || 0;
+
+            formattedRevenue.push({
+              month: mName,
+              type: "عوائد الإعلانات ($)",
+              value: item.adsRevenue || 0
+            });
+            formattedRevenue.push({
+              month: mName,
+              type: "أرباح الطلبيات ($)",
+              value: item.ordersRevenue || 0
+            });
+          });
+          setFinancialGrowthData(formattedRevenue);
+
+          // 3. معالجة تقييم أداء المخابر (Ratings Chart)
+          const rawRatings = ratingsRes?.data || [];
+          const formattedRatings = [];
+          rawRatings.forEach(item => {
+            const name = item.labName || `مخبر ${item.labId}`;
+            formattedRatings.push({
+              lab: name,
+              metric: "التقييم العام",
+              value: item.averageOverallRating || 0
+            });
+            formattedRatings.push({
+              lab: name,
+              metric: "تقييم الجودة",
+              value: item.averageQualityRating || 0
+            });
+            formattedRatings.push({
+              lab: name,
+              metric: "الالتزام بالوقت",
+              value: item.averageTimeCommitmentRating || 0
+            });
+          });
+          setRatingsChartData(formattedRatings);
+
+          // 4. معالجة اتجاهات مواد التعويضات (Compensations Chart)
+          const rawCompensations = compensationsRes?.data || [];
+          const formattedCompensations = rawCompensations.map(item => ({
+            material: item.compensationType || "غير محدد",
+            count: item.requestCount || 0,
+            totalTeethCount: item.totalTeethCount || 0
+          }));
+          setCompensationsChartData(formattedCompensations);
+
+          // 5. معالجة حالات الطلبيات (Status Chart)
+          const rawStatusData = statusRes?.data || [];
+          const activeStatusItems = rawStatusData.filter(item => (item.orderCount || 0) > 0);
+          const statusListToUse = activeStatusItems.length > 0 ? activeStatusItems : rawStatusData;
+          const formattedStatus = statusListToUse.map(item => ({
+            type: statusTranslationMap[item.statusName] || statusTranslationMap[item.status] || item.statusName || item.status,
+            value: item.orderCount || 0
+          }));
+          setStatusChartData(formattedStatus);
+
+          // 6. حساب إحصائيات الأطباء
           const doctorsArray = doctorsList?.doctors || (Array.isArray(doctorsList) ? doctorsList : []);
           const docTotal = doctorsArray.length;
           const docActive = doctorsArray.filter(d => d.status === 'active' || d.status === 'approved' || d.status === 'Approved').length;
           const docPending = (pendingRequests.data || []).filter(r => r.type === 'doctor' || r.type === 'dentist').length;
 
-          // 3. حساب إحصائيات المختبرات
+          // 7. حساب إحصائيات المختبرات
           const labTotal = labsList.length;
           const labActive = activeSubscriptions.length;
           const labSuspended = Math.max(0, labTotal - labActive);
 
-          // 4. حساب إحصائيات الحالات النشطة
+          // 8. حساب إحصائيات الحالات النشطة
           const activeCases = caseOrdersList.filter(o => o.status !== 'completed' && o.status !== 'rejected' && o.status !== 'cancelled');
           const caseTotal = activeCases.length;
           const caseInProgress = activeCases.filter(o => o.status === 'accepted' || o.status === 'ready' || o.status?.toLowerCase() === 'in-progress' || o.status?.toLowerCase() === 'inprogress').length;
           const caseWaitingScanner = activeCases.filter(o => o.status === 'pending' || o.status?.toLowerCase() === 'waiting-scanner').length;
 
-          // 5. حساب الإيرادات من الاشتراكات والإعلانات
+          // 9. حساب الإيرادات
           const subRevenue = activeSubscriptions.reduce((sum, item) => sum + (item.amount || item.price || 0), 0);
           const activeAds = rawAds.filter(ad => ad.isActive === true || ad.status === 'active');
           const adsRevenue = activeAds.reduce((sum, ad) => sum + (ad.price || ad.cost || 0), 0);
-          const totalRevenue = subRevenue + adsRevenue;
+          
+          const finalAdsRevenue = growthTotalAds > 0 ? growthTotalAds : adsRevenue;
+          const finalSubRevenue = growthTotalOrders > 0 ? growthTotalOrders : subRevenue;
+          const finalTotalRevenue = finalAdsRevenue + finalSubRevenue;
 
           setKpiStats({
             doctors: { total: docTotal, active: docActive, pending: docPending },
             labs: { total: labTotal, active: labActive, suspended: labSuspended },
             cases: { total: caseTotal, inProgress: caseInProgress, waitingScanner: caseWaitingScanner },
-            revenue: { total: totalRevenue, subscriptions: subRevenue, ads: adsRevenue }
+            revenue: { total: finalTotalRevenue, subscriptions: finalSubRevenue, ads: finalAdsRevenue }
           });
 
           setIsLoading(false);
@@ -116,9 +227,14 @@ export const useDashboardStats = () => {
   return {
     dentistsOrdersData,
     labsOrdersData,
+    financialGrowthData,
+    ratingsChartData,
+    compensationsChartData,
+    statusChartData,
     kpiStats,
     isLoading,
     isError,
     getPeriodText
   };
 };
+

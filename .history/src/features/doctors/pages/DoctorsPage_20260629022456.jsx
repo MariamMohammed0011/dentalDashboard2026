@@ -19,9 +19,10 @@ const DoctorsPage = () => {
     updatingDoctorId,   
   } = useDoctors();
 
+  
   const handleToggleStatus = (id, nextStatus) => {
-  toggleStatus(id, nextStatus);
-};
+    toggleStatus({ id, nextStatus });
+  };
 
   return (
     <div className="flex flex-col gap-6 px-4 sm:px-10 lg:px-12 pb-10 min-h-full" dir="rtl">

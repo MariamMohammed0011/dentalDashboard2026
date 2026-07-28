@@ -148,22 +148,22 @@ export const navItems = [
       },
     ],
   },
-  {
-    labelKey: "sidebar.notifications",
-    icon: Bell,
-    children: [
-      {
-        to: "/dashboard/notifications/send",
-        labelKey: "sidebar.sendNotification",
-      },
-      {
-        to: "/dashboard/notifications",
-        labelKey: "sidebar.notificationArchive",
-      },
-    ],
-  },
+  // {
+  //   labelKey: "sidebar.notifications",
+  //   icon: Bell,
+  //   children: [
+  //     {
+  //       to: "/dashboard/notifications/send",
+  //       labelKey: "sidebar.sendNotification",
+  //     },
+  //     {
+  //       to: "/dashboard/notifications",
+  //       labelKey: "sidebar.notificationArchive",
+  //     },
+  //   ],
+  // },
    { to: "/dashboard/reports", labelKey: "sidebar.reports", icon: FileText },
-  { to: "/dashboard/intervention-log", labelKey: "sidebar.interventionLog", icon: History },
+  // { to: "/dashboard/intervention-log", labelKey: "sidebar.interventionLog", icon: History },
 ];
 
 export default function Sidebar({ isCollapsed, setIsCollapsed }) {

@@ -2,11 +2,10 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { membershipApi } from '../services/membershipApi';
 import { useSearch } from '../../../components/shared/Search/hooks/useSearch';
-import { useUpdateUserStatus } from '../../../hooks/useUpdateUserStatus';
-
+import { useUpdateUserStatus } from '../../';
 export const useMembership = () => {
   // ── حالات التحكم في القائمة والفلترة ──
-  const [activeTab, setActiveTab] = useState('doctor'); 
+  const [activeTab, setActiveTab] = useState('doctor');
   const [currentPage, setCurrentPage] = useState(1);
 
   // ── حالة التحكم في المودال (ID المستخدم المختار) ──
@@ -17,7 +16,7 @@ export const useMembership = () => {
     queryKey: ['membership-requests', activeTab, currentPage],
     queryFn: () => membershipApi.getMembershipRequests({ type: activeTab, page: currentPage }),
     placeholderData: (previousData) => previousData,
-    refetchInterval: 5000, 
+    refetchInterval: 5000,
     refetchIntervalInBackground: true,
   });
 
@@ -28,15 +27,15 @@ export const useMembership = () => {
   );
 
   // 2. جلب تفاصيل مستخدم محدد (تُفعل فقط عند فتح المودال)
-  const { 
-    data: userDetails, 
+  const {
+    data: userDetails,
     isLoading: isLoadingDetails,
-    isError: isErrorDetails 
+    isError: isErrorDetails
   } = useQuery({
     queryKey: ['user-details', selectedUserId],
     queryFn: () => membershipApi.getUserDetails(selectedUserId),
-    enabled: !!selectedUserId, 
-    staleTime: 1000 * 60 * 5, 
+    enabled: !!selectedUserId,
+    staleTime: 1000 * 60 * 5,
   });
 
   // 3. استخدام الهوك الموحد لتحديث الحالة (قبول، رفض، تعليق)
@@ -62,30 +61,30 @@ export const useMembership = () => {
   };
 
   return {
-    
+
     requests: filteredRequests,
     pagination: data?.pagination,
     isLoading,
     isError,
-    
-    
+
+
     userDetails,
     isLoadingDetails,
     isErrorDetails,
     selectedUserId,
 
-    
+
     activeTab,
     currentPage,
     searchQuery,
     setSearchQuery,
-    
-    
+
+
     handleTabChange,
     handlePageChange: (page) => setCurrentPage(page),
     handleUpdateStatus,
     handleShowDetails,
     handleCloseDetails,
-    isUpdating: isPending, 
+    isUpdating: isPending,
   };
 };

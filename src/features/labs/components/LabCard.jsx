@@ -16,12 +16,12 @@ const LabCard = ({ id, name, onShowDetails, onEditStatus, updatingLabId }) => {
     <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -8, transition: { duration: 0.3 } }}
-      className="bg-white dark:bg-bg-card rounded-[2.5rem] p-6 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 group relative overflow-hidden h-[230px] w-full border border-slate-100 dark:border-slate-800"
+      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+      className="bg-white dark:bg-bg-card rounded-2xl p-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden border border-slate-100 dark:border-slate-800 w-full min-h-[210px]"
       dir="rtl"
     >
-
-      <div className="absolute inset-0 opacity-20 pointer-events-none z-0">
+      {/* خلفية الصورة */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none z-0">
         <img
           src={framerImg}
           alt=""
@@ -29,30 +29,37 @@ const LabCard = ({ id, name, onShowDetails, onEditStatus, updatingLabId }) => {
         />
       </div>
 
-      <div className="relative z-10 flex flex-col justify-between h-full flex-grow">
-
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4 min-w-0">
-
-            <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-[1.25rem] flex items-center justify-center shadow-lg shadow-emerald-100 dark:shadow-none transition-transform group-hover:scale-110 duration-300 shrink-0">
-              <FlaskConical size={26} />
+      <div className="relative z-10 flex flex-col justify-between h-full gap-3">
+        
+        {/* --- الهيدر: الأيقونة + الاسم + الحالة --- */}
+        <div className="flex items-start justify-between gap-2.5 w-full">
+          
+          {/* الأيقونة والاسم */}
+          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-xl flex items-center justify-center shadow-sm shadow-emerald-200 dark:shadow-none transition-transform group-hover:scale-105 duration-300 shrink-0">
+              <FlaskConical size={20} />
             </div>
 
-            <div className="flex flex-col gap-0.5 min-w-0">
-              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-black tracking-widest uppercase">{t('labs.labType')}</span>
-              <h3 className="font-bold text-text-main dark:text-gray-100 text-[15px] tracking-tight truncate leading-tight">
-                {name}
+            <div className="flex flex-col min-w-0 flex-1">
+              {/* <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-extrabold tracking-wider uppercase leading-none mb-1">
+                {t('labs.labType')}
+              </span> */}
+              <h3 
+                className="font-bold text-slate-800 dark:text-gray-100 text-xs sm:text-sm leading-snug line-clamp-2 break-words"
+                title={name}
+              >
+                {name || '—'}
               </h3>
             </div>
           </div>
 
-
+          {/* زر / مؤشر الحالة */}
           {!isLoading && details?.owner?.status && (() => {
             const isCurrentlyUpdating = updatingLabId === id;
             if (isCurrentlyUpdating) {
               return (
-                <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black border bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border-slate-100 dark:border-slate-850 animate-pulse select-none shrink-0">
-                  <Loader2 size={10} className="animate-spin text-primary shrink-0" />
+                <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold border bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 animate-pulse select-none shrink-0">
+                  <Loader2 size={10} className="animate-spin text-emerald-600 shrink-0" />
                   <span>{t('common.processing')}</span>
                 </div>
               );
@@ -73,7 +80,7 @@ const LabCard = ({ id, name, onShowDetails, onEditStatus, updatingLabId }) => {
                     });
                   }
                 }}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black border shrink-0 transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-sm ${statusCfg.color}`}
+                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold border shrink-0 transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-2xs ${statusCfg.color}`}
               >
                 <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusCfg.dot}`} />
                 <span>{statusCfg.label}</span>
@@ -83,42 +90,45 @@ const LabCard = ({ id, name, onShowDetails, onEditStatus, updatingLabId }) => {
           })()}
         </div>
 
-        <div className="flex flex-row gap-2 my-2 pr-1 text-right select-none mt-5">
-          <div className="p-3 bg-gray-50 dark:bg-slate-800 rounded-2xl text-gray-400 shrink-0">
-            <Star size={20} className="text-amber-500" />
+        {/* --- البودي: التقييم --- */}
+        <div className="flex items-center gap-2.5 bg-slate-50/90 dark:bg-slate-800/60 p-2 rounded-xl border border-slate-100 dark:border-slate-700/60">
+          <div className="p-1.5 bg-white dark:bg-slate-800 rounded-lg text-amber-500 shadow-2xs shrink-0">
+            <Star size={15} className="fill-amber-400 text-amber-400" />
           </div>
-          <div className='flex flex-col gap-1 '>
-            <span className="text-[10px] text-gray-400 dark:text-slate-500 font-black uppercase tracking-wider">
+          <div className="flex flex-col min-w-0">
+            <span className="text-[9px] text-gray-400 dark:text-slate-400 font-bold uppercase tracking-wider leading-none mb-1">
               {t('labs.averageRating')}
             </span>
-            <div className="flex items-center gap-1.5 mt-0.5">
+            <div className="flex items-center gap-1">
               {isLoading ? (
-                <div className="h-4 bg-slate-100 dark:bg-slate-800/80 rounded animate-pulse w-40 mt-1" />
+                <div className="h-3.5 bg-slate-200 dark:bg-slate-700 rounded animate-pulse w-20" />
               ) : (
                 <>
-                  <StarRating rating={details?.averageRating} size={16} />
-                  <span className="text-[13px] font-black text-slate-700 dark:text-gray-200 font-sans">
+                  <StarRating rating={details?.averageRating} size={12} />
+                  <span className="text-[11px] font-bold text-slate-700 dark:text-gray-200 dir-ltr leading-none">
                     ({details?.averageRating?.toFixed(1) || '0.0'})
                   </span>
                 </>
               )}
             </div>
           </div>
-
-
         </div>
 
-        <div className="flex items-center justify-between mt-auto">
-          <span className="text-xs text-gray-400 dark:text-slate-500 font-medium">{t('labs.labNumber')} #{id}</span>
+        {/* --- الفوتر: رقم المختبر وزر التفاصيل --- */}
+        <div className="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800/80">
+          <span className="text-[10px] text-gray-400 dark:text-slate-500 font-semibold dir-ltr">
+            #{id}
+          </span>
 
           <button
             onClick={() => onShowDetails(id)}
-            className="flex items-center gap-1.5 px-4 py-2 bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white dark:bg-emerald-950/40 dark:hover:bg-emerald-600 dark:text-emerald-450 dark:hover:text-white rounded-xl text-xs font-black transition-all active:scale-95 group/btn"
+            className="flex items-center gap-1 px-3 py-1 bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white dark:bg-emerald-950/50 dark:hover:bg-emerald-600 dark:text-emerald-400 dark:hover:text-white rounded-lg text-[11px] font-bold transition-all active:scale-95 group/btn"
           >
             {t('common.details')}
-            <ChevronLeft size={14} className="group-hover/btn:-translate-x-1 transition-transform" />
+            <ChevronLeft size={13} className="group-hover/btn:-translate-x-0.5 transition-transform" />
           </button>
         </div>
+
       </div>
     </motion.div>
   );

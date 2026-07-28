@@ -56,7 +56,7 @@ const MembershipRequestsPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-8 px-4 sm:px-10 lg:px-12 pb-10 min-h-full" dir="rtl">
+    <div className="flex flex-col gap-8 px-4 sm:px-10 lg:px-0 pb-10 min-h-full" dir="rtl">
       <div className="flex-grow flex flex-col -mt-4 sm:-mt-4 min-w-0 ">
         
        

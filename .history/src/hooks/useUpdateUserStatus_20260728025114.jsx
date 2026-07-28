@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ import {
   ShieldAlert 
 } from 'lucide-react';
 
-// خريطة تحويل متكاملة للربط بين النصوص والأرقام
+// خريطة تحويل متكاملة للربط بين النصوص والأرقام بحروف صغيرة وبدون رموز
 const STATUS_LOOKUP = {
   'pendingverification': 0,
   'pendingadminapproval': 1,
@@ -30,7 +30,7 @@ const STATUS_LOOKUP = {
   '4': 4
 };
 
-// قائمة الحالات الخمس المعتمدة (مُعرّفة خارج المكوّن لمنع إعادة الإنشاء عند كل Render)
+// قائمة الحالات الخمس المعتمدة للـ UI
 const ALL_STATUSES = [
   {
     value: 0,
@@ -96,42 +96,24 @@ const ALL_STATUSES = [
 
 const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatus, onConfirm }) => {
   const { t } = useTranslation();
-
   const isDoctor = type === 'doctor';
 
-  const normalizeStatus = (val) => {
+  // دالة تنظيف ومطابقة صارمة لضمان إرجاع رقم Enum صحيح دائماً
+  const parseToEnumNumber = (val) => {
     if (val === null || val === undefined) return null;
-    const key = String(val).toLowerCase().trim();
-    return STATUS_LOOKUP[key] ?? null;
+    if (typeof val === 'number' && !isNaN(val)) return val;
+    
+    const cleanKey = String(val).toLowerCase().replace(/[^a-z0-9]/g, '');
+    return STATUS_LOOKUP[cleanKey] ?? (isNaN(Number(val)) ? null : Number(val));
   };
-const currentTempNumeric =
-  typeof tempStatus === "number"
-    ? tempStatus
-    : normalizeStatus(tempStatus);
 
-const userOriginalNumeric =
-  typeof user?.status === "number"
-    ? user.status
-    : normalizeStatus(user?.status);
-  // 🔍 طباعة تفاصيل الحالات في الكونسول بثبات وبدون خطأ الحجم
-  useEffect(() => {
-    if (isOpen && user) {
-      console.log('📋 ===== [ UserStatusModal Status List ] =====');
-      ALL_STATUSES.forEach((st) => {
-        console.log(`🔢 Enum: [${st.value}] ➔ Code: "${st.code}" | Label: "${st.label}"`);
-      });
-      console.log('----------------------------------------------');
-      console.log(`👤 Original User Status: "${user.status}" ➔ Parsed Enum: [${userOriginalNumeric}]`);
-      console.log(`⏱️ Current Temp Status in Modal: [${currentTempNumeric}]`);
-      console.log('==============================================');
-    }
-  }, [isOpen, user, tempStatus, currentTempNumeric, userOriginalNumeric]);
-useEffect(() => {
-  console.log("tempStatus Changed =", tempStatus);
-}, [tempStatus]);
+  const currentTempNumeric = parseToEnumNumber(tempStatus);
+  const userOriginalNumeric = parseToEnumNumber(user?.status);
+
   if (typeof document === 'undefined' || !document.body) return null;
 
-  const isSaveDisabled = currentTempNumeric === userOriginalNumeric || currentTempNumeric === null;
+  // إعطاء أولوية للتعطيل فقط إذا لم يُختر خيار أو اخترنا نفس الحالة الحالية بالضبط
+  const isSaveDisabled = currentTempNumeric === null || currentTempNumeric === userOriginalNumeric;
 
   return createPortal(
     <AnimatePresence>
@@ -209,7 +191,7 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* الخيارات الـ 5 */}
+            {/* قائمة الخيارات الـ 5 */}
             <div className="flex flex-col gap-2 px-6 py-4 max-h-[360px] overflow-y-auto">
               {ALL_STATUSES.map((item) => {
                 const IconComponent = item.icon;
@@ -219,10 +201,7 @@ useEffect(() => {
                   <button
                     key={item.value}
                     type="button"
-                    onClick={() => {
-                      console.log(`👉 Selected New Option ➔ Enum Value: ${item.value} ("${item.code}")`);
-                      setTempStatus(item.value);
-                    }}
+                    onClick={() => setTempStatus(Number(item.value))}
                     className={`w-full flex items-center gap-3 p-3 rounded-2xl border text-right transition-all cursor-pointer ${
                       active
                         ? `${item.styles.activeBorder} shadow-sm ring-1`
@@ -245,7 +224,7 @@ useEffect(() => {
               })}
             </div>
 
-            {/* Footer Buttons */}
+            {/* أزرار الحفظ والإلغاء */}
             <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40 flex items-center gap-3 justify-end">
               <button
                 type="button"
@@ -254,22 +233,18 @@ useEffect(() => {
               >
                 {t('common.cancel')}
               </button>
-            {/* زر الحفظ داخل UserStatusModal.jsx */}
-<button
-  type="button"
-  onClick={() => {
-    console.log("Saving Status =", tempStatus);
-    onConfirm(tempStatus);
-  }}
-  disabled={isSaveDisabled}
-  className={`px-5 py-2 rounded-xl text-xs font-bold text-white shadow-sm active:scale-95 transition-all cursor-pointer ${
-    isSaveDisabled
-      ? 'bg-slate-200 dark:bg-slate-800 cursor-not-allowed text-gray-400'
-      : 'bg-primary hover:bg-primary/95'
-  }`}
->
-  {t('userStatusModal.saveStatus')}
-</button>
+              <button
+                type="button"
+                onClick={onConfirm}
+                disabled={isSaveDisabled}
+                className={`px-5 py-2 rounded-xl text-xs font-bold text-white shadow-sm active:scale-95 transition-all cursor-pointer ${
+                  isSaveDisabled
+                    ? 'bg-slate-200 dark:bg-slate-800 cursor-not-allowed text-gray-400'
+                    : 'bg-primary hover:bg-primary/95'
+                }`}
+              >
+                {t('userStatusModal.saveStatus')}
+              </button>
             </div>
           </motion.div>
         </div>
