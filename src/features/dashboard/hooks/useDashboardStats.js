@@ -121,14 +121,23 @@ export const useDashboardStats = () => {
           const rawAds = ensureArray(rawAdsRes);
 
           // 1. تنسيق إحصائيات أوردرات الأطباء والمختبرات الشهرية
-          const formattedDentists = dentistsData.map(d => ({
-            ...d,
-            displayName: d.dentistName || `طبيب #${d.dentistId || d.id}`
-          }));
-          const formattedLabs = labsData.map(l => ({
-            ...l,
-            displayName: l.labName || `مخبر #${l.labId || l.id}`
-          }));
+          const formattedDentists = dentistsData.map((d, index) => {
+            const countSameName = dentistsData.filter(x => x.dentistName && x.dentistName === d.dentistName).length;
+            const name = d.dentistName || `طبيب #${d.dentistId || d.id || index + 1}`;
+            return {
+              ...d,
+              displayName: countSameName > 1 ? `${name} (#${d.dentistId || d.id || index + 1})` : name
+            };
+          });
+
+          const formattedLabs = labsData.map((l, index) => {
+            const countSameName = labsData.filter(x => x.labName && x.labName === l.labName).length;
+            const name = l.labName || `مخبر #${l.labId || l.id || index + 1}`;
+            return {
+              ...l,
+              displayName: countSameName > 1 ? `${name} (#${l.labId || l.id || index + 1})` : name
+            };
+          });
 
           setDentistsOrdersData(formattedDentists);
           setLabsOrdersData(formattedLabs);

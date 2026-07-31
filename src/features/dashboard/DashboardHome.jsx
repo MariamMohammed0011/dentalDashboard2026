@@ -70,14 +70,17 @@ export default function DashboardHome() {
     getPeriodText
   } = useDashboardStats();
 
-  // 1. مخطط طلبات الأطباء
+  // 1. مخطط طلبات الأطباء (Grouped Side-by-Side Column Chart)
   const dentistsColumnConfig = {
     data: dentistsOrdersData,
     xField: 'displayName',
     yField: 'totalOrders',
+    colorField: 'displayName',
+    color: ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EC4899', '#06B6D4', '#6366F1', '#34D399'],
+    legend: false,
     theme: theme === 'dark' ? 'dark' : 'light',
     style: {
-      fill: theme === 'dark' ? '#a78bfa' : '#8b5cf6',
+      maxWidth: 36,
       radiusTopLeft: 8,
       radiusTopRight: 8,
     },
@@ -92,22 +95,30 @@ export default function DashboardHome() {
     },
     axis: {
       x: {
-        labelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
+        labelAutoRotate: false,
+        labelFontSize: 11,
+        labelFontWeight: 'bold',
+        labelFill: theme === 'dark' ? '#cbd5e1' : '#334155',
       },
       y: {
-        labelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
+        labelFontSize: 11,
+        labelFontWeight: 'bold',
+        labelFill: theme === 'dark' ? '#cbd5e1' : '#334155',
       },
     },
   };
 
-  // 2. مخطط طلبات المختبرات
+  // 2. مخطط طلبات المختبرات (Grouped Side-by-Side Column Chart)
   const labsColumnConfig = {
     data: labsOrdersData,
     xField: 'displayName',
     yField: 'totalOrders',
+    colorField: 'displayName',
+    color: ['#10B981', '#3B82F6', '#8B5CF6', '#F59E0B', '#EC4899', '#06B6D4', '#6366F1', '#34D399'],
+    legend: false,
     theme: theme === 'dark' ? 'dark' : 'light',
     style: {
-      fill: theme === 'dark' ? '#34d399' : '#10b981',
+      maxWidth: 36,
       radiusTopLeft: 8,
       radiusTopRight: 8,
     },
@@ -122,10 +133,15 @@ export default function DashboardHome() {
     },
     axis: {
       x: {
-        labelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
+        labelAutoRotate: false,
+        labelFontSize: 11,
+        labelFontWeight: 'bold',
+        labelFill: theme === 'dark' ? '#cbd5e1' : '#334155',
       },
       y: {
-        labelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
+        labelFontSize: 11,
+        labelFontWeight: 'bold',
+        labelFill: theme === 'dark' ? '#cbd5e1' : '#334155',
       },
     },
   };
@@ -173,15 +189,7 @@ export default function DashboardHome() {
       fill: (d) => statusColorMap[d?.type] || statusColorMap[d?.rawStatus] || '#3B82F6',
     },
     theme: theme === 'dark' ? 'dark' : 'light',
-    legend: {
-      color: {
-        position: 'bottom',
-        layout: 'horizontal',
-        alignment: 'center',
-        itemLabelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
-        itemLabelFontSize: 11,
-      },
-    },
+    legend: false,
     label: {
       text: 'value',
       style: {
@@ -206,6 +214,7 @@ export default function DashboardHome() {
       fill: theme === 'dark' ? '#3b82f6' : '#367AFF',
       radiusTopLeft: 8,
       radiusTopRight: 8,
+      maxWidth: 48,
     },
     label: {
       text: 'count',
@@ -218,10 +227,15 @@ export default function DashboardHome() {
     },
     axis: {
       x: {
-        labelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
+        labelAutoRotate: false,
+        labelFontSize: 11,
+        labelFontWeight: 'bold',
+        labelFill: theme === 'dark' ? '#cbd5e1' : '#334155',
       },
       y: {
-        labelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
+        labelFontSize: 11,
+        labelFontWeight: 'bold',
+        labelFill: theme === 'dark' ? '#cbd5e1' : '#334155',
       },
     },
   };
@@ -246,18 +260,18 @@ export default function DashboardHome() {
       sizeField: 5,
     },
     theme: theme === 'dark' ? 'dark' : 'light',
+    legend: false,
     axis: {
       x: {
-        labelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
+        labelAutoRotate: false,
+        labelFontSize: 11,
+        labelFontWeight: 'bold',
+        labelFill: theme === 'dark' ? '#cbd5e1' : '#334155',
       },
       y: {
-        labelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
-      },
-    },
-    legend: {
-      color: {
-        position: 'bottom',
-        itemLabelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
+        labelFontSize: 11,
+        labelFontWeight: 'bold',
+        labelFill: theme === 'dark' ? '#cbd5e1' : '#334155',
       },
     },
   };
@@ -279,18 +293,18 @@ export default function DashboardHome() {
       fillOpacity: 0.6,
     },
     theme: theme === 'dark' ? 'dark' : 'light',
+    legend: false,
     axis: {
       x: {
-        labelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
+        labelAutoRotate: false,
+        labelFontSize: 11,
+        labelFontWeight: 'bold',
+        labelFill: theme === 'dark' ? '#cbd5e1' : '#334155',
       },
       y: {
-        labelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
-      },
-    },
-    legend: {
-      color: {
-        position: 'bottom',
-        itemLabelFill: theme === 'dark' ? '#94a3b8' : '#6b7280',
+        labelFontSize: 11,
+        labelFontWeight: 'bold',
+        labelFill: theme === 'dark' ? '#cbd5e1' : '#334155',
       },
     },
   };
@@ -441,7 +455,7 @@ export default function DashboardHome() {
       {/* صف المخططات الأول (الأطباء والمخابر) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <div className="bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
+        <div className=" p-4 sm:p-6 flex flex-col justify-between">
           <div className="flex justify-between items-center mb-6">
             <div className="text-right">
               <h3 className="text-base sm:text-lg font-bold text-text-main">{t('dashboard.dentistsOrders')} {getPeriodText(dentistsOrdersData)}</h3>
@@ -473,7 +487,7 @@ export default function DashboardHome() {
           </div>
         </div>
 
-        <div className="bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
+        <div className=" p-4 sm:p-6  flex flex-col justify-between">
           <div className="flex justify-between items-center mb-6">
             <div className="text-right">
               <h3 className="text-base sm:text-lg font-bold text-text-main">{t('dashboard.labsOrders')} {getPeriodText(labsOrdersData)}</h3>
@@ -510,7 +524,7 @@ export default function DashboardHome() {
       {/* صف المخططات الثاني (اتجاهات مواد التعويضات ودورة الحياة) */}
       <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
 
-        <div className="lg:col-span-6 bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
+        <div className="lg:col-span-6  p-4 sm:p-6 flex flex-col justify-between">
           <div className="flex justify-between items-center mb-6">
             <div className="text-right">
               <h3 className="text-base sm:text-lg font-bold text-text-main">{t('dashboard.marketTrends')}</h3>
@@ -534,12 +548,12 @@ export default function DashboardHome() {
           </div>
         </div>
 
-        <div className="lg:col-span-4 bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
+        <div className="lg:col-span-4   p-4 sm:p-6 flex flex-col justify-between">
           <div className="text-right">
             <h3 className="text-base sm:text-lg font-bold text-text-main">{t('dashboard.orderLifecycle')}</h3>
             <p className="text-xs text-text-muted">{t('dashboard.orderLifecycleDesc')}</p>
           </div>
-          <div className="h-[300px] flex items-center justify-center">
+          <div className="h-[250px] flex items-center justify-center">
             {isLoading ? (
               <Loader2 className="animate-spin text-primary" size={32} />
             ) : statusChartData.length === 0 ? (
@@ -550,6 +564,22 @@ export default function DashboardHome() {
               </div>
             )}
           </div>
+
+          {/* Custom Styled Arabic Legend */}
+          {statusChartData.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-2 pt-3 border-t border-border-main/50 mt-2">
+              {statusChartData.map((item) => {
+                const color = statusColorMap[item.type] || statusColorMap[item.rawStatus] || '#3B82F6';
+                return (
+                  <div key={item.type} className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
+                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
+                    <span>{item.type}</span>
+                    <span className="text-primary font-black dir-ltr mr-1">({item.value})</span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
       </div>
@@ -557,12 +587,12 @@ export default function DashboardHome() {
       {/* صف المخططات الثالث (أداء المخابر والتحليل المالي) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <div className="bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
+        <div className=" p-4 sm:p-6 flex flex-col justify-between">
           <div className="text-right">
             <h3 className="text-base sm:text-lg font-bold text-text-main">{t('dashboard.labsPerformance')}</h3>
             <p className="text-xs text-text-muted">{t('dashboard.labsPerformanceDesc')}</p>
           </div>
-          <div className="h-[300px] flex items-center justify-center mt-6">
+          <div className="h-[250px] flex items-center justify-center mt-4">
             {isLoading ? (
               <Loader2 className="animate-spin text-primary" size={32} />
             ) : ratingsChartData.length === 0 ? (
@@ -573,14 +603,30 @@ export default function DashboardHome() {
               </div>
             )}
           </div>
+          {ratingsChartData.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-3 border-t border-border-main/50 mt-2">
+              <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
+                <span>التقييم العام</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
+                <span>تقييم الجودة</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
+                <span>الالتزام بالوقت</span>
+              </div>
+            </div>
+          )}
         </div>
 
-        <div className="bg-bg-card border border-border-main rounded-[2rem] p-4 sm:p-6 shadow-sm flex flex-col justify-between">
+        <div className=" p-4 sm:p-6 flex flex-col justify-between">
           <div className="text-right">
             <h3 className="text-base sm:text-lg font-bold text-text-main">{t('dashboard.financialAnalysis')}</h3>
             <p className="text-xs text-text-muted">{t('dashboard.financialAnalysisDesc')}</p>
           </div>
-          <div className="h-[300px] flex items-center justify-center mt-6">
+          <div className="h-[250px] flex items-center justify-center mt-4">
             {isLoading ? (
               <Loader2 className="animate-spin text-primary" size={32} />
             ) : financialGrowthData.length === 0 ? (
@@ -591,6 +637,18 @@ export default function DashboardHome() {
               </div>
             )}
           </div>
+          {financialGrowthData.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-3 border-t border-border-main/50 mt-2">
+              <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
+                <span className="w-2.5 h-2.5 rounded-full bg-purple-500 shrink-0" />
+                <span>عوائد المساحات الإعلانية ($)</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
+                <span>أرباح الطلبيات ($)</span>
+              </div>
+            </div>
+          )}
         </div>
 
       </div> 
