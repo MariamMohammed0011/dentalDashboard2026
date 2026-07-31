@@ -123,7 +123,9 @@ const LabsFilter = ({
   const statusOptions = [
     { id: 'all', label: 'كل الحالات' },
     { id: 'active', label: 'نشط' },
+    { id: 'pendingverification', label: 'قيد التثبت' },
     { id: 'pendingadminapproval', label: 'قيد المراجعة' },
+    { id: 'readonly', label: 'قراءة فقط' },
     { id: 'suspended', label: 'معلق' },
     { id: 'rejected', label: 'مرفوض' },
   ];

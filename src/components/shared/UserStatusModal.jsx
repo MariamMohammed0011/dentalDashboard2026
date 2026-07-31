@@ -35,6 +35,7 @@ const ALL_STATUSES = [
   {
     value: 0,
     code: 'PendingVerification',
+    translationKey: 'userStatusModal.pendingVerificationStatus',
     label: 'قيد التثبت (Pending Verification)',
     icon: ShieldAlert,
     styles: {
@@ -47,6 +48,7 @@ const ALL_STATUSES = [
   {
     value: 1,
     code: 'PendingAdminApproval',
+    translationKey: 'userStatusModal.pendingAdminApprovalStatus',
     label: 'قيد مراجعة الأدمن (Pending Admin Approval)',
     icon: Clock,
     styles: {
@@ -59,6 +61,7 @@ const ALL_STATUSES = [
   {
     value: 2,
     code: 'Active',
+    translationKey: 'userStatusModal.activeStatus',
     label: 'نشط (Active)',
     icon: CheckCircle2,
     styles: {
@@ -71,6 +74,7 @@ const ALL_STATUSES = [
   {
     value: 3,
     code: 'ReadOnly',
+    translationKey: 'userStatusModal.readOnlyStatus',
     label: 'قراءة فقط (Read Only)',
     icon: Eye,
     styles: {
@@ -83,6 +87,7 @@ const ALL_STATUSES = [
   {
     value: 4,
     code: 'Suspended',
+    translationKey: 'userStatusModal.suspendedStatus',
     label: 'معلق (Suspended)',
     icon: AlertTriangle,
     styles: {
@@ -237,7 +242,9 @@ useEffect(() => {
                       <IconComponent size={15} />
                     </div>
                     <div className="flex-grow min-w-0 flex flex-col gap-0.5">
-                      <span className="text-xs font-black text-gray-800 dark:text-gray-100">{item.label}</span>
+                      <span className="text-xs font-black text-gray-800 dark:text-gray-100">
+                        {item.translationKey ? t(item.translationKey) : item.label}
+                      </span>
                     </div>
                     {active && <Check size={14} className={`${item.styles.checkColor} self-center`} />}
                   </button>

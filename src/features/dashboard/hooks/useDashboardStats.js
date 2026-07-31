@@ -199,10 +199,14 @@ export const useDashboardStats = () => {
           const rawStatusData = ensureArray(statusRes);
           const activeStatusItems = rawStatusData.filter(item => (item.orderCount || 0) > 0);
           const statusListToUse = activeStatusItems.length > 0 ? activeStatusItems : rawStatusData;
-          const formattedStatus = statusListToUse.map(item => ({
-            type: statusTranslationMap[item.statusName] || statusTranslationMap[item.status] || item.statusName || item.status,
-            value: item.orderCount || 0
-          }));
+          const formattedStatus = statusListToUse.map(item => {
+            const rawKey = item.statusName || item.status || '';
+            return {
+              type: statusTranslationMap[rawKey] || rawKey,
+              value: item.orderCount || 0,
+              rawStatus: rawKey
+            };
+          });
           setStatusChartData(formattedStatus);
 
           // 6. حساب إحصائيات الأطباء

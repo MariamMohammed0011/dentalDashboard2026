@@ -24,7 +24,7 @@ const StatusBadge = ({ doc, updatingDoctorId, onOpenModal }) => {
 
   if (isCurrentlyUpdating) {
     return (
-      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-black border bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border-slate-100 dark:border-slate-850 animate-pulse select-none">
+      <div className="inline-flex items-center gap-1.5   px-3 py-1.5 rounded-full text-[11px] font-black border bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border-slate-100 dark:border-slate-850 animate-pulse select-none">
         <Loader2 size={11} className="animate-spin text-primary shrink-0" />
         <span>{t('common.processing')}</span>
       </div>
@@ -75,9 +75,9 @@ const StatusBadge = ({ doc, updatingDoctorId, onOpenModal }) => {
         e.stopPropagation();
         onOpenModal(doc);
       }}
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-black border transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-sm ${getBadgeStyle()}`}
+      className={`inline-flex items-center gap-1 px-1 py-1.5 rounded-full text-[10px] font-black border transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-sm ${getBadgeStyle()}`}
     >
-      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${getDotColor()}`} />
+      <span className={`w-2 h-2 rounded-full shrink-0 ${getDotColor()}`} />
       <span>{getStatusLabel()}</span>
       <ChevronDown size={11} className="opacity-70 shrink-0" />
     </button>
@@ -116,9 +116,9 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
   setSelectedDocForStatus(null);
 };
   return (
-    <div className="w-full flex flex-col gap-3" dir="rtl">
+    <div className="w-full flex flex-col gap-1  " dir="rtl">
       {/* Header Table */}
-      <div className="hidden md:flex items-center w-full px-6 py-2 text-slate-400 dark:text-slate-500 font-extrabold text-[12px] uppercase select-none">
+      <div className="hidden md:flex items-center w-full px-6 py-2 text-slate-400 dark:text-slate-500 font-extrabold text-[12px] uppercase select-none ">
         <div className="w-[26%] text-right">{t('doctors.doctor')}</div>
         <div className="w-[26%] text-right">{t('doctors.clinicAndAddress')}</div>
         <div className="w-[26%] text-right">{t('doctors.contact')}</div>
@@ -148,7 +148,7 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
                 key={doc.id}
                 className="flex items-center w-full bg-white dark:bg-slate-900 border border-slate-100/60 dark:border-slate-800/60 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-primary/20 dark:hover:border-primary/30 transition-all duration-200 gap-2"
               >
-                <div className="w-[26%] flex items-center gap-2.5 min-w-0">
+                <div className="w-[24%] flex items-center gap-2.5 min-w-0">
                   <div className="w-8 h-8 rounded-full border border-primary/20 shrink-0 overflow-hidden shadow-sm bg-sky-50 dark:bg-slate-850 flex items-center justify-center">
                     <img
                       src={`https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name || t('doctors.doctor'))}&background=e0f2fe&color=367AFF&bold=true&size=64`}
@@ -177,7 +177,7 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
                   )}
                 </div>
 
-                <div className="w-[26%] flex flex-col gap-1 text-[11px] text-text-main dark:text-gray-300 font-medium min-w-0">
+                <div className="w-[24%] flex flex-col gap-1 text-[11px] text-text-main dark:text-gray-300 font-medium min-w-0">
                   {doc.phone && (
                     <span className="flex items-center gap-1.5 justify-start">
                       <Phone size={11} className="text-emerald-500 dark:text-emerald-400 shrink-0" />
@@ -192,12 +192,12 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
                   )}
                 </div>
 
-                <div className="w-[11%] text-[12px] text-text-muted dark:text-slate-400 font-medium flex items-center gap-1 min-w-0">
+                <div className="w-[12%] text-[12px] text-text-muted dark:text-slate-400 font-medium flex items-center gap-1 min-w-0">
                   <Calendar size={12} className="text-violet-500 dark:text-violet-400 shrink-0" />
                   <span className="truncate">{formattedDate}</span>
                 </div>
 
-                <div className="w-[11%] flex justify-center shrink-0">
+                <div className="w-[14%] flex justify-center shrink-0">
                   <StatusBadge doc={doc} updatingDoctorId={updatingDoctorId} onOpenModal={openStatusModal} />
                 </div>
               </div>

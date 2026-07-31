@@ -24,7 +24,7 @@ const DoctorsPage = () => {
 };
 
   return (
-    <div className="flex flex-col gap-6 px-4 sm:px-10 lg:px-12 pb-10 min-h-full" dir="rtl">
+    <div className="flex flex-col gap-6 px-2 sm:px-8 lg:px-2 pb-10 min-h-full" dir="rtl">
       
       
       <DoctorsHeader 

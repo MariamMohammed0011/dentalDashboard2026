@@ -130,6 +130,32 @@ export default function DashboardHome() {
     },
   };
 
+  // خريطة ألوان مخصصة لكل حالة من حالات الطلبات (Enums)
+  const statusColorMap = {
+    Pennding: '#F59E0B',
+    Pending: '#F59E0B',
+    Accepted: '#3B82F6',
+    RequestInfo: '#6366F1',
+    InDesign: '#8B5CF6',
+    InProduction: '#06B6D4',
+    InColoring: '#EC4899',
+    Ready: '#10B981',
+    Delivered: '#059669',
+    WaitingForClarification: '#F97316',
+    Cancelled: '#EF4444',
+
+    'قيد الانتظار': '#F59E0B',
+    'مقبولة': '#3B82F6',
+    'طلب معلومات': '#6366F1',
+    'قيد التصميم': '#8B5CF6',
+    'قيد الإنتاج': '#06B6D4',
+    'قيد التلوين': '#EC4899',
+    'جاهزة': '#10B981',
+    'تم التسليم': '#059669',
+    'بانتظار توضيح': '#F97316',
+    'ملغاة': '#EF4444',
+  };
+
   // 3. مخطط دورة حياة الطلبات (Pie Chart)
   const lifecycleConfig = {
     data: statusChartData || [],
@@ -139,8 +165,12 @@ export default function DashboardHome() {
     radius: 0.8,
     scale: {
       color: {
-        range: ['#F59E0B', '#3B82F6', '#8B5CF6', '#10B981', '#EF4444', '#EC4899', '#6366F1'],
+        domain: (statusChartData || []).map(item => item.type),
+        range: (statusChartData || []).map(item => statusColorMap[item.type] || statusColorMap[item.rawStatus] || '#3B82F6'),
       },
+    },
+    style: {
+      fill: (d) => statusColorMap[d?.type] || statusColorMap[d?.rawStatus] || '#3B82F6',
     },
     theme: theme === 'dark' ? 'dark' : 'light',
     legend: {
@@ -196,20 +226,24 @@ export default function DashboardHome() {
     },
   };
 
-  // 5. مخطط تقييم أداء المخابر
+  // 5. مخطط تقييم أداء المخابر (Line Chart)
   const labConfig = {
     data: ratingsChartData || [],
     xField: 'lab',
     yField: 'value',
     colorField: 'metric',
-    point: {
-      shapeField: 'circle',
-      sizeField: 4,
-    },
+    color: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'],
     scale: {
       color: {
         range: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'],
       },
+    },
+    style: {
+      lineWidth: 3,
+    },
+    point: {
+      shapeField: 'circle',
+      sizeField: 5,
     },
     theme: theme === 'dark' ? 'dark' : 'light',
     axis: {
@@ -228,17 +262,21 @@ export default function DashboardHome() {
     },
   };
 
-  // 6. مخطط الإيرادات والنمو المالي
+  // 6. مخطط الإيرادات والنمو المالي (Area Chart)
   const revenueConfig = {
     data: financialGrowthData || [],
     xField: 'month',
     yField: 'value',
     colorField: 'type',
+    color: ['#8B5CF6', '#3B82F6'],
     stack: true,
     scale: {
       color: {
         range: ['#8B5CF6', '#3B82F6'],
       },
+    },
+    style: {
+      fillOpacity: 0.6,
     },
     theme: theme === 'dark' ? 'dark' : 'light',
     axis: {
