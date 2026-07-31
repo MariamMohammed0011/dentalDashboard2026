@@ -206,24 +206,54 @@ export const useDashboardStats = () => {
           setStatusChartData(formattedStatus);
 
           // 6. حساب إحصائيات الأطباء
-          const docTotal = doctorsArray.length;
-          const docActive = doctorsArray.filter(d => d.status === 'active' || d.status === 'approved' || d.status === 'Approved' || d.status === 2).length;
-          const docPending = pendingRequests.filter(r => r.type === 'doctor' || r.type === 'dentist').length;
+          const docTotal = typeof doctorsRes?.count === 'number' ? doctorsRes.count : doctorsArray.length;
+          const docActive = doctorsArray.filter(d => {
+            const st = String(d.status ?? '').toLowerCase().trim();
+            return st === 'active' || st === 'approved' || st === '2';
+          }).length;
+          
+          const docPendingInDoctors = doctorsArray.filter(d => {
+            const st = String(d.status ?? '').toLowerCase().trim();
+            return st === 'pendingadminapproval' || 
+                   st === 'pending_admin_approval' || 
+                   st === 'pending' || 
+                   st === 'pendingverification' || 
+                   st === 'pending_verification' || 
+                   st === '1' || 
+                   st === '0';
+          }).length;
+          
+          const docPendingInRequests = pendingRequests.filter(r => r.type === 'doctor' || r.type === 'dentist').length;
+          const docPending = docPendingInDoctors > 0 ? docPendingInDoctors : docPendingInRequests;
 
           // 7. حساب إحصائيات المختبرات
-          const labTotal = labsList.length;
-          const labActive = activeSubscriptions.length;
+          const labTotal = typeof labsListRes?.count === 'number' ? labsListRes.count : labsList.length;
+          const labActive = activeSubscriptions.length > 0 
+            ? activeSubscriptions.length 
+            : labsList.filter(l => {
+                const st = String(l.status ?? '').toLowerCase().trim();
+                return st === 'active' || st === 'approved' || st === '2';
+              }).length;
           const labSuspended = Math.max(0, labTotal - labActive);
 
-          // 8. حساب إحصائيات الحالات النشطة
-          const activeCases = caseOrdersList.filter(o => o.status !== 'completed' && o.status !== 'rejected' && o.status !== 'cancelled');
+          // 8. حساب إحصائيات الحالات النشطة (بناءً على الـ Enums الرسمية للنظام)
+          const activeCases = caseOrdersList.filter(o => {
+            const st = String(o.status ?? '').toLowerCase().trim();
+            return st !== 'delivered' && st !== 'cancelled';
+          });
           const caseTotal = activeCases.length;
-          const caseInProgress = activeCases.filter(o => o.status === 'accepted' || o.status === 'ready' || String(o.status).toLowerCase().includes('progress')).length;
-          const caseWaitingScanner = activeCases.filter(o => o.status === 'pending' || String(o.status).toLowerCase().includes('scanner')).length;
+          const caseInProgress = activeCases.filter(o => {
+            const st = String(o.status ?? '').toLowerCase().trim();
+            return st === 'accepted' || st === 'indesign' || st === 'inproduction' || st === 'incoloring' || st === 'ready';
+          }).length;
+          const caseWaitingScanner = activeCases.filter(o => {
+            const st = String(o.status ?? '').toLowerCase().trim();
+            return st === 'pennding' || st === 'pending' || st === 'requestinfo' || st === 'waitingforclarification';
+          }).length;
 
           // 9. حساب الإيرادات الآمن باستخدام ensureArray
           const subRevenue = activeSubscriptions.reduce((sum, item) => sum + Number(item.amount || item.price || 0), 0);
-          const activeAds = rawAds.filter(ad => ad.isActive === true || ad.status === 'active');
+          const activeAds = rawAds.filter(ad => ad.isActive === true || String(ad.status).toLowerCase() === 'active');
           const adsRevenue = activeAds.reduce((sum, ad) => sum + Number(ad.price || ad.cost || 0), 0);
           
           const finalAdsRevenue = growthTotalAds > 0 ? growthTotalAds : adsRevenue;

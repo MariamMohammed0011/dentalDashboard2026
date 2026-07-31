@@ -14,19 +14,40 @@ import {
   AlertTriangle
 } from 'lucide-react';
 
-const StatCard = ({ title, count, icon: Icon, color, subDetails }) => (
-  <div className="card bg-bg-card shadow-sm border border-border-main rounded-[2rem] p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-md flex flex-col justify-between h-full relative overflow-hidden text-right" dir="rtl">
-    <div className="flex justify-between items-start mb-4">
-      <div className="flex flex-col items-start gap-1 text-right">
-        <h3 className="text-text-muted font-bold text-sm sm:text-base">{title}</h3>
-        <span className="text-3xl sm:text-4xl font-black text-text-main">{count}</span>
+const StatCard = ({ title, count, icon: Icon, color, borderAccent, progressPercentage, progressColor, subDetails }) => (
+  <div className="group relative bg-bg-card border border-primary/30 hover:border-primary rounded-xl p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1 shadow-sm shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 flex flex-col justify-between h-full text-right overflow-hidden" dir="rtl">
+    {/* Accent Top Bar */}
+    <div className={`absolute top-0 right-0 left-0 h-1 bg-gradient-to-l ${borderAccent} opacity-100 transition-opacity`} />
+    
+    {/* Decorative Ambient Glow */}
+    <div className={`absolute -bottom-8 -left-8 w-28 h-28 rounded-full ${color} opacity-[0.08] group-hover:opacity-[0.16] blur-xl transition-all duration-500 pointer-events-none`} />
+
+    <div className="flex flex-col justify-between flex-1">
+      <div className="flex justify-between items-start mb-3 gap-2">
+        <div className="flex flex-col items-start gap-1 text-right min-w-0 flex-1">
+          <h3 className="text-text-muted font-bold text-xs sm:text-sm tracking-wide truncate w-full" title={title}>
+            {title}
+          </h3>
+          <span className="text-3xl sm:text-4xl font-black text-text-main tracking-tight group-hover:scale-105 transition-transform origin-right leading-none py-1">
+            {count}
+          </span>
+        </div>
+        <div className={`p-3 sm:p-3.5 rounded-2xl ${color} bg-opacity-10 text-opacity-100 flex items-center justify-center shadow-sm group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shrink-0`}>
+          <Icon size={24} className="shrink-0" />
+        </div>
       </div>
-      <div className={`p-3 rounded-2xl ${color} bg-opacity-10 text-opacity-100 flex items-center justify-center`}>
-        <Icon size={24} />
+
+      <div className="my-3">
+        <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
+          <div 
+            className={`h-full ${progressColor || 'bg-blue-500'} rounded-full transition-all duration-700 ease-out`}
+            style={{ width: `${Math.min(100, Math.max(0, progressPercentage ?? 0))}%` }}
+          />
+        </div>
       </div>
     </div>
 
-    <div className="border-t border-border-main/50 pt-3 mt-auto flex flex-col gap-1.5 w-full">
+    <div className="border-t border-border-main/50 pt-3.5 mt-auto flex flex-col gap-2 w-full">
       {subDetails}
     </div>
   </div>
@@ -110,16 +131,8 @@ export default function DashboardHome() {
   };
 
   // 3. مخطط دورة حياة الطلبات (Pie Chart)
-  const lifecycleData = [
-    { type: t('dashboard.lifecycle.pending'), value: 18 },
-    { type: t('dashboard.lifecycle.progress'), value: 34 },
-    { type: t('dashboard.lifecycle.scanner'), value: 12 },
-    { type: t('dashboard.lifecycle.completed'), value: 45 },
-    { type: t('dashboard.lifecycle.cancelled'), value: 8 },
-  ];
-
   const lifecycleConfig = {
-    data: statusChartData && statusChartData.length > 0 ? statusChartData : lifecycleData,
+    data: statusChartData || [],
     angleField: 'value',
     colorField: 'type',
     innerRadius: 0.6,
@@ -155,7 +168,7 @@ export default function DashboardHome() {
 
   // 4. مخطط اتجاهات مواد التعويضات (مربوط تماماً ببيانات الـ API)
   const trendsConfig = {
-    data: compensationsChartData,
+    data: compensationsChartData || [],
     xField: 'material',
     yField: 'count',
     theme: theme === 'dark' ? 'dark' : 'light',
@@ -184,21 +197,8 @@ export default function DashboardHome() {
   };
 
   // 5. مخطط تقييم أداء المخابر
-  const labData = [
-    { lab: t('dashboard.labs.alpha'), metric: t('dashboard.metrics.delayRate'), value: 5 },
-    { lab: t('dashboard.labs.alpha'), metric: t('dashboard.metrics.rejectRate'), value: 2 },
-    { lab: t('dashboard.labs.salam'), metric: t('dashboard.metrics.delayRate'), value: 12 },
-    { lab: t('dashboard.labs.salam'), metric: t('dashboard.metrics.rejectRate'), value: 8 },
-    { lab: t('dashboard.labs.smile'), metric: t('dashboard.metrics.delayRate'), value: 4 },
-    { lab: t('dashboard.labs.smile'), metric: t('dashboard.metrics.rejectRate'), value: 1 },
-    { lab: t('dashboard.labs.elite'), metric: t('dashboard.metrics.delayRate'), value: 8 },
-    { lab: t('dashboard.labs.elite'), metric: t('dashboard.metrics.rejectRate'), value: 3 },
-    { lab: t('dashboard.labs.future'), metric: t('dashboard.metrics.delayRate'), value: 15 },
-    { lab: t('dashboard.labs.future'), metric: t('dashboard.metrics.rejectRate'), value: 6 },
-  ];
-
   const labConfig = {
-    data: ratingsChartData && ratingsChartData.length > 0 ? ratingsChartData : labData,
+    data: ratingsChartData || [],
     xField: 'lab',
     yField: 'value',
     colorField: 'metric',
@@ -229,23 +229,8 @@ export default function DashboardHome() {
   };
 
   // 6. مخطط الإيرادات والنمو المالي
-  const revenueData = [
-    { month: t('dashboard.months.december'), type: t('dashboard.revenue.ads'), value: 1200 },
-    { month: t('dashboard.months.december'), type: t('dashboard.revenue.subs'), value: 7500 },
-    { month: t('dashboard.months.january'), type: t('dashboard.revenue.ads'), value: 1500 },
-    { month: t('dashboard.months.january'), type: t('dashboard.revenue.subs'), value: 8000 },
-    { month: t('dashboard.months.february'), type: t('dashboard.revenue.ads'), value: 1800 },
-    { month: t('dashboard.months.february'), type: t('dashboard.revenue.subs'), value: 9200 },
-    { month: t('dashboard.months.march'), type: t('dashboard.revenue.ads'), value: 2100 },
-    { month: t('dashboard.months.march'), type: t('dashboard.revenue.subs'), value: 10500 },
-    { month: t('dashboard.months.april'), type: t('dashboard.revenue.ads'), value: 2300 },
-    { month: t('dashboard.months.april'), type: t('dashboard.revenue.subs'), value: 11800 },
-    { month: t('dashboard.months.may'), type: t('dashboard.revenue.ads'), value: 2400 },
-    { month: t('dashboard.months.may'), type: t('dashboard.revenue.subs'), value: 12840 },
-  ];
-
   const revenueConfig = {
-    data: financialGrowthData && financialGrowthData.length > 0 ? financialGrowthData : revenueData,
+    data: financialGrowthData || [],
     xField: 'month',
     yField: 'value',
     colorField: 'type',
@@ -300,15 +285,27 @@ export default function DashboardHome() {
             count={kpiStats.doctors.total}
             icon={Users}
             color="bg-blue-500 text-blue-500"
+            borderAccent="from-blue-600 via-indigo-500 to-sky-400"
+            progressPercentage={kpiStats.doctors.total > 0 ? Math.round((kpiStats.doctors.active / kpiStats.doctors.total) * 100) : 0}
+            progressColor="bg-gradient-to-r from-emerald-500 to-blue-500"
             subDetails={
               <>
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-text-muted">{t('dashboard.activeAccounts')}</span>
-                  <span className="font-bold text-green-500">{kpiStats.doctors.active} طبيب</span>
+                  <div className="flex items-center gap-1.5 text-text-muted font-medium">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                    <span>{t('dashboard.activeAccounts')}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400">{kpiStats.doctors.active} </span>
+                  
+                  </div>
                 </div>
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-text-muted">{t('dashboard.pendingVerificationSyndicate')}</span>
-                  <span className="font-bold text-amber-500">{kpiStats.doctors.pending} حساب</span>
+                  <div className="flex items-center gap-1.5 text-text-muted font-medium">
+                    <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+                    <span>{t('dashboard.pendingVerificationSyndicate')}</span>
+                  </div>
+                  <span className="font-bold text-amber-600 dark:text-amber-400">{kpiStats.doctors.pending} </span>
                 </div>
               </>
             }
@@ -319,15 +316,27 @@ export default function DashboardHome() {
             count={kpiStats.labs.total}
             icon={FlaskConical}
             color="bg-emerald-500 text-emerald-500"
+            borderAccent="from-emerald-600 via-teal-500 to-green-400"
+            progressPercentage={kpiStats.labs.total > 0 ? Math.round((kpiStats.labs.active / kpiStats.labs.total) * 100) : 0}
+            progressColor="bg-gradient-to-r from-emerald-500 to-teal-400"
             subDetails={
               <>
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-text-muted">{t('dashboard.activeSubscribedLabs')}</span>
-                  <span className="font-bold text-green-500">{kpiStats.labs.active} مخبر</span>
+                  <div className="flex items-center gap-1.5 text-text-muted font-medium">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                    <span>{t('dashboard.activeSubscribedLabs')}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400">{kpiStats.labs.active} </span>
+                  
+                  </div>
                 </div>
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-text-muted">{t('dashboard.suspendedExpiredAccounts')}</span>
-                  <span className="font-bold text-text-muted">{kpiStats.labs.suspended} مخبر</span>
+                  <div className="flex items-center gap-1.5 text-text-muted font-medium">
+                    <span className="w-2 h-2 rounded-full bg-slate-400 shrink-0" />
+                    <span>{t('dashboard.disactivesubscriblab')}</span>
+                  </div>
+                  <span className="font-bold text-text-muted">{kpiStats.labs.suspended} </span>
                 </div>
               </>
             }
@@ -338,15 +347,24 @@ export default function DashboardHome() {
             count={kpiStats.cases.total}
             icon={Activity}
             color="bg-amber-500 text-amber-500"
+            borderAccent="from-amber-500 via-orange-500 to-yellow-400"
+            progressPercentage={kpiStats.cases.total > 0 ? Math.round((kpiStats.cases.inProgress / kpiStats.cases.total) * 100) : 0}
+            progressColor="bg-gradient-to-r from-amber-500 to-orange-400"
             subDetails={
               <>
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-text-muted">{t('dashboard.inProgressLabs')}</span>
+                  <div className="flex items-center gap-1.5 text-text-muted font-medium">
+                    <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
+                    <span>{t('dashboard.inProgressLabs')}</span>
+                  </div>
                   <span className="font-bold text-primary">{kpiStats.cases.inProgress} حالة</span>
                 </div>
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-text-muted">{t('dashboard.waitingScannerDelivery')}</span>
-                  <span className="font-bold text-purple-500">{kpiStats.cases.waitingScanner} حالة</span>
+                  <div className="flex items-center gap-1.5 text-text-muted font-medium">
+                    <span className="w-2 h-2 rounded-full bg-purple-500 shrink-0" />
+                    <span>{t('dashboard.waitingScannerDelivery')}</span>
+                  </div>
+                  <span className="font-bold text-purple-600 dark:text-purple-400">{kpiStats.cases.waitingScanner} حالة</span>
                 </div>
               </>
             }
@@ -357,15 +375,24 @@ export default function DashboardHome() {
             count={"$" + kpiStats.revenue.total.toLocaleString()}
             icon={DollarSign}
             color="bg-violet-500 text-violet-500"
+            borderAccent="from-violet-600 via-purple-500 to-fuchsia-400"
+            progressPercentage={kpiStats.revenue.total > 0 ? Math.round((kpiStats.revenue.subscriptions / kpiStats.revenue.total) * 100) : 0}
+            progressColor="bg-gradient-to-r from-violet-500 to-purple-400"
             subDetails={
               <>
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-text-muted">{t('dashboard.labSubscriptionsLabel')}</span>
+                  <div className="flex items-center gap-1.5 text-text-muted font-medium">
+                    <span className="w-2 h-2 rounded-full bg-violet-500 shrink-0" />
+                    <span>{t('dashboard.labSubscriptionsLabel')}</span>
+                  </div>
                   <span className="font-bold text-text-main">${kpiStats.revenue.subscriptions.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-text-muted">{t('dashboard.adSpacesRevenue')}</span>
-                  <span className="font-bold text-purple-500">${kpiStats.revenue.ads.toLocaleString()}</span>
+                  <div className="flex items-center gap-1.5 text-text-muted font-medium">
+                    <span className="w-2 h-2 rounded-full bg-purple-500 shrink-0" />
+                    <span>{t('dashboard.adSpacesRevenue')}</span>
+                  </div>
+                  <span className="font-bold text-purple-600 dark:text-purple-400">${kpiStats.revenue.ads.toLocaleString()}</span>
                 </div>
               </>
             }
@@ -475,7 +502,15 @@ export default function DashboardHome() {
             <p className="text-xs text-text-muted">{t('dashboard.orderLifecycleDesc')}</p>
           </div>
           <div className="h-[300px] flex items-center justify-center">
-            <Pie {...lifecycleConfig} />
+            {isLoading ? (
+              <Loader2 className="animate-spin text-primary" size={32} />
+            ) : statusChartData.length === 0 ? (
+              <span className="text-sm text-text-muted">{t('common.noData')}</span>
+            ) : (
+              <div className="w-full h-full">
+                <Pie {...lifecycleConfig} />
+              </div>
+            )}
           </div>
         </div>
 
@@ -489,8 +524,16 @@ export default function DashboardHome() {
             <h3 className="text-base sm:text-lg font-bold text-text-main">{t('dashboard.labsPerformance')}</h3>
             <p className="text-xs text-text-muted">{t('dashboard.labsPerformanceDesc')}</p>
           </div>
-          <div className="h-[300px] mt-6">
-            <Line {...labConfig} />
+          <div className="h-[300px] flex items-center justify-center mt-6">
+            {isLoading ? (
+              <Loader2 className="animate-spin text-primary" size={32} />
+            ) : ratingsChartData.length === 0 ? (
+              <span className="text-sm text-text-muted">{t('common.noData')}</span>
+            ) : (
+              <div className="w-full h-full">
+                <Line {...labConfig} />
+              </div>
+            )}
           </div>
         </div>
 
@@ -499,8 +542,16 @@ export default function DashboardHome() {
             <h3 className="text-base sm:text-lg font-bold text-text-main">{t('dashboard.financialAnalysis')}</h3>
             <p className="text-xs text-text-muted">{t('dashboard.financialAnalysisDesc')}</p>
           </div>
-          <div className="h-[300px] mt-6">
-            <Area {...revenueConfig} />
+          <div className="h-[300px] flex items-center justify-center mt-6">
+            {isLoading ? (
+              <Loader2 className="animate-spin text-primary" size={32} />
+            ) : financialGrowthData.length === 0 ? (
+              <span className="text-sm text-text-muted">{t('common.noData')}</span>
+            ) : (
+              <div className="w-full h-full">
+                <Area {...revenueConfig} />
+              </div>
+            )}
           </div>
         </div>
 

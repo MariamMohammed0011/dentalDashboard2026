@@ -184,7 +184,8 @@ export const useLabs = () => {
 
   const handleConfirmStatusChange = () => {
     if (!selectedLabForStatus) return;
-    updateStatus({ id: selectedLabForStatus.id, status: tempStatus, type: 'lab' });
+    const targetLabId = selectedLabForStatus.userId || selectedLabForStatus.id;
+    updateStatus({ id: targetLabId, status: tempStatus, type: 'lab' });
     setSelectedLabForStatus(null);
   };
 
@@ -212,7 +213,7 @@ export const useLabs = () => {
     openStatusModal,
     handleConfirmStatusChange,
 
-    toggleStatus: ({ id, nextStatus }) => updateStatus({ id, status: nextStatus, type: 'lab' }),
+    toggleStatus: ({ id, userId, nextStatus }) => updateStatus({ id: userId || id, status: nextStatus, type: 'lab' }),
     updatingLabId: updatingId,
 
     // ── Filter exports ──

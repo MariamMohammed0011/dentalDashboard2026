@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { membershipApi } from '../features/membership/services/membershipApi';
 import { doctorsApi } from '../features/doctors/services/doctorsApi';
-// داخل useUpdateUserStatus.jsx
+import { labsApi } from '../features/labs/services/labsApi';
 
 export const useUpdateUserStatus = (queryKeysToInvalidate = []) => {
   const queryClient = useQueryClient();
@@ -22,10 +22,17 @@ export const useUpdateUserStatus = (queryKeysToInvalidate = []) => {
         return await doctorsApi.updateStatus({ id: targetId, status: numericStatus });
       }
 
+      if (type === 'lab') {
+        return await labsApi.updateStatus({ id: targetId, status: numericStatus });
+      }
+
       return await membershipApi.updateRequestStatus(targetId, numericStatus, type);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['doctors-list'] });
+      queryClient.invalidateQueries({ queryKey: ['labs-list'] });
+      queryClient.invalidateQueries({ queryKey: ['all-lab-details'] });
+      queryKeysToInvalidate.forEach(key => queryClient.invalidateQueries({ queryKey: [key] }));
       toast.success('تم تحديث حالة الحساب بنجاح');
     },
     onError: (error) => {

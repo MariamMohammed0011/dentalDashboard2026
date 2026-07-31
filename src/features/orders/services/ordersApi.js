@@ -3,11 +3,17 @@ import axiosInstance from "../../../api/axios";
 
 const mapStatusArabic = (status) => {
   switch (status?.toLowerCase()) {
-    case "accepted": return "مقبول";
-    case "pending": return "معلق";
-    case "rejected": return "مرفوض";
-    case "ready": return "جاهز";
-    case "completed": return "مكتمل";
+    case "pennding":
+    case "pending": return "قيد الانتظار";
+    case "accepted": return "مقبولة";
+    case "requestinfo": return "طلب معلومات";
+    case "indesign": return "قيد التصميم";
+    case "inproduction": return "قيد الإنتاج";
+    case "incoloring": return "قيد التلوين";
+    case "ready": return "جاهزة";
+    case "delivered": return "تم التسليم";
+    case "waitingforclarification": return "بانتظار توضيح";
+    case "cancelled": return "ملغاة";
     default: return status || "غير محدد";
   }
 };
