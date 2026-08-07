@@ -21,9 +21,11 @@ import BlogsPage from "./features/blogs/pages/BlogsPage";
 import SubscriptionsPage from "./features/subscription/pages/SubscriptionsPage";
 import NotificationsListPage from "./features/notifications/pages/NotificationsListPage";
 import SendNotificationPage from "./features/notifications/pages/SendNotificationPage";
+import InvoicesPage from "./features/invoices/pages/InvoicesPage";
 
 const queryClient = new QueryClient();
 import Cookies from "js-cookie";
+import LabTechniciansPage from "./features/labs/pages/LabTechniciansPage";
 const ProtectedRoute = ({ children }) => {
   const token = Cookies.get("auth_token");
   if (!token) return <Navigate to="/login" replace />;
@@ -62,6 +64,7 @@ function App() {
               <Route path="membership-requests" element={<MembershipRequestsPage />} />
               <Route path="doctors" element={<DoctorsPage />} />
               <Route path="labs" element={<LabsPage />} />
+              <Route path="lab-tech" element={<LabTechniciansPage />} />
               <Route path="subscriptions" element={<SubscriptionsPage />} />
               <Route path="blogs" element={<BlogsPage />} />
               <Route path="ads" element={<AdsPage />} />
@@ -69,6 +72,7 @@ function App() {
               <Route path="notifications" element={<NotificationsListPage />} />
               <Route path="notifications/send" element={<SendNotificationPage />} />
               <Route path="reports" element={<ReportsPage />} />
+              <Route path="invoices" element={<InvoicesPage />} />
               <Route path="intervention-log" element={<InterventionPage />} />
               <Route path="settings" element={<SettingsPage />} />
             </Route>

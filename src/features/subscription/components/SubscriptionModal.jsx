@@ -48,11 +48,11 @@ export default function SubscriptionModal({ isOpen, onClose, onSubmit, type, ini
           <div className="relative p-6 bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-between">
             <div>
               <h2 className="text-xl font-black">
-                {type === 'renew' ? 'تجديد اشتراك المخبر' : type === 'activate' ? 'تفعيل اشتراك المخبر' : 'إضافة اشتراك لمخبر'}
+                {type === 'renew' ? t('subscription.renewModalTitle') : type === 'activate' ? t('subscription.activateModalTitle') : t('subscription.addModalTitle')}
               </h2>
               {initialData?.labName && (
                 <p className="text-white/80 text-xs font-bold mt-1">
-                  المخبر: {initialData.labName}
+                  {t('subscription.labName')}: {initialData.labName}
                 </p>
               )}
             </div>
@@ -77,12 +77,12 @@ export default function SubscriptionModal({ isOpen, onClose, onSubmit, type, ini
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
                   <UserCheck size={14} className="text-emerald-500" />
-                  اختر المخبر <span className="text-rose-500">*</span>
+                  {t('subscription.selectLab')} <span className="text-rose-500">*</span>
                 </label>
                 {loadingLabs ? (
                   <div className="flex items-center gap-2 text-sm text-text-muted">
                     <Loader2 size={16} className="animate-spin" />
-                    جاري تحميل المخابر...
+                    {t('subscription.loadingLabs')}
                   </div>
                 ) : (
                   <select
@@ -90,7 +90,7 @@ export default function SubscriptionModal({ isOpen, onClose, onSubmit, type, ini
                     onChange={(e) => setSelectedLabId(e.target.value)}
                     className="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-text-main dark:text-gray-100 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                   >
-                    <option value="">-- اختر المخبر من القائمة --</option>
+                    <option value="">{t('subscription.selectLabPlaceholder')}</option>
                     {labs.map((l) => (
                       <option key={l.id} value={l.id}>
                         {l.owner?.namePlace || l.name || `مخبر رقم #${l.id}`}
@@ -105,12 +105,12 @@ export default function SubscriptionModal({ isOpen, onClose, onSubmit, type, ini
             <div className="flex flex-col gap-2">
               <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
                 <DollarSign size={14} className="text-emerald-500" />
-                قيمة الاشتراك (بالريال) <span className="text-rose-500">*</span>
+                {t('subscription.price')} <span className="text-rose-500">*</span>
               </label>
               <input
                 type="number"
                 required
-                placeholder="أدخل قيمة الاشتراك..."
+                placeholder={t('subscription.pricePlaceholder')}
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 className="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-text-main dark:text-gray-100 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
@@ -123,7 +123,7 @@ export default function SubscriptionModal({ isOpen, onClose, onSubmit, type, ini
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
                   <Calendar size={14} className="text-emerald-500" />
-                  تاريخ البدء <span className="text-rose-500">*</span>
+                  {t('subscription.startDate')} <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="date"
@@ -138,7 +138,7 @@ export default function SubscriptionModal({ isOpen, onClose, onSubmit, type, ini
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
                   <Calendar size={14} className="text-emerald-500" />
-                  تاريخ الانتهاء <span className="text-rose-500">*</span>
+                  {t('subscription.endDate')} <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="date"
@@ -157,7 +157,7 @@ export default function SubscriptionModal({ isOpen, onClose, onSubmit, type, ini
                 onClick={onClose}
                 className="flex-1 py-3 px-4 rounded-2xl text-sm font-black bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-gray-300 transition-all active:scale-95 cursor-pointer text-center"
               >
-                إلغاء
+                {t('common.cancel')}
               </button>
               <button
                 type="submit"
@@ -167,10 +167,10 @@ export default function SubscriptionModal({ isOpen, onClose, onSubmit, type, ini
                 {isSubmitting ? (
                   <>
                     <Loader2 size={16} className="animate-spin" />
-                    جاري الحفظ...
+                    {t('subscription.saving')}
                   </>
                 ) : (
-                  'حفظ الاشتراك'
+                  t('subscription.saveSubscription')
                 )}
               </button>
             </div>

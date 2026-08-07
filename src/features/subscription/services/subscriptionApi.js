@@ -1,10 +1,18 @@
 import axiosInstance from "../../../api/axios";
 
+// 1. جلب الاشتراكات النشطة
 export const fetchActiveSubscriptions = async () => {
   const response = await axiosInstance.get("/LabSubscription/active-subscribed-labs");
   return response.data;
 };
 
+// 2. جلب أرشيف الاشتراكات المنتهية
+export const fetchExpiredSubscriptions = async () => {
+  const response = await axiosInstance.get("/LabSubscription/expired-subscribed-labs");
+  return response.data;
+};
+
+// 3. تفعيل اشتراك لمخبر
 export const activateSubscription = async (labId, payload) => {
   const formData = new FormData();
   formData.append('Amount', payload.amount);
@@ -19,6 +27,7 @@ export const activateSubscription = async (labId, payload) => {
   return response.data;
 };
 
+// 4. تجديد اشتراك لمخبر
 export const renewSubscription = async (labId, payload) => {
   const formData = new FormData();
   formData.append('Amount', payload.amount);

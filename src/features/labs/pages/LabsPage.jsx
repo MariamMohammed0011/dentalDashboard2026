@@ -1,13 +1,16 @@
+
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import LabCard from '../components/LabCard';
-import LabDetailsModal from '../components/LabDetailsModal';
+
 import LabsFilter from '../components/LabsFilter';
 import UserStatusModal from '../../../components/shared/UserStatusModal';
 import { useLabs } from '../hooks/useLabs';
 import MembershipPagination from '../../membership/components/MembershipPagination';
 import Search from '../../../components/shared/Search/Search';
+import LabProfileDetailsModal from '../components/LabProfileDetailsModal';
+import { FlaskConical } from 'lucide-react';
 
 const LabsPage = () => {
   const { t } = useTranslation();
@@ -17,7 +20,6 @@ const LabsPage = () => {
     isLoading,
     searchQuery,
     setSearchQuery,
-    currentPage,
     setCurrentPage,
 
     labDetails,
@@ -26,7 +28,6 @@ const LabsPage = () => {
     handleShowDetails,
     handleCloseDetails,
 
-    // Status Modal from hook
     selectedLabForStatus,
     setSelectedLabForStatus,
     tempStatus,
@@ -36,7 +37,6 @@ const LabsPage = () => {
 
     updatingLabId,
 
-    // ── Filter props ──
     statusFilter,
     setStatusFilter,
     ratingSort,
@@ -52,27 +52,26 @@ const LabsPage = () => {
   } = useLabs();
 
   return (
-    <div className="flex flex-col gap-6 px-4 sm:px-10 lg:px-12 pb-10 min-h-full" dir="rtl">
-      
-      <div className="flex flex-col sm:flex-row justify-between items-center py-2 px-0 gap-4 w-full" dir="rtl">
-        <div className="shrink-0 w-full sm:w-auto text-right">
-          <h1 className="text-[18px] sm:text-[20px] font-bold text-gray-700 dark:text-gray-200">
-            {t('labs.title')}
-          </h1>  
-        </div>
-        
-        <Search 
-          value={searchQuery}
-          onChange={setSearchQuery}
-          placeholder={t('labs.searchPlaceholder')}
-          width="320px"
-          className="w-full sm:w-[320px]"
-          onClear={() => setSearchQuery('')}
-        />
-      </div>
+    <div className="flex flex-col gap-6 px-2 sm:px-8 lg:px-2 pb-10 min-h-full" dir="rtl">
 
-      {/* ── Filters Section ── */}
-      <div className="relative z-20">
+     <div className="flex flex-col sm:flex-row justify-between items-center py-2 px-0 gap-4 w-full" dir="rtl">
+ <h1 className="text-2xl sm:text-3xl font-medium text-slate-800 dark:text-gray-100 flex items-center gap-2">
+  <FlaskConical size={28} className="text-emerald-600 dark:text-emerald-400" />
+  {t('labs.title')}
+</h1>
+
+  <Search
+    value={searchQuery}
+    onChange={setSearchQuery}
+    placeholder={t('labs.searchPlaceholder')}
+    
+    className="w-full "
+    onClear={() => setSearchQuery('')}
+  />
+</div>
+
+      {/* قسم الفلترة */}
+      <div className="relative z-20 mb-6">
         <LabsFilter
           statusFilter={statusFilter}
           onStatusChange={setStatusFilter}
@@ -89,13 +88,11 @@ const LabsPage = () => {
         />
       </div>
 
-      
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full flex flex-col gap-6 relative z-0"
       >
-        {/* Active filters summary */}
         {hasActiveFilters && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
@@ -113,48 +110,44 @@ const LabsPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
           {isLoading ? (
             Array(6).fill(0).map((_, i) => (
-              <div key={i} className="h-[230px] bg-white/50 dark:bg-slate-800/30 rounded-[2.5rem] animate-pulse border border-slate-100 dark:border-slate-800/60" />
+              <div key={i} className="h-[170px] bg-white/50 dark:bg-slate-800/30 rounded-2xl animate-pulse border border-slate-100 dark:border-slate-800/60" />
             ))
           ) : labs.length > 0 ? (
             labs.map((lab) => (
-              <LabCard 
-                key={lab.id} 
-                id={lab.id} 
-                name={lab.name} 
-                onShowDetails={handleShowDetails} 
-                onEditStatus={openStatusModal}
-                updatingLabId={updatingLabId}
+              <LabCard
+                key={lab.id}
+                id={lab.id}
+                name={lab.labNamePlace || lab.name || '—'}
+                averageRating={lab.averageRating}
+                onShowDetails={handleShowDetails}
               />
             ))
           ) : (
             <div className="col-span-full py-16 text-center text-gray-400 dark:text-slate-500 font-bold">
-              {hasActiveFilters 
+              {hasActiveFilters
                 ? t('labs.noMatchingFilters')
                 : t('labs.noMatchingSearch')}
             </div>
           )}
         </div>
 
-        
         {pagination.totalPages > 1 && (
           <div className="flex justify-center mt-4">
-            <MembershipPagination 
-              pagination={pagination} 
-              onPageChange={setCurrentPage} 
+            <MembershipPagination
+              pagination={pagination}
+              onPageChange={setCurrentPage}
             />
           </div>
         )}
       </motion.div>
 
-      
-      <LabDetailsModal 
-        lab={labDetails}
+      <LabProfileDetailsModal
+        lab={labDetails} // البيانات المجلوبة من الـ API بحسب المحدّد
         isOpen={!!selectedLabId}
         onClose={handleCloseDetails}
         isLoading={isLoadingDetails}
       />
-
-      
+      {/* مودال تعديل الحالة */}
       <UserStatusModal
         isOpen={!!selectedLabForStatus}
         user={selectedLabForStatus}

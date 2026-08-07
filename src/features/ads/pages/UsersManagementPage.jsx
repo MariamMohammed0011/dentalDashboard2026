@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Users, UserPlus, Search, Megaphone } from 'lucide-react';
 import { toast } from 'sonner';
@@ -9,8 +10,10 @@ import AddAdClientModal from '../components/AddAdClientModal';
 import AddAdForUserModal from '../components/AddAdForUserModal';
 import ViewUserModal from '../components/users/ViewUserModal';
 import ConfirmationModal from '../../../components/shared/ConfirmationModal';
-import EditUserModal from '../components/users/EditUserModal'; // 🛠️ استيراد مودل التعديل المكتوب سابقاً
+import EditUserModal from '../components/users/EditUserModal';
+
 const UsersManagementPage = () => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -58,7 +61,6 @@ const UsersManagementPage = () => {
       queryClient.invalidateQueries({ queryKey: ['ads-users'] });
       setIsAddClientOpen(false);
     },
-    // Error is handled inside the modal/hook
   });
 
   // 3. Add Advertisement For User Mutation
@@ -78,13 +80,13 @@ const UsersManagementPage = () => {
       toast.error(serverMessage);
     }
   });
-const updateUserMutation = useMutation({
+
+  const updateUserMutation = useMutation({
     mutationFn: ({ userId, userData }) => usersApi.updateUser(userId, userData),
     onSuccess: () => {
-      // عمل تحديث فوري للكاش لإعادة جلب البيانات المعدلة من الباك إند تلقائياً
       queryClient.invalidateQueries({ queryKey: ['ads-users'] });
       toast.success('تم تحديث بيانات العميل بنجاح');
-      setSelectedUserForEdit(null); // إغلاق المودل
+      setSelectedUserForEdit(null);
     },
     onError: (error) => {
       console.error("Failed to update user:", error);
@@ -92,6 +94,7 @@ const updateUserMutation = useMutation({
       toast.error(serverMessage);
     }
   });
+
   // 4. Delete User Mutation
   const deleteUserMutation = useMutation({
     mutationFn: (userId) => usersApi.deleteUser(userId),
@@ -110,7 +113,6 @@ const updateUserMutation = useMutation({
     }
   });
 
-  // Compute live active ads count per user based on allAds from the backend
   const filteredUsers = users.map(user => {
     const userActiveAdsCount = allAds.filter(ad => {
       const adUserId = ad.userId || ad.user?.id || ad.user?.userId;
@@ -135,8 +137,8 @@ const updateUserMutation = useMutation({
             <Users size={28} className="text-primary" />
           </div>
           <div className="text-right">
-            <h1 className="text-2xl sm:text-3xl font-black text-text-main tracking-tight">إدارة المستخدمين</h1>
-            <p className="text-text-muted text-xs sm:text-sm mt-1 font-medium">إدارة حسابات عملاء الإعلانات وإنشاء الحملات الإعلانية المخصصة لهم</p>
+            <h1 className="text-2xl sm:text-3xl font-black text-text-main tracking-tight">{t('ads.usersManagementTitle')}</h1>
+            <p className="text-text-muted text-xs sm:text-sm mt-1 font-medium">{t('ads.usersManagementDesc')}</p>
           </div>
         </div>
 
@@ -146,7 +148,7 @@ const updateUserMutation = useMutation({
           className="bg-primary text-white hover:bg-primary-dark shadow-lg shadow-primary/10 rounded-2xl flex items-center gap-2 px-6 py-3 font-bold text-sm transition-all duration-300 hover:scale-[1.02] active:scale-95 whitespace-nowrap w-full sm:w-auto justify-center cursor-pointer"
         >
           <UserPlus size={18} strokeWidth={2.5} />
-          إضافة مستخدم إعلانات
+          {t('ads.addAdClient')}
         </button>
       </div>
 
@@ -155,11 +157,11 @@ const updateUserMutation = useMutation({
         
        
         <div className="flex-shrink-0 w-full lg:w-80 flex flex-col gap-1.5">
-          <label className="text-[11px] font-black text-text-muted text-right mr-1">البحث السريع عن العملاء</label>
+          <label className="text-[11px] font-black text-text-muted text-right mr-1">{t('ads.quickSearch')}</label>
           <div className="relative w-full">
             <input
               type="text"
-              placeholder="ابحث باسم العميل، رقم الهاتف، أو المنشأة..."
+              placeholder={t('ads.searchUsersPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pr-10 pl-4 py-2.5 rounded-2xl border border-border-main/50 bg-bg-main/30 text-text-main placeholder-text-muted/50 font-bold text-xs sm:text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-right"
@@ -176,7 +178,7 @@ const updateUserMutation = useMutation({
           
           
           <div className="flex flex-col items-center justify-center px-4 text-center">
-            <span className="text-xs font-bold text-text-muted mb-1.5 block">إجمالي العملاء</span>
+            <span className="text-xs font-bold text-text-muted mb-1.5 block">{t('ads.totalClients')}</span>
             <div className="flex items-center gap-2">
               <span className="text-xl sm:text-2xl font-black text-text-main">{isLoading ? '...' : users.length}</span>
               <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse flex-shrink-0" />
@@ -185,7 +187,7 @@ const updateUserMutation = useMutation({
 
           
           <div className="flex flex-col items-center justify-center px-4 text-center">
-            <span className="text-xs font-bold text-text-muted mb-1.5 block">الإعلانات النشطة</span>
+            <span className="text-xs font-bold text-text-muted mb-1.5 block">{t('ads.activeAds')}</span>
             <div className="flex items-center gap-2">
               <span className="text-xl sm:text-2xl font-black text-text-main">{isLoading || isLoadingActiveAds ? '...' : activeAdsCount}</span>
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 flex-shrink-0" />
@@ -236,7 +238,7 @@ const updateUserMutation = useMutation({
         onClose={() => setSelectedUserForEdit(null)}
         user={selectedUserForEdit}
         onSave={(id, userData) => updateUserMutation.mutateAsync({ userId: id, userData })} 
-/>
+      />
 
       
       <ConfirmationModal
@@ -246,10 +248,10 @@ const updateUserMutation = useMutation({
           setDeleteTarget(null);
         }}
         onConfirm={() => deleteUserMutation.mutate(deleteTarget.id)}
-        title="حذف مستخدم الإعلانات"
-        message={`هل أنت متأكد من رغبتك في حذف العميل "${deleteTarget?.name}"؟ سيتم حذف جميع إعلاناته المرتبطة به بشكل نهائي ولا يمكن التراجع عن هذا الإجراء.`}
-        confirmText="حذف المستخدم"
-        cancelText="تراجع"
+        title={t('ads.deleteUserModalTitle')}
+        message={t('ads.deleteUserModalMessage', { name: deleteTarget?.name })}
+        confirmText={t('ads.deleteUserConfirm')}
+        cancelText={t('membership.confirmNo')}
         type="danger"
       />
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -6,11 +6,40 @@ import {
   X, User, Phone, Mail, Calendar, Info,
   DollarSign, FileText, Activity, Layers,
   Compass, Hammer, Star, Sparkles, Paperclip,
-  AlertCircle, FlaskConical, Clock, Tag
+  AlertCircle, FlaskConical, Clock, Tag, Box,
+  Download, ExternalLink, FileCode, Loader2, CheckCircle2
 } from 'lucide-react';
+import { fetchOrderStlFiles } from '../services/ordersApi';
+import { toast } from 'sonner';
 
 const OrderDetailsModal = ({ isOpen, onClose, order }) => {
   const { t } = useTranslation();
+  const [stlFiles, setStlFiles] = useState([]);
+  const [isLoadingStl, setIsLoadingStl] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && order?.id) {
+      let isMounted = true;
+      setIsLoadingStl(true);
+      fetchOrderStlFiles(order.id)
+        .then(res => {
+          if (isMounted) {
+            const list = Array.isArray(res?.data) ? res.data : [];
+            setStlFiles(list);
+          }
+        })
+        .catch(err => {
+          console.error("Error fetching STL files:", err);
+          if (isMounted) setStlFiles([]);
+        })
+        .finally(() => {
+          if (isMounted) setIsLoadingStl(false);
+        });
+      return () => {
+        isMounted = false;
+      };
+    }
+  }, [isOpen, order?.id]);
 
   if (typeof document === 'undefined') return null;
   if (!order) return null;
@@ -46,7 +75,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
       const date = new Date(dateString);
       return date.toLocaleDateString('ar-EG', {
         year: 'numeric',
-        month: 'long',
+        month: 'short',
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
@@ -55,6 +84,18 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
       return dateString;
     }
   };
+
+  const getFullFileUrl = (file) => {
+    if (!file) return '#';
+    if (file.fullUrl) return file.fullUrl;
+    if (file.path) {
+      if (file.path.startsWith('http://') || file.path.startsWith('https://')) return file.path;
+      return `https://localhost:44334/${file.path.replace(/^\//, '')}`;
+    }
+    return '#';
+  };
+
+  const isDigital = String(order.impressionType).toLowerCase() === 'digital' || String(order.impressionType) === 'رقمية' || stlFiles.length > 0;
 
   return createPortal(
     <AnimatePresence>
@@ -236,7 +277,97 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
                 </div>
               </div>
 
-              {/* 3. Contracted Parties (Dentist & Lab) */}
+              {/* 3. Digital Scans & STL Files Section (يعرض عندما تكون الطبعة رقمية Digital أو عند وجود ملفات) */}
+              {isDigital && (
+                <div className="space-y-2.5 sm:space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="p-1.5 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                        <Box size={16} />
+                      </div>
+                      <h4 className="text-xs font-black text-slate-800 dark:text-gray-200 uppercase tracking-wider">
+                        {t('orders.digitalScansTitle')}
+                      </h4>
+                    </div>
+                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                      {t('orders.stlFilesCount', { count: stlFiles.length })}
+                    </span>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-blue-50/50 via-slate-50 to-indigo-50/30 dark:from-blue-950/20 dark:via-slate-900/50 dark:to-indigo-950/20 p-4 rounded-2xl sm:rounded-3xl border border-blue-100 dark:border-blue-900/40 space-y-3">
+                    {isLoadingStl ? (
+                      <div className="flex items-center justify-center py-6 gap-2 text-xs font-bold text-blue-600">
+                        <Loader2 size={18} className="animate-spin" />
+                        <span>{t('orders.loadingStlFiles')}</span>
+                      </div>
+                    ) : stlFiles.length === 0 ? (
+                      <div className="text-center py-6 text-xs text-text-muted font-medium">
+                        <Box size={32} className="mx-auto mb-2 opacity-40 text-blue-500" />
+                        <span>{t('orders.noStlFiles')}</span>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {stlFiles.map((file, idx) => {
+                          const fileUrl = getFullFileUrl(file);
+                          const fileName = file.path ? file.path.split('/').pop() : `STL_Scan_${file.id || idx + 1}.stl`;
+                          return (
+                            <div
+                              key={file.id || idx}
+                              className="bg-white dark:bg-slate-800/90 border border-slate-100 dark:border-slate-700/60 rounded-2xl p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm hover:shadow-md transition-all"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
+                                  <FileCode size={20} />
+                                </div>
+                                <div className="min-w-0">
+                                  <span className="block text-xs font-black text-slate-800 dark:text-gray-100 truncate dir-ltr text-right" title={fileName}>
+                                    {fileName}
+                                  </span>
+                                  <div className="flex items-center gap-2 text-[10px] text-text-muted mt-0.5">
+                                    <span className="font-bold text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-full">
+                                      {file.type || t('orders.digitalScanType')}
+                                    </span>
+                                    {file.uploadedAt && (
+                                      <span>• {formatDate(file.uploadedAt)}</span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2 w-full sm:w-auto justify-end pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-700">
+                                <a
+                                  href={fileUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  download
+                                  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all active:scale-95"
+                                >
+                                  <Download size={14} />
+                                  <span>{t('orders.downloadStl')}</span>
+                                </a>
+
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(fileUrl);
+                                    toast.success('تم نسخ رابط ملف الـ STL إلى الحافظة');
+                                  }}
+                                  className="p-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-200 rounded-xl transition-all"
+                                  title="نسخ رابط الملف"
+                                >
+                                  <ExternalLink size={15} />
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* 4. Contracted Parties (Dentist & Lab) */}
               <div className="space-y-2.5 sm:space-y-3">
                 <div className="flex items-center gap-2">
                   <div className="p-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30">
@@ -294,7 +425,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
                 </div>
               </div>
 
-              {/* 4. Required Items */}
+              {/* 5. Required Items */}
               <div className="space-y-2.5 sm:space-y-3">
                 <div className="flex items-center gap-2">
                   <div className="p-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/30">
@@ -335,7 +466,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
                 </div>
               </div>
 
-              {/* 5. Prices & Costs */}
+              {/* 6. Prices & Costs */}
               <div className="space-y-2.5 sm:space-y-3">
                 <div className="flex items-center gap-2">
                   <div className="p-1.5 rounded-xl bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 border border-violet-100 dark:border-violet-900/30">
@@ -362,7 +493,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
                 </div>
               </div>
 
-              {/* 6. Doctor Notes */}
+              {/* 7. Doctor Notes */}
               {order.notes && (
                 <div className="space-y-2.5 sm:space-y-3">
                   <div className="flex items-center gap-2">

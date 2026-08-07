@@ -9,10 +9,9 @@ import {
   AlertTriangle, 
   Clock, 
   Check, 
-  FlaskConical, 
-  MapPin, 
   Eye, 
-  ShieldAlert 
+  ShieldAlert,
+  User 
 } from 'lucide-react';
 
 // خريطة تحويل متكاملة للربط بين النصوص والأرقام
@@ -30,7 +29,7 @@ const STATUS_LOOKUP = {
   '4': 4
 };
 
-// قائمة الحالات الخمس المعتمدة (مُعرّفة خارج المكوّن لمنع إعادة الإنشاء عند كل Render)
+// قائمة الحالات الخمس المعتمدة
 const ALL_STATUSES = [
   {
     value: 0,
@@ -102,23 +101,25 @@ const ALL_STATUSES = [
 const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatus, onConfirm }) => {
   const { t } = useTranslation();
 
-  const isDoctor = type === 'doctor';
+  // الفرز مخصص حصراً: إما طبيب أو فني مخبر
+  const isDoctor = type === 'doctor' || type === 'dentist';
 
   const normalizeStatus = (val) => {
     if (val === null || val === undefined) return null;
     const key = String(val).toLowerCase().trim();
     return STATUS_LOOKUP[key] ?? null;
   };
-const currentTempNumeric =
-  typeof tempStatus === "number"
-    ? tempStatus
-    : normalizeStatus(tempStatus);
 
-const userOriginalNumeric =
-  typeof user?.status === "number"
-    ? user.status
-    : normalizeStatus(user?.status);
-  // 🔍 طباعة تفاصيل الحالات في الكونسول بثبات وبدون خطأ الحجم
+  const currentTempNumeric =
+    typeof tempStatus === "number"
+      ? tempStatus
+      : normalizeStatus(tempStatus);
+
+  const userOriginalNumeric =
+    typeof user?.status === "number"
+      ? user.status
+      : normalizeStatus(user?.status);
+
   useEffect(() => {
     if (isOpen && user) {
       console.log('📋 ===== [ UserStatusModal Status List ] =====');
@@ -131,9 +132,11 @@ const userOriginalNumeric =
       console.log('==============================================');
     }
   }, [isOpen, user, tempStatus, currentTempNumeric, userOriginalNumeric]);
-useEffect(() => {
-  console.log("tempStatus Changed =", tempStatus);
-}, [tempStatus]);
+
+  useEffect(() => {
+    console.log("tempStatus Changed =", tempStatus);
+  }, [tempStatus]);
+
   if (typeof document === 'undefined' || !document.body) return null;
 
   const isSaveDisabled = currentTempNumeric === userOriginalNumeric || currentTempNumeric === null;
@@ -162,10 +165,14 @@ useEffect(() => {
             <div className="flex justify-between items-center px-6 py-5 border-b border-slate-100 dark:border-slate-800/80">
               <div className="flex flex-col gap-1">
                 <h3 className="text-[15px] font-black text-gray-800 dark:text-gray-100">
-                  {isDoctor ? t('userStatusModal.editDoctorStatus') : t('userStatusModal.editLabStatus')}
+                  {isDoctor 
+                    ? (t('userStatusModal.editDoctorStatus') || 'تعديل حالة حساب الطبيب')
+                    : 'تعديل حالة حساب فني المخبر'}
                 </h3>
                 <p className="text-[11px] text-gray-400 dark:text-slate-400 font-medium">
-                  {isDoctor ? t('userStatusModal.chooseDoctorStatus') : t('userStatusModal.chooseLabStatus')}
+                  {isDoctor 
+                    ? (t('userStatusModal.chooseDoctorStatus') || 'اختر الحالة الجديدة لحساب الطبيب')
+                    : 'اختر الحالة الجديدة لحساب فني المخبر'}
                 </p>
               </div>
               <button
@@ -183,7 +190,7 @@ useEffect(() => {
                 className={`w-11 h-11 rounded-2xl overflow-hidden border shrink-0 flex items-center justify-center font-bold ${
                   isDoctor
                     ? 'border-primary/20 bg-sky-100 dark:bg-sky-950 text-primary'
-                    : 'border-emerald-500/20 bg-emerald-50/80 dark:bg-emerald-950 text-emerald-600'
+                    : 'border-indigo-500/20 bg-indigo-50/80 dark:bg-indigo-950 text-indigo-600'
                 }`}
               >
                 {isDoctor ? (
@@ -193,23 +200,16 @@ useEffect(() => {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <FlaskConical size={20} className="text-emerald-600 dark:text-emerald-400" />
+                  <User size={20} className="text-indigo-600 dark:text-indigo-400" />
                 )}
               </div>
               <div className="flex flex-col min-w-0">
                 <span className="font-extrabold text-gray-800 dark:text-gray-100 text-xs leading-tight">{user.name}</span>
                 <span className="text-[10px] text-gray-400 dark:text-slate-400 font-semibold mt-1 flex items-center gap-1">
-                  {isDoctor ? (
-                    <>
-                      <Building2 size={11} className="text-sky-500" />
-                      {user.clinicName || 'العيادة غير محددة'}
-                    </>
-                  ) : (
-                    <>
-                      <MapPin size={11} className="text-emerald-500" />
-                      {user.address || 'العنوان غير محدد'}
-                    </>
-                  )}
+                  <Building2 size={11} className={isDoctor ? 'text-sky-500' : 'text-indigo-500'} />
+                  {isDoctor 
+                    ? (user.clinicName || 'العيادة غير محددة') 
+                    : (user.namePlace || 'مكان العمل غير محدد')}
                 </span>
               </div>
             </div>
@@ -261,22 +261,21 @@ useEffect(() => {
               >
                 {t('common.cancel')}
               </button>
-            {/* زر الحفظ داخل UserStatusModal.jsx */}
-<button
-  type="button"
-  onClick={() => {
-    console.log("Saving Status =", tempStatus);
-    onConfirm(tempStatus);
-  }}
-  disabled={isSaveDisabled}
-  className={`px-5 py-2 rounded-xl text-xs font-bold text-white shadow-sm active:scale-95 transition-all cursor-pointer ${
-    isSaveDisabled
-      ? 'bg-slate-200 dark:bg-slate-800 cursor-not-allowed text-gray-400'
-      : 'bg-primary hover:bg-primary/95'
-  }`}
->
-  {t('userStatusModal.saveStatus')}
-</button>
+              <button
+                type="button"
+                onClick={() => {
+                  console.log("Saving Status =", tempStatus);
+                  onConfirm(tempStatus);
+                }}
+                disabled={isSaveDisabled}
+                className={`px-5 py-2 rounded-xl text-xs font-bold text-white shadow-sm active:scale-95 transition-all cursor-pointer ${
+                  isSaveDisabled
+                    ? 'bg-slate-200 dark:bg-slate-800 cursor-not-allowed text-gray-400'
+                    : 'bg-primary hover:bg-primary/95'
+                }`}
+              >
+                {t('userStatusModal.saveStatus')}
+              </button>
             </div>
           </motion.div>
         </div>

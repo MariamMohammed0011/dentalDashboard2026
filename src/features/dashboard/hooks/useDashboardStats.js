@@ -6,6 +6,7 @@ import { membershipApi } from "../../membership/services/membershipApi";
 import { fetchActiveSubscriptions } from "../../subscription/services/subscriptionApi";
 import { fetchOrders } from "../../orders/services/ordersApi";
 import { adsApi } from "../../ads/services/adsApi";
+import { reportsApi } from "../../reports/services/reportsApi";
 
 const monthNamesMap = {
   Jan: "يناير",
@@ -93,7 +94,9 @@ export const useDashboardStats = () => {
           financialGrowthRes,
           ratingsRes,
           compensationsRes,
-          statusRes
+          statusRes,
+          financialConsolidatedRes,
+          subscriptionsStatusRes
         ] = await Promise.all([
           statisticsApi.getDentistsMonthlyOrders().catch(() => []),
           statisticsApi.getLabsMonthlyOrders().catch(() => []),
@@ -106,7 +109,9 @@ export const useDashboardStats = () => {
           statisticsApi.getFinancialGrowth(currentYear).catch(() => null),
           statisticsApi.getRatingsChartData().catch(() => null),
           statisticsApi.getCompensationsChart().catch(() => null),
-          statisticsApi.getStatusChart().catch(() => null)
+          statisticsApi.getStatusChart().catch(() => null),
+          reportsApi.getConsolidatedFinancialReport().catch(() => null),
+          reportsApi.getSubscriptionsStatusReport(7).catch(() => null)
         ]);
 
         if (isMounted) {
@@ -240,14 +245,20 @@ export const useDashboardStats = () => {
           const docPending = docPendingInDoctors > 0 ? docPendingInDoctors : docPendingInRequests;
 
           // 7. حساب إحصائيات المختبرات
-          const labTotal = typeof labsListRes?.count === 'number' ? labsListRes.count : labsList.length;
-          const labActive = activeSubscriptions.length > 0 
+          let labTotal = typeof labsListRes?.count === 'number' ? labsListRes.count : labsList.length;
+          let labActive = activeSubscriptions.length > 0 
             ? activeSubscriptions.length 
             : labsList.filter(l => {
                 const st = String(l.status ?? '').toLowerCase().trim();
                 return st === 'active' || st === 'approved' || st === '2';
               }).length;
-          const labSuspended = Math.max(0, labTotal - labActive);
+          let labSuspended = Math.max(0, labTotal - labActive);
+
+          if (subscriptionsStatusRes?.statusDistribution) {
+            labTotal = subscriptionsStatusRes.statusDistribution.totalLabsCount ?? labTotal;
+            labActive = subscriptionsStatusRes.statusDistribution.activeLabsCount ?? labActive;
+            labSuspended = subscriptionsStatusRes.statusDistribution.suspendedLabsCount ?? labSuspended;
+          }
 
           // 8. حساب إحصائيات الحالات النشطة (بناءً على الـ Enums الرسمية للنظام)
           const activeCases = caseOrdersList.filter(o => {
@@ -264,14 +275,24 @@ export const useDashboardStats = () => {
             return st === 'pennding' || st === 'pending' || st === 'requestinfo' || st === 'waitingforclarification';
           }).length;
 
-          // 9. حساب الإيرادات الآمن باستخدام ensureArray
-          const subRevenue = activeSubscriptions.reduce((sum, item) => sum + Number(item.amount || item.price || 0), 0);
-          const activeAds = rawAds.filter(ad => ad.isActive === true || String(ad.status).toLowerCase() === 'active');
-          const adsRevenue = activeAds.reduce((sum, ad) => sum + Number(ad.price || ad.cost || 0), 0);
-          
-          const finalAdsRevenue = growthTotalAds > 0 ? growthTotalAds : adsRevenue;
-          const finalSubRevenue = growthTotalOrders > 0 ? growthTotalOrders : subRevenue;
-          const finalTotalRevenue = finalAdsRevenue + finalSubRevenue;
+          // 9. حساب الإيرادات (باستخدام التقرير المالي المجمع المباشر إن توفر)
+          let finalTotalRevenue = 0;
+          let finalSubRevenue = 0;
+          let finalAdsRevenue = 0;
+
+          if (financialConsolidatedRes) {
+            finalTotalRevenue = financialConsolidatedRes.totalOverallRevenue ?? 0;
+            finalSubRevenue = financialConsolidatedRes.activeSubscriptionsTotalRevenue ?? 0;
+            finalAdsRevenue = financialConsolidatedRes.paidAdsTotalRevenue ?? 0;
+          } else {
+            const subRevenue = activeSubscriptions.reduce((sum, item) => sum + Number(item.amount || item.price || 0), 0);
+            const activeAds = rawAds.filter(ad => ad.isActive === true || String(ad.status).toLowerCase() === 'active');
+            const adsRevenue = activeAds.reduce((sum, ad) => sum + Number(ad.price || ad.cost || 0), 0);
+            
+            finalAdsRevenue = growthTotalAds > 0 ? growthTotalAds : adsRevenue;
+            finalSubRevenue = growthTotalOrders > 0 ? growthTotalOrders : subRevenue;
+            finalTotalRevenue = finalAdsRevenue + finalSubRevenue;
+          }
 
           setKpiStats({
             doctors: { total: docTotal, active: docActive, pending: docPending },

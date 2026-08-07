@@ -1,6 +1,5 @@
 import axiosInstance from "../../../api/axios";
 
-
 const mapStatusArabic = (status) => {
   switch (status?.toLowerCase()) {
     case "pennding":
@@ -22,7 +21,7 @@ const formatDate = (dateString) => {
   if (!dateString) return "";
   try {
     const date = new Date(dateString);
-     return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "numeric",
       day: "numeric"
@@ -31,15 +30,14 @@ const formatDate = (dateString) => {
     return dateString;
   }
 };
+
 export const fetchOrders = async () => {
   try {
     const response = await axiosInstance.get("/CaseOrders/all-with-details");
     const rawOrders = response.data || [];
 
-    // التعديل السحري هنا: الترتيب تصاعدياً من الرقم الأصغر إلى الرقم الأكبر (1، 2، 3...)
     const sortedOrders = rawOrders.sort((a, b) => a.orderId - b.orderId);
 
-    // مطابقة وتنسيق بيانات الطلبيات لتتوافق مع الأعمدة المعروضة في جدول الواجهة
     return sortedOrders.map(order => ({
       id: order.orderId,
       doctor: order.dentistName || "طبيب غير معروف",
@@ -49,7 +47,6 @@ export const fetchOrders = async () => {
 
       createdAt: formatDate(order.createdAt),
 
-      // الاحتفاظ بجميع الحقول التفصيلية للعرض عند الضغط على زر التفاصيل (العين)
       title: order.title,
       status: order.status,
       impressionStage: order.impressionStage,
@@ -72,5 +69,16 @@ export const fetchOrders = async () => {
   } catch (error) {
     console.error("Failed to fetch case orders from API:", error);
     return [];
+  }
+};
+
+// جلب مسحات الـ STL الرقمية التابعة للطلبية GET /api/files/stl/{caseOrderId}
+export const fetchOrderStlFiles = async (orderId) => {
+  try {
+    const response = await axiosInstance.get(`/files/stl/${orderId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch STL files for order ${orderId}:`, error);
+    return { caseOrderId: orderId, count: 0, data: [] };
   }
 };

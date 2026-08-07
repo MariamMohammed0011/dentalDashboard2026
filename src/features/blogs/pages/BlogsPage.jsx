@@ -2,40 +2,49 @@ import React from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { 
-  Search, 
-  Trash2, 
-  BookOpen, 
-  User, 
-  FlaskConical, 
-  Calendar, 
-  Heart, 
+import {
+  Trash2,
+  BookOpen,
+  User,
+  FlaskConical,
+  Calendar,
+  Heart,
   MessageCircle,
   Eye,
   X,
   AlertCircle,
-  Check
+  Check,
+  Filter,
+  Sparkles,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  Stethoscope,
+  LayoutGrid
 } from "lucide-react";
 import { useBlogs } from "../hooks/useBlogs";
 import MembershipPagination from "../../membership/components/MembershipPagination";
 import ConfirmationModal from "../../../components/shared/ConfirmationModal";
+import Search from "../../../components/shared/Search/Search";
 
-
-const BlogStatCard = ({ title, count, icon: Icon, colorClass, gradientClass }) => (
+const BlogStatCard = ({ title, count, icon: Icon, colorBadgeClass, iconColorClass, bgGlowClass }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.4 }}
-    className="bg-bg-card border border-border-main rounded-[2rem] p-6 shadow-sm flex items-center justify-between relative overflow-hidden group hover:scale-[1.02] transition-all duration-300"
+    className="bg-bg-card border border-border-main/60 rounded-[2rem] p-6 shadow-sm shadow-slate-100/50 dark:shadow-none flex items-center justify-between relative overflow-hidden group hover:scale-[1.02] hover:shadow-xl transition-all duration-300"
   >
-    <div className="flex flex-col text-right">
-      <span className="text-text-muted text-sm font-bold mb-1">{title}</span>
-      <span className="text-3xl font-black text-text-main">{count}</span>
+    <div className="flex flex-col text-right z-10">
+      <span className="text-text-muted text-xs font-bold mb-1.5 uppercase tracking-wider">{title}</span>
+      <div className="flex items-baseline gap-2">
+        <span className="text-3xl sm:text-4xl font-black text-text-main tracking-tight">{count}</span>
+        <span className="text-xs font-bold text-text-muted">مقالة</span>
+      </div>
     </div>
-    <div className={`p-4 rounded-2xl ${colorClass} bg-opacity-10 text-opacity-100 flex items-center justify-center transition-transform duration-300 group-hover:rotate-[10deg]`}>
-      <Icon size={24} />
+    <div className={`p-4 rounded-2xl ${colorBadgeClass} transition-transform duration-500 group-hover:rotate-[12deg] group-hover:scale-110 shadow-sm z-10`}>
+      <Icon size={26} className={iconColorClass} />
     </div>
-    <div className={`absolute inset-0 bg-gradient-to-r ${gradientClass} opacity-0 group-hover:opacity-5 transition-opacity duration-300 pointer-events-none`} />
+    <div className={`absolute -bottom-8 -left-8 w-28 h-28 rounded-full ${bgGlowClass} blur-2xl opacity-40 group-hover:opacity-70 transition-opacity duration-500 pointer-events-none`} />
   </motion.div>
 );
 
@@ -101,127 +110,170 @@ export default function BlogsPage() {
   } = useBlogs();
 
   return (
-    <div className="px-4 sm:px-10 lg:px-12 pb-10 min-h-full flex flex-col gap-8 text-right" dir="rtl">
-      
-      
+    <div className="px-4 sm:px-8 lg:px-4 pb-10 min-h-full flex flex-col gap-8 text-right" dir="rtl">
+
+      {/* 📌 Header Title Bar with Search beside it */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4 pt-2">
+        <div className="flex items-center gap-4">
+          <div className="p-3.5 bg-primary/10 text-primary rounded-2xl shadow-sm border border-primary/20 flex items-center justify-center">
+            <BookOpen size={28} className="text-primary" />
+          </div>
+          <div className="text-right">
+            <h1 className="text-2xl sm:text-3xl font-black text-text-main tracking-tight">
+              {t('blogs.headerTitle')}
+            </h1>
+            <p className="text-text-muted text-xs sm:text-sm mt-1 font-medium">
+              {t('blogs.headerDesc')}
+            </p>
+          </div>
+        </div>
+
+        {/* Search component next to header */}
+        <div className="w-full sm:w-80">
+          <Search
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder={t('blogs.searchPlaceholder')}
+            className="w-full"
+            onClear={() => setSearchQuery('')}
+          />
+        </div>
+      </div>
+
+      {/* 📊 Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <BlogStatCard
           title={t('blogs.stats.total')}
           count={stats.total}
           icon={BookOpen}
-          colorClass="bg-blue-500 text-blue-500"
-          gradientClass="from-blue-500 to-indigo-500"
+          colorBadgeClass="bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/30"
+          iconColorClass="text-blue-600 dark:text-blue-400"
+          bgGlowClass="bg-blue-500"
         />
         <BlogStatCard
           title={t('blogs.stats.doctorCount')}
           count={stats.doctorCount}
-          icon={User}
-          colorClass="bg-amber-500 text-amber-500"
-          gradientClass="from-amber-500 to-orange-500"
+          icon={Stethoscope}
+          colorBadgeClass="bg-amber-50 dark:bg-amber-950/40 border border-amber-100 dark:border-amber-900/30"
+          iconColorClass="text-amber-600 dark:text-amber-400"
+          bgGlowClass="bg-amber-500"
         />
         <BlogStatCard
           title={t('blogs.stats.labCount')}
           count={stats.labCount}
           icon={FlaskConical}
-          colorClass="bg-emerald-500 text-emerald-500"
-          gradientClass="from-emerald-500 to-teal-500"
+          colorBadgeClass="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/30"
+          iconColorClass="text-emerald-600 dark:text-emerald-400"
+          bgGlowClass="bg-emerald-500"
         />
       </div>
 
-      
-      <div className="bg-white dark:bg-bg-card rounded-[2rem] p-6 border border-border-main/50 shadow-sm flex flex-col xl:flex-row gap-6 items-center justify-between">
-        <div className="flex flex-col md:flex-row gap-4 w-full xl:w-auto">
+      {/* 🔍 Professional Filter & Search Section */}
+      <div className="py-2 flex flex-col gap-6">
+        {/* Top Filters Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+
           {/* Roles Selector */}
-          <div className="flex bg-gray-100 dark:bg-slate-800 p-1.5 rounded-2xl">
-            <button
-              onClick={() => { setSelectedRole("all"); setCurrentPage(1); }}
-              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-                selectedRole === "all"
-                  ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
-                  : "text-text-muted hover:text-text-main cursor-pointer"
-              }`}
-            >
-              {t('blogs.tabs.all')}
-            </button>
-            <button
-              onClick={() => { setSelectedRole("doctor"); setCurrentPage(1); }}
-              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-                selectedRole === "doctor"
-                  ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
-                  : "text-text-muted hover:text-text-main cursor-pointer"
-              }`}
-            >
-              {t('blogs.tabs.doctors')}
-            </button>
-            <button
-              onClick={() => { setSelectedRole("lab"); setCurrentPage(1); }}
-              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-                selectedRole === "lab"
-                  ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
-                  : "text-text-muted hover:text-text-main cursor-pointer"
-              }`}
-            >
-              {t('blogs.tabs.labs')}
-            </button>
+          <div className="flex flex-col gap-2">
+            <label className="text-[11px] font-black text-text-muted uppercase tracking-wider flex items-center gap-1.5 mr-1">
+              <Filter size={14} className="text-primary animate-pulse" />
+              الجهة الناشرة
+            </label>
+            <div className="flex gap-2 p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm w-full">
+              <button
+                type="button"
+                onClick={() => { setSelectedRole("all"); setCurrentPage(1); }}
+                className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
+                  selectedRole === "all"
+                    ? "bg-primary text-white border-2 border-primary shadow-md shadow-primary/30 scale-[1.02]"
+                    : "bg-blue-50/70 dark:bg-blue-950/30 text-blue-900 dark:text-blue-200 border-2 border-blue-200 dark:border-blue-800/60 hover:bg-blue-100 dark:hover:bg-blue-900/50"
+                }`}
+              >
+                <LayoutGrid size={16} className={selectedRole === "all" ? "text-white" : "text-primary"} />
+                <span>{t('blogs.tabs.all')}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { setSelectedRole("doctor"); setCurrentPage(1); }}
+                className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
+                  selectedRole === "doctor"
+                    ? "bg-amber-500 text-white border-2 border-amber-500 shadow-md shadow-amber-500/30 scale-[1.02]"
+                    : "bg-amber-50/70 dark:bg-amber-950/30 text-amber-900 dark:text-amber-200 border-2 border-amber-200 dark:border-amber-800/60 hover:bg-amber-100 dark:hover:bg-amber-900/50"
+                }`}
+              >
+                <Stethoscope size={16} className={selectedRole === "doctor" ? "text-white" : "text-amber-500"} />
+                <span>{t('blogs.tabs.doctors')}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { setSelectedRole("lab"); setCurrentPage(1); }}
+                className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
+                  selectedRole === "lab"
+                    ? "bg-emerald-500 text-white border-2 border-emerald-500 shadow-md shadow-emerald-500/30 scale-[1.02]"
+                    : "bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200 border-2 border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/50"
+                }`}
+              >
+                <FlaskConical size={16} className={selectedRole === "lab" ? "text-white" : "text-emerald-500"} />
+                <span>{t('blogs.tabs.labs')}</span>
+              </button>
+            </div>
           </div>
 
           {/* Post Status Selector */}
-          <div className="flex bg-gray-100 dark:bg-slate-800 p-1.5 rounded-2xl">
-            <button
-              onClick={() => { setSelectedStatus("pending"); setCurrentPage(1); }}
-              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-                selectedStatus === "pending"
-                  ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
-                  : "text-text-muted hover:text-text-main cursor-pointer"
-              }`}
-            >
-              {t('blogs.tabs.pending')}
-            </button>
-            <button
-              onClick={() => { setSelectedStatus("approved"); setCurrentPage(1); }}
-              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-                selectedStatus === "approved"
-                  ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
-                  : "text-text-muted hover:text-text-main cursor-pointer"
-              }`}
-            >
-              {t('blogs.tabs.approved')}
-            </button>
-            <button
-              onClick={() => { setSelectedStatus("rejected"); setCurrentPage(1); }}
-              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-                selectedStatus === "rejected"
-                  ? "bg-white dark:bg-slate-700 text-primary shadow-sm"
-                  : "text-text-muted hover:text-text-main cursor-pointer"
-              }`}
-            >
-              {t('blogs.tabs.rejected')}
-            </button>
+          <div className="flex flex-col gap-2">
+            <label className="text-[11px] font-black text-text-muted uppercase tracking-wider flex items-center gap-1.5 mr-1">
+              <Sparkles size={14} className="text-amber-500 animate-pulse" />
+              حالة النشر والمراجعة
+            </label>
+            <div className="flex gap-2 p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm w-full">
+              <button
+                type="button"
+                onClick={() => { setSelectedStatus("pending"); setCurrentPage(1); }}
+                className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
+                  selectedStatus === "pending"
+                    ? "bg-amber-500 text-white border-2 border-amber-500 shadow-md shadow-amber-500/30 scale-[1.02]"
+                    : "bg-amber-50/70 dark:bg-amber-950/30 text-amber-900 dark:text-amber-200 border-2 border-amber-200 dark:border-amber-800/60 hover:bg-amber-100 dark:hover:bg-amber-900/50"
+                }`}
+              >
+                <Clock size={16} className={selectedStatus === "pending" ? "text-white" : "text-amber-500"} />
+                <span>{t('blogs.tabs.pending')}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { setSelectedStatus("approved"); setCurrentPage(1); }}
+                className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
+                  selectedStatus === "approved"
+                    ? "bg-emerald-500 text-white border-2 border-emerald-500 shadow-md shadow-emerald-500/30 scale-[1.02]"
+                    : "bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200 border-2 border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/50"
+                }`}
+              >
+                <CheckCircle2 size={16} className={selectedStatus === "approved" ? "text-white" : "text-emerald-500"} />
+                <span>{t('blogs.tabs.approved')}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { setSelectedStatus("rejected"); setCurrentPage(1); }}
+                className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
+                  selectedStatus === "rejected"
+                    ? "bg-rose-500 text-white border-2 border-rose-500 shadow-md shadow-rose-500/30 scale-[1.02]"
+                    : "bg-rose-50/70 dark:bg-rose-950/30 text-rose-900 dark:text-rose-200 border-2 border-rose-200 dark:border-rose-800/60 hover:bg-rose-100 dark:hover:bg-rose-900/50"
+                }`}
+              >
+                <XCircle size={16} className={selectedStatus === "rejected" ? "text-white" : "text-rose-500"} />
+                <span>{t('blogs.tabs.rejected')}</span>
+              </button>
+            </div>
           </div>
+
         </div>
 
-        {/* Search */}
-        <div className="relative w-full xl:w-80">
-          <Search size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted/60" />
-          <input
-            type="text"
-            placeholder={t('blogs.searchPlaceholder')}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-4 pr-12 py-3 rounded-2xl border border-gray-200 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm font-bold text-text-main"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="absolute left-4 top-1/2 -translate-y-1/2 p-1 text-text-muted/60 hover:text-text-main hover:bg-gray-200 dark:hover:bg-slate-700 rounded-lg transition-all"
-            >
-              <X size={14} />
-            </button>
-          )}
-        </div>
       </div>
 
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {isLoading ? (
           Array(6).fill(0).map((_, i) => <BlogCardSkeleton key={i} />)
@@ -234,7 +286,7 @@ export default function BlogsPage() {
               exit={{ opacity: 0, scale: 0.95 }}
               className="bg-bg-card border border-border-main rounded-[2rem] overflow-hidden flex flex-col group hover:shadow-lg transition-all duration-300"
             >
-              
+
               <div className="h-48 overflow-hidden relative bg-slate-100 dark:bg-slate-800">
                 <img
                   src={blog.image}
@@ -242,19 +294,19 @@ export default function BlogsPage() {
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60" />
-                
-                
+
+
                 <div className="absolute bottom-4 right-4 bg-white/20 backdrop-blur-md text-white px-3 py-1 rounded-xl text-xs font-bold flex items-center gap-1.5 border border-white/10">
                   <Calendar size={12} />
                   <span>{blog.publishDate}</span>
                 </div>
               </div>
 
-              
+
               <div className="p-6 flex-grow flex flex-col justify-between">
                 <div>
-                  
-                  
+
+
                   <div className="flex justify-between items-center mb-4">
                     <div className="flex items-center gap-2.5">
                       <img
@@ -268,17 +320,16 @@ export default function BlogsPage() {
                       </div>
                     </div>
 
-                    
-                    <span className={`px-2.5 py-1 rounded-xl text-xs font-bold border ${
-                      blog.author.role === "doctor"
+
+                    <span className={`px-2.5 py-1 rounded-xl text-xs font-bold border ${blog.author.role === "doctor"
                         ? "bg-blue-50/50 dark:bg-blue-950/30 text-blue-500 border-blue-200/50 dark:border-blue-900/30"
                         : "bg-emerald-50/50 dark:bg-emerald-950/30 text-emerald-500 border-emerald-200/50 dark:border-emerald-900/30"
-                    }`}>
+                      }`}>
                       {blog.author.role === "doctor" ? t('doctors.doctor') : t('common.lab')}
                     </span>
                   </div>
 
-                  
+
                   <h3 className="text-text-main font-bold text-base leading-snug mb-2 group-hover:text-primary transition-colors line-clamp-2">
                     {blog.title}
                   </h3>
@@ -286,10 +337,10 @@ export default function BlogsPage() {
                     {blog.summary}
                   </p>
                 </div>
-                
+
                 <div className="mt-6 pt-4 border-t border-border-main/50 flex items-center justify-between">
-                  
-                  
+
+
                   <div className="flex gap-4 text-text-muted">
                     <div className="flex items-center gap-1 text-xs">
                       <Heart size={14} className="text-red-500/80 fill-red-500/10" />
@@ -301,7 +352,7 @@ export default function BlogsPage() {
                     </div>
                   </div>
 
-                  
+
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setActiveArticle(blog)}
@@ -342,7 +393,7 @@ export default function BlogsPage() {
             </motion.div>
           ))
         ) : (
-          
+
           <div className="col-span-full bg-white dark:bg-bg-card border border-border-main rounded-[2.5rem] p-16 text-center flex flex-col items-center justify-center gap-4">
             <div className="w-16 h-16 bg-amber-500/10 text-amber-500 rounded-[1.5rem] flex items-center justify-center">
               <AlertCircle size={32} />
@@ -364,7 +415,7 @@ export default function BlogsPage() {
         )}
       </div>
 
-      
+
       {!isLoading && blogs.length > 0 && (
         <MembershipPagination
           pagination={pagination}
@@ -372,13 +423,13 @@ export default function BlogsPage() {
         />
       )}
 
-      
+
       {typeof document !== "undefined" && createPortal(
         <AnimatePresence>
           {activeArticle && (
             <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" dir="rtl">
-              
-              
+
+
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -387,15 +438,15 @@ export default function BlogsPage() {
                 className="absolute inset-0 bg-black/60 backdrop-blur-sm"
               />
 
-              
+
               <motion.div
                 initial={{ scale: 0.95, opacity: 0, y: 30 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.95, opacity: 0, y: 30 }}
                 className="relative bg-white dark:bg-bg-card w-full max-w-3xl rounded-[2.5rem] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
               >
-                
-                
+
+
                 <div className="h-64 relative bg-slate-100 dark:bg-slate-800 flex-shrink-0">
                   <img
                     src={activeArticle.image}
@@ -403,8 +454,8 @@ export default function BlogsPage() {
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                  
-                  
+
+
                   <button
                     onClick={() => setActiveArticle(null)}
                     className="absolute top-6 left-6 p-2.5 bg-black/30 hover:bg-black/50 text-white rounded-xl transition-colors backdrop-blur-md border border-white/10"
@@ -412,14 +463,13 @@ export default function BlogsPage() {
                     <X size={20} />
                   </button>
 
-                  
+
                   <div className="absolute bottom-6 right-8 left-8 flex justify-between items-end text-white">
                     <div className="flex flex-col text-right gap-1">
-                      <span className={`self-start px-2.5 py-0.5 rounded-lg text-xs font-bold ${
-                        activeArticle.author.role === "doctor"
+                      <span className={`self-start px-2.5 py-0.5 rounded-lg text-xs font-bold ${activeArticle.author.role === "doctor"
                           ? "bg-blue-500 text-white"
                           : "bg-emerald-500 text-white"
-                      }`}>
+                        }`}>
                         {activeArticle.author.role === "doctor" ? t('doctors.doctor') : t('common.lab')}
                       </span>
                       <h2 className="text-xl sm:text-2xl font-black mt-1 leading-snug line-clamp-2">
@@ -429,10 +479,10 @@ export default function BlogsPage() {
                   </div>
                 </div>
 
-                
+
                 <div className="p-8 overflow-y-auto custom-scrollbar flex-grow space-y-6">
-                  
-                  
+
+
                   <div className="flex items-center justify-between pb-6 border-b border-border-main/50">
                     <div className="flex items-center gap-3">
                       <img
@@ -445,18 +495,18 @@ export default function BlogsPage() {
                         <span className="text-text-muted text-xs font-medium">{activeArticle.author.specialty}</span>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-1.5 text-text-muted text-sm font-bold bg-gray-50 dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-border-main/30">
                       <Calendar size={14} />
                       <span>{t('blogs.publishDate')}: {activeArticle.publishDate}</span>
                     </div>
                   </div>
-                  
+
                   <div className="text-text-main text-sm sm:text-base leading-loose whitespace-pre-line font-medium text-justify">
                     {activeArticle.content}
                   </div>
 
-                  
+
                   <div className="flex justify-between items-center pt-6 border-t border-border-main/50 text-text-muted text-xs sm:text-sm">
                     <div className="flex gap-4">
                       <span className="flex items-center gap-1 font-bold">
@@ -472,7 +522,7 @@ export default function BlogsPage() {
 
                 </div>
 
-                
+
                 <div className="px-8 py-5 bg-gray-50 dark:bg-slate-800/50 border-t border-border-main/50 flex-shrink-0 flex justify-between items-center">
                   <button
                     onClick={() => setActiveArticle(null)}
@@ -480,7 +530,7 @@ export default function BlogsPage() {
                   >
                     {t('blogs.actions.closeReview')}
                   </button>
-                  
+
                   <div className="flex gap-3">
                     {selectedStatus !== "approved" && (
                       <button
@@ -494,7 +544,7 @@ export default function BlogsPage() {
                         <span>{t('blogs.actions.approve')}</span>
                       </button>
                     )}
-                    
+
                     {selectedStatus !== "rejected" && (
                       <button
                         onClick={() => {
@@ -517,7 +567,7 @@ export default function BlogsPage() {
         document.body
       )}
 
-      
+
       <ConfirmationModal
         isOpen={isRejectModalOpen}
         onClose={() => {
@@ -532,7 +582,7 @@ export default function BlogsPage() {
         type="danger"
       />
 
-      
+
       <ConfirmationModal
         isOpen={isApproveModalOpen}
         onClose={() => {

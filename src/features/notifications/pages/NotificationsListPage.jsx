@@ -1,19 +1,20 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { 
-  Bell, Plus, Search, CheckCircle2, Trash2, BellRing, Eye, EyeOff
+import { motion } from 'framer-motion';
+import {
+  Bell, BellRing, Eye, EyeOff,
+  UserPlus, Megaphone, Filter, Sparkles
 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import NotificationsTable from '../components/NotificationsTable';
 import MembershipPagination from '../../membership/components/MembershipPagination';
-import { notificationsService } from '../../../components/shared/Notifications/services/notificationsService';
+import { notificationsService } from '../services/notificationsService';
 
 const NotificationsListPage = () => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
-  
+
   // State variables for search and filters
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState('all'); // all, join, message, update, reminder, ad
@@ -22,10 +23,10 @@ const NotificationsListPage = () => {
   const itemsPerPage = 6;
 
   // 1. Fetch notifications
-  const { data: notifications = [], isLoading, refetch } = useQuery({
+  const { data: notifications = [], isLoading } = useQuery({
     queryKey: ['notifications-list-data'],
     queryFn: () => notificationsService.getNotifications(),
-    refetchInterval: 5000, // Auto refresh every 5 seconds
+    refetchInterval: 5000,
     refetchIntervalInBackground: true,
   });
 
@@ -34,7 +35,7 @@ const NotificationsListPage = () => {
     mutationFn: (id) => notificationsService.markAsRead(id),
     onSuccess: (updatedData) => {
       queryClient.setQueryData(['notifications-list-data'], updatedData);
-      queryClient.invalidateQueries({ queryKey: ['notifications'] }); // sync top navbar badge
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
       toast.success('تم تعديل حالة قراءة الإشعار');
     }
   });
@@ -48,37 +49,27 @@ const NotificationsListPage = () => {
     }
   });
 
-  const deleteNotificationMutation = useMutation({
-    mutationFn: (id) => notificationsService.deleteNotification(id),
-    onSuccess: (updatedData) => {
-      queryClient.setQueryData(['notifications-list-data'], updatedData);
-      queryClient.invalidateQueries({ queryKey: ['notifications'] });
-      toast.success('تم حذف الإشعار بنجاح');
-    }
-  });
-
-  const clearAllMutation = useMutation({
-    mutationFn: () => notificationsService.clearAllNotifications(),
-    onSuccess: () => {
-      queryClient.setQueryData(['notifications-list-data'], []);
-      queryClient.invalidateQueries({ queryKey: ['notifications'] });
-      toast.success('تم مسح جميع الإشعارات بنجاح');
-    }
-  });
 
   // 3. Filtered & Searched Notifications
   const filteredNotifications = useMemo(() => {
     return notifications.filter(notif => {
       // Filter by type
-      const matchType = selectedType === 'all' || notif.type === selectedType;
-      
+      let matchType = selectedType === 'all';
+      if (!matchType) {
+        if (selectedType === 'join') {
+          matchType = notif.type === 'join' || notif.type === 'blog';
+        } else {
+          matchType = notif.type === selectedType;
+        }
+      }
+
       // Filter by read status
       let matchStatus = true;
       if (selectedStatus === 'read') matchStatus = notif.read === true;
       if (selectedStatus === 'unread') matchStatus = notif.read === false;
 
       // Filter by search text
-      const matchSearch = !searchQuery.trim() || 
+      const matchSearch = !searchQuery.trim() ||
         notif.text.toLowerCase().includes(searchQuery.toLowerCase()) ||
         String(notif.id).includes(searchQuery);
 
@@ -108,190 +99,204 @@ const NotificationsListPage = () => {
     totalPages: Math.ceil(filteredNotifications.length / itemsPerPage) || 1,
   }), [filteredNotifications, currentPage, itemsPerPage]);
 
+  const typeTabs = [
+    { id: 'all', label: 'الكل', icon: Bell, activeColor: 'bg-primary text-white border-2 border-primary shadow-md shadow-primary/30 scale-[1.02]', inactiveColor: 'bg-blue-50/70 dark:bg-blue-950/30 text-blue-900 dark:text-blue-200 border-2 border-blue-200 dark:border-blue-800/60 hover:bg-blue-100 dark:hover:bg-blue-900/50', iconColor: 'text-primary' },
+    { id: 'join', label: 'طلب موافقة', icon: UserPlus, activeColor: 'bg-emerald-500 text-white border-2 border-emerald-500 shadow-md shadow-emerald-500/30 scale-[1.02]', inactiveColor: 'bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200 border-2 border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/50', iconColor: 'text-emerald-500' },
+    { id: 'ad', label: 'إعلانات', icon: Megaphone, activeColor: 'bg-sky-500 text-white border-2 border-sky-500 shadow-md shadow-sky-500/30 scale-[1.02]', inactiveColor: 'bg-sky-50/70 dark:bg-sky-950/30 text-sky-900 dark:text-sky-200 border-2 border-sky-200 dark:border-sky-800/60 hover:bg-sky-100 dark:hover:bg-sky-900/50', iconColor: 'text-sky-500' },
+  ];
+
   return (
-    <div className="flex flex-col gap-6 px-4 sm:px-10 lg:px-12 pb-10 min-h-full" dir="rtl">
-      
+    <div className="flex flex-col gap-6 px-2 sm:px-8 lg:px-4 pb-10 min-h-full" dir="rtl">
+
       {/* 1. Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4 mt-2">
         <div className="flex items-center gap-4">
-          <div className="p-3.5 bg-brand-blue-light text-brand-blue rounded-2xl shadow-sm border border-brand-blue-border/50 flex items-center justify-center">
-            <Bell size={28} className="text-brand-blue" />
+          <div className="p-3.5 bg-primary/10 text-primary rounded-2xl shadow-sm border border-primary/20 flex items-center justify-center">
+            <Bell size={28} className="text-primary" />
           </div>
           <div className="text-right">
-            <h1 className="text-2xl sm:text-3xl font-black text-gray-800 tracking-tight">أرشيف الإشعارات</h1>
-            <p className="text-gray-500 text-xs sm:text-sm mt-1 font-medium">استعراض والتحكم بكافة التنبيهات والطلبات الواردة والمرسلة على المنصة</p>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl sm:text-3xl font-black text-text-main tracking-tight">مركز الإشعارات والتنبيهات</h1>
+              {totalUnread > 0 && (
+                <span className="bg-red-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-sm">
+                  {totalUnread} غير مقروء
+                </span>
+              )}
+            </div>
+            <p className="text-text-muted text-xs sm:text-sm mt-1 font-medium">متابعة كافة الإشعارات والطلبات والتنبيهات الواردة على المنصة بشكل مباشر</p>
           </div>
         </div>
 
-        {/* Action Button */}
-        <button
-          onClick={() => navigate('/dashboard/notifications/send')}
-          className="bg-brand-blue text-white hover:bg-brand-blue-hover shadow-lg shadow-blue-500/10 rounded-2xl flex items-center gap-2 px-6 py-3 font-bold text-sm transition-all duration-300 hover:scale-[1.02] active:scale-95 whitespace-nowrap w-full sm:w-auto justify-center cursor-pointer"
+
+      </div>
+
+      {/* 2. Animated Statistics Ribbon Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 w-full text-right">
+        {/* Total Notifications Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.05 }}
+          className="bg-bg-card border border-border-main/60 rounded-[2rem] p-5 shadow-sm shadow-slate-100/50 dark:shadow-none flex items-center justify-between relative overflow-hidden group hover:scale-[1.02] hover:shadow-lg transition-all duration-300"
         >
-          <Plus size={18} strokeWidth={2.5} />
-          إرسال إشعار جديد
-        </button>
-      </div>
+          <div className="flex flex-col text-right z-10">
+            <span className="text-[11px] text-text-muted font-bold uppercase tracking-wider mb-1">إجمالي التنبيهات</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-black text-text-main tracking-tight">{notifications.length}</span>
+              <span className="text-xs font-bold text-text-muted">تنبيه</span>
+            </div>
+          </div>
+          <div className="p-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/30 text-blue-600 dark:text-blue-400 group-hover:rotate-[12deg] group-hover:scale-110 transition-transform duration-300 z-10 shadow-sm">
+            <BellRing size={24} />
+          </div>
+          <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-blue-500 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none" />
+        </motion.div>
 
-      {/* 2. Sub-Tabs switcher inside page */}
-      <div className="flex border-b border-gray-200 dark:border-slate-800/80 -mb-2 mt-2 gap-6">
-        <button
-          onClick={() => navigate('/dashboard/notifications/send')}
-          className="pb-3 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-250 transition-all px-1 cursor-pointer"
+        {/* Unread Notifications Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          className="bg-bg-card border border-border-main/60 rounded-[2rem] p-5 shadow-sm shadow-slate-100/50 dark:shadow-none flex items-center justify-between relative overflow-hidden group hover:scale-[1.02] hover:shadow-lg transition-all duration-300"
         >
-          إرسال إشعار جديد
-        </button>
-        <button
-          onClick={() => {}}
-          className="pb-3 text-sm font-black border-b-2 border-brand-blue text-brand-blue transition-all relative px-1 cursor-pointer"
+          <div className="flex flex-col text-right z-10">
+            <span className="text-[11px] text-text-muted font-bold uppercase tracking-wider mb-1">غير المقروءة</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-black text-red-500 tracking-tight">{totalUnread}</span>
+              <span className="text-xs font-bold text-red-400">جديد</span>
+            </div>
+          </div>
+          <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-900/30 text-red-500 dark:text-red-400 group-hover:rotate-[12deg] group-hover:scale-110 transition-transform duration-300 z-10 shadow-sm">
+            <EyeOff size={24} />
+          </div>
+          <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-red-500 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none" />
+        </motion.div>
+
+        {/* Read Notifications Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.15 }}
+          className="bg-bg-card border border-border-main/60 rounded-[2rem] p-5 shadow-sm shadow-slate-100/50 dark:shadow-none flex items-center justify-between relative overflow-hidden group hover:scale-[1.02] hover:shadow-lg transition-all duration-300"
         >
-          كل الإشعارات (الأرشيف)
-        </button>
+          <div className="flex flex-col text-right z-10">
+            <span className="text-[11px] text-text-muted font-bold uppercase tracking-wider mb-1">تمت قراءتها</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-black text-emerald-500 tracking-tight">{notifications.length - totalUnread}</span>
+              <span className="text-xs font-bold text-emerald-400">مقروء</span>
+            </div>
+          </div>
+          <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/30 text-emerald-500 dark:text-emerald-400 group-hover:rotate-[12deg] group-hover:scale-110 transition-transform duration-300 z-10 shadow-sm">
+            <Eye size={24} />
+          </div>
+          <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-emerald-500 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none" />
+        </motion.div>
+
+        {/* Filtered Count Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+          className="bg-bg-card border border-border-main/60 rounded-[2rem] p-5 shadow-sm shadow-slate-100/50 dark:shadow-none flex items-center justify-between relative overflow-hidden group hover:scale-[1.02] hover:shadow-lg transition-all duration-300"
+        >
+          <div className="flex flex-col text-right z-10">
+            <span className="text-[11px] text-text-muted font-bold uppercase tracking-wider mb-1">معروضة حالياً</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-black text-purple-600 dark:text-purple-400 tracking-tight">{filteredNotifications.length}</span>
+              <span className="text-xs font-bold text-purple-400">مطابق</span>
+            </div>
+          </div>
+          <div className="p-3.5 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-100 dark:border-purple-900/30 text-purple-600 dark:text-purple-400 group-hover:rotate-[12deg] group-hover:scale-110 transition-transform duration-300 z-10 shadow-sm">
+            <Filter size={24} />
+          </div>
+          <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-purple-500 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none" />
+        </motion.div>
       </div>
 
-      {/* 3. Stats & Control Center */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-100/50 dark:border-slate-800/50 rounded-[2.5rem] p-5 shadow-sm flex flex-col xl:flex-row justify-between items-stretch xl:items-center gap-6 w-full mt-2">
-        
-        {/* Search Input */}
-        <div className="flex-shrink-0 w-full xl:w-72 flex flex-col gap-1.5 text-right">
-          <label className="text-[11px] font-black text-gray-400 dark:text-gray-500 mr-1">البحث عن تنبيه</label>
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="ابحث بمضمون الإشعار، أو الرقم المعرف..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pr-10 pl-4 py-2.5 rounded-2xl border border-gray-200 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-850 text-gray-800 dark:text-white placeholder-gray-400/80 dark:placeholder-slate-500 font-bold text-xs sm:text-sm focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-blue-500/10 transition-all text-right"
-            />
-            <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400/85" size={16} />
+      {/* 3. Filters & Controls Card Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.25 }}
+        className="  p-5 sm:p-7  flex flex-col gap-6 w-full"
+      >
+        {/* Top Controls Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+
+          {/* Filter by Type */}
+          <div className="flex flex-col gap-2">
+            <label className="text-[11px] font-black text-text-muted uppercase tracking-wider flex items-center gap-1.5 mr-1">
+              <Filter size={14} className="text-primary animate-pulse" />
+              تصفية حسب نوع الإشعار
+            </label>
+            <div className="flex flex-wrap gap-2 p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm w-full">
+              {typeTabs.map(tab => {
+                const TabIcon = tab.icon;
+                const isSelected = selectedType === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setSelectedType(tab.id)}
+                    className={`py-2 px-3 rounded-xl text-xs font-black transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer ${isSelected ? tab.activeColor : tab.inactiveColor
+                      }`}
+                  >
+                    <TabIcon size={15} className={isSelected ? 'text-white' : tab.iconColor} />
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
+
+          {/* Filter by Read Status */}
+          <div className="flex flex-col gap-2">
+            <label className="text-[11px] font-black text-text-muted uppercase tracking-wider flex items-center gap-1.5 mr-1">
+              <Sparkles size={14} className="text-amber-500 animate-pulse" />
+              حالة القراءة
+            </label>
+            <div className="flex gap-2 p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm w-full">
+              {[
+                { id: 'all', label: 'الكل', icon: Bell, activeColor: 'bg-primary text-white border-2 border-primary shadow-md shadow-primary/30 scale-[1.02]', inactiveColor: 'bg-blue-50/70 dark:bg-blue-950/30 text-blue-900 dark:text-blue-200 border-2 border-blue-200 dark:border-blue-800/60', iconColor: 'text-primary' },
+                { id: 'unread', label: 'غير المقروءة', icon: EyeOff, activeColor: 'bg-red-500 text-white border-2 border-red-500 shadow-md shadow-red-500/30 scale-[1.02]', inactiveColor: 'bg-red-50/70 dark:bg-red-950/30 text-red-900 dark:text-red-200 border-2 border-red-200 dark:border-red-800/60', iconColor: 'text-red-500' },
+                { id: 'read', label: 'المقروءة', icon: Eye, activeColor: 'bg-emerald-500 text-white border-2 border-emerald-500 shadow-md shadow-emerald-500/30 scale-[1.02]', inactiveColor: 'bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200 border-2 border-emerald-200 dark:border-emerald-800/60', iconColor: 'text-emerald-500' },
+              ].map(status => {
+                const StatusIcon = status.icon;
+                const isSelected = selectedStatus === status.id;
+                return (
+                  <button
+                    key={status.id}
+                    type="button"
+                    onClick={() => setSelectedStatus(status.id)}
+                    className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer ${isSelected ? status.activeColor : status.inactiveColor
+                      }`}
+                  >
+                    <StatusIcon size={15} className={isSelected ? 'text-white' : status.iconColor} />
+                    <span>{status.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
         </div>
 
-        {/* Filter Tabs by Notification Type */}
-        <div className="flex flex-col gap-1.5 text-right flex-grow">
-          <label className="text-[11px] font-black text-gray-400 dark:text-gray-500 mr-1">تصفية حسب النوع</label>
-          <div className="flex flex-wrap gap-1.5 bg-gray-50/50 dark:bg-slate-850 p-1 rounded-2xl border border-gray-100 dark:border-slate-800">
-            {[
-              { id: 'all', label: 'الكل' },
-              { id: 'ad', label: 'إعلانات' },
-              { id: 'reminder', label: 'تنبيهات' },
-              { id: 'join', label: 'طلبات انضمام' },
-              { id: 'update', label: 'تحديثات' },
-              { id: 'message', label: 'رسائل' },
-            ].map(type => (
-              <button
-                key={type.id}
-                onClick={() => setSelectedType(type.id)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
-                  selectedType === type.id
-                    ? 'bg-white dark:bg-slate-900 text-[#367AFF] shadow-sm border border-gray-100 dark:border-slate-800'
-                    : 'text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-gray-300'
-                }`}
-              >
-                {type.label}
-              </button>
-            ))}
-          </div>
-        </div>
+      </motion.div>
 
-        {/* Read/Unread Filters */}
-        <div className="flex-shrink-0 flex flex-col gap-1.5 text-right">
-          <label className="text-[11px] font-black text-gray-400 dark:text-gray-500 mr-1">حالة القراءة</label>
-          <div className="flex bg-gray-50/50 dark:bg-slate-850 p-1 rounded-2xl border border-gray-100 dark:border-slate-800">
-            {[
-              { id: 'all', label: 'الكل' },
-              { id: 'unread', label: 'غير المقروءة' },
-              { id: 'read', label: 'المقروءة' },
-            ].map(status => (
-              <button
-                key={status.id}
-                onClick={() => setSelectedStatus(status.id)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
-                  selectedStatus === status.id
-                    ? 'bg-white dark:bg-slate-900 text-[#367AFF] shadow-sm border border-gray-100 dark:border-slate-800'
-                    : 'text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-gray-300'
-                }`}
-              >
-                {status.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Bulk Action Controls */}
-        <div className="flex items-center gap-2 xl:self-end pt-1">
-          <button
-            onClick={() => markAllReadMutation.mutate()}
-            disabled={totalUnread === 0 || isLoading}
-            className="flex items-center gap-1.5 text-xs text-[#367AFF] font-bold bg-[#E8F1FF] hover:bg-[#D2E4FF] px-4 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            <CheckCircle2 size={15} />
-            تحديد الكل كمقروء
-          </button>
-          
-          <button
-            onClick={() => {
-              if (window.confirm('هل أنت متأكد من رغبتك في مسح كافة الإشعارات نهائياً؟')) {
-                clearAllMutation.mutate();
-              }
-            }}
-            disabled={notifications.length === 0 || isLoading}
-            className="flex items-center gap-1.5 text-xs text-red-500 font-bold bg-red-50 hover:bg-red-100 px-4 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed border border-red-100/50"
-          >
-            <Trash2 size={15} />
-            مسح الأرشيف
-          </button>
-        </div>
-
-      </div>
-
-      {/* 4. Statistics Ribbon */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full text-right -mb-2">
-        <div className="bg-white dark:bg-slate-900 border border-slate-100/50 dark:border-slate-800/50 rounded-2xl p-4 shadow-sm flex items-center justify-between">
-          <div>
-            <span className="text-[10px] text-gray-400 font-bold block">إجمالي التنبيهات</span>
-            <span className="text-lg font-black text-gray-800 dark:text-white mt-1 block">{notifications.length}</span>
-          </div>
-          <BellRing size={20} className="text-[#367AFF]" />
-        </div>
-        <div className="bg-white dark:bg-slate-900 border border-slate-100/50 dark:border-slate-800/50 rounded-2xl p-4 shadow-sm flex items-center justify-between">
-          <div>
-            <span className="text-[10px] text-gray-400 font-bold block">غير المقروءة</span>
-            <span className="text-lg font-black text-red-500 mt-1 block">{totalUnread}</span>
-          </div>
-          <EyeOff size={20} className="text-red-500" />
-        </div>
-        <div className="bg-white dark:bg-slate-900 border border-slate-100/50 dark:border-slate-800/50 rounded-2xl p-4 shadow-sm flex items-center justify-between">
-          <div>
-            <span className="text-[10px] text-gray-400 font-bold block">تمت قراءتها</span>
-            <span className="text-lg font-black text-emerald-500 mt-1 block">{notifications.length - totalUnread}</span>
-          </div>
-          <Eye size={20} className="text-emerald-500" />
-        </div>
-        <div className="bg-white dark:bg-slate-900 border border-slate-100/50 dark:border-slate-800/50 rounded-2xl p-4 shadow-sm flex items-center justify-between">
-          <div>
-            <span className="text-[10px] text-gray-400 font-bold block">مفلترة حالياً</span>
-            <span className="text-lg font-black text-gray-700 dark:text-gray-300 mt-1 block">{filteredNotifications.length}</span>
-          </div>
-          <Bell size={20} className="text-violet-500" />
-        </div>
-      </div>
-
-      {/* 5. Table Section */}
-      <div className="w-full flex flex-col gap-6 mt-2">
-        <NotificationsTable 
-          notifications={paginatedNotifications} 
-          isLoading={isLoading} 
+      {/* 4. Table & Cards Section */}
+      <div className="w-full flex flex-col gap-6">
+        <NotificationsTable
+          notifications={paginatedNotifications}
+          isLoading={isLoading}
           onToggleRead={(id) => toggleReadMutation.mutate(id)}
-          onDelete={(id) => deleteNotificationMutation.mutate(id)}
         />
 
-        {/* 6. Pagination */}
+        {/* 5. Pagination */}
         {pagination.totalPages > 1 && (
           <div className="flex justify-center mt-4">
-            <MembershipPagination 
-              pagination={pagination} 
-              onPageChange={setCurrentPage} 
+            <MembershipPagination
+              pagination={pagination}
+              onPageChange={setCurrentPage}
             />
           </div>
         )}
@@ -302,3 +307,4 @@ const NotificationsListPage = () => {
 };
 
 export default NotificationsListPage;
+

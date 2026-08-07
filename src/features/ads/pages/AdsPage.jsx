@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Megaphone, Plus, UserPlus } from 'lucide-react';
 import { useAdsPageLogic } from '../hooks/useAdsPageLogic'; // استدعاء الهوك الجديد
 
@@ -12,6 +13,7 @@ import ApproveAdModal from '../components/ApproveAdModal';
 import EditAdModal from '../components/EditAdModal';
 
 const AdsPage = () => {
+  const { t } = useTranslation();
   // استدعاء كافة الحالات والدوال من الهوك الصافي
   const {
     ads,
@@ -61,8 +63,8 @@ const AdsPage = () => {
             <Megaphone size={28} className="text-[#367AFF]" />
           </div>
           <div className="text-right">
-            <h1 className="text-2xl sm:text-3xl font-black text-gray-800 tracking-tight">إدارة الإعلانات</h1>
-            <p className="text-gray-500 text-xs sm:text-sm mt-1 font-medium">مراجعة وتفعيل إعلانات المتاجر والمنتجات على المنصة</p>
+            <h1 className="text-2xl sm:text-3xl font-black text-gray-800 tracking-tight">{t('ads.headerTitle')}</h1>
+            <p className="text-gray-500 text-xs sm:text-sm mt-1 font-medium">{t('ads.headerDesc')}</p>
           </div>
         </div>
 
@@ -73,7 +75,7 @@ const AdsPage = () => {
             className="bg-white text-[#367AFF] border border-[#367AFF]/30 hover:bg-[#F0F6FF] rounded-2xl flex items-center gap-2 px-6 py-3 font-bold text-sm transition-all duration-300 hover:scale-[1.02] active:scale-95 whitespace-nowrap w-full sm:w-auto justify-center"
           >
             <UserPlus size={18} strokeWidth={2.5} />
-            إضافة مستخدم إعلانات
+            {t('ads.addAdClient')}
           </button>
           
           <button
@@ -81,7 +83,7 @@ const AdsPage = () => {
             className="bg-[#367AFF] text-white hover:bg-[#2563EB] shadow-lg shadow-blue-500/10 rounded-2xl flex items-center gap-2 px-6 py-3 font-bold text-sm transition-all duration-300 hover:scale-[1.02] active:scale-95 whitespace-nowrap w-full sm:w-auto justify-center"
           >
             <Plus size={18} strokeWidth={2.5} />
-            إضافة إعلان
+            {t('ads.addAd')}
           </button>
         </div>
       </div>
@@ -152,10 +154,10 @@ const AdsPage = () => {
           setIsDeleteModalOpen(false);
         }}
         onConfirm={handleConfirmDelete}
-        title="حذف الإعلان"
-        message="هل أنت متأكد من رغبتك في حذف هذا الإعلان بشكل نهائي؟ لا يمكن التراجع عن هذا الإجراء لاحقاً."
-        confirmText="حذف نهائي"
-        cancelText="إلغاء"
+        title={t('ads.deleteModalTitle')}
+        message={t('ads.deleteModalMessage')}
+        confirmText={t('ads.deleteConfirm')}
+        cancelText={t('common.cancel')}
         type="danger"
       />
 

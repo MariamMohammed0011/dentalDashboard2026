@@ -11,7 +11,7 @@ export const useUpdateUserStatus = (queryKeysToInvalidate = []) => {
     mutationFn: async ({ id, status, type = 'doctor' }) => {
       const targetId = typeof id === 'object' ? (id.id || id.userId) : id;
       
-      // التأكد الصارم من أن الحالة رقم صحيح
+     
       const numericStatus = (status !== null && status !== undefined && !isNaN(Number(status))) 
         ? Number(status) 
         : 0;

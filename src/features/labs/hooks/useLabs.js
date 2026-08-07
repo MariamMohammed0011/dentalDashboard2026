@@ -1,7 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { labsApi } from '../services/labsApi';
-import { useLabDetails } from './useLabDetails';
 import { useSearch } from '../../../components/shared/Search/hooks/useSearch';
 import { useUpdateUserStatus } from '../../../hooks/useUpdateUserStatus.jsx';
 
@@ -15,7 +14,11 @@ export const useLabs = () => {
   const [materialFilter, setMaterialFilter] = useState('all');
   const [serviceFilter, setServiceFilter] = useState('all');
 
+  // ── Status Modal States ──
+  const [selectedLabForStatus, setSelectedLabForStatus] = useState(null);
+  const [tempStatus, setTempStatus] = useState(null);
 
+  // جلب مصفوفة المخابر الكلية
   const { data: rawLabs = [], isLoading, isError } = useQuery({
     queryKey: ['labs-list'],
     queryFn: labsApi.getLabs,
@@ -23,51 +26,26 @@ export const useLabs = () => {
     refetchIntervalInBackground: true,
   });
 
+  const { updateStatus, isPending, updatingId } = useUpdateUserStatus(['labs-list']);
 
-  const { updateStatus, isPending, updatingId } = useUpdateUserStatus(['labs-list', 'lab-card-details', 'lab-details']);
+  // 💡 استخراج تفاصيل المخبر المختار مباشرة من قائمة rawLabs دون الحاجة لـ API ثاني
+  const labDetails = useMemo(() => {
+    if (!selectedLabId) return null;
+    return rawLabs.find((lab) => String(lab.id) === String(selectedLabId)) || null;
+  }, [selectedLabId, rawLabs]);
 
-  // ── Fetch all lab details for filtering ──
-  const labIds = useMemo(() => rawLabs.map(lab => lab.id), [rawLabs]);
-
-  const labDetailsQueries = useQuery({
-    queryKey: ['all-lab-details', labIds],
-    queryFn: async () => {
-      if (labIds.length === 0) return {};
-      const results = await Promise.all(
-        labIds.map(async (id) => {
-          try {
-            const details = await labsApi.getLabDetails(id);
-            return { id, details };
-          } catch {
-            return { id, details: null };
-          }
-        })
-      );
-      const map = {};
-      results.forEach(({ id, details }) => {
-        map[id] = details;
-      });
-      return map;
-    },
-    enabled: labIds.length > 0,
-    staleTime: 1000 * 60 * 5,
-  });
-
-  const allLabDetails = labDetailsQueries.data || {};
-  const isLoadingAllDetails = labDetailsQueries.isLoading;
-
-  // ── Extract available materials & services from all lab details ──
+  // ── استخراج المواد والتخصصات المتاحة للفلترة ──
   const { availableMaterials, availableServices } = useMemo(() => {
     const materialsSet = new Set();
     const servicesSet = new Set();
 
-    Object.values(allLabDetails).forEach(detail => {
-      if (!detail) return;
-      if (detail.materials && Array.isArray(detail.materials)) {
-        detail.materials.forEach(m => materialsSet.add(m));
+    rawLabs.forEach(lab => {
+      if (!lab) return;
+      if (Array.isArray(lab.materials)) {
+        lab.materials.forEach(m => materialsSet.add(m));
       }
-      if (detail.specialties && Array.isArray(detail.specialties)) {
-        detail.specialties.forEach(s => servicesSet.add(s));
+      if (Array.isArray(lab.specialties)) {
+        lab.specialties.forEach(s => servicesSet.add(s));
       }
     });
 
@@ -75,77 +53,60 @@ export const useLabs = () => {
       availableMaterials: [...materialsSet].sort(),
       availableServices: [...servicesSet].sort(),
     };
-  }, [allLabDetails]);
+  }, [rawLabs]);
 
-
+  // ── البحث حسب اسم المكان أو العنوان ──
   const { searchQuery, setSearchQuery, filteredData: searchFilteredLabs } = useSearch(
     rawLabs,
-    ['name']
+    ['labNamePlace', 'name', 'cityPlace']
   );
 
-  // ── Apply all filters ──
+  // ── تطبيق الفلاتر والترتيب ──
   const filteredLabs = useMemo(() => {
     let result = [...searchFilteredLabs];
 
-    // 1. Status filter
     if (statusFilter !== 'all') {
-      result = result.filter(lab => {
-        const details = allLabDetails[lab.id];
-        const labStatus = details?.owner?.status?.toLowerCase() || '';
-        return labStatus === statusFilter.toLowerCase();
-      });
+      result = result.filter(lab => String(lab.status || '').toLowerCase() === statusFilter.toLowerCase());
     }
 
-    // 2. Material filter
     if (materialFilter !== 'all') {
-      result = result.filter(lab => {
-        const details = allLabDetails[lab.id];
-        return details?.materials?.includes(materialFilter);
-      });
+      result = result.filter(lab => Array.isArray(lab.materials) && lab.materials.includes(materialFilter));
     }
 
-    // 3. Service filter
     if (serviceFilter !== 'all') {
-      result = result.filter(lab => {
-        const details = allLabDetails[lab.id];
-        return details?.specialties?.includes(serviceFilter);
-      });
+      result = result.filter(lab => Array.isArray(lab.specialties) && lab.specialties.includes(serviceFilter));
     }
 
-    // 4. Rating sort
     if (ratingSort !== 'all') {
       result.sort((a, b) => {
-        const ratingA = allLabDetails[a.id]?.averageRating || 0;
-        const ratingB = allLabDetails[b.id]?.averageRating || 0;
-        return ratingSort === 'desc' ? ratingB - ratingA : ratingA - ratingB;
+        const ratingA = Number(a.averageRating || 0);
+        const ratingB = Number(b.averageRating || 0);
+        return ratingSort === 'desc' || ratingSort === 'high-to-low' ? ratingB - ratingA : ratingA - ratingB;
       });
     }
 
     return result;
-  }, [searchFilteredLabs, statusFilter, ratingSort, materialFilter, serviceFilter, allLabDetails]);
+  }, [searchFilteredLabs, statusFilter, ratingSort, materialFilter, serviceFilter]);
 
-  // ── Check if any filter is active ──
-  const hasActiveFilters = statusFilter !== 'all' || ratingSort !== 'all' || materialFilter !== 'all' || serviceFilter !== 'all';
+  const hasActiveFilters = statusFilter !== 'all' || ratingSort !== 'all' || materialFilter !== 'all' || serviceFilter !== 'all' || searchQuery !== '';
 
-  // ── Reset all filters ──
   const resetFilters = () => {
     setStatusFilter('all');
     setRatingSort('all');
     setMaterialFilter('all');
     setServiceFilter('all');
+    setSearchQuery('');
   };
 
   const limit = 6;
   const totalLabs = filteredLabs.length;
   const totalPages = Math.ceil(totalLabs / limit) || 1;
 
-
-  useMemo(() => {
+  useEffect(() => {
     if (currentPage > totalPages) {
       setCurrentPage(1);
     }
   }, [totalPages, currentPage]);
-
 
   const paginatedLabs = useMemo(() => {
     const start = (currentPage - 1) * limit;
@@ -158,14 +119,9 @@ export const useLabs = () => {
     totalPages,
   }), [totalLabs, currentPage, totalPages]);
 
-
-  const {
-    data: labDetails,
-    isLoading: isLoadingDetails,
-    isError: isErrorDetails
-  } = useLabDetails(selectedLabId);
-
+  // دالة فتح وإغلاق التفاصيل
   const handleShowDetails = (id) => {
+    if (!id) return;
     setSelectedLabId(id);
   };
 
@@ -173,19 +129,18 @@ export const useLabs = () => {
     setSelectedLabId(null);
   };
 
-  // ── Status Modal State & Handlers ──
-  const [selectedLabForStatus, setSelectedLabForStatus] = useState(null);
-  const [tempStatus, setTempStatus] = useState(null);
-
+  // معالجة تعديل الحالة
   const openStatusModal = (lab) => {
     setSelectedLabForStatus(lab);
     setTempStatus(lab.status);
   };
 
-  const handleConfirmStatusChange = () => {
+  const handleConfirmStatusChange = (newStatusFromModal) => {
     if (!selectedLabForStatus) return;
     const targetLabId = selectedLabForStatus.userId || selectedLabForStatus.id;
-    updateStatus({ id: targetLabId, status: tempStatus, type: 'lab' });
+    const finalStatus = (newStatusFromModal !== undefined && newStatusFromModal !== null) ? newStatusFromModal : tempStatus;
+    
+    updateStatus({ id: targetLabId, status: finalStatus, type: 'lab' });
     setSelectedLabForStatus(null);
   };
 
@@ -199,13 +154,11 @@ export const useLabs = () => {
     searchQuery,
     setSearchQuery,
     selectedLabId,
-    labDetails,
-    isLoadingDetails,
-    isErrorDetails,
+    labDetails,            // 💡 أصبحت تحتوي على بيانات المخبر المختار مباشرة
+    isLoadingDetails: false, // لم نعد ننتظر التحميل عند فتح التفاصيل لأن البيانات موجودة مسبقاً!
     handleShowDetails,
     handleCloseDetails,
 
-    // Status Modal exports
     selectedLabForStatus,
     setSelectedLabForStatus,
     tempStatus,
@@ -216,7 +169,6 @@ export const useLabs = () => {
     toggleStatus: ({ id, userId, nextStatus }) => updateStatus({ id: userId || id, status: nextStatus, type: 'lab' }),
     updatingLabId: updatingId,
 
-    // ── Filter exports ──
     statusFilter,
     setStatusFilter,
     ratingSort,
@@ -229,6 +181,5 @@ export const useLabs = () => {
     availableServices,
     hasActiveFilters,
     resetFilters,
-    isLoadingAllDetails,
   };
 };

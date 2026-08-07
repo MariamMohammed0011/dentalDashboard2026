@@ -1,108 +1,209 @@
-@import url('https://fonts.googleapis.com/css2?family=Cal+Sans&family=Comic+Relief:wght@400;700&family=Dosis:wght@200..800&family=Federant&family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&family=IBM+Plex+Sans+JP&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Outfit:wght@100..900&family=Playwrite+RO:wght@100..400&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Qahiri&family=Roboto:ital,wght@0,100..900;1,100..900&family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap');
 @import "tailwindcss";
 
+/* 🎨 نظام الألوان والفيجوال وتوحيد جميع المتغيرات (Color Palette Variables) */
 :root {
+  /* 1. ألوان الخلفيات والأساسيات (Main & Card Backgrounds) */
   --bg-main: #E8F1FF;
   --bg-card: #ffffff;
   --bg-header: rgba(255, 255, 255, 0.4);
   --sidebar-bg: #ffffff;
   --sidebar-active: #ffffff;
+  --neutral-light-gray: #F0F0F0;
+  --neutral-reports-bg: #F2F4F7;
+
+  /* 2. ألوان النصوص والحدود (Text & Border Colors) */
   --text-main: #1f2937;
   --text-muted: #6b7280;
   --border-color: rgba(255, 255, 255, 0.5);
-  
+  --border-subtle: #e5e7eb;
+
+  /* 3. اللون الرئيسي والهوية (Primary & Brand Blue) */
   --primary: #367AFF;
   --primary-dark: #0000CA;
+  --primary-hover: #2563EB;
   --primary-bg: #e0f2fe;
-  --danger: #ef4444;          /* أحمر صريح */
-  --danger-bg: rgba(239, 68, 68, 0.1); /* خلفية حمراء خفيفة */
 
-  /* المستخرجة والموحدة */
   --brand-blue: #367AFF;
   --brand-blue-hover: #2563EB;
   --brand-blue-light: #E8F1FF;
   --brand-blue-border: #D2E4FF;
-  --neutral-light-gray: #F0F0F0;
-  --neutral-reports-bg: #F2F4F7;
+
+  /* 4. ألوان الحالات والتنبيهات (Status Colors) */
+  --success: #10B981;
+  --success-dark: #059669;
+  --success-bg: rgba(16, 185, 129, 0.1);
+
+  --warning: #F59E0B;
+  --warning-dark: #D97706;
+  --warning-bg: rgba(245, 158, 11, 0.1);
+
+  --danger: #ef4444;
+  --danger-dark: #dc2626;
+  --danger-bg: rgba(239, 68, 68, 0.1);
+
+  --info: #3b82f6;
+  --info-bg: rgba(59, 130, 246, 0.1);
+
+  /* 5. ألوان الميزات والتحليلات (Feature & Chart Accent Colors) */
+  --accent-purple: #8B5CF6;
+  --accent-purple-bg: rgba(139, 92, 246, 0.1);
+  --accent-teal: #14b8a6;
+  --accent-cyan: #06b6d4;
+  --accent-indigo: #6366f1;
 }
-.dark{
+
+/* 🌙 الوضع الليلي (Dark Mode Color Variables) */
+.dark {
+  /* 1. ألوان الخلفيات والأساسيات (Dark Backgrounds) */
   --bg-main: #020617;
   --bg-card: #0f172a;
   --bg-header: rgba(15, 23, 42, 0.4);
   --sidebar-bg: #0f172a;
   --sidebar-active: #1e293b;
+  --neutral-light-gray: #1e293b;
+  --neutral-reports-bg: #0f172a;
+
+  /* 2. ألوان النصوص والحدود (Dark Text & Borders) */
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --border-color: rgba(30, 41, 59, 0.5);
+  --border-subtle: #334155;
 
+  /* 3. اللون الرئيسي والهوية (Dark Primary & Brand) */
   --primary: #3b82f6;
   --primary-dark: #2563eb;
+  --primary-hover: #1d4ed8;
   --primary-bg: #1e3a8a;
-  --danger: #f87171;          /* أحمر أفتح يناسب الخلفيات الغامقة */
-  
-  /* المستخرجة والموحدة */
+
   --brand-blue: #3b82f6;
   --brand-blue-hover: #2563eb;
   --brand-blue-light: #1e3a8a;
   --brand-blue-border: rgba(59, 130, 246, 0.2);
-  --neutral-light-gray: #1e293b;
-  --neutral-reports-bg: #0f172a;
+
+  /* 4. ألوان الحالات والتنبيهات (Dark Status Colors) */
+  --success: #34d399;
+  --success-dark: #10b981;
+  --success-bg: rgba(52, 211, 153, 0.15);
+
+  --warning: #fbbf24;
+  --warning-dark: #f59e0b;
+  --warning-bg: rgba(251, 191, 36, 0.15);
+
+  --danger: #f87171;
+  --danger-dark: #ef4444;
+  --danger-bg: rgba(248, 113, 113, 0.15);
+
+  --info: #60a5fa;
+  --info-bg: rgba(96, 165, 250, 0.15);
+
+  /* 5. ألوان الميزات والتحليلات (Dark Chart & Accents) */
+  --accent-purple: #a78bfa;
+  --accent-purple-bg: rgba(167, 139, 250, 0.15);
+  --accent-teal: #2dd4bf;
+  --accent-cyan: #22d3ee;
+  --accent-indigo: #818cf8;
 }
+
+/* ⚙️ Tailwind v4 Theme Definition System */
 @theme {
   --font-sans: "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
-  --color-primary: var(--primary);
-  --color-primary-dark: var(--primary-dark);
-  --color-primary-bg: var(--primary-bg);
   
   --radius-xl: 1.5rem;
   --radius-2xl: 2.5rem;
   --radius-3xl: 3.5rem;
+
+  /* Theme Color Utility Registrations */
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-bg: var(--primary-bg);
 
   --color-bg-main: var(--bg-main);
   --color-bg-card: var(--bg-card);
   --color-bg-header: var(--bg-header);
   --color-sidebar-bg: var(--sidebar-bg);
   --color-sidebar-active: var(--sidebar-active);
+
   --color-text-main: var(--text-main);
   --color-text-muted: var(--text-muted);
   --color-border-main: var(--border-color);
+  --color-border-subtle: var(--border-subtle);
 
   --color-danger: var(--danger);
+  --color-danger-dark: var(--danger-dark);
   --color-danger-bg: var(--danger-bg);
 
-  /* المستخرجة والموحدة في التيم */
+  --color-success: var(--success);
+  --color-success-dark: var(--success-dark);
+  --color-success-bg: var(--success-bg);
+
+  --color-warning: var(--warning);
+  --color-warning-dark: var(--warning-dark);
+  --color-warning-bg: var(--warning-bg);
+
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+
   --color-brand-blue: var(--brand-blue);
   --color-brand-blue-hover: var(--brand-blue-hover);
   --color-brand-blue-light: var(--brand-blue-light);
   --color-brand-blue-border: var(--brand-blue-border);
   --color-neutral-light-gray: var(--neutral-light-gray);
   --color-neutral-reports-bg: var(--neutral-reports-bg);
+
+  --color-accent-purple: var(--accent-purple);
+  --color-accent-purple-bg: var(--accent-purple-bg);
+  --color-accent-teal: var(--accent-teal);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-indigo: var(--accent-indigo);
+
+  /* Animation Theme Extensions */
+  --animate-eye-attract: eye-attract 3s ease-in-out infinite;
+  --animate-spin-slow: spin 3s linear infinite;
+  --animate-wiggle: wiggle 1s ease-in-out infinite;
+
+  @keyframes eye-attract {
+    0%, 100% { transform: translateX(0) scale(1); }
+    20% { transform: translateX(-3px) scale(1.05); }
+    40% { transform: translateX(3px) scale(1.05); }
+    60% { transform: translateY(-3px) scale(1.1); }
+  }
+
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    15% { transform: rotate(12deg); }
+    30% { transform: rotate(-10deg); }
+    45% { transform: rotate(8deg); }
+    60% { transform: rotate(-6deg); }
+    75% { transform: rotate(4deg); }
+    90% { transform: rotate(-2deg); }
+  }
 }
 
 @layer utilities {
   /* Premium Inverted Border Radius Utilities */
-  /* These create concave curves at junctions */
   .inverted-radius-corner {
     @apply absolute w-10 h-10 bg-transparent pointer-events-none z-20;
   }
 
-  /* Bottom-Right Corner of a cutout (concave curve) */
   .inverted-radius-br-cutout {
     @apply bottom-0 right-0;
     border-top-left-radius: 2rem;
     box-shadow: -1rem -1rem 0 0 var(--color-bg-card);
   }
 
-  /* Top-Right Corner of a cutout (concave curve) */
   .inverted-radius-tr-cutout {
     @apply top-0 right-0;
     border-bottom-left-radius: 2rem;
     box-shadow: -1rem 1rem 0 0 var(--color-bg-card);
   }
 
-  /* Custom scrollbar for a cleaner look */
+  /* Custom scrollbar styles */
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
   }
   .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
@@ -115,21 +216,25 @@
     background: #94a3b8;
   }
   
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
   /* Hide scrollbars visually */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
   .no-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
 
-
 @layer base {
   *, ::before, ::after {
-    font-family: var(--font-sans) !important;
+    font-family: var(--font-sans);
   }
+  
   body {
     font-family: var(--font-sans);
     background-color: var(--bg-main);
@@ -137,60 +242,26 @@
     transition: background-color 0.3s, color 0.3s;
   }
 }
-/* index.css */
-/* index.css */
-/* index.css */
-/* index.css */
+
+@layer utilities {
+  .font-ruqaa, .font-ruqaa * {
+    font-family: 'Aref Ruqaa', serif;
+  }
+}
+
 .path {
-  /* الوضع الافتراضي للشاشات الكبيرة */
   clip-path: path("M 70,40 L 270,40 A 10,10 0,0,0 280,30 L 280,10 A 10,10 0,0,1 290 ,0 L 4990 ,0 A 10,10 0,0,1 5000 , 10 L 5000 , 4990 A 10,10 0,0,1 4990, 5000 L 70 ,5000 A 10,10 0,0,1 60 ,4990 L 60 , 50 A 10,10 0,0,1 70 ,40 Z");
 }
-/* هذا الكلاس يطبق فقط عندما يكون التبويب نشطاً */
+
 .tab-active-clip {
-  /* المسار يبدأ من أقصى اليسار السفلي بمنحنى، يصعد للقمة، ثم ينزل بمنحنى لأقصى اليمين */
   clip-path: path("M 0,40 C 15,40 20,40 30,30 C 35,25 35,15 40,10 C 45,0 55,0 60,0 L 100,0 C 105,0 115,0 120,10 C 125,15 125,25 130,30 C 140,40 145,40 160,40 Z");
-  
-  /* ملاحظة: القيم أعلاه تقريبية وتعتمد على حجم الزر (Width/Height) */
-  /* لجعلها مرنة تماماً مع أي نص، نستخدم نسخة الـ SVG ClipPath أدناه */
 }
-/* استجابة للشاشات الصغيرة */
+
 @media (max-width: 1023px) {
   .path {
     clip-path: none !important;
     border-radius: 1.5rem !important;
   }
-}
-
-/* Custom Scrollbar Styles */
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
-}
-
-.dark .custom-scrollbar {
-  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
-}
-
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-}
-
-.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.2);
 }
 
 /* Eye looking animation */
@@ -207,40 +278,9 @@
   color: var(--primary);
 }
 
-
-@theme {
-  /* تعريف الأنميشن */
-  --animate-eye-attract: eye-attract 3s ease-in-out infinite;
-  --animate-spin-slow: spin 3s linear infinite;
-
-  /* تعريف الحركات (Keyframes) */
-  @keyframes eye-attract {
-    0%, 100% { transform: translateX(0) scale(1); }
-    20% { transform: translateX(-3px) scale(1.05); }
-    40% { transform: translateX(3px) scale(1.05); }
-    60% { transform: translateY(-3px) scale(1.1); }
-  }
-}
-.card{
-  background-image: url('/src//assets//framer.png')  ;
+.card {
+  background-image: url('/src/assets/framer.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: scroll;
-  
-}
-
-@theme {
-  /* تعريف حركة الارتجاف للجرس */
-  --animate-wiggle: wiggle 1s ease-in-out infinite;
-
-  /* تعريف الـ Keyframes الخاصة بالحركة */
-  @keyframes wiggle {
-    0%, 100% { transform: rotate(0deg); }
-    15% { transform: rotate(12deg); }
-    30% { transform: rotate(-10deg); }
-    45% { transform: rotate(8deg); }
-    60% { transform: rotate(-6deg); }
-    75% { transform: rotate(4deg); }
-    90% { transform: rotate(-2deg); }
-  }
 }

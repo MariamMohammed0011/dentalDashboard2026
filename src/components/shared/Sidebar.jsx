@@ -17,7 +17,8 @@ import {
   ChevronLeft,
   BookOpen,
   Bell,
-  CreditCard
+  CreditCard,
+  Receipt
 } from 'lucide-react';
 
 export const NavItem = ({ to, labelKey, icon: Icon, isCollapsed, onClick, children }) => {
@@ -131,6 +132,8 @@ export const navItems = [
   { to: "/dashboard/orders", labelKey: "sidebar.orders", icon: ClipboardList },
   { to: "/dashboard/membership-requests", labelKey: "sidebar.membershipRequests", icon: UserPlus },
   { to: "/dashboard/doctors", labelKey: "sidebar.doctors", icon: UserCog },
+   { to: "/dashboard/lab-tech", labelKey: "sidebar.labTechnicians", icon: BookOpen },
+ 
   { to: "/dashboard/labs", labelKey: "sidebar.labs", icon: FlaskConical },
   { to: "/dashboard/subscriptions", labelKey: "sidebar.subscriptions", icon: CreditCard },
   { to: "/dashboard/blogs", labelKey: "sidebar.blogs", icon: BookOpen },
@@ -163,6 +166,7 @@ export const navItems = [
   //   ],
   // },
    { to: "/dashboard/reports", labelKey: "sidebar.reports", icon: FileText },
+  { to: "/dashboard/invoices", labelKey: "sidebar.invoices", icon: Receipt },
   { to: "/dashboard/intervention-log", labelKey: "sidebar.interventionLog", icon: History },
 ];
 

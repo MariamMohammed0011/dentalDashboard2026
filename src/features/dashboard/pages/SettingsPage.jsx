@@ -55,20 +55,19 @@ const defaultSettings = {
   maxBlogAttachments: 3
 };
 
+import { useTranslation } from 'react-i18next';
+
 const SettingsPage = () => {
-
+  const { t } = useTranslation();
   const { data: userProfile, refetch: refetchProfile } = useProfile();
-
 
   const [settings, setSettings] = useState(() => {
     const saved = localStorage.getItem('dental_dashboard_settings');
     return saved ? JSON.parse(saved) : defaultSettings;
   });
 
-
   const [activeTab, setActiveTab] = useState('general');
   const [isSaving, setIsSaving] = useState(false);
-
 
   const [profileForm, setProfileForm] = useState({
     name: '',
@@ -76,7 +75,6 @@ const SettingsPage = () => {
     phone: '',
     avatar: ''
   });
-
 
   useEffect(() => {
     if (userProfile) {
@@ -89,7 +87,6 @@ const SettingsPage = () => {
     }
   }, [userProfile]);
 
-
   const [passwords, setPasswords] = useState({
     currentPassword: '',
     newPassword: '',
@@ -101,13 +98,12 @@ const SettingsPage = () => {
     confirm: false
   });
 
-
   const tabs = [
-    { id: 'general', label: 'إعدادات النظام', icon: Settings },
-    { id: 'profile', label: 'الحساب الشخصي', icon: User },
-    { id: 'membership', label: 'العضوية والاشتراكات', icon: ShieldAlert },
-    { id: 'orders', label: 'الطلبات والماسحات', icon: Truck },
-    { id: 'marketing', label: 'التسويق والمدونات', icon: Megaphone }
+    { id: 'general', label: t('settings.systemSettings'), icon: Settings },
+    { id: 'profile', label: t('settings.profileSettings'), icon: User },
+    { id: 'membership', label: t('membership.title'), icon: ShieldAlert },
+    { id: 'orders', label: t('orders.title'), icon: Truck },
+    { id: 'marketing', label: t('ads.title'), icon: Megaphone }
   ];
 
 

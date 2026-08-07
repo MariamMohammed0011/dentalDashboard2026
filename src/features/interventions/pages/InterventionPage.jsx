@@ -1,56 +1,112 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Plus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { AlertCircle, Inbox } from 'lucide-react';
 import InterventionHeader from '../components/InterventionHeader';
 import InterventionCard from '../components/InterventionCard';
+import ComplaintDetailsModal from '../components/ComplaintDetailsModal';
 import MembershipPagination from '../../membership/components/MembershipPagination';
 import { useInterventions } from '../hooks/useInterventions';
 
 const InterventionPage = () => {
+  const { t } = useTranslation();
   const {
-    interventions,
+    complaints,
+    allCount,
     pagination,
     isLoading,
+    isError,
+    refetch,
     activeTab,
     handleTabChange,
-    setCurrentPage
+    statusFilter,
+    handleStatusFilterChange,
+    searchQuery,
+    setSearchQuery,
+    setCurrentPage,
+    selectedComplaint,
+    setSelectedComplaint,
+    sendReply,
+    isReplying
   } = useInterventions();
 
   return (
-    <div className="pt-2 sm:pt-4 lg:pt-6 px-4 sm:px-6 lg:px-8 flex flex-col gap-4 sm:gap-6 bg-transparent" dir="rtl">
-      <InterventionHeader 
-        activeTab={activeTab} 
-        onTabChange={handleTabChange} 
+    <div className="p-4 sm:p-6 lg:p-8 flex flex-col gap-6 bg-transparent" dir="rtl">
+      {/* Top Header Controls */}
+      <InterventionHeader
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        statusFilter={statusFilter}
+        onStatusFilterChange={handleStatusFilterChange}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        onRefresh={refetch}
+        isRefreshing={isLoading}
+        totalCount={allCount}
       />
 
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
+      {/* Error Banner */}
+      {isError && (
+        <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center gap-3 text-sm font-bold">
+          <AlertCircle size={20} className="shrink-0" />
+          <span>{t('common.errorOccurred')}</span>
+        </div>
+      )}
+
+      {/* Complaints Grid Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-4 sm:p-6 lg:p-8 "
+        className="flex flex-col gap-6"
       >
-        <div className="flex flex-col gap-8 sm:gap-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
-            {isLoading ? (
-              Array(6).fill(0).map((_, i) => (
-                <div key={i} className="h-[180px] bg-white/50 rounded-[1.5rem] animate-pulse" />
-              ))
-            ) : (
-              interventions.map((item) => (
-                <InterventionCard key={item.id} intervention={item} />
-              ))
-            )}
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
+            {Array(6).fill(0).map((_, i) => (
+              <div key={i} className="h-[200px] bg-bg-card border border-border-main/50 rounded-[1.8rem] animate-pulse" />
+            ))}
           </div>
+        ) : complaints.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 px-4 text-center border-2 border-dashed border-border-main rounded-[2rem] bg-bg-card">
+            <div className="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4">
+              <Inbox size={32} />
+            </div>
+            <h3 className="text-lg font-black text-text-main">{t('interventions.emptyState.title')}</h3>
+            <p className="text-xs text-text-muted max-w-md mt-1">
+              {t('interventions.emptyState.desc')}
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
+            {complaints.map((item) => (
+              <InterventionCard
+                key={item.id}
+                complaint={item}
+                onViewDetails={setSelectedComplaint}
+              />
+            ))}
+          </div>
+        )}
 
-        </div>
-
-        
-        <div className="mt-auto pt-6 border-t border-gray-200/50">
-          <MembershipPagination 
-            pagination={pagination} 
-            onPageChange={setCurrentPage} 
-          />
-        </div>
+        {/* Pagination Controls */}
+        {pagination?.totalPages > 1 && (
+          <div className="pt-6 border-t border-border-main/50">
+            <MembershipPagination
+              pagination={pagination}
+              onPageChange={setCurrentPage}
+            />
+          </div>
+        )}
       </motion.div>
+
+      {/* Complaint Details & Reply Modal */}
+      {selectedComplaint && (
+        <ComplaintDetailsModal
+          complaint={selectedComplaint}
+          onClose={() => setSelectedComplaint(null)}
+          onSendReply={sendReply}
+          isReplying={isReplying}
+        />
+      )}
     </div>
   );
 };

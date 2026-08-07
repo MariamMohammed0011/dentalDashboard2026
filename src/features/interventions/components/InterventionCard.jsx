@@ -1,54 +1,100 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { MessageSquare, Clock, ShieldCheck, Building2, FlaskConical, ArrowLeft } from 'lucide-react';
 
-const InterventionCard = ({ intervention }) => {
+const InterventionCard = ({ complaint, onViewDetails }) => {
   const { t } = useTranslation();
-  const { problemType, affectedParty, orderNumber, failedOperation } = intervention;
+  const {
+    id,
+    destination,
+    title,
+    text,
+    user,
+    createdAtUtc,
+    reply,
+    repliedAtUtc,
+  } = complaint || {};
 
-  
-  const problemColor = problemType.includes('مرور') ? 'text-red-500' : problemType.includes('تنفيذ') ? 'text-yellow-600' : 'text-rose-600';
+  const isReplied = Boolean(reply || repliedAtUtc);
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-[1.2rem] sm:rounded-[1.5rem] flex flex-col overflow-hidden shadow-sm border border-gray-100 h-full transition-all hover:shadow-md group relative"
+      className="group relative bg-bg-card border border-border-main/70 hover:border-primary/50 rounded-[1.8rem] p-5 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between h-full overflow-hidden"
       dir="rtl"
     >
-      
-      <div className={`absolute right-0 top-0 bottom-0 w-1.5 ${intervention.type === 'doctor' ? 'bg-orange-500' : 'bg-rose-500'} transform scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-top z-20 rounded-l-full`} />
+      {/* Dynamic Side Accent Pill */}
+      <div className={`absolute right-0 top-0 bottom-0 w-1.5 ${isReplied ? 'bg-emerald-500' : 'bg-amber-500'} transform scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top z-20 rounded-l-full`} />
 
-      
-      <div className="p-4 sm:p-5 flex flex-col gap-3 relative flex-grow">
-        
-        <div className="absolute top-0 right-0 w-16 sm:w-20 h-16 sm:h-20 opacity-10 pointer-events-none">
-          <div className="w-full h-full bg-[radial-gradient(circle,rgba(54,122,255,0.4)_1px,transparent_1px)] bg-[size:8px_8px] sm:bg-[size:10px_10px]"></div>
+      <div className="space-y-3">
+        {/* Top Header: ID & Status Badges */}
+        <div className="flex items-center justify-between gap-2 border-b border-border-main/50 pb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-black text-text-main bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-xl">
+              #{id}
+            </span>
+            <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 ${
+              destination === 'Lab' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400' : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+            }`}>
+              {destination === 'Lab' ? <FlaskConical size={12} /> : <MessageSquare size={12} />}
+              {destination === 'Lab' ? t('interventions.modal.targetLabBadge') : t('interventions.modal.targetAdmin')}
+            </span>
+          </div>
+
+          <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 ${
+            isReplied
+              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+              : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 animate-pulse'
+          }`}>
+            {isReplied ? <ShieldCheck size={13} /> : <Clock size={13} />}
+            {isReplied ? t('interventions.statusFilter.replied') : t('interventions.statusFilter.pending')}
+          </span>
         </div>
 
-        <div className="text-right flex flex-col gap-2 sm:gap-3 relative z-10">
-          <div className="text-[14px] sm:text-[15px] font-bold text-gray-700 leading-tight">
-            {t('interventions.problemType')}: <span className={`${problemColor} block sm:inline mt-0.5 sm:mt-0`}>{problemType}</span>
+        {/* Doctor Details Header */}
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-black text-sm shrink-0">
+            {user?.name ? user.name.charAt(0) : 'ط'}
           </div>
-          
-          <div className="flex flex-col gap-1.5 border-t border-gray-50 pt-2 sm:pt-0 sm:border-0">
-            <div className="text-[13px] sm:text-[14px] text-gray-600 font-medium">
-              {t('interventions.affectedParty')}: <span className="text-gray-500 font-bold">{affectedParty}</span>
-            </div>
-            <div className="text-[13px] sm:text-[14px] text-gray-600 font-medium">
-              {t('orders.orderNumber')}: <span className="text-gray-500 font-bold">{orderNumber}</span>
-            </div>
-            <div className="text-[13px] sm:text-[14px] text-gray-600 font-medium leading-relaxed">
-              {t('interventions.failedOperation')}: <span className="text-gray-500 block mt-0.5">{failedOperation}</span>
+          <div className="min-w-0 flex-1">
+            <h4 className="text-sm font-black text-text-main truncate" title={user?.name}>
+              {user?.name || t('doctors.doctor')}
+            </h4>
+            <div className="flex items-center gap-1.5 text-xs text-text-muted">
+              <Building2 size={12} className="shrink-0" />
+              <span className="truncate">{user?.namePlace || t('doctors.clinicName')}</span>
             </div>
           </div>
+        </div>
+
+        {/* Title & Description Snippet */}
+        <div className="space-y-1">
+          <h5 className="text-xs font-bold text-primary line-clamp-1">
+            {title || t('interventions.modal.noSubject')}
+          </h5>
+          <p className="text-xs text-text-muted leading-relaxed line-clamp-2">
+            {text || t('interventions.modal.noDetails')}
+          </p>
         </div>
       </div>
 
-      
-      <button className="bg-[#E8F1FF] py-3 sm:py-2.5 text-primary font-bold text-[13px] sm:text-[14px] hover:bg-primary hover:text-white transition-all group-hover:bg-primary/5">
-        {t('interventions.viewDetails')}
-      </button>
+      {/* Footer: Date & Details Button */}
+      <div className="pt-3 mt-4 border-t border-border-main/50 flex justify-between items-center text-xs">
+        <span className="text-[11px] text-text-muted flex items-center gap-1">
+          <Clock size={12} />
+          {createdAtUtc ? new Date(createdAtUtc).toLocaleDateString('ar-EG') : ''}
+        </span>
+
+        <button
+          onClick={() => onViewDetails(complaint)}
+          className="flex items-center gap-1 font-bold text-primary hover:text-primary-hover group-hover:translate-x-[-2px] transition-transform"
+        >
+          <span>{t('interventions.viewDetails')}</span>
+          <ArrowLeft size={14} />
+        </button>
+      </div>
     </motion.div>
   );
 };

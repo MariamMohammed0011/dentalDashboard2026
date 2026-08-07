@@ -1,34 +1,62 @@
-
-
-const MOCK_INTERVENTIONS = Array(15).fill(null).map((_, i) => ({
-  id: i + 1,
-  type: i % 3 === 0 ? 'doctor' : 'lab',
-  problemType: i % 3 === 0 ? 'خلل في مرور الطلب' : i % 3 === 1 ? 'خلل في التنفيذ' : 'خلل في النظام',
-  affectedParty: i % 3 === 0 ? 'طبيب' : 'مخبر',
-  orderNumber: '7120',
-  failedOperation: 'ارسال الطلب الى المخبر',
-  status: 'pending',
-}));
+import axiosInstance from '../../../api/axios';
 
 export const interventionsApi = {
-  getInterventions: async ({ type = 'all', page = 1, limit = 8 } = {}) => {
-    await new Promise(resolve => setTimeout(resolve, 600));
-    
-    let filtered = [...MOCK_INTERVENTIONS];
-    if (type !== 'all') {
-      filtered = filtered.filter(item => item.type === type);
+  // جلب شكاوى المخابر
+  getLabComplaints: async () => {
+    const response = await axiosInstance.get('/Complaints/labs');
+    return Array.isArray(response.data) ? response.data : [];
+  },
+
+  // جلب شكاوى الإدارة
+  getAdminComplaints: async () => {
+    const response = await axiosInstance.get('/Complaints/admin');
+    return Array.isArray(response.data) ? response.data : [];
+  },
+
+  // جلب كافة الشكاوى حسب التبويب المطلوب (الكل / الإدارة / المخابر)
+  getComplaintsByType: async (type = 'all') => {
+    if (type === 'admin') {
+      const adminData = await interventionsApi.getAdminComplaints();
+      return adminData.sort((a, b) => new Date(b.createdAtUtc || 0) - new Date(a.createdAtUtc || 0));
     }
 
-    const start = (page - 1) * limit;
-    const data = filtered.slice(start, start + limit);
-    
-    return {
-      data,
-      pagination: {
-        total: filtered.length,
-        page,
-        totalPages: Math.ceil(filtered.length / limit),
-      }
-    };
+    if (type === 'lab') {
+      const labData = await interventionsApi.getLabComplaints();
+      return labData.sort((a, b) => new Date(b.createdAtUtc || 0) - new Date(a.createdAtUtc || 0));
+    }
+
+    // النوع 'all' - جلب الاثنين ودمجهما
+    const [labData, adminData] = await Promise.all([
+      interventionsApi.getLabComplaints().catch(() => []),
+      interventionsApi.getAdminComplaints().catch(() => [])
+    ]);
+
+    const combined = [...labData, ...adminData];
+    return combined.sort((a, b) => new Date(b.createdAtUtc || 0) - new Date(a.createdAtUtc || 0));
+  },
+
+  // إرسال رد على الشكوى للـ API: POST /api/Complaints/reply/{userId}/{complaintId}
+  replyToComplaint: async (userId, complaintId, replyText) => {
+    try {
+      // تجربة إرسال السلسلة النصية المباشرة JSON string
+      const response = await axiosInstance.post(
+        `/Complaints/reply/${userId}/${complaintId}`,
+        JSON.stringify(replyText),
+        {
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+      return response.data;
+    } catch (err) {
+      // محاولة بديلة في حال كان كائن DTO متوقع { reply: "..." }
+      const response = await axiosInstance.post(
+        `/Complaints/reply/${userId}/${complaintId}`,
+        { reply: replyText },
+        {
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+      return response.data;
+    }
   }
 };
