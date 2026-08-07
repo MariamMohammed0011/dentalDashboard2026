@@ -22,12 +22,12 @@ export default function SubscriptionTable({ subs, isLoading, onActivate, onRenew
     <div className="w-full flex flex-col gap-3" dir="rtl">
       {/* ── Desktop Header ── */}
       <div className="hidden lg:flex items-center w-full px-6 py-3  text-slate-500 dark:text-slate-400 font-extrabold text-[14px] uppercase select-none">
-        <div className="w-[26%] text-center flex items-center justify-center gap-1.5">{t('subscription.labName')}</div>
+        <div className="w-[22%] text-center flex items-center justify-center gap-1.5">{t('subscription.labName')}</div>
         {/* <div className="w-[22%] text-center flex items-center justify-center gap-1.5">{t('subscription.email')}</div> */}
         <div className="w-[32%] text-center flex items-center justify-center gap-1.5">{t('reports.duration')}</div>
         <div className="w-[24%] text-center flex items-center justify-center gap-1.5">المدة المتبقية</div>
         {/* <div className="w-[10%] text-center flex items-center justify-center gap-1.5">{t('common.status')}</div> */}
-        <div className="w-[20%] text-center flex items-center justify-center gap-1.5">{t('common.actions')}</div>
+        <div className="w-[10%] text-center flex items-center justify-center gap-1.5">{t('common.actions')}</div>
       </div>
 
       {/* ── Desktop Rows ── */}
@@ -56,10 +56,10 @@ export default function SubscriptionTable({ subs, isLoading, onActivate, onRenew
             return (
               <div
                 key={labId || sub.id}
-                className="flex items-center w-full bg-bg-card dark:bg-slate-900 border border-slate-100 dark:border-slate-800/70 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-emerald-500/30 transition-all duration-200"
+                className="flex items-center w-full bg-slate-80 dark:bg-slate-900 border border-slate-100 dark:border-slate-800/70 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-emerald-500/30 transition-all duration-200"
               >
                 {/* 1. Lab Column (Centered) */}
-                <div className="w-[26%] flex items-center justify-center gap-3 min-w-0 px-2">
+                <div className="w-[22%] flex items-center justify-center gap-3 min-w-0 px-2">
                   <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${
                     isActive ? 'from-emerald-400 to-teal-600' : 'from-rose-400 to-red-600'
                   } text-white flex items-center justify-center shadow-md shrink-0`}>
@@ -123,7 +123,7 @@ export default function SubscriptionTable({ subs, isLoading, onActivate, onRenew
                 </div> */}
 
                 {/* 6. Actions Column (Centered) */}
-                <div className="w-[20%] flex items-center justify-center shrink-0">
+                <div className="w-[10%] flex items-center justify-center shrink-0">
                   {isActive ? (
                     <button
                       onClick={() => onRenew(sub)}
