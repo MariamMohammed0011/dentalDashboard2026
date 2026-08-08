@@ -124,118 +124,128 @@ export default function InvoicesPage() {
         </div>
       </div>
 
-      {/* ── Main Filter Bar (Tabs & Category & Instant Search) ── */}
-      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 bg-bg-card p-3 rounded-[2rem] border border-border-main shadow-sm">
+      {/* ── Main Filter Bar (Responsive 2-Tier Controls - No Horizontal Scroll) ── */}
+      <div className="bg-white dark:bg-bg-card p-4 sm:p-5 rounded-[2rem] border border-border-main/80 shadow-sm flex flex-col gap-4">
         
-        {/* Status Tabs Switcher */}
-        <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 overflow-x-auto custom-scrollbar">
-          <button
-            onClick={() => setActiveTab('paid')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition-all whitespace-nowrap cursor-pointer ${
-              activeTab === 'paid'
-                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 scale-105'
-                : 'text-text-muted hover:text-text-main'
-            }`}
-          >
-            <CheckCircle2 size={16} />
-            <span>{t('invoices.paidTab')}</span>
-            <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
-              activeTab === 'paid' ? 'bg-white/20 text-white' : 'bg-emerald-500/10 text-emerald-600'
-            }`}>
-              {paidCount}
-            </span>
-          </button>
+        {/* Tier 1: Status Tabs + Instant Search Bar */}
+        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
+          
+          {/* Status Tabs Switcher */}
+          <div className="grid grid-cols-3 sm:flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
+            <button
+              type="button"
+              onClick={() => setActiveTab('paid')}
+              className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition-all cursor-pointer ${
+                activeTab === 'paid'
+                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 scale-105'
+                  : 'text-text-muted hover:text-text-main'
+              }`}
+            >
+              <CheckCircle2 size={16} />
+              <span>{t('invoices.paidTab')}</span>
+              <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                activeTab === 'paid' ? 'bg-white/20 text-white' : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+              }`}>
+                {paidCount}
+              </span>
+            </button>
 
-          <button
-            onClick={() => setActiveTab('unpaid')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition-all whitespace-nowrap cursor-pointer ${
-              activeTab === 'unpaid'
-                ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20 scale-105'
-                : 'text-text-muted hover:text-text-main'
-            }`}
-          >
-            <Clock size={16} />
-            <span>{t('invoices.unpaidTab')}</span>
-            <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
-              activeTab === 'unpaid' ? 'bg-white/20 text-white' : 'bg-rose-500/10 text-rose-600'
-            }`}>
-              {unpaidCount}
-            </span>
-          </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('unpaid')}
+              className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition-all cursor-pointer ${
+                activeTab === 'unpaid'
+                  ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20 scale-105'
+                  : 'text-text-muted hover:text-text-main'
+              }`}
+            >
+              <Clock size={16} />
+              <span>{t('invoices.unpaidTab')}</span>
+              <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                activeTab === 'unpaid' ? 'bg-white/20 text-white' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+              }`}>
+                {unpaidCount}
+              </span>
+            </button>
 
-          <button
-            onClick={() => setActiveTab('all')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition-all whitespace-nowrap cursor-pointer ${
-              activeTab === 'all'
-                ? 'bg-primary text-white shadow-md shadow-primary/20 scale-105'
-                : 'text-text-muted hover:text-text-main'
-            }`}
-          >
-            <Receipt size={16} />
-            <span>{t('invoices.allTab')}</span>
-            <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
-              activeTab === 'all' ? 'bg-white/20 text-white' : 'bg-primary/10 text-primary'
-            }`}>
-              {paidCount + unpaidCount}
-            </span>
-          </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('all')}
+              className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition-all cursor-pointer ${
+                activeTab === 'all'
+                  ? 'bg-primary text-white shadow-md shadow-primary/20 scale-105'
+                  : 'text-text-muted hover:text-text-main'
+              }`}
+            >
+              <Receipt size={16} />
+              <span>{t('invoices.allTab')}</span>
+              <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                activeTab === 'all' ? 'bg-white/20 text-white' : 'bg-primary/10 text-primary'
+              }`}>
+                {paidCount + unpaidCount}
+              </span>
+            </button>
+          </div>
+
+        
         </div>
 
-        {/* Secondary Category Filter (Dentists / Labs / AdsClients) */}
-        <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 lg:pb-0">
+        {/* Tier 2: Category Filter Pills (Wrap flexibly without scrolling) */}
+        <div className="pt-3 border-t border-border-main/50 flex flex-wrap items-center gap-2">
+          <span className="text-xs font-black text-text-muted flex items-center gap-1.5 ml-2">
+            <Filter size={14} className="text-primary" />
+            <span>التصنيف:</span>
+          </span>
+
           <button
+            type="button"
             onClick={() => setSelectedCategory('all')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
               selectedCategory === 'all'
-                ? 'bg-primary/20 text-primary border border-primary/30'
-                : 'bg-slate-100 dark:bg-slate-800 text-text-muted hover:text-text-main'
+                ? 'bg-primary text-white shadow-md shadow-primary/20 scale-105 border-2 border-primary'
+                : 'bg-slate-100 dark:bg-slate-800 text-text-muted hover:text-text-main border-2 border-transparent'
             }`}
           >
             {t('invoices.allUsers')}
           </button>
+
           <button
+            type="button"
             onClick={() => setSelectedCategory('dentists')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
               selectedCategory === 'dentists'
-                ? 'bg-blue-500/20 text-blue-600 border border-blue-500/30'
-                : 'bg-slate-100 dark:bg-slate-800 text-text-muted hover:text-text-main'
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20 scale-105 border-2 border-blue-600'
+                : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 border-2 border-blue-500/20'
             }`}
           >
             {t('invoices.dentists')}
           </button>
+
           <button
+            type="button"
             onClick={() => setSelectedCategory('labs')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
               selectedCategory === 'labs'
-                ? 'bg-emerald-500/20 text-emerald-600 border border-emerald-500/30'
-                : 'bg-slate-100 dark:bg-slate-800 text-text-muted hover:text-text-main'
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 scale-105 border-2 border-emerald-600'
+                : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 border-2 border-emerald-500/20'
             }`}
           >
             {t('invoices.labs')}
           </button>
+
           <button
+            type="button"
             onClick={() => setSelectedCategory('adsClients')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
               selectedCategory === 'adsClients'
-                ? 'bg-purple-500/20 text-purple-600 border border-purple-500/30'
-                : 'bg-slate-100 dark:bg-slate-800 text-text-muted hover:text-text-main'
+                ? 'bg-purple-600 text-white shadow-md shadow-purple-600/20 scale-105 border-2 border-purple-600'
+                : 'bg-purple-500/10 text-purple-600 dark:text-purple-400 hover:bg-purple-500/20 border-2 border-purple-500/20'
             }`}
           >
             {t('invoices.adsClients')}
           </button>
         </div>
 
-        {/* Instant Search Bar */}
-        <div className="relative min-w-[220px]">
-          <Search size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t('invoices.searchPlaceholder')}
-            className="w-full pl-4 pr-10 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 text-xs sm:text-sm text-text-main focus:outline-none focus:border-primary transition-all"
-          />
-        </div>
       </div>
 
       {/* ── Invoices Table Component ── */}
