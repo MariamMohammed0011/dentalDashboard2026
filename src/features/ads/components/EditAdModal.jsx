@@ -93,68 +93,72 @@ const EditAdModal = ({ isOpen, onClose, ad, onUpdateAd, isSubmitting }) => {
                 
                 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-gray-600 font-bold text-xs sm:text-sm mr-1">
+                  <label className="text-gray-700 dark:text-gray-200 font-bold text-xs sm:text-sm flex items-center gap-1.5 mr-1">
+                    <span className="p-1 rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                      <Megaphone size={13} />
+                    </span>
                     عنوان الإعلان <span className="text-red-500">*</span>
                   </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      required
-                      placeholder="مثال: خصم 50% على أجهزة التعقيم"
-                      value={form.title}
-                      onChange={(e) => setForm({ ...form, title: e.target.value })}
-                      className="bg-gray-50 border border-gray-200/80 rounded-2xl pr-10 pl-4 py-2.5 text-gray-700 font-medium text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full"
-                      disabled={isSubmitting}
-                    />
-                    <Megaphone className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                  </div>
+                  <input
+                    type="text"
+                    required
+                    placeholder="مثال: خصم 50% على أجهزة التعقيم"
+                    value={form.title}
+                    onChange={(e) => setForm({ ...form, title: e.target.value })}
+                    className="bg-gray-50 dark:bg-slate-800/80 border border-gray-200/80 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-gray-800 dark:text-gray-100 font-medium text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full"
+                    disabled={isSubmitting}
+                  />
                 </div>
 
-                
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-gray-600 font-bold text-xs sm:text-sm mr-1">محتوى / تفاصيل الإعلان</label>
-                  <div className="relative">
-                    <textarea
-                      placeholder="اكتب تفاصيل الإعلان هنا..."
-                      value={form.content}
-                      onChange={(e) => setForm({ ...form, content: e.target.value })}
-                      className="bg-gray-50 border border-gray-200/80 rounded-2xl pr-10 pl-4 py-2.5 text-gray-700 font-medium text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full min-h-[80px] resize-none"
-                      disabled={isSubmitting}
-                    />
-                    <FileText className="absolute right-3.5 top-5 text-gray-400" size={18} />
-                  </div>
+                  <label className="text-gray-700 dark:text-gray-200 font-bold text-xs sm:text-sm flex items-center gap-1.5 mr-1">
+                    <span className="p-1 rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400">
+                      <FileText size={13} />
+                    </span>
+                    محتوى / تفاصيل الإعلان
+                  </label>
+                  <textarea
+                    placeholder="اكتب تفاصيل الإعلان هنا..."
+                    value={form.content}
+                    onChange={(e) => setForm({ ...form, content: e.target.value })}
+                    className="bg-gray-50 dark:bg-slate-800/80 border border-gray-200/80 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-gray-800 dark:text-gray-100 font-medium text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full min-h-[80px] resize-none"
+                    disabled={isSubmitting}
+                  />
                 </div>
 
-               
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-gray-600 font-bold text-xs sm:text-sm mr-1">الجمهور المستهدف</label>
-                    <div className="relative">
-                      <select
-                        value={form.type}
-                        onChange={(e) => setForm({ ...form, type: e.target.value })}
-                        className="bg-gray-50 border border-gray-200/80 rounded-2xl pr-10 pl-4 py-2.5 text-gray-700 font-bold text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full cursor-pointer appearance-none text-right"
-                        disabled={isSubmitting}
-                      >
-                        <option value="dentists">أطباء الأسنان فقط</option>
-                        <option value="labs">مخابر الأسنان فقط</option>
-                        <option value="both">الأطباء والمخابر معاً</option>
-                      </select>
-                      <Layers className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
-                    </div>
+                    <label className="text-gray-700 dark:text-gray-200 font-bold text-xs sm:text-sm flex items-center gap-1.5 mr-1">
+                      <span className="p-1 rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400">
+                        <Layers size={13} />
+                      </span>
+                      الجمهور المستهدف
+                    </label>
+                    <select
+                      value={form.type}
+                      onChange={(e) => setForm({ ...form, type: e.target.value })}
+                      className="bg-gray-50 dark:bg-slate-800/80 border border-gray-200/80 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-gray-800 dark:text-gray-100 font-bold text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full cursor-pointer appearance-none text-right"
+                      disabled={isSubmitting}
+                    >
+                      <option value="dentists">أطباء الأسنان فقط</option>
+                      <option value="labs">مخابر الأسنان فقط</option>
+                      <option value="both">الأطباء والمخابر معاً</option>
+                    </select>
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-gray-600 font-bold text-xs sm:text-sm mr-1">تاريخ الانتهاء</label>
-                    <div className="relative">
-                      <CalendarPicker
-                        value={form.expiresAt}
-                        onChange={(val) => setForm({ ...form, expiresAt: val })}
-                        disabled={isSubmitting}
-                        placeholder="اختر تاريخ الانتهاء"
-                      />
-                      <Calendar className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
-                    </div>
+                    <label className="text-gray-700 dark:text-gray-200 font-bold text-xs sm:text-sm flex items-center gap-1.5 mr-1">
+                      <span className="p-1 rounded-lg bg-indigo-500/15 text-indigo-600 dark:text-indigo-400">
+                        <Calendar size={13} />
+                      </span>
+                      تاريخ الانتهاء
+                    </label>
+                    <CalendarPicker
+                      value={form.expiresAt}
+                      onChange={(val) => setForm({ ...form, expiresAt: val })}
+                      disabled={isSubmitting}
+                      placeholder="اختر تاريخ الانتهاء"
+                    />
                   </div>
                 </div>
 

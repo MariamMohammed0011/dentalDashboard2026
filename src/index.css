@@ -109,6 +109,7 @@
 /* ⚙️ Tailwind v4 Theme Definition System */
 @theme {
   --font-sans: "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+  --font-zain: 'Zain', sans-serif;
   
   --radius-xl: 1.5rem;
   --radius-2xl: 2.5rem;
@@ -183,6 +184,10 @@
 }
 
 @layer utilities {
+  .font-zain {
+    font-family: 'Zain', sans-serif !important;
+  }
+
   /* Premium Inverted Border Radius Utilities */
   .inverted-radius-corner {
     @apply absolute w-10 h-10 bg-transparent pointer-events-none z-20;

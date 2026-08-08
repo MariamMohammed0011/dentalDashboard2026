@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { DollarSign, CreditCard, Megaphone, TrendingUp, Sparkles, PieChart } from 'lucide-react';
-import { Pie } from '@ant-design/plots';
+
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../context/ThemeContext';
+import AnimatedNumber from '../../../components/shared/AnimatedNumber';
 
 export default function FinancialReportSection({ financialData, isLoading }) {
   const { theme } = useTheme();
@@ -11,7 +12,7 @@ export default function FinancialReportSection({ financialData, isLoading }) {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 animate-pulse" dir="rtl">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 animate-pulse " dir="rtl">
         {Array(3).fill(0).map((_, i) => (
           <div key={i} className="bg-bg-card border border-border-main rounded-[2rem] p-6 h-40 flex flex-col justify-between">
             <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-1/2"></div>
@@ -43,23 +44,6 @@ export default function FinancialReportSection({ financialData, isLoading }) {
     { type: t('reports.financial.adsRevenue'), value: adRevenue > 0 ? adRevenue : 0.0001, rawValue: adRevenue },
   ];
 
-  const pieConfig = {
-    data: chartData,
-    angleField: 'value',
-    colorField: 'type',
-    radius: 0.85,
-    innerRadius: 0.68,
-    color: ['#10B981', '#8B5CF6'],
-    theme: theme === 'dark' ? 'dark' : 'light',
-    legend: false,
-    label: false,
-    tooltip: {
-      formatter: (datum) => {
-        const val = datum.type === t('reports.financial.subscriptionsRevenue') ? subRevenue : adRevenue;
-        return { name: datum.type, value: `$${val.toFixed(2)}` };
-      },
-    },
-  };
 
   // 💡 تحليل ذكي لدليل توزيع الإيرادات
   const getSmartInsight = () => {
@@ -75,7 +59,7 @@ export default function FinancialReportSection({ financialData, isLoading }) {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="space-y-6"
+      className="space-y-6 font-zain"
       dir="rtl"
     >
       {/* Title Bar */}
@@ -85,11 +69,11 @@ export default function FinancialReportSection({ financialData, isLoading }) {
             <TrendingUp size={24} />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-text-main tracking-tight">{t('reports.financial.title')}</h2>
-            <p className="text-xs sm:text-sm text-text-muted mt-0.5 font-medium">{t('reports.financial.desc')}</p>
+            <h2 className="text-xl font-zain sm:text-2xl font-black text-text-main tracking-tight">{t('reports.financial.title')}</h2>
+            <p className="text-xs font-zain sm:text-sm text-text-muted mt-0.5 font-medium">{t('reports.financial.desc')}</p>
           </div>
         </div>
-        <span className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+        <span className="flex items-center gap-1.5 text-xs font-bold font-zain px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
           <Sparkles size={14} className="animate-pulse" />
           {t('common.active')}
         </span>
@@ -105,9 +89,9 @@ export default function FinancialReportSection({ financialData, isLoading }) {
           <div className="absolute -left-6 -bottom-6 w-32 h-32 rounded-full bg-white/10 blur-2xl pointer-events-none" />
           <div className="flex justify-between items-start mb-4 relative z-10">
             <div>
-              <span className="text-emerald-100/90 font-bold text-xs uppercase tracking-wider">{t('reports.financial.totalRevenue')}</span>
-              <h3 className="text-3xl sm:text-4xl font-black tracking-tight mt-1 text-white dir-ltr text-right">
-                ${totalRev.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              <span className="font-zain text-emerald-100/90 font-bold text-xs uppercase tracking-wider">{t('reports.financial.totalRevenue')}</span>
+              <h3 className=" font-zain text-3xl sm:text-4xl font-black tracking-tight mt-1 text-white dir-ltr text-right">
+                <AnimatedNumber value={totalRev} prefix="$" decimals={2} />
               </h3>
             </div>
             <div className="p-3.5 bg-white/20 rounded-2xl backdrop-blur-md text-white shadow-sm shrink-0">
@@ -115,8 +99,8 @@ export default function FinancialReportSection({ financialData, isLoading }) {
             </div>
           </div>
           <div className="pt-3 border-t border-white/20 flex justify-between items-center text-xs text-emerald-100 font-bold relative z-10">
-            <span>{t('reports.financial.desc')}</span>
-            <span className="bg-white/20 px-3 py-0.5 rounded-full backdrop-blur-md">{t('common.status')}</span>
+            <span className='font-zain'>{t('reports.financial.desc')}</span>
+            <span className="font-zain bg-white/20 px-3 py-0.5 rounded-full backdrop-blur-md">{t('common.status')}</span>
           </div>
         </motion.div>
 
@@ -127,9 +111,9 @@ export default function FinancialReportSection({ financialData, isLoading }) {
         >
           <div className="flex justify-between items-start mb-4">
             <div>
-              <span className="text-text-muted font-bold text-xs uppercase tracking-wider">{t('reports.financial.subscriptionsRevenue')}</span>
-              <h3 className="text-2xl sm:text-3xl font-black text-text-main mt-1 dir-ltr text-right">
-                ${subRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              <span className="font-zain text-text-muted font-bold text-xs uppercase tracking-wider">{t('reports.financial.subscriptionsRevenue')}</span>
+              <h3 className="font-zain text-2xl sm:text-3xl font-black text-text-main mt-1 dir-ltr text-right">
+                <AnimatedNumber value={subRevenue} prefix="$" decimals={2} />
               </h3>
             </div>
             <div className="p-3.5 bg-emerald-500/15 text-emerald-500 rounded-2xl border border-emerald-500/20 shrink-0">
@@ -137,8 +121,8 @@ export default function FinancialReportSection({ financialData, isLoading }) {
             </div>
           </div>
           <div className="pt-3 border-t border-border-main flex justify-between items-center text-xs font-bold">
-            <span className="text-text-muted">{t('dashboard.activeSubscriptions')}:</span>
-            <span className="text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-0.5 rounded-full">
+            <span className="font-zain text-text-muted">{t('dashboard.activeSubscriptions')}:</span>
+            <span className="font-zain text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-0.5 rounded-full">
               {t('reports.financial.activeCount', { count: activeSubscriptionsCount })}
             </span>
           </div>
@@ -151,9 +135,9 @@ export default function FinancialReportSection({ financialData, isLoading }) {
         >
           <div className="flex justify-between items-start mb-4">
             <div>
-              <span className="text-text-muted font-bold text-xs uppercase tracking-wider">{t('reports.financial.adsRevenue')}</span>
-              <h3 className="text-2xl sm:text-3xl font-black text-text-main mt-1 dir-ltr text-right">
-                ${adRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              <span className="font-zain text-text-muted font-bold text-xs uppercase tracking-wider">{t('reports.financial.adsRevenue')}</span>
+              <h3 className="font-zain text-2xl sm:text-3xl font-black text-text-main mt-1 dir-ltr text-right">
+                <AnimatedNumber value={adRevenue} prefix="$" decimals={2} />
               </h3>
             </div>
             <div className="p-3.5 bg-purple-500/15 text-purple-500 rounded-2xl border border-purple-500/20 shrink-0">
@@ -161,8 +145,8 @@ export default function FinancialReportSection({ financialData, isLoading }) {
             </div>
           </div>
           <div className="pt-3 border-t border-border-main flex justify-between items-center text-xs font-bold">
-            <span className="text-text-muted">{t('ads.title')}:</span>
-            <span className="text-purple-600 dark:text-purple-400 bg-purple-500/10 border border-purple-500/20 px-3 py-0.5 rounded-full">
+            <span className="font-zain text-text-muted">{t('ads.title')}:</span>
+            <span className="font-zain text-purple-600 dark:text-purple-400 bg-purple-500/10 border border-purple-500/20 px-3 py-0.5 rounded-full">
               {t('reports.financial.adsCount', { count: paidAdsCount })}
             </span>
           </div>
@@ -294,11 +278,11 @@ export default function FinancialReportSection({ financialData, isLoading }) {
                   إجمالي المداخيل
                 </span>
                 <span className="text-2xl sm:text-3xl font-black text-text-main tracking-tight dir-ltr my-0.5">
-                  ${totalRev.toFixed(2)}
+                  <AnimatedNumber value={totalRev} prefix="$" decimals={2} />
                 </span>
                 <span className="inline-flex items-center gap-1 text-[10px] font-black text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 shadow-sm">
                   <Sparkles size={12} className="animate-pulse" />
-                  {subPercent}% اشتراكات
+                  <AnimatedNumber value={subPercent} suffix="%" /> اشتراكات
                 </span>
               </div>
             </div>

@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShieldCheck, UserCheck, AlertCircle, RefreshCw, Calendar, FlaskConical, Clock, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, UserCheck, AlertCircle, RefreshCw, Calendar, FlaskConical, Clock, CheckCircle2, Table, PieChart } from 'lucide-react';
 import { Pie } from '@ant-design/plots';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../context/ThemeContext';
+import AnimatedNumber from '../../../components/shared/AnimatedNumber';
 
 export default function SubscriptionReportSection({ subscriptionData, isLoading, days, setDays }) {
   const { theme } = useTheme();
   const { t } = useTranslation();
+  const [distributionViewMode, setDistributionViewMode] = useState('table'); // 'table' | 'chart'
 
   const daysOptions = [
     { value: 7, label: '7 ' + t('reports.subscriptionsReport.daysLeft', { count: 7 }).replace('7', '').trim() },
@@ -68,7 +70,7 @@ export default function SubscriptionReportSection({ subscriptionData, isLoading,
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="space-y-6"
+      className="space-y-6 font-zain"
       dir="rtl"
     >
       {/* Header & Days Selector */}
@@ -119,7 +121,9 @@ export default function SubscriptionReportSection({ subscriptionData, isLoading,
               <FlaskConical size={20} />
             </div>
           </div>
-          <div className="text-3xl font-black text-text-main">{statusDistribution.totalLabsCount}</div>
+          <div className="text-3xl font-black text-text-main">
+            <AnimatedNumber value={statusDistribution.totalLabsCount} />
+          </div>
           <div className="mt-2 text-[11px] font-bold text-text-muted">{t('labs.title')}</div>
         </motion.div>
 
@@ -135,9 +139,11 @@ export default function SubscriptionReportSection({ subscriptionData, isLoading,
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-emerald-600 dark:text-emerald-400">{statusDistribution.activeLabsCount}</span>
+            <span className="text-3xl font-black text-emerald-600 dark:text-emerald-400">
+              <AnimatedNumber value={statusDistribution.activeLabsCount} />
+            </span>
             <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
-              {statusDistribution.activePercentage}%
+              <AnimatedNumber value={statusDistribution.activePercentage} suffix="%" />
             </span>
           </div>
           <div className="mt-2 text-[11px] font-bold text-text-muted">{t('common.active')}</div>
@@ -155,9 +161,11 @@ export default function SubscriptionReportSection({ subscriptionData, isLoading,
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-rose-600 dark:text-rose-400">{statusDistribution.suspendedLabsCount}</span>
+            <span className="text-3xl font-black text-rose-600 dark:text-rose-400">
+              <AnimatedNumber value={statusDistribution.suspendedLabsCount} />
+            </span>
             <span className="text-xs font-bold text-rose-600 dark:text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2.5 py-0.5 rounded-full">
-              {statusDistribution.suspendedPercentage}%
+              <AnimatedNumber value={statusDistribution.suspendedPercentage} suffix="%" />
             </span>
           </div>
           <div className="mt-2 text-[11px] font-bold text-text-muted">{t('common.suspended')}</div>
@@ -176,7 +184,7 @@ export default function SubscriptionReportSection({ subscriptionData, isLoading,
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-black text-purple-600 dark:text-purple-400">
-              {retentionStats.retentionRatePercentage}%
+              <AnimatedNumber value={retentionStats.retentionRatePercentage} suffix="%" />
             </span>
             <span className="text-xs font-bold text-text-muted">
               ({retentionStats.renewedLabsCount} / {retentionStats.totalSubscribedLabs})
@@ -188,95 +196,183 @@ export default function SubscriptionReportSection({ subscriptionData, isLoading,
 
       {/* Middle Row: Distribution & Expiring Labs */}
       <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
-        {/* Status Donut Chart */}
-        <div className="lg:col-span-4   p-5 sm:p-6 shadow-sm border border-emerald-500/30 rounded-xl flex flex-col justify-between">
-          <div>
-            <h3 className="text-base font-bold text-text-main">{t('reports.subscriptionsReport.distributionTitle')}</h3>
-            <p className="text-xs text-text-muted font-medium">{t('reports.subscriptionsReport.desc')}</p>
+        {/* Status Distribution Card (Table by Default) */}
+        <div className="lg:col-span-4 bg-white dark:bg-bg-card p-5 sm:p-6 shadow-sm border border-emerald-500/30 rounded-3xl flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-3 pb-3 border-b border-border-main/50">
+            <div>
+              <h3 className="text-base font-black text-text-main">{t('reports.subscriptionsReport.distributionTitle')}</h3>
+              <p className="text-xs text-text-muted font-medium">{t('reports.subscriptionsReport.desc')}</p>
+            </div>
+            {/* View Mode Toggle Buttons */}
+            <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-border-main/50">
+              <button
+                type="button"
+                onClick={() => setDistributionViewMode('table')}
+                className={`flex items-center gap-1 px-2 py-1 text-[11px] font-black rounded-lg transition-all cursor-pointer ${
+                  distributionViewMode === 'table'
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'text-text-muted hover:text-text-main'
+                }`}
+                title="عرض الجدول"
+              >
+                <Table size={13} />
+                <span>جدول</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setDistributionViewMode('chart')}
+                className={`flex items-center gap-1 px-2 py-1 text-[11px] font-black rounded-lg transition-all cursor-pointer ${
+                  distributionViewMode === 'chart'
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'text-text-muted hover:text-text-main'
+                }`}
+                title="عرض الرسم البياني"
+              >
+                <PieChart size={13} />
+                <span>دائري</span>
+              </button>
+            </div>
           </div>
-          {/* Custom SVG Donut Gauge */}
-          <div className="h-[210px] my-3 flex items-center justify-center relative">
-            <div className="relative w-44 h-44 flex items-center justify-center">
-              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 160 160">
-                <defs>
-                  <linearGradient id="activeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#10B981" />
-                    <stop offset="100%" stopColor="#059669" />
-                  </linearGradient>
-                  <linearGradient id="suspendedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#EF4444" />
-                    <stop offset="100%" stopColor="#DC2626" />
-                  </linearGradient>
-                </defs>
 
-                {/* Track Circle */}
-                <circle
-                  cx="80"
-                  cy="80"
-                  r="60"
-                  className="stroke-slate-200/60 dark:stroke-slate-800"
-                  strokeWidth="12"
-                  fill="transparent"
-                />
+          {distributionViewMode === 'table' ? (
+            /* 📋 Table Layout View */
+            <div className="my-2 overflow-x-auto">
+              <table className="w-full text-right text-xs">
+                <thead>
+                  <tr className="border-b border-border-main/60 text-text-muted font-black">
+                    <th className="pb-2.5 px-2">حالة المختبر</th>
+                    <th className="pb-2.5 px-2 text-center">العدد</th>
+                    <th className="pb-2.5 px-2 text-center">النسبة</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border-main/40 font-bold">
+                  <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                    <td className="py-3 px-2 text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
+                      <span>{t('reports.subscriptionsReport.activeLabs')}</span>
+                    </td>
+                    <td className="py-3 px-2 text-center text-text-main text-sm font-black">
+                      <AnimatedNumber value={statusDistribution.activeLabsCount || 0} />
+                    </td>
+                    <td className="py-3 px-2 text-center">
+                      <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-black">
+                        <AnimatedNumber value={statusDistribution.activePercentage || 0} suffix="%" />
+                      </span>
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                    <td className="py-3 px-2 text-rose-600 dark:text-rose-400 flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0" />
+                      <span>{t('reports.subscriptionsReport.suspendedLabs')}</span>
+                    </td>
+                    <td className="py-3 px-2 text-center text-text-main text-sm font-black">
+                      <AnimatedNumber value={statusDistribution.suspendedLabsCount || 0} />
+                    </td>
+                    <td className="py-3 px-2 text-center">
+                      <span className="px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 text-[11px] font-black">
+                        <AnimatedNumber value={statusDistribution.suspendedPercentage || 0} suffix="%" />
+                      </span>
+                    </td>
+                  </tr>
+                  <tr className="bg-slate-50/70 dark:bg-slate-800/50">
+                    <td className="py-3 px-2 text-text-main font-black flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
+                      <span>إجمالي المخابر</span>
+                    </td>
+                    <td className="py-3 px-2 text-center text-text-main text-base font-black">
+                      <AnimatedNumber value={statusDistribution.totalLabsCount || 0} />
+                    </td>
+                    <td className="py-3 px-2 text-center">
+                      <span className="px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-[11px] font-black">
+                        100%
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            /* 📊 Custom SVG Donut Gauge View */
+            <div className="h-[210px] my-3 flex items-center justify-center relative">
+              <div className="relative w-44 h-44 flex items-center justify-center">
+                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 160 160">
+                  <defs>
+                    <linearGradient id="activeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#10B981" />
+                      <stop offset="100%" stopColor="#059669" />
+                    </linearGradient>
+                    <linearGradient id="suspendedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#EF4444" />
+                      <stop offset="100%" stopColor="#DC2626" />
+                    </linearGradient>
+                  </defs>
 
-                {/* Active Labs Arc */}
-                <motion.circle
-                  cx="80"
-                  cy="80"
-                  r="60"
-                  stroke="url(#activeGrad)"
-                  strokeWidth="12"
-                  strokeLinecap="round"
-                  fill="transparent"
-                  initial={{ strokeDasharray: "0 377" }}
-                  animate={{
-                    strokeDasharray: `${((statusDistribution.activePercentage || 0) / 100) * 376.8} ${376.8 - ((statusDistribution.activePercentage || 0) / 100) * 376.8}`,
-                  }}
-                  transition={{ duration: 1, ease: "easeOut" }}
-                  className="drop-shadow-[0_4px_8px_rgba(16,185,129,0.3)]"
-                />
+                  <circle
+                    cx="80"
+                    cy="80"
+                    r="60"
+                    className="stroke-slate-200/60 dark:stroke-slate-800"
+                    strokeWidth="12"
+                    fill="transparent"
+                  />
 
-                {/* Suspended Labs Arc */}
-                {(statusDistribution.suspendedPercentage || 0) > 0 && (
                   <motion.circle
                     cx="80"
                     cy="80"
                     r="60"
-                    stroke="url(#suspendedGrad)"
+                    stroke="url(#activeGrad)"
                     strokeWidth="12"
                     strokeLinecap="round"
                     fill="transparent"
                     initial={{ strokeDasharray: "0 377" }}
                     animate={{
-                      strokeDasharray: `${((statusDistribution.suspendedPercentage || 0) / 100) * 376.8} ${376.8 - ((statusDistribution.suspendedPercentage || 0) / 100) * 376.8}`,
-                      strokeDashoffset: -(((statusDistribution.activePercentage || 0) / 100) * 376.8),
+                      strokeDasharray: `${((statusDistribution.activePercentage || 0) / 100) * 376.8} ${376.8 - ((statusDistribution.activePercentage || 0) / 100) * 376.8}`,
                     }}
-                    transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-                    className="drop-shadow-[0_4px_8px_rgba(239,68,68,0.3)]"
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className="drop-shadow-[0_4px_8px_rgba(16,185,129,0.3)]"
                   />
-                )}
-              </svg>
 
-              {/* Center Hub */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
-                <span className="text-[10px] font-black text-text-muted uppercase tracking-wider">إجمالي المخابر</span>
-                <span className="text-2xl font-black text-text-main">
-                  {statusDistribution.totalLabsCount || 0}
-                </span>
-                <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full mt-0.5 border border-emerald-500/20">
-                  {statusDistribution.activePercentage || 0}% نشط
-                </span>
+                  {(statusDistribution.suspendedPercentage || 0) > 0 && (
+                    <motion.circle
+                      cx="80"
+                      cy="80"
+                      r="60"
+                      stroke="url(#suspendedGrad)"
+                      strokeWidth="12"
+                      strokeLinecap="round"
+                      fill="transparent"
+                      initial={{ strokeDasharray: "0 377" }}
+                      animate={{
+                        strokeDasharray: `${((statusDistribution.suspendedPercentage || 0) / 100) * 376.8} ${376.8 - ((statusDistribution.suspendedPercentage || 0) / 100) * 376.8}`,
+                        strokeDashoffset: -(((statusDistribution.activePercentage || 0) / 100) * 376.8),
+                      }}
+                      transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
+                      className="drop-shadow-[0_4px_8px_rgba(239,68,68,0.3)]"
+                    />
+                  )}
+                </svg>
+
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
+                  <span className="text-[10px] font-black text-text-muted uppercase tracking-wider">إجمالي المخابر</span>
+                  <span className="text-2xl font-black text-text-main">
+                    <AnimatedNumber value={statusDistribution.totalLabsCount || 0} />
+                  </span>
+                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full mt-0.5 border border-emerald-500/20">
+                    <AnimatedNumber value={statusDistribution.activePercentage || 0} suffix="%" /> نشط
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
           <div className="flex justify-center gap-4 text-xs font-bold pt-3 border-t border-border-main/50">
             <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-xl border border-emerald-500/20">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-              <span>{t('reports.subscriptionsReport.activeLabs')}: {statusDistribution.activeLabsCount}</span>
+              <span>{t('reports.subscriptionsReport.activeLabs')}: <AnimatedNumber value={statusDistribution.activeLabsCount || 0} /></span>
             </div>
             <div className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-xl border border-rose-500/20">
               <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-              <span>{t('reports.subscriptionsReport.suspendedLabs')}: {statusDistribution.suspendedLabsCount}</span>
+              <span>{t('reports.subscriptionsReport.suspendedLabs')}: <AnimatedNumber value={statusDistribution.suspendedLabsCount || 0} /></span>
             </div>
           </div>
         </div>

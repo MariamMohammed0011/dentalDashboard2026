@@ -250,20 +250,15 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                     </span>
                     عنوان الإعلان <span className="text-rose-500">*</span>
                   </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      required
-                      placeholder="مثال: خصم 50% على أجهزة التعقيم"
-                      value={form.title}
-                      onChange={(e) => setForm({ ...form, title: e.target.value })}
-                      className="bg-gray-50 dark:bg-slate-900 border-2 border-border-main/70 focus:border-amber-500 rounded-2xl pr-11 pl-4 py-3 text-text-main font-medium text-sm focus:outline-none transition-colors w-full"
-                      disabled={isSubmitting}
-                    />
-                    <div className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-lg bg-amber-500/10 text-amber-500 pointer-events-none">
-                      <Megaphone size={16} />
-                    </div>
-                  </div>
+                  <input
+                    type="text"
+                    required
+                    placeholder="مثال: خصم 50% على أجهزة التعقيم"
+                    value={form.title}
+                    onChange={(e) => setForm({ ...form, title: e.target.value })}
+                    className="bg-gray-50 dark:bg-slate-900 border-2 border-border-main/70 focus:border-amber-500 rounded-2xl px-4 py-3 text-text-main font-medium text-sm focus:outline-none transition-colors w-full"
+                    disabled={isSubmitting}
+                  />
                 </div>
 
                 {/* 3. Ad Content Field */}
@@ -274,18 +269,13 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                     </span>
                     محتوى / تفاصيل الإعلان
                   </label>
-                  <div className="relative">
-                    <textarea
-                      placeholder="اكتب تفاصيل الإعلان هنا..."
-                      value={form.content}
-                      onChange={(e) => setForm({ ...form, content: e.target.value })}
-                      className="bg-gray-50 dark:bg-slate-900 border-2 border-border-main/70 focus:border-purple-500 rounded-2xl pr-11 pl-4 py-3 text-text-main font-medium text-sm focus:outline-none transition-colors w-full min-h-[85px] resize-none"
-                      disabled={isSubmitting}
-                    />
-                    <div className="absolute right-3.5 top-4 p-1 rounded-lg bg-purple-500/10 text-purple-500 pointer-events-none">
-                      <FileText size={16} />
-                    </div>
-                  </div>
+                  <textarea
+                    placeholder="اكتب تفاصيل الإعلان هنا..."
+                    value={form.content}
+                    onChange={(e) => setForm({ ...form, content: e.target.value })}
+                    className="bg-gray-50 dark:bg-slate-900 border-2 border-border-main/70 focus:border-purple-500 rounded-2xl px-4 py-3 text-text-main font-medium text-sm focus:outline-none transition-colors w-full min-h-[85px] resize-none"
+                    disabled={isSubmitting}
+                  />
                 </div>
 
                 {/* 4. Target Audience & Expiration Date (Dual Grid) */}
@@ -297,21 +287,16 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                       </span>
                       الجمهور المستهدف
                     </label>
-                    <div className="relative">
-                      <select
-                        value={form.type}
-                        onChange={(e) => setForm({ ...form, type: e.target.value })}
-                        className="bg-gray-50 dark:bg-slate-900 border-2 border-border-main/70 focus:border-indigo-500 rounded-2xl pr-11 pl-4 py-3 text-text-main font-bold text-sm focus:outline-none transition-colors w-full cursor-pointer appearance-none text-right"
-                        disabled={isSubmitting}
-                      >
-                        <option value="dentists">أطباء الأسنان فقط</option>
-                        <option value="labs">مخابر الأسنان فقط</option>
-                        <option value="both">الأطباء والمخابر معاً</option>
-                      </select>
-                      <div className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-lg bg-indigo-500/10 text-indigo-500 pointer-events-none">
-                        <Layers size={16} />
-                      </div>
-                    </div>
+                    <select
+                      value={form.type}
+                      onChange={(e) => setForm({ ...form, type: e.target.value })}
+                      className="bg-gray-50 dark:bg-slate-900 border-2 border-border-main/70 focus:border-indigo-500 rounded-2xl px-4 py-3 text-text-main font-bold text-sm focus:outline-none transition-colors w-full cursor-pointer appearance-none text-right"
+                      disabled={isSubmitting}
+                    >
+                      <option value="dentists">أطباء الأسنان فقط</option>
+                      <option value="labs">مخابر الأسنان فقط</option>
+                      <option value="both">الأطباء والمخابر معاً</option>
+                    </select>
                   </div>
 
                   <div className="flex flex-col gap-1.5">

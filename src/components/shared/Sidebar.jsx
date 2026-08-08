@@ -200,7 +200,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
           ))}
         </div>
         
-        <NavItem to="/dashboard/settings" labelKey="sidebar.settings" icon={Settings} isCollapsed={isCollapsed} />
+        {/* <NavItem to="/dashboard/settings" labelKey="sidebar.settings" icon={Settings} isCollapsed={isCollapsed} /> */}
       </nav>
     </aside>
   );
