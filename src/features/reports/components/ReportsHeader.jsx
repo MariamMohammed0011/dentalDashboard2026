@@ -9,7 +9,6 @@ const ReportsHeader = ({ activeTab, setActiveTab, onRefresh, isRefreshing }) => 
     { id: 'all', label: t('reports.tabs.all'), icon: BarChart3 },
     { id: 'financial', label: t('reports.tabs.financial'), icon: DollarSign },
     { id: 'subscriptions', label: t('reports.tabs.subscriptions'), icon: CreditCard },
-    { id: 'archived', label: t('reports.tabs.archived'), icon: FileText },
   ];
 
   return (
@@ -44,11 +43,10 @@ const ReportsHeader = ({ activeTab, setActiveTab, onRefresh, isRefreshing }) => 
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
-                isActive
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${isActive
                   ? 'bg-primary text-white shadow-md shadow-primary/20 scale-[1.02]'
                   : 'bg-bg-card text-text-muted hover:text-text-main border border-border-main/60 hover:bg-slate-100 dark:hover:bg-slate-800'
-              }`}
+                }`}
             >
               <Icon size={16} />
               <span>{tab.label}</span>

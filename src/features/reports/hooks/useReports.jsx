@@ -4,9 +4,8 @@ import { reportsApi } from '../services/reportsApi';
 
 export const useReports = (initialDays = 7) => {
   const [days, setDays] = useState(initialDays);
-  const [currentPage, setCurrentPage] = useState(1);
 
-  // 1. تقرير المالية المجمع
+  // 1. تقرير المالية المجمع (من الباك إند)
   const financialQuery = useQuery({
     queryKey: ['financialConsolidatedReport'],
     queryFn: reportsApi.getConsolidatedFinancialReport,
@@ -14,19 +13,12 @@ export const useReports = (initialDays = 7) => {
     retry: 2,
   });
 
-  // 2. تقرير حالة الاشتراكات
+  // 2. تقرير حالة الاشتراكات (من الباك إند)
   const subscriptionQuery = useQuery({
     queryKey: ['subscriptionsStatusReport', days],
     queryFn: () => reportsApi.getSubscriptionsStatusReport(days),
     staleTime: 1000 * 60 * 5,
     retry: 2,
-  });
-
-  // 3. التقرير المحاكي القديم
-  const mockQuery = useQuery({
-    queryKey: ['reportsMock', currentPage],
-    queryFn: () => reportsApi.getReports({ page: currentPage }),
-    keepPreviousData: true,
   });
 
   const isLoading = financialQuery.isLoading || subscriptionQuery.isLoading;
@@ -52,11 +44,6 @@ export const useReports = (initialDays = 7) => {
       financialQuery.refetch();
       subscriptionQuery.refetch();
     },
-
-    // البيانات الجدولية المحاكاة
-    reports: mockQuery.data?.data || [],
-    pagination: mockQuery.data?.pagination,
-    currentPage,
-    setCurrentPage,
   };
 };
+
