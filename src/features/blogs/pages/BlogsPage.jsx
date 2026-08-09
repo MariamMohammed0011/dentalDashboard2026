@@ -20,12 +20,14 @@ import {
   CheckCircle2,
   XCircle,
   Stethoscope,
-  LayoutGrid
+  LayoutGrid,
+  ChevronDown
 } from "lucide-react";
 import { useBlogs } from "../hooks/useBlogs";
 import MembershipPagination from "../../membership/components/MembershipPagination";
 import ConfirmationModal from "../../../components/shared/ConfirmationModal";
 import Search from "../../../components/shared/Search/Search";
+import CustomSelect from "../../../components/ui/CustomSelect";
 
 const BlogStatCard = ({ title, count, icon: Icon, colorBadgeClass, iconColorClass, bgGlowClass }) => (
   <motion.div
@@ -109,8 +111,20 @@ export default function BlogsPage() {
     handleApproveConfirm
   } = useBlogs();
 
+  const roleOptions = [
+    { value: 'all', label: t('blogs.tabs.all') },
+    { value: 'doctor', label: t('blogs.tabs.doctors') },
+    { value: 'lab', label: t('blogs.tabs.labs') },
+  ];
+
+  const statusOptions = [
+    { value: 'pending', label: t('blogs.tabs.pending') },
+    { value: 'approved', label: t('blogs.tabs.approved') },
+    { value: 'rejected', label: t('blogs.tabs.rejected') },
+  ];
+
   return (
-    <div className="px-4 sm:px-8 lg:px-4 pb-10 min-h-full flex flex-col gap-8 text-right" dir="rtl">
+    <div className="px-4 sm:px-8 lg:px-4 pb-10 min-h-full flex flex-col gap-8 text-right font-zain" dir="rtl">
 
       {/* 📌 Header Title Bar with Search beside it */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4 pt-2">
@@ -122,7 +136,7 @@ export default function BlogsPage() {
             <h1 className="text-2xl sm:text-3xl font-black text-text-main tracking-tight">
               {t('blogs.headerTitle')}
             </h1>
-            <p className="text-text-muted text-xs sm:text-sm mt-1 font-medium">
+            <p className="text-text-muted text-xs sm:text-sm font-bold mt-1">
               {t('blogs.headerDesc')}
             </p>
           </div>
@@ -169,110 +183,44 @@ export default function BlogsPage() {
       </div>
 
       {/* 🔍 Professional Filter & Search Section */}
-      <div className="py-2 flex flex-col gap-6">
+     <div className="py-2 flex flex-col gap-6">
         {/* Top Filters Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 w-full">
 
-          {/* Roles Selector */}
+          {/* 1. Roles Custom Dropdown */}
           <div className="flex flex-col gap-2">
-            <label className="text-[11px] font-black text-text-muted uppercase tracking-wider flex items-center gap-1.5 mr-1">
-              <Filter size={14} className="text-primary animate-pulse" />
-              الجهة الناشرة
+            <label className="text-[11px] font-black text-text-muted uppercase tracking-wider flex items-center gap-1.5 mr-1 font-zain">
+              <Filter size={14} className="text-primary" />
+              <span>الجهة الناشرة</span>
             </label>
-            <div className="flex gap-1.5 sm:gap-2 p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm w-full overflow-x-auto custom-scrollbar">
-              <button
-                type="button"
-                onClick={() => { setSelectedRole("all"); setCurrentPage(1); }}
-                className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs md:text-sm font-black transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer shrink-0 whitespace-nowrap ${
-                  selectedRole === "all"
-                    ? "bg-primary text-white border-2 border-primary shadow-md shadow-primary/30 scale-[1.02]"
-                    : "bg-blue-50/70 dark:bg-blue-950/30 text-blue-900 dark:text-blue-200 border-2 border-blue-200 dark:border-blue-800/60 hover:bg-blue-100 dark:hover:bg-blue-900/50"
-                }`}
-              >
-                <LayoutGrid size={16} className={selectedRole === "all" ? "text-white" : "text-primary"} />
-                <span>{t('blogs.tabs.all')}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => { setSelectedRole("doctor"); setCurrentPage(1); }}
-                className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs md:text-sm font-black transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer shrink-0 whitespace-nowrap ${
-                  selectedRole === "doctor"
-                    ? "bg-amber-500 text-white border-2 border-amber-500 shadow-md shadow-amber-500/30 scale-[1.02]"
-                    : "bg-amber-50/70 dark:bg-amber-950/30 text-amber-900 dark:text-amber-200 border-2 border-amber-200 dark:border-amber-800/60 hover:bg-amber-100 dark:hover:bg-amber-900/50"
-                }`}
-              >
-                <Stethoscope size={16} className={selectedRole === "doctor" ? "text-white" : "text-amber-500"} />
-                <span>{t('blogs.tabs.doctors')}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => { setSelectedRole("lab"); setCurrentPage(1); }}
-                className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs md:text-sm font-black transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer shrink-0 whitespace-nowrap ${
-                  selectedRole === "lab"
-                    ? "bg-emerald-500 text-white border-2 border-emerald-500 shadow-md shadow-emerald-500/30 scale-[1.02]"
-                    : "bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200 border-2 border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/50"
-                }`}
-              >
-                <FlaskConical size={16} className={selectedRole === "lab" ? "text-white" : "text-emerald-500"} />
-                <span>{t('blogs.tabs.labs')}</span>
-              </button>
-            </div>
+            <CustomSelect
+              value={selectedRole}
+              onChange={(val) => {
+                setSelectedRole(val);
+                setCurrentPage(1);
+              }}
+              options={roleOptions}
+            />
           </div>
 
-          {/* Post Status Selector */}
+          {/* 2. Post Status Custom Dropdown */}
           <div className="flex flex-col gap-2">
-            <label className="text-[11px] font-black text-text-muted uppercase tracking-wider flex items-center gap-1.5 mr-1">
-              <Sparkles size={14} className="text-amber-500 animate-pulse" />
-              حالة النشر والمراجعة
+            <label className="text-[11px] font-black text-text-muted uppercase tracking-wider flex items-center gap-1.5 mr-1 font-zain">
+              <Sparkles size={14} className="text-amber-500" />
+              <span>حالة النشر والمراجعة</span>
             </label>
-            <div className="flex gap-1.5 sm:gap-2 p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm w-full overflow-x-auto custom-scrollbar">
-              <button
-                type="button"
-                onClick={() => { setSelectedStatus("pending"); setCurrentPage(1); }}
-                className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs md:text-sm font-black transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer shrink-0 whitespace-nowrap ${
-                  selectedStatus === "pending"
-                    ? "bg-amber-500 text-white border-2 border-amber-500 shadow-md shadow-amber-500/30 scale-[1.02]"
-                    : "bg-amber-50/70 dark:bg-amber-950/30 text-amber-900 dark:text-amber-200 border-2 border-amber-200 dark:border-amber-800/60 hover:bg-amber-100 dark:hover:bg-amber-900/50"
-                }`}
-              >
-                <Clock size={16} className={selectedStatus === "pending" ? "text-white" : "text-amber-500"} />
-                <span>{t('blogs.tabs.pending')}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => { setSelectedStatus("approved"); setCurrentPage(1); }}
-                className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs md:text-sm font-black transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer shrink-0 whitespace-nowrap ${
-                  selectedStatus === "approved"
-                    ? "bg-emerald-500 text-white border-2 border-emerald-500 shadow-md shadow-emerald-500/30 scale-[1.02]"
-                    : "bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200 border-2 border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/50"
-                }`}
-              >
-                <CheckCircle2 size={16} className={selectedStatus === "approved" ? "text-white" : "text-emerald-500"} />
-                <span>{t('blogs.tabs.approved')}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => { setSelectedStatus("rejected"); setCurrentPage(1); }}
-                className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs md:text-sm font-black transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer shrink-0 whitespace-nowrap ${
-                  selectedStatus === "rejected"
-                    ? "bg-rose-500 text-white border-2 border-rose-500 shadow-md shadow-rose-500/30 scale-[1.02]"
-                    : "bg-rose-50/70 dark:bg-rose-950/30 text-rose-900 dark:text-rose-200 border-2 border-rose-200 dark:border-rose-800/60 hover:bg-rose-100 dark:hover:bg-rose-900/50"
-                }`}
-              >
-                <XCircle size={16} className={selectedStatus === "rejected" ? "text-white" : "text-rose-500"} />
-                <span>{t('blogs.tabs.rejected')}</span>
-              </button>
-            </div>
+            <CustomSelect
+              value={selectedStatus}
+              onChange={(val) => {
+                setSelectedStatus(val);
+                setCurrentPage(1);
+              }}
+              options={statusOptions}
+            />
           </div>
 
         </div>
-
       </div>
-
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
         {isLoading ? (
