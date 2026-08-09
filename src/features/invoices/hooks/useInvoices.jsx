@@ -3,7 +3,7 @@ import { fetchPaidAdInvoices, fetchUnpaidAdInvoices } from '../services/invoices
 import { toast } from 'sonner';
 
 export const useInvoices = () => {
-  const [activeTab, setActiveTab] = useState('paid'); // 'paid' | 'unpaid' | 'all'
+  const [activeTab, setActiveTab] = useState('all'); // 'all' | 'paid' | 'unpaid'
   const [selectedCategory, setSelectedCategory] = useState('all'); // 'all' | 'dentists' | 'labs' | 'adsClients'
   const [searchQuery, setSearchQuery] = useState('');
   

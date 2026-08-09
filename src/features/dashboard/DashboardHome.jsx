@@ -565,21 +565,7 @@ export default function DashboardHome() {
             )}
           </div>
 
-          {/* Custom Styled Arabic Legend */}
-          {statusChartData.length > 0 && (
-            <div className="flex flex-wrap items-center justify-center gap-2 pt-3 border-t border-border-main/50 mt-2">
-              {statusChartData.map((item) => {
-                const color = statusColorMap[item.type] || statusColorMap[item.rawStatus] || '#3B82F6';
-                return (
-                  <div key={item.type} className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
-                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
-                    <span>{item.type}</span>
-                    <span className="text-primary font-black dir-ltr mr-1">({item.value})</span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+         
         </div>
 
       </div>
