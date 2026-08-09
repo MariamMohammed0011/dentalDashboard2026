@@ -1,41 +1,32 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import ReportsHeader from '../components/ReportsHeader';
+import { useLocation } from 'react-router-dom';
 import FinancialReportSection from '../components/FinancialReportSection';
 import SubscriptionReportSection from '../components/SubscriptionReportSection';
-import ReportsTableView from '../components/ReportsTableView';
 import { useReports } from '../hooks/useReports';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, RefreshCw, TrendingUp, FlaskConical } from 'lucide-react';
 
-const ReportsPage = () => {
+const ReportsPage = ({ defaultTab }) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('all');
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'table'
+  const location = useLocation();
+
+  // تحديد التاب الحالي بناءً على الـ Prop أو عنوان الصفحة
+  const isSubscriptions = defaultTab === 'subscriptions' || location.pathname.includes('/subscriptions');
+  const [days, setDays] = useState(7);
 
   const {
     financialData,
     isFinancialLoading,
     subscriptionData,
     isSubscriptionLoading,
-    days,
-    setDays,
-    isLoading,
     isError,
-    refetchAll,
-  } = useReports(7);
+    
+  } = useReports(days);
 
   return (
-    <div className="p-2 sm:p-4 flex flex-col gap-8 bg-transparent font-zain" dir="rtl">
-      {/* Top Navigation & Controls Header with View Switcher */}
-      <ReportsHeader
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onRefresh={refetchAll}
-        isRefreshing={isLoading}
-        viewMode={viewMode}
-        setViewMode={setViewMode}
-      />
+    <div className="p-2 sm:p-4 flex flex-col gap-6 bg-transparent font-zain" dir="rtl">
+     
 
       {isError && (
         <motion.div
@@ -48,41 +39,36 @@ const ReportsPage = () => {
         </motion.div>
       )}
 
-      {/* Main Content with Animated View Switching */}
+      {/* Main Content */}
       <AnimatePresence mode="wait">
-       
-        
-          <motion.div
-            key="grid-view"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.3 }}
-            className="flex flex-col gap-8"
-          >
-            {/* 1. قسم التقارير المالية المجمعة (مربوط بالباك إند) */}
-            {(activeTab === 'all' || activeTab === 'financial') && (
-              <section className="space-y-4">
-                <FinancialReportSection
-                  financialData={financialData}
-                  isLoading={isFinancialLoading}
-                />
-              </section>
-            )}
-
-            {/* 2. قسم تقارير حالة الاشتراكات (مربوط بالباك إند) */}
-            {(activeTab === 'all' || activeTab === 'subscriptions') && (
-              <section className="space-y-4 pt-4 border-t border-border-main/50">
-                <SubscriptionReportSection
-                  subscriptionData={subscriptionData}
-                  isLoading={isSubscriptionLoading}
-                  days={days}
-                  setDays={setDays}
-                />
-              </section>
-            )}
-          </motion.div>
-        
+        <motion.div
+          key={isSubscriptions ? 'subscriptions-view' : 'financial-view'}
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -15 }}
+          transition={{ duration: 0.3 }}
+          className="flex flex-col gap-8"
+        >
+          {isSubscriptions ? (
+            /* قسم تقارير حالة الاشتراكات المستقل */
+            <section className="space-y-4">
+              <SubscriptionReportSection
+                subscriptionData={subscriptionData}
+                isLoading={isSubscriptionLoading}
+                days={days}
+                setDays={setDays}
+              />
+            </section>
+          ) : (
+            /* قسم التقارير المالية المستقل */
+            <section className="space-y-4">
+              <FinancialReportSection
+                financialData={financialData}
+                isLoading={isFinancialLoading}
+              />
+            </section>
+          )}
+        </motion.div>
       </AnimatePresence>
     </div>
   );

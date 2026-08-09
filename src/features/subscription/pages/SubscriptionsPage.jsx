@@ -48,7 +48,7 @@ export default function SubscriptionsPage() {
               <CreditCard size={28} />
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl font-black text-text-main">
+              <h1 className="font-zain text-xl sm:text-2xl font-black text-text-main">
                 {t('subscription.headerTitle')}
               </h1>
               <p className="text-text-muted text-xs font-bold mt-0.5">
@@ -59,14 +59,7 @@ export default function SubscriptionsPage() {
         </div>
 
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          <button
-            onClick={refreshSubscriptions}
-            disabled={loading}
-            className="p-3 bg-bg-card border border-border-main rounded-2xl text-text-muted hover:text-text-main transition-colors shrink-0 cursor-pointer"
-            title={t('common.refresh')}
-          >
-            <RefreshCw size={18} className={loading ? 'animate-spin text-primary' : ''} />
-          </button>
+          
 
           <button
             onClick={handleOpenAddModal}

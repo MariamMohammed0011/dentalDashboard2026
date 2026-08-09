@@ -9,7 +9,7 @@ import AnimatedNumber from '../../../components/shared/AnimatedNumber';
 export default function SubscriptionReportSection({ subscriptionData, isLoading, days, setDays }) {
   const { theme } = useTheme();
   const { t } = useTranslation();
-  const [distributionViewMode, setDistributionViewMode] = useState('table'); // 'table' | 'chart'
+  const [distributionViewMode, setDistributionViewMode] = useState('chart'); // 'chart' | 'table'
 
   const daysOptions = [
     { value: 7, label: '7 ' + t('reports.subscriptionsReport.daysLeft', { count: 7 }).replace('7', '').trim() },
@@ -70,10 +70,10 @@ export default function SubscriptionReportSection({ subscriptionData, isLoading,
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="space-y-6 font-zain"
+      className="space-y-6 font-zain w-full overflow-hidden"
       dir="rtl"
     >
-      {/* Header & Days Selector */}
+      {/* Header & Days Selector (بدون سكرول) */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-500 border border-blue-500/20 shadow-sm shrink-0">
@@ -85,26 +85,28 @@ export default function SubscriptionReportSection({ subscriptionData, isLoading,
           </div>
         </div>
 
-        {/* Days Filter Pills with Horizontal Scroll */}
-        <div className="flex items-center gap-1.5 bg-white dark:bg-bg-card p-1.5 rounded-2xl border border-border-main/70 shadow-sm overflow-x-auto custom-scrollbar max-w-full">
+        {/* Days Filter Pills (Flex Wrap - تم إلغاء السكرول) */}
+        <div className="flex flex-wrap items-center gap-1.5 bg-white dark:bg-bg-card p-1.5 rounded-2xl border border-border-main/70 shadow-sm max-w-full w-full sm:w-auto">
           <div className="flex items-center gap-1 text-xs text-text-muted px-2 font-bold shrink-0">
             <Calendar size={14} className="text-primary" />
             <span>{t('reports.subscriptionsReport.range')}:</span>
           </div>
-          {daysOptions.map(option => (
-            <button
-              type="button"
-              key={option.value}
-              onClick={() => setDays(option.value)}
-              className={`px-3 py-1.5 text-xs font-black rounded-xl transition-all duration-300 whitespace-nowrap cursor-pointer shrink-0 ${
-                days === option.value
-                  ? 'bg-primary text-white shadow-md shadow-primary/25 scale-105 border-2 border-primary'
-                  : 'text-text-muted hover:text-text-main hover:bg-slate-100 dark:hover:bg-slate-800/80'
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
+          <div className="grid grid-cols-5 gap-1 w-full sm:w-auto flex-1">
+            {daysOptions.map(option => (
+              <button
+                type="button"
+                key={option.value}
+                onClick={() => setDays(option.value)}
+                className={`px-2 py-1.5 text-xs font-black rounded-xl transition-all duration-300 text-center cursor-pointer ${
+                  days === option.value
+                    ? 'bg-primary text-white shadow-md shadow-primary/25 scale-105 border-2 border-primary'
+                    : 'text-text-muted hover:text-text-main hover:bg-slate-100 dark:hover:bg-slate-800/80'
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -194,96 +196,68 @@ export default function SubscriptionReportSection({ subscriptionData, isLoading,
         </motion.div>
       </div>
 
-      {/* Middle Row: Distribution & Expiring Labs */}
-      <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
-        {/* Status Distribution Card (Table by Default) */}
-        <div className="lg:col-span-4 bg-white dark:bg-bg-card p-5 sm:p-6 shadow-sm border border-emerald-500/30 rounded-3xl flex flex-col justify-between">
-          <div className="flex justify-between items-start mb-3 pb-3 border-b border-border-main/50">
+      {/* Middle & Expiring Soon Sections */}
+      <div className="flex flex-col gap-6 w-full">
+        {/* Status Distribution Card */}
+        <div className="w-full  dark:bg-bg-card p-5 sm:p-6   flex flex-col justify-between gap-4">
+          <div className="flex justify-between items-start pb-3 border-b border-border-main/50">
             <div>
               <h3 className="text-base font-black text-text-main">{t('reports.subscriptionsReport.distributionTitle')}</h3>
               <p className="text-xs text-text-muted font-medium">{t('reports.subscriptionsReport.desc')}</p>
             </div>
-            {/* View Mode Toggle Buttons */}
-            <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-border-main/50">
-              <button
-                type="button"
-                onClick={() => setDistributionViewMode('table')}
-                className={`flex items-center gap-1 px-2 py-1 text-[11px] font-black rounded-lg transition-all cursor-pointer ${
-                  distributionViewMode === 'table'
-                    ? 'bg-primary text-white shadow-sm'
-                    : 'text-text-muted hover:text-text-main'
-                }`}
-                title="عرض الجدول"
-              >
-                <Table size={13} />
-                <span>جدول</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setDistributionViewMode('chart')}
-                className={`flex items-center gap-1 px-2 py-1 text-[11px] font-black rounded-lg transition-all cursor-pointer ${
-                  distributionViewMode === 'chart'
-                    ? 'bg-primary text-white shadow-sm'
-                    : 'text-text-muted hover:text-text-main'
-                }`}
-                title="عرض الرسم البياني"
-              >
-                <PieChart size={13} />
-                <span>دائري</span>
-              </button>
-            </div>
+            
           </div>
 
-          {distributionViewMode === 'table' ? (
-            /* 📋 Table Layout View */
-            <div className="my-2 overflow-x-auto">
+         
+          
+            <div className="my-2 w-full overflow-hidden">
               <table className="w-full text-right text-xs">
                 <thead>
                   <tr className="border-b border-border-main/60 text-text-muted font-black">
-                    <th className="pb-2.5 px-2">حالة المختبر</th>
-                    <th className="pb-2.5 px-2 text-center">العدد</th>
-                    <th className="pb-2.5 px-2 text-center">النسبة</th>
+                    <th className="pb-2.5 px-3">حالة المختبر</th>
+                    <th className="pb-2.5 px-3 text-center">العدد</th>
+                    <th className="pb-2.5 px-3 text-center">النسبة المئوية</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border-main/40 font-bold">
                   <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                    <td className="py-3 px-2 text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                    <td className="py-3 px-3 text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
                       <span>{t('reports.subscriptionsReport.activeLabs')}</span>
                     </td>
-                    <td className="py-3 px-2 text-center text-text-main text-sm font-black">
+                    <td className="py-3 px-3 text-center text-text-main text-sm font-black">
                       <AnimatedNumber value={statusDistribution.activeLabsCount || 0} />
                     </td>
-                    <td className="py-3 px-2 text-center">
-                      <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-black">
+                    <td className="py-3 px-3 text-center">
+                      <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-black">
                         <AnimatedNumber value={statusDistribution.activePercentage || 0} suffix="%" />
                       </span>
                     </td>
                   </tr>
                   <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                    <td className="py-3 px-2 text-rose-600 dark:text-rose-400 flex items-center gap-2">
+                    <td className="py-3 px-3 text-rose-600 dark:text-rose-400 flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0" />
                       <span>{t('reports.subscriptionsReport.suspendedLabs')}</span>
                     </td>
-                    <td className="py-3 px-2 text-center text-text-main text-sm font-black">
+                    <td className="py-3 px-3 text-center text-text-main text-sm font-black">
                       <AnimatedNumber value={statusDistribution.suspendedLabsCount || 0} />
                     </td>
-                    <td className="py-3 px-2 text-center">
-                      <span className="px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 text-[11px] font-black">
+                    <td className="py-3 px-3 text-center">
+                      <span className="px-3 py-1 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 text-xs font-black">
                         <AnimatedNumber value={statusDistribution.suspendedPercentage || 0} suffix="%" />
                       </span>
                     </td>
                   </tr>
                   <tr className="bg-slate-50/70 dark:bg-slate-800/50">
-                    <td className="py-3 px-2 text-text-main font-black flex items-center gap-2">
+                    <td className="py-3 px-3 text-text-main font-black flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
                       <span>إجمالي المخابر</span>
                     </td>
-                    <td className="py-3 px-2 text-center text-text-main text-base font-black">
+                    <td className="py-3 px-3 text-center text-text-main text-base font-black">
                       <AnimatedNumber value={statusDistribution.totalLabsCount || 0} />
                     </td>
-                    <td className="py-3 px-2 text-center">
-                      <span className="px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-[11px] font-black">
+                    <td className="py-3 px-3 text-center">
+                      <span className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-xs font-black">
                         100%
                       </span>
                     </td>
@@ -291,97 +265,25 @@ export default function SubscriptionReportSection({ subscriptionData, isLoading,
                 </tbody>
               </table>
             </div>
-          ) : (
-            /* 📊 Custom SVG Donut Gauge View */
-            <div className="h-[210px] my-3 flex items-center justify-center relative">
-              <div className="relative w-44 h-44 flex items-center justify-center">
-                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 160 160">
-                  <defs>
-                    <linearGradient id="activeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#10B981" />
-                      <stop offset="100%" stopColor="#059669" />
-                    </linearGradient>
-                    <linearGradient id="suspendedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#EF4444" />
-                      <stop offset="100%" stopColor="#DC2626" />
-                    </linearGradient>
-                  </defs>
+        
 
-                  <circle
-                    cx="80"
-                    cy="80"
-                    r="60"
-                    className="stroke-slate-200/60 dark:stroke-slate-800"
-                    strokeWidth="12"
-                    fill="transparent"
-                  />
-
-                  <motion.circle
-                    cx="80"
-                    cy="80"
-                    r="60"
-                    stroke="url(#activeGrad)"
-                    strokeWidth="12"
-                    strokeLinecap="round"
-                    fill="transparent"
-                    initial={{ strokeDasharray: "0 377" }}
-                    animate={{
-                      strokeDasharray: `${((statusDistribution.activePercentage || 0) / 100) * 376.8} ${376.8 - ((statusDistribution.activePercentage || 0) / 100) * 376.8}`,
-                    }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className="drop-shadow-[0_4px_8px_rgba(16,185,129,0.3)]"
-                  />
-
-                  {(statusDistribution.suspendedPercentage || 0) > 0 && (
-                    <motion.circle
-                      cx="80"
-                      cy="80"
-                      r="60"
-                      stroke="url(#suspendedGrad)"
-                      strokeWidth="12"
-                      strokeLinecap="round"
-                      fill="transparent"
-                      initial={{ strokeDasharray: "0 377" }}
-                      animate={{
-                        strokeDasharray: `${((statusDistribution.suspendedPercentage || 0) / 100) * 376.8} ${376.8 - ((statusDistribution.suspendedPercentage || 0) / 100) * 376.8}`,
-                        strokeDashoffset: -(((statusDistribution.activePercentage || 0) / 100) * 376.8),
-                      }}
-                      transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-                      className="drop-shadow-[0_4px_8px_rgba(239,68,68,0.3)]"
-                    />
-                  )}
-                </svg>
-
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
-                  <span className="text-[10px] font-black text-text-muted uppercase tracking-wider">إجمالي المخابر</span>
-                  <span className="text-2xl font-black text-text-main">
-                    <AnimatedNumber value={statusDistribution.totalLabsCount || 0} />
-                  </span>
-                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full mt-0.5 border border-emerald-500/20">
-                    <AnimatedNumber value={statusDistribution.activePercentage || 0} suffix="%" /> نشط
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="flex justify-center gap-4 text-xs font-bold pt-3 border-t border-border-main/50">
-            <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-xl border border-emerald-500/20">
+          <div className="flex justify-center gap-4 text-xs font-bold pt-3 border-t border-border-main/50 flex-wrap">
+            <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-xl border border-emerald-500/20">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
               <span>{t('reports.subscriptionsReport.activeLabs')}: <AnimatedNumber value={statusDistribution.activeLabsCount || 0} /></span>
             </div>
-            <div className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-xl border border-rose-500/20">
+            <div className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 bg-rose-500/10 px-3 py-1 rounded-xl border border-rose-500/20">
               <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
               <span>{t('reports.subscriptionsReport.suspendedLabs')}: <AnimatedNumber value={statusDistribution.suspendedLabsCount || 0} /></span>
             </div>
           </div>
         </div>
 
-        {/* Expiring Soon Labs Table or Empty Card */}
-        <div className="lg:col-span-6  dark:bg-bg-card  p-5 sm:p-6  flex flex-col justify-between">
-          <div className="flex justify-between items-center mb-4 pb-3 border-b border-border-main/50">
+        {/* Expiring Soon Labs Table or Empty Card (بدون سكرول) */}
+        <div className="w-full  dark:bg-bg-card p-5 sm:p-6  flex flex-col justify-between gap-4">
+          <div className="flex justify-between items-center pb-3 border-b border-border-main/50">
             <div>
-              <h3 className="text-base font-bold text-text-main">{t('reports.subscriptionsReport.expiringSoonTitle')}</h3>
+              <h3 className="text-base font-black text-text-main">{t('reports.subscriptionsReport.expiringSoonTitle')}</h3>
               <p className="text-xs text-text-muted font-medium">{t('reports.subscriptionsReport.expiringSoonDesc', { days })}</p>
             </div>
             <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
@@ -400,28 +302,30 @@ export default function SubscriptionReportSection({ subscriptionData, isLoading,
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto custom-scrollbar">
-              <table className="w-full text-right text-xs">
+            <div className="w-full overflow-hidden">
+              <table className="w-full text-right text-xs table-fixed">
                 <thead>
                   <tr className="text-text-muted font-black border-b border-border-main pb-2">
-                    <th className="pb-3 px-2">{t('subscription.labName')}</th>
-                    <th className="pb-3 px-2">{t('subscription.endDate')}</th>
-                    <th className="pb-3 px-2 text-center">{t('common.status')}</th>
-                    <th className="pb-3 px-2 text-center">{t('common.actions')}</th>
+                    <th className="pb-3 px-2 w-2/5">{t('subscription.labName')}</th>
+                    <th className="pb-3 px-2 hidden sm:table-cell w-1/4">{t('subscription.endDate')}</th>
+                    <th className="pb-3 px-2 text-center w-1/4 sm:w-1/5">{t('common.status')}</th>
+                    <th className="pb-3 px-2 text-center w-1/4 sm:w-1/5">{t('common.actions')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border-main/40 font-bold">
                   {expiringSoonLabs.map((lab, index) => (
                     <tr key={lab.id || lab.labId || index} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                      <td className="py-3 px-2 text-text-main flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
-                        <span className="truncate">{lab.labName || lab.name || `#${lab.id || index + 1}`}</span>
+                      <td className="py-3 px-2 text-text-main truncate">
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+                          <span className="truncate">{lab.labName || lab.name || `#${lab.id || index + 1}`}</span>
+                        </div>
                       </td>
-                      <td className="py-3 px-2 text-text-muted dir-ltr text-right whitespace-nowrap">
-                        {lab.expirationDate ? new Date(lab.expirationDate).toLocaleDateString('ar-EG') : 'N/A'}
+                      <td className="py-3 px-2 text-text-muted dir-ltr text-right whitespace-nowrap hidden sm:table-cell">
+                        {lab.expirationDate ? new Date(lab.expirationDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A'}
                       </td>
                       <td className="py-3 px-2 text-center whitespace-nowrap">
-                        <span className="px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold border border-amber-500/20">
+                        <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold border border-amber-500/20 text-[11px]">
                           {t('reports.subscriptionsReport.daysLeft', { count: lab.daysLeft ?? 0 })}
                         </span>
                       </td>
@@ -441,4 +345,3 @@ export default function SubscriptionReportSection({ subscriptionData, isLoading,
     </motion.div>
   );
 }
-

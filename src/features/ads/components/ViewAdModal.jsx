@@ -128,7 +128,7 @@ const ViewAdModal = ({ isOpen, onClose, selectedAd, handleApproveAd, handleRejec
                   <div className="flex flex-col gap-1">
                     <span className="text-xs text-gray-400 font-bold">تاريخ الإنشاء</span>
                     <span className="text-sm font-extrabold text-gray-700">
-                      {new Date(selectedAd.raw.createdAt).toLocaleDateString('ar-SY', { year: 'numeric', month: 'long', day: 'numeric' })}
+                      {new Date(selectedAd.raw.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                     </span>
                   </div>
                 )}

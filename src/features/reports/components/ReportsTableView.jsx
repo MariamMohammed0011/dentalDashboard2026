@@ -335,7 +335,7 @@ export default function ReportsTableView({
                             <span>{lab.labName || lab.name || `#${lab.id || index + 1}`}</span>
                           </td>
                           <td className="py-3 px-4 text-text-muted dir-ltr text-right">
-                            {lab.expirationDate ? new Date(lab.expirationDate).toLocaleDateString('ar-EG') : 'N/A'}
+                            {lab.expirationDate ? new Date(lab.expirationDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A'}
                           </td>
                           <td className="py-3 px-4 text-center">
                             <span className="px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold border border-amber-500/20">

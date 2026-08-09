@@ -31,8 +31,8 @@ export default function InvoicesPage() {
   } = useInvoices();
 
   return (
-    <div className="p-4 sm:p-8 lg:p-10 space-y-6" dir="rtl">
-      
+    <div className="p-4 sm:p-4 lg:p-4 flex flex-col gap-6 bg-transparent font-zain" dir="rtl">
+       
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 w-full border-b border-border-main/60 pb-6">
         <div className="text-right w-full sm:w-auto">
@@ -49,16 +49,7 @@ export default function InvoicesPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <button
-            onClick={refreshInvoices}
-            disabled={loading}
-            className="p-3 bg-bg-card border border-border-main rounded-2xl text-text-muted hover:text-text-main transition-colors shrink-0 cursor-pointer"
-            title={t('common.refresh')}
-          >
-            <RefreshCw size={18} className={loading ? 'animate-spin text-primary' : ''} />
-          </button>
-        </div>
+        
       </div>
 
       {/* ── KPI Stat Cards ── */}

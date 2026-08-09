@@ -143,9 +143,9 @@ const formatTimeArabic = (dateString) => {
       return `منذ ${diffDays} يوم`;
     }
 
-    return date.toLocaleDateString('ar-EG', {
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric'
     });
   } catch (error) {

@@ -54,21 +54,21 @@ const LabsPage = () => {
   return (
     <div className="flex flex-col gap-6 px-2 sm:px-8 lg:px-2 pb-10 min-h-full" dir="rtl">
 
-     <div className="flex flex-col sm:flex-row justify-between items-center py-2 px-0 gap-4 w-full" dir="rtl">
- <h1 className="text-2xl sm:text-3xl font-medium text-slate-800 dark:text-gray-100 flex items-center gap-2">
-  <FlaskConical size={28} className="text-emerald-600 dark:text-emerald-400" />
-  {t('labs.title')}
-</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-center py-2 px-0 gap-4 w-full" dir="rtl">
+        <h1 className="text-2xl sm:text-3xl font-medium text-slate-800 dark:text-gray-100 flex items-center gap-2">
+          <FlaskConical size={28} className="text-emerald-600 dark:text-emerald-400" />
+          {t('labs.title')}
+        </h1>
 
-  <Search
-    value={searchQuery}
-    onChange={setSearchQuery}
-    placeholder={t('labs.searchPlaceholder')}
-    
-    className="w-full "
-    onClear={() => setSearchQuery('')}
-  />
-</div>
+        <Search
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder={t('labs.searchPlaceholder')}
+
+          className="w-full "
+          onClear={() => setSearchQuery('')}
+        />
+      </div>
 
       {/* قسم الفلترة */}
       <div className="relative z-20 mb-6">

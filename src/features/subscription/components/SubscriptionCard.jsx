@@ -19,7 +19,7 @@ export default function SubscriptionCard({ sub, onActivate, onRenew }) {
 
   // Formatting dates
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('ar-EG', {
+    return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'

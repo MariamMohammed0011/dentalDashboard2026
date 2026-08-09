@@ -17,9 +17,9 @@ export default function InvoiceDetailsModal({ isOpen, onClose, invoice }) {
   const formatDate = (dateStr) => {
     if (!dateStr) return 'N/A';
     try {
-      return new Date(dateStr).toLocaleDateString('ar-EG', {
+      return new Date(dateStr).toLocaleDateString('en-US', {
         year: 'numeric',
-        month: 'long',
+        month: 'short',
         day: 'numeric'
       });
     } catch {

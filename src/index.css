@@ -239,6 +239,10 @@
   *, ::before, ::after {
     font-family: var(--font-sans);
   }
+
+  span, h1, h2, h3, p {
+    font-family: 'Zain', sans-serif;
+  }
   
   body {
     font-family: var(--font-sans);
@@ -251,6 +255,9 @@
 @layer utilities {
   .font-ruqaa, .font-ruqaa * {
     font-family: 'Aref Ruqaa', serif;
+  }
+  .font-sans, .font-sans * {
+    font-family: var(--font-sans);
   }
 }
 

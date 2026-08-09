@@ -15,6 +15,7 @@ import LabsPage from "./features/labs/pages/LabsPage";
 import AdsPage from "./features/ads/pages/AdsPage";
 import UsersManagementPage from "./features/ads/pages/UsersManagementPage";
 import ReportsPage from "./features/reports/pages/ReportsPage";
+import SubscriptionReportsPage from "./features/reports/pages/SubscriptionReportsPage";
 import InterventionPage from "./features/interventions/pages/InterventionPage";
 import SettingsPage from "./features/dashboard/pages/SettingsPage";
 import BlogsPage from "./features/blogs/pages/BlogsPage";
@@ -71,7 +72,9 @@ function App() {
               <Route path="ads/users" element={<UsersManagementPage />} />
               <Route path="notifications" element={<NotificationsListPage />} />
               <Route path="notifications/send" element={<SendNotificationPage />} />
-              <Route path="reports" element={<ReportsPage />} />
+              <Route path="reports" element={<Navigate to="/dashboard/reports/financial" replace />} />
+              <Route path="reports/financial" element={<ReportsPage />} />
+              <Route path="reports/subscriptions" element={<SubscriptionReportsPage />} />
               <Route path="invoices" element={<InvoicesPage />} />
               <Route path="intervention-log" element={<InterventionPage />} />
               <Route path="settings" element={<SettingsPage />} />

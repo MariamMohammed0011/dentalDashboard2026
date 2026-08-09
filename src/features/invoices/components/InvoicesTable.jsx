@@ -11,7 +11,7 @@ export default function InvoicesTable({ invoices, isLoading, onOpenDetails }) {
   const formatDate = (dateStr) => {
     if (!dateStr) return 'N/A';
     try {
-      return new Date(dateStr).toLocaleDateString('ar-EG', {
+      return new Date(dateStr).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
         day: 'numeric'

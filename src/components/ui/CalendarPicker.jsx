@@ -3,29 +3,29 @@ import { Popover, PopoverTrigger, PopoverContent } from './popover';
 import { Calendar, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
-const MONTHS_AR = [
-  'يناير',
-  'فبراير',
-  'مارس',
-  'أبريل',
-  'مايو',
-  'يونيو',
-  'يوليو',
-  'أغسطس',
-  'سبتمبر',
-  'أكتوبر',
-  'نوفمبر',
-  'ديسمبر'
+const MONTHS_EN = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
 ];
 
-const WEEKDAYS_AR = [
-  'السبت',
-  'الأحد',
-  'الاثنين',
-  'الثلاثاء',
-  'الأربعاء',
-  'الخميس',
-  'الجمعة'
+const WEEKDAYS_EN = [
+  'Sat',
+  'Sun',
+  'Mon',
+  'Tue',
+  'Wed',
+  'Thu',
+  'Fri'
 ];
 
 
@@ -58,9 +58,9 @@ const getDisplayLabel = (dateStr, placeholder = 'اختر التاريخ') => {
   const date = parseDate(dateStr);
   if (!date) return placeholder;
   try {
-    return new Intl.DateTimeFormat('ar-EG', {
+    return new Intl.DateTimeFormat('en-US', {
       day: 'numeric',
-      month: 'long',
+      month: 'short',
       year: 'numeric'
     }).format(date);
   } catch (e) {
@@ -186,7 +186,7 @@ const CalendarPicker = ({ value, onChange, placeholder = 'اختر التاري�
               onChange={(e) => setViewMonth(parseInt(e.target.value, 10))}
               className="bg-transparent border-0 font-bold text-gray-800 dark:text-gray-100 text-sm outline-none cursor-pointer focus:ring-0 py-0 px-1 text-center"
             >
-              {MONTHS_AR.map((month, idx) => (
+              {MONTHS_EN.map((month, idx) => (
                 <option key={idx} value={idx} className="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">
                   {month}
                 </option>
@@ -218,9 +218,9 @@ const CalendarPicker = ({ value, onChange, placeholder = 'اختر التاري�
 
         
         <div className="grid grid-cols-7 gap-1 text-center mb-2">
-          {WEEKDAYS_AR.map((day, idx) => (
+          {WEEKDAYS_EN.map((day, idx) => (
             <span key={idx} className="text-gray-400 dark:text-gray-500 font-bold text-xs py-1">
-              {day.substring(0, 3)}
+              {day}
             </span>
           ))}
         </div>

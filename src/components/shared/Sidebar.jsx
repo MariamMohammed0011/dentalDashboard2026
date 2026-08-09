@@ -43,20 +43,20 @@ export const NavItem = ({ to, labelKey, icon: Icon, isCollapsed, onClick, childr
 
   if (children) {
     return (
-      <div className="relative w-full flex flex-col">
+      <div className="relative w-full flex flex-col my-0.5">
         <button 
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className={`relative z-10 flex items-center py-2 transition-all duration-300 mx-4 my-0.5 rounded-xl group cursor-pointer ${
+          className={`relative z-10 flex items-center py-2.5 transition-all duration-300 mx-3 rounded-2xl group cursor-pointer ${
             isActive 
-              ? "bg-sidebar-active text-primary font-black shadow-sm" 
+              ? "bg-sidebar-active text-primary font-black shadow-sm border border-primary/20" 
               : "text-text-muted font-bold hover:text-primary hover:bg-white/10 dark:hover:bg-white/5"
-          } ${isCollapsed ? "justify-center px-0" : "justify-between px-4"}`}
+          } ${isCollapsed ? "justify-center px-0" : "justify-between px-3.5"}`}
         >
           <div className="flex items-center gap-3">
-            <Icon size={isCollapsed ? 22 : 20} className={`transition-all duration-300 ${isActive ? "text-primary scale-110" : "text-text-muted/60"} group-hover:rotate-[15deg] group-hover:scale-110`} />
+            <Icon size={isCollapsed ? 22 : 20} className={`transition-all duration-300 ${isActive ? "text-primary scale-110" : "text-text-muted/70"} group-hover:rotate-[15deg] group-hover:scale-110`} />
             {!isCollapsed && (
-              <span className="whitespace-nowrap text-sm font-black">
+              <span className="whitespace-nowrap text-sm font-black font-zain">
                 {t(labelKey)}
               </span>
             )}
@@ -79,7 +79,7 @@ export const NavItem = ({ to, labelKey, icon: Icon, isCollapsed, onClick, childr
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="overflow-hidden flex flex-col gap-1 mr-9 pr-4 border-r border-[#367AFF]/25 mt-0.5 mb-1"
+              className="overflow-hidden flex flex-col gap-1.5 mr-8 pr-3 border-r-2 border-primary/30 my-1.5"
             >
               {children.map((child) => {
                 const isChildActive = location.pathname === child.to;
@@ -88,9 +88,9 @@ export const NavItem = ({ to, labelKey, icon: Icon, isCollapsed, onClick, childr
                     key={child.to}
                     to={child.to}
                     onClick={onClick}
-                    className={`py-1.5 px-3 rounded-lg text-xs font-bold transition-all duration-200 text-right ${
+                    className={`py-2 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-right ${
                       isChildActive
-                        ? "text-primary font-black bg-primary/10 dark:bg-primary/20"
+                        ? "text-primary font-black bg-primary/10 dark:bg-primary/20 shadow-2xs"
                         : "text-text-muted hover:text-primary hover:bg-white/10 dark:hover:bg-white/5"
                     }`}
                   >
@@ -106,19 +106,19 @@ export const NavItem = ({ to, labelKey, icon: Icon, isCollapsed, onClick, childr
   }
 
   return (
-    <div className="relative w-full ">
+    <div className="relative w-full my-0.5">
       <Link 
         to={to} 
         onClick={onClick}
-        className={`relative z-10 flex items-center py-2 transition-all duration-300 mx-4 my-0.5 rounded-xl group ${
+        className={`relative z-10 flex items-center py-2.5 transition-all duration-300 mx-3 rounded-2xl group ${
           isActive 
-            ? "bg-sidebar-active text-primary font-black shadow-md scale-[1.02]" 
+            ? "bg-sidebar-active text-primary font-black shadow-md scale-[1.02] border border-primary/20" 
             : "text-text-muted font-bold hover:text-primary hover:bg-white/10 dark:hover:bg-white/5"
-        } ${isCollapsed ? "justify-center px-0" : "justify-start px-4 gap-3"}`}
+        } ${isCollapsed ? "justify-center px-0" : "justify-start px-3.5 gap-3"}`}
       >
-        <Icon size={isCollapsed ? 22 : 20} className={`transition-all duration-300 ${isActive ? "text-primary scale-110" : "text-text-muted/60"} group-hover:rotate-[15deg] group-hover:scale-110`} />
+        <Icon size={isCollapsed ? 22 : 20} className={`transition-all duration-300 ${isActive ? "text-primary scale-110" : "text-text-muted/70"} group-hover:rotate-[15deg] group-hover:scale-110`} />
         {!isCollapsed && (
-          <span className={`whitespace-nowrap transition-transform duration-300 origin-right text-sm ${isActive ? "scale-110 translate-x-1" : ""}`}>
+          <span className={`whitespace-nowrap font-zain transition-transform duration-300 origin-right text-sm ${isActive ? "scale-105 translate-x-1" : ""}`}>
             {t(labelKey)}
           </span>
         )}
@@ -132,8 +132,7 @@ export const navItems = [
   { to: "/dashboard/orders", labelKey: "sidebar.orders", icon: ClipboardList },
   { to: "/dashboard/membership-requests", labelKey: "sidebar.membershipRequests", icon: UserPlus },
   { to: "/dashboard/doctors", labelKey: "sidebar.doctors", icon: UserCog },
-   { to: "/dashboard/lab-tech", labelKey: "sidebar.labTechnicians", icon: BookOpen },
- 
+  { to: "/dashboard/lab-tech", labelKey: "sidebar.labTechnicians", icon: BookOpen },
   { to: "/dashboard/labs", labelKey: "sidebar.labs", icon: FlaskConical },
   { to: "/dashboard/subscriptions", labelKey: "sidebar.subscriptions", icon: CreditCard },
   { to: "/dashboard/blogs", labelKey: "sidebar.blogs", icon: BookOpen },
@@ -151,21 +150,20 @@ export const navItems = [
       },
     ],
   },
-  // {
-  //   labelKey: "sidebar.notifications",
-  //   icon: Bell,
-  //   children: [
-  //     {
-  //       to: "/dashboard/notifications/send",
-  //       labelKey: "sidebar.sendNotification",
-  //     },
-  //     {
-  //       to: "/dashboard/notifications",
-  //       labelKey: "sidebar.notificationArchive",
-  //     },
-  //   ],
-  // },
-   { to: "/dashboard/reports", labelKey: "sidebar.reports", icon: FileText },
+  {
+    labelKey: "sidebar.reports",
+    icon: FileText,
+    children: [
+      {
+        to: "/dashboard/reports/financial",
+        labelKey: "sidebar.financialReports",
+      },
+      {
+        to: "/dashboard/reports/subscriptions",
+        labelKey: "sidebar.subscriptionReports",
+      },
+    ],
+  },
   { to: "/dashboard/invoices", labelKey: "sidebar.invoices", icon: Receipt },
   { to: "/dashboard/intervention-log", labelKey: "sidebar.interventionLog", icon: History },
 ];
@@ -174,7 +172,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
 
   return (
     <aside 
-      className={`h-screen   flex-col py-4 bg-bg-main z-20 transition-all duration-300 relative border-l border-border-main hidden lg:flex flex-shrink-0 ${
+      className={`h-screen flex flex-col py-4 bg-bg-main z-20 transition-all duration-300 relative border-l border-border-main hidden lg:flex flex-shrink-0 select-none ${
         isCollapsed ? "w-[80px] min-w-[80px] max-w-[80px]" : "w-[260px] min-w-[260px] max-w-[260px]"
       }`} 
       dir="rtl"
@@ -182,25 +180,23 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
       
       <button 
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -left-3 top-24 w-6 h-6 bg-sidebar-active rounded-full shadow-md flex items-center justify-center text-primary z-30 border border-border-main hover:scale-110 transition-transform"
+        className="absolute -left-3 top-24 w-6.5 h-6.5 bg-sidebar-active rounded-full shadow-md flex items-center justify-center text-primary z-30 border border-border-main hover:scale-110 transition-transform cursor-pointer"
       >
-        {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+        {isCollapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
       </button>
 
       
-      <div className={`px-4 mb-6 flex justify-center transition-all ${isCollapsed ? "scale-75" : ""}`}>
-        <img src={logoImg} alt="Dental Dash" className={`${isCollapsed ? "w-10" : "w-20"} object-contain`} />
+      <div className={`px-4 mb-4 pb-2 border-b border-border-main/30 flex justify-center transition-all shrink-0 ${isCollapsed ? "scale-75 mb-2" : ""}`}>
+        <img src={logoImg} alt="Dental Dash" className={`${isCollapsed ? "w-10 h-10" : "w-26 h-18"} object-contain`} />
       </div>
 
       
-      <nav className="flex flex-col justify-between flex-grow pb-4 overflow-y-auto custom-scrollbar">
-        <div className="flex flex-col">
+      <nav className="flex flex-col justify-between flex-1 py-1 overflow-y-auto custom-scrollbar">
+        <div className="flex flex-col justify-evenly flex-1 min-h-0 py-1 gap-1">
           {navItems.map((item) => (
             <NavItem key={item.labelKey} {...item} isCollapsed={isCollapsed} />
           ))}
         </div>
-        
-        {/* <NavItem to="/dashboard/settings" labelKey="sidebar.settings" icon={Settings} isCollapsed={isCollapsed} /> */}
       </nav>
     </aside>
   );

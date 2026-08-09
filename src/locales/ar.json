@@ -14,7 +14,7 @@
     "suspended": "معلق",
     "pending": "قيد المراجعة",
     "pendingVerification": "قيد التثبت",
-    "pendingAdminApproval": "قيد مراجعة الأدمن",
+    "pendingAdminApproval": "قيد مراجعة ",
     "readOnly": "قراءة فقط",
     "details": "التفاصيل",
     "avatar": "الصورة الشخصية",
@@ -44,6 +44,8 @@
     "sendNotification": "إرسال إشعار",
     "notificationArchive": "أرشيف الإشعارات",
     "reports": "التقارير",
+    "financialReports": "التقارير المالية",
+    "subscriptionReports": "تقارير حالة الاشتراكات",
     "interventionLog": "سجلات التدخل والشكاوى",
     "invoices": "الفواتير",
     "settings": "الإعدادات"
@@ -250,7 +252,17 @@
   },
   "technicians": {
     "title": "فنيي المخابر",
-    "searchPlaceholder": "ابحث باسم الفني... "
+    "searchPlaceholder": "ابحث باسم المخبري، البريد أو المدينة...",
+    "table": {
+      "name": "اسم المخبري",
+      "workplace": "مكان العمل",
+      "location": "المدينة والعنوان",
+      "status": "الحالة"
+    },
+    "noTechniciansFound": "لا يوجد مخبرين طابقوا شروط البحث",
+    "unspecified": "غير محدد",
+    "unspecifiedLocation": "غير محددة",
+    "noName": "بدون اسم"
   },
   "orders": {
     "title": "الطلبات",

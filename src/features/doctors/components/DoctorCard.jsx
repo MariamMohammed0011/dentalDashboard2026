@@ -7,7 +7,7 @@ import framerImg from '../../../assets/framer.png';
 const DoctorCard = ({ id, name, email, phone, clinicName, clinicAddress, city, country, status, createdAt, statusBadge }) => {
   const { t } = useTranslation();
   const isStatusActive = status?.toLowerCase() === 'active';
-  const formattedDate = createdAt ? new Date(createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+  const formattedDate = createdAt ? new Date(createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
 
   return (
     <motion.div 

@@ -291,7 +291,7 @@ export default function FinancialReportSection({ financialData, isLoading }) {
           {/* Dual Smart Ratio Cards */}
           <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Subscriptions Smart Box */}
-            <div className="p-5 rounded-3xl bg-emerald-500/5 border-2 border-emerald-500/20 hover:border-emerald-500/50 transition-all duration-300 flex flex-col justify-between gap-4">
+            <div className="p-5 rounded-xl bg-emerald-500/5 border-2 border-emerald-500/20 hover:border-emerald-500/50 transition-all duration-300 flex flex-col justify-between gap-4">
               <div className="flex justify-between items-center">
                 <div className="p-2.5 rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
                   <CreditCard size={20} />
@@ -313,7 +313,7 @@ export default function FinancialReportSection({ financialData, isLoading }) {
             </div>
 
             {/* Paid Ads Smart Box */}
-            <div className="p-5 rounded-3xl bg-purple-500/5 border-2 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 flex flex-col justify-between gap-4">
+            <div className="p-5 rounded-xl bg-purple-500/5 border-2 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 flex flex-col justify-between gap-4">
               <div className="flex justify-between items-center">
                 <div className="p-2.5 rounded-2xl bg-purple-500/15 text-purple-600 dark:text-purple-400">
                   <Megaphone size={20} />
