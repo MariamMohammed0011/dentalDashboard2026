@@ -41,12 +41,10 @@ const LabsPage = () => {
     setStatusFilter,
     ratingSort,
     setRatingSort,
-    materialFilter,
-    setMaterialFilter,
-    serviceFilter,
-    setServiceFilter,
-    availableMaterials,
-    availableServices,
+    availabilityFilter,
+    setAvailabilityFilter,
+    scanVisitFilter,
+    setScanVisitFilter,
     hasActiveFilters,
     resetFilters,
   } = useLabs();
@@ -55,7 +53,7 @@ const LabsPage = () => {
     <div className="flex flex-col gap-6 px-2 sm:px-8 lg:px-2 pb-10 min-h-full" dir="rtl">
 
       <div className="flex flex-col sm:flex-row justify-between items-center py-2 px-0 gap-4 w-full" dir="rtl">
-        <h1 className="text-2xl sm:text-3xl font-medium text-slate-800 dark:text-gray-100 flex items-center gap-2">
+        <h1 className="text-2xl sm:text-3xl font-medium text-text-main  flex items-center gap-2">
           <FlaskConical size={28} className="text-emerald-600 dark:text-emerald-400" />
           {t('labs.title')}
         </h1>
@@ -77,12 +75,10 @@ const LabsPage = () => {
           onStatusChange={setStatusFilter}
           ratingSort={ratingSort}
           onRatingSortChange={setRatingSort}
-          materialFilter={materialFilter}
-          onMaterialChange={setMaterialFilter}
-          serviceFilter={serviceFilter}
-          onServiceChange={setServiceFilter}
-          availableMaterials={availableMaterials}
-          availableServices={availableServices}
+          availabilityFilter={availabilityFilter}
+          onAvailabilityChange={setAvailabilityFilter}
+          scanVisitFilter={scanVisitFilter}
+          onScanVisitChange={setScanVisitFilter}
           onResetFilters={resetFilters}
           hasActiveFilters={hasActiveFilters}
         />
@@ -119,6 +115,8 @@ const LabsPage = () => {
                 id={lab.id}
                 name={lab.labNamePlace || lab.name || '—'}
                 averageRating={lab.averageRating}
+                availability={lab.availability}
+                subscriptionEndUtc={lab.subscriptionEndUtc}
                 onShowDetails={handleShowDetails}
               />
             ))

@@ -1,11 +1,27 @@
 import { useState, useEffect } from 'react';
-import { fetchActiveSubscriptions, fetchExpiredSubscriptions, activateSubscription, renewSubscription } from '../services/subscriptionApi';
+import { fetchActiveSubscriptions, fetchExpiredSubscriptions, fetchPendingPaymentAccounts, activateSubscription, renewSubscription, updateAllSubscriptionAmounts } from '../services/subscriptionApi';
 import { toast } from 'sonner';
 
+// حسابات "بانتظار الدفع" شكلها مختلف عن سجل الاشتراك (لا يوجد اشتراك فعلي بعد)
+// نوحّد الشكل هون عشان يشتغل عليها نفس البحث وزر "تفعيل الاشتراك" بدون أي تعديل إضافي
+const normalizePendingPaymentAccount = (acc) => ({
+  labId: acc.id,
+  labName: acc.namePlace || acc.name || `مخبر #${acc.id}`,
+  ownerName: acc.name,
+  email: acc.email,
+  phone: acc.phone,
+  addressPlace: acc.addressPlace,
+  cityPlace: acc.cityPlace,
+  countryPlace: acc.countryPlace,
+  status: acc.status,
+  createdAt: acc.createdAt,
+});
+
 export const useSubscriptions = () => {
-  const [activeTab, setActiveTab] = useState('active'); // 'active' | 'expired'
+  const [activeTab, setActiveTab] = useState('active'); // 'active' | 'expired' | 'pendingPayment'
   const [activeSubs, setActiveSubs] = useState([]);
   const [expiredSubs, setExpiredSubs] = useState([]);
+  const [pendingPaymentAccounts, setPendingPaymentAccounts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -14,19 +30,25 @@ export const useSubscriptions = () => {
   const [modalType, setModalType] = useState('add'); // 'add' | 'activate' | 'renew'
   const [selectedSub, setSelectedSub] = useState(null);
 
+  // Bulk "update all amounts" Modal State
+  const [amountModalOpen, setAmountModalOpen] = useState(false);
+
   const load = async () => {
     setLoading(true);
     try {
-      const [activeData, expiredData] = await Promise.all([
+      const [activeData, expiredData, pendingPaymentData] = await Promise.all([
         fetchActiveSubscriptions().catch(() => []),
-        fetchExpiredSubscriptions().catch(() => [])
+        fetchExpiredSubscriptions().catch(() => []),
+        fetchPendingPaymentAccounts().catch(() => [])
       ]);
 
       const activeArray = Array.isArray(activeData) ? activeData : (activeData?.subscriptions || []);
       const expiredArray = Array.isArray(expiredData) ? expiredData : (expiredData?.subscriptions || []);
+      const pendingPaymentArray = Array.isArray(pendingPaymentData) ? pendingPaymentData : (pendingPaymentData?.accounts || []);
 
       setActiveSubs(activeArray);
       setExpiredSubs(expiredArray);
+      setPendingPaymentAccounts(pendingPaymentArray.map(normalizePendingPaymentAccount));
     } catch (e) {
       console.error('Error loading subscriptions', e);
       toast.error('حدث خطأ أثناء تحميل بيانات الاشتراكات');
@@ -57,6 +79,23 @@ export const useSubscriptions = () => {
     setModalOpen(true);
   };
 
+  const handleOpenAmountModal = () => {
+    setAmountModalOpen(true);
+  };
+
+  const handleUpdateAllAmounts = async (newAmount) => {
+    try {
+      const res = await updateAllSubscriptionAmounts(newAmount);
+      toast.success(res?.message || 'تم تحديث قيمة الاشتراك لجميع المخابر بنجاح');
+      load();
+    } catch (e) {
+      console.error(e);
+      const errMsg = e?.response?.data?.message || 'حدث خطأ أثناء تحديث قيمة الاشتراك';
+      toast.error(errMsg);
+      throw e;
+    }
+  };
+
   const handleModalSubmit = async (labId, payload) => {
     try {
       if (modalType === 'renew') {
@@ -76,7 +115,7 @@ export const useSubscriptions = () => {
   };
 
   // تصفية الاشتراكات الحالية حسب التبويب المختار وجملة البحث
-  const rawList = activeTab === 'active' ? activeSubs : expiredSubs;
+  const rawList = activeTab === 'active' ? activeSubs : activeTab === 'expired' ? expiredSubs : pendingPaymentAccounts;
   const filteredSubs = rawList.filter(item => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase().trim();
@@ -90,6 +129,7 @@ export const useSubscriptions = () => {
     subs: filteredSubs,
     activeCount: activeSubs.length,
     expiredCount: expiredSubs.length,
+    pendingPaymentCount: pendingPaymentAccounts.length,
     activeTab,
     setActiveTab,
     searchQuery,
@@ -103,6 +143,11 @@ export const useSubscriptions = () => {
     handleOpenActivateModal,
     handleOpenRenewModal,
     handleModalSubmit,
-    refreshSubscriptions: load
+    refreshSubscriptions: load,
+
+    amountModalOpen,
+    setAmountModalOpen,
+    handleOpenAmountModal,
+    handleUpdateAllAmounts,
   };
 };

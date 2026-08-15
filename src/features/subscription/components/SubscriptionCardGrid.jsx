@@ -55,7 +55,7 @@ export default function SubscriptionCardGrid({ subs, isLoading, onActivate, onRe
           // Calculate approximate percentage of elapsed time
           const totalDuration = Math.max(1, end - start);
           const elapsed = Math.max(0, today - start);
-          const progressPercent = isActive ? Math.min(100, Math.max(5, Math.round((elapsed / totalDuration) * 100))) : 100;
+          const progressPercent = isActive ? Math.min(100, Math.round((elapsed / totalDuration) * 100)) : 100;
 
           return (
             <motion.div

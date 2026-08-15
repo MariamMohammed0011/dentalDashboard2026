@@ -158,14 +158,14 @@ export default function InvoicesTable({ invoices, isLoading, onOpenDetails }) {
         </table>
       </div>
 
-      {/* ── 2. Mobile Layout (نفس ألوانك وبنيتك السابقة) ── */}
-      <div className="grid gap-4 md:grid-cols-2 lg:hidden">
+      {/* ── 2. Tablet Layout (2 Columns) ── */}
+      <div className="hidden md:grid lg:hidden gap-4 grid-cols-2">
         {isLoading ? (
-          Array(3).fill(0).map((_, i) => (
-            <div key={i} className="animate-pulse bg-white/60 dark:bg-slate-900/40 border border-slate-100/60 dark:border-slate-800/60 rounded-2xl h-[160px] w-full" />
+          Array(4).fill(0).map((_, i) => (
+            <div key={i} className="animate-pulse bg-white/60 dark:bg-slate-900/40 border border-slate-100/60 dark:border-slate-800/60 rounded-2xl h-[200px] w-full" />
           ))
         ) : invoices.length === 0 ? (
-          <div className="p-8 bg-white/60 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 rounded-2xl text-center text-text-muted font-bold">
+          <div className="col-span-2 p-8 bg-white/60 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 rounded-2xl text-center text-text-muted font-bold">
             {t('invoices.noInvoices')}
           </div>
         ) : (
@@ -174,32 +174,131 @@ export default function InvoicesTable({ invoices, isLoading, onOpenDetails }) {
             return (
               <div
                 key={`${inv.category || 'inv'}-${inv.id}`}
-                className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-sm"
+                className="bg-white dark:bg-slate-900 border border-slate-100/80 dark:border-slate-800/80 rounded-2xl p-4 space-y-3 shadow-sm hover:shadow-md transition-all"
               >
-                <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-2">
-                  <span className="text-xs font-black text-primary">#INV-{inv.id}</span>
-                  <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black ${
-                    isPaid 
-                      ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400' 
-                      : 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400'
+                {/* Header */}
+                <div className="flex justify-between items-start gap-2">
+                  <div>
+                    <p className="text-[11px] font-bold text-text-muted uppercase tracking-wide">الفاتورة</p>
+                    <p className="text-lg font-black text-primary">#{inv.id}</p>
+                  </div>
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-black whitespace-nowrap ${
+                    isPaid
+                      ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50'
+                      : 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50'
                   }`}>
                     {isPaid ? t('invoices.paid') : t('invoices.unpaid')}
                   </span>
                 </div>
 
-                <div>
-                  <h4 className="font-extrabold text-sm text-text-main dark:text-gray-100 truncate">{inv.userName || 'غير معروف'}</h4>
-                  <p className="text-xs text-text-muted font-semibold truncate">{inv.title || 'إعلان مدفوع'}</p>
+                {/* Client Info */}
+                <div className="border-t border-slate-100 dark:border-slate-800 pt-3 space-y-2">
+                  <p className="text-[11px] font-bold text-text-muted uppercase">العميل</p>
+                  <p className="font-bold text-sm text-text-main break-words">{inv.userName || 'غير معروف'}</p>
+                  <p className="text-xs text-text-muted font-semibold">{inv.namePlace || inv.userEmail || '—'}</p>
                 </div>
 
-                <div className="flex justify-between items-center text-xs font-bold pt-2 border-t border-slate-100 dark:border-slate-800">
-                  <span className="text-primary font-black text-sm">{Number(inv.price || 0).toLocaleString()} ر.س</span>
+                {/* Service Info */}
+                <div className="border-t border-slate-100 dark:border-slate-800 pt-3 space-y-2">
+                  <p className="text-[11px] font-bold text-text-muted uppercase">الخدمة</p>
+                  <p className="text-sm font-bold text-text-main break-words">{inv.title || 'إعلان مدفوع'}</p>
+                  {inv.target && (
+                    <p className="text-[11px] font-black text-primary flex items-center gap-1">
+                      <Tag size={12} />
+                      <span>{inv.target}</span>
+                    </p>
+                  )}
+                </div>
+
+                {/* Footer */}
+                <div className="border-t border-slate-100 dark:border-slate-800 pt-3 flex justify-between items-center">
+                  <div>
+                    <p className="text-[11px] font-bold text-text-muted mb-1">المبلغ</p>
+                    <p className="text-lg font-black text-primary">{Number(inv.price || 0).toLocaleString()} <span className="text-xs text-text-muted font-bold">ر.س</span></p>
+                  </div>
                   <button
                     onClick={() => onOpenDetails(inv)}
-                    className="flex items-center gap-1 px-3 py-1.5 bg-primary text-white rounded-xl text-xs font-black"
+                    className="flex items-center gap-1.5 px-3 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg text-xs font-black transition-all active:scale-95"
                   >
-                    <Eye size={14} />
-                    <span>عرض التفاصيل</span>
+                    <Eye size={16} />
+                    <span className="hidden sm:inline">عرض</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* ── 3. Mobile Layout (Full Width Cards) ── */}
+      <div className="grid gap-3 md:hidden">
+        {isLoading ? (
+          Array(3).fill(0).map((_, i) => (
+            <div key={i} className="animate-pulse bg-white/60 dark:bg-slate-900/40 border border-slate-100/60 dark:border-slate-800/60 rounded-xl h-[150px] w-full" />
+          ))
+        ) : invoices.length === 0 ? (
+          <div className="p-8 bg-white/60 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 rounded-xl text-center text-text-muted font-bold">
+            {t('invoices.noInvoices')}
+          </div>
+        ) : (
+          invoices.map((inv) => {
+            const isPaid = inv.isPaidStatus ?? inv.isPaid;
+            return (
+              <div
+                key={`${inv.category || 'inv'}-${inv.id}`}
+                className="bg-white dark:bg-slate-900 border border-slate-100/80 dark:border-slate-800/80 rounded-xl p-3 space-y-2.5 shadow-sm active:shadow-lg transition-all"
+              >
+                {/* Top Row: ID + Status */}
+                <div className="flex justify-between items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <Hash size={14} className="text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-text-muted font-bold">الفاتورة</p>
+                      <p className="font-black text-sm text-primary">#{inv.id}</p>
+                    </div>
+                  </div>
+                  <span className={`inline-flex items-center gap-0.5 px-2 py-1 rounded-lg text-[10px] font-black whitespace-nowrap ${
+                    isPaid
+                      ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400'
+                      : 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400'
+                  }`}>
+                    {isPaid ? <CheckCircle2 size={12} /> : <XCircle size={12} />}
+                    <span>{isPaid ? t('invoices.paid') : t('invoices.unpaid')}</span>
+                  </span>
+                </div>
+
+                {/* Client Name */}
+                <div className="flex items-start gap-2">
+                  <User size={14} className="text-slate-400 shrink-0 mt-0.5" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] text-text-muted font-bold">العميل</p>
+                    <p className="text-xs font-bold text-text-main break-words">{inv.userName || 'غير معروف'}</p>
+                  </div>
+                </div>
+
+                {/* Service Title */}
+                <div className="flex items-start gap-2">
+                  <Receipt size={14} className="text-primary shrink-0 mt-0.5" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] text-text-muted font-bold">الخدمة</p>
+                    <p className="text-xs font-bold text-text-main break-words">{inv.title || 'إعلان مدفوع'}</p>
+                  </div>
+                </div>
+
+                {/* Amount + Action */}
+                <div className="flex justify-between items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <div>
+                    <p className="text-[10px] text-text-muted font-bold mb-0.5">المبلغ</p>
+                    <p className="font-black text-sm text-primary">{Number(inv.price || 0).toLocaleString()} <span className="text-[10px] font-bold">ر.س</span></p>
+                  </div>
+                  <button
+                    onClick={() => onOpenDetails(inv)}
+                    className="flex items-center justify-center w-10 h-10 bg-primary hover:bg-primary-dark text-white rounded-lg transition-all active:scale-95"
+                    title="عرض التفاصيل"
+                  >
+                    <Eye size={18} />
                   </button>
                 </div>
               </div>

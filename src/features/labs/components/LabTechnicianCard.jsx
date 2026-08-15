@@ -18,25 +18,32 @@ const StatusBadgeButton = ({ tech, updatingTechId, onOpenModal }) => {
   }
 
   const getBadgeConfig = () => {
-    if (currentStatus === 'active' || currentStatus === '2') {
+    if (currentStatus === 'active' || currentStatus === '3') {
       return {
         label: 'نشط',
         style: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20',
         dot: 'bg-emerald-500 animate-pulse'
       };
     }
-    if (currentStatus === 'suspended' || currentStatus === '4') {
+    if (currentStatus === 'suspended' || currentStatus === '5') {
       return {
         label: 'معلق',
         style: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20 hover:bg-rose-500/20',
         dot: 'bg-rose-500'
       };
     }
-    if (currentStatus === 'readonly' || currentStatus === '3') {
+    if (currentStatus === 'readonly' || currentStatus === '4') {
       return {
         label: 'قراءة فقط',
         style: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20 hover:bg-indigo-500/20',
         dot: 'bg-indigo-500'
+      };
+    }
+    if (currentStatus === 'pendingpayment' || currentStatus === '2') {
+      return {
+        label: 'بانتظار الدفع',
+        style: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20 hover:bg-purple-500/20',
+        dot: 'bg-purple-500 animate-pulse'
       };
     }
     if (currentStatus === 'pendingadminapproval' || currentStatus === 'pending' || currentStatus === '1') {
@@ -44,6 +51,13 @@ const StatusBadgeButton = ({ tech, updatingTechId, onOpenModal }) => {
         label: 'قيد المراجعة',
         style: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 hover:bg-amber-500/20',
         dot: 'bg-amber-500 animate-pulse'
+      };
+    }
+    if (currentStatus === 'pendingverification' || currentStatus === '0') {
+      return {
+        label: 'قيد التثبت',
+        style: 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20 hover:bg-orange-500/20',
+        dot: 'bg-orange-500 animate-pulse'
       };
     }
     return {

@@ -37,11 +37,10 @@ const DoctorsHeader = ({ selectedStatus, onStatusChange }) => {
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-2 px-0 gap-3 sm:gap-4 w-full" dir="rtl">
       
       <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full sm:w-auto justify-between sm:justify-start">
-        <h1 className="text-lg sm:text-xl font-black text-slate-800 dark:text-gray-100 flex items-center gap-2">
-          <Users size={22} className="text-primary" />
-          {t('doctors.title')}
-        </h1>  
-
+     <h1 className="text-xl sm:text-3xl font-zain font-black text-text-main flex items-center gap-3 shrink-0">
+  <Users size={28} className="text-primary" />
+  {t('doctors.title')}
+</h1>
         {!isLoading && count > 0 && (
           <div 
             onClick={() => navigate('/dashboard/membership-requests')}
@@ -68,45 +67,55 @@ const DoctorsHeader = ({ selectedStatus, onStatusChange }) => {
         )}
       </div>
       
-      <div className="relative w-full sm:w-[240px] md:w-[260px]" ref={dropdownRef}>
-        <button
-          type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-between w-full bg-white dark:bg-slate-900 text-text-main dark:text-gray-200 font-bold text-xs rounded-2xl px-4 py-2.5 sm:py-3 border border-slate-100 dark:border-slate-800/80 shadow-sm hover:border-primary/20 dark:hover:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-200 cursor-pointer"
-        >
-          <span className="truncate">{currentLabel}</span>
-          <ChevronDown 
-            size={16} 
-            className={`text-text-muted dark:text-slate-400 transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180' : ''}`} 
-          />
-        </button>
+    <div className="relative w-full sm:w-[240px] md:w-[260px]" ref={dropdownRef}>
+  {/* زر القائمة المنسدلة الرئيسي */}
+  <button
+    type="button"
+    onClick={() => setIsOpen(!isOpen)}
+    className={`flex items-center justify-between w-full bg-bg-card text-text-main font-bold text-xs rounded-2xl px-4 py-2.5 sm:py-3 border shadow-sm transition-all duration-300 cursor-pointer ${
+      isOpen
+        ? 'border-primary/40 shadow-md ring-1 ring-primary/20'
+        : 'border-border-subtle hover:border-border-main hover:shadow-md'
+    } focus:outline-none focus:ring-2 focus:ring-primary/20`}
+  >
+    <span className="truncate">{currentLabel}</span>
+    <ChevronDown
+      size={16}
+      className={`text-text-muted transition-transform duration-300 shrink-0 ${isOpen ? 'rotate-180' : ''}`}
+    />
+  </button>
 
-        {isOpen && (
-          <div className="absolute left-0 mt-2 w-full bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl shadow-lg py-1.5 z-50 animate-in fade-in slide-in-from-top-1 duration-200">
-            {filters.map((filter) => {
-              const isSelected = selectedStatus === filter.id;
-              return (
-                <button
-                  key={filter.id}
-                  type="button"
-                  onClick={() => {
-                    onStatusChange(filter.id);
-                    setIsOpen(false);
-                  }}
-                  className={`flex items-center justify-between w-[calc(100%-8px)] mx-auto px-4 py-2.5 text-right text-xs font-bold transition-all duration-200 rounded-xl cursor-pointer ${
-                    isSelected 
-                      ? 'bg-primary/10 text-primary dark:bg-primary/20' 
-                      : 'text-text-muted dark:text-slate-350 hover:bg-slate-100/70 dark:hover:bg-slate-800/60 hover:text-text-main dark:hover:text-white'
-                  }`}
-                >
-                  <span>{filter.label}</span>
-                  {isSelected && <Check size={14} className="text-primary" />}
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </div>
+  {/* القائمة المنبثقة */}
+  {isOpen && (
+    <div className="absolute left-0 right-0 mt-3 w-full bg-bg-card border border-border-subtle rounded-2xl shadow-xl py-2 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+      {filters.map((filter, index) => {
+        const isSelected = selectedStatus === filter.id;
+        return (
+          <button
+            key={filter.id}
+            type="button"
+            onClick={() => {
+              onStatusChange(filter.id);
+              setIsOpen(false);
+            }}
+            className={`flex items-center justify-between w-[calc(100%-16px)] mx-2 px-3.5 py-3 text-right text-xs font-bold transition-all duration-300 rounded-xl cursor-pointer group ${
+              isSelected
+                ? 'bg-gradient-to-r from-primary/15 to-primary/5 text-primary shadow-sm border border-primary/20'
+                : 'text-text-muted hover:bg-neutral-light-gray/40 hover:text-text-main'
+            } ${index !== filters.length - 1 ? 'border-b border-transparent group-hover:border-border-subtle' : ''}`}
+          >
+            <span className="truncate">{filter.label}</span>
+            {isSelected && (
+              <div className="ml-2 flex-shrink-0">
+                <Check size={16} className="text-primary animate-in scale-in-95 duration-200" />
+              </div>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  )}
+</div>
 
     </div>
   );

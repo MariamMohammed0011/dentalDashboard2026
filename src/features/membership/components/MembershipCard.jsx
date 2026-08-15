@@ -49,25 +49,25 @@ const MembershipCard = ({ request, onUpdateStatus, onShowDetails }) => {
               <>
                
                 <button
-                  onClick={() => onUpdateStatus(id, 'rejected', type)}
+                  onClick={() => onUpdateStatus(id, 'rejected', type, name)}
                   className={`group/btn w-10 h-10 flex items-center justify-center rounded-full transition-all duration-500 ${status === 'rejected' ? 'bg-rose-500 text-white shadow-lg shadow-rose-100' : 'bg-white/50 text-rose-400 hover:bg-rose-50 hover:text-rose-600 border border-transparent hover:border-rose-100'}`}
                   title={t('membership.reject')}
                 >
                   <XCircle size={18} className="group-hover/btn:rotate-90 transition-transform duration-500" />
                 </button>
-                
-               
+
+
                 <button
-                  onClick={() => onUpdateStatus(id, 'suspended', type)}
+                  onClick={() => onUpdateStatus(id, 'suspended', type, name)}
                   className={`group/btn w-10 h-10 flex items-center justify-center rounded-full transition-all duration-500 ${status === 'suspended' ? 'bg-amber-500 text-white shadow-lg shadow-amber-100' : 'bg-white/50 text-amber-500 hover:bg-amber-50 hover:text-amber-600 border border-transparent hover:border-amber-100'}`}
                   title={t('membership.suspend')}
                 >
                   <Clock size={18} className="group-hover/btn:rotate-12 transition-transform" />
                 </button>
 
-               
+
                 <button
-                  onClick={() => onUpdateStatus(id, 'accepted', type)}
+                  onClick={() => onUpdateStatus(id, 'accepted', type, name)}
                   className={`flex-1 h-10 flex items-center justify-center gap-3 rounded-[1.5rem] font-black text-xs text-white transition-all active:scale-95 shadow-lg group/accept overflow-hidden relative ${isDoctor ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-100' : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-100'}`}
                 >
                   <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover/accept:translate-x-0 transition-transform duration-500 ease-out" />

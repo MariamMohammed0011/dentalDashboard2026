@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import MembershipHeader from '../components/MembershipHeader';
 import MembershipList from '../components/MembershipList';
 import MembershipDetailsModal from '../components/MembershipDetailsModal';
+import ApproveLabModal from '../components/ApproveLabModal';
 import ConfirmationModal from '../../../components/shared/ConfirmationModal';
 import { useMembership } from '../hooks/useMembership';
 
@@ -24,7 +25,7 @@ const MembershipRequestsPage = () => {
     selectedUserId
   } = useMembership();
 
-  
+
   const [confirmConfig, setConfirmConfig] = useState({
     isOpen: false,
     id: null,
@@ -35,8 +36,19 @@ const MembershipRequestsPage = () => {
     confirmType: 'warning'
   });
 
-  
-  const triggerUpdateStatus = (id, status, type) => {
+  // موافقة المخبر حالة خاصة: بتحتاج تحديد سعر الاشتراك الشهري (بعد الشهر المجاني) قبل التأكيد
+  const [approveLabConfig, setApproveLabConfig] = useState({
+    isOpen: false,
+    id: null,
+    labName: ''
+  });
+
+  const triggerUpdateStatus = (id, status, type, name) => {
+    if (status === 'accepted' && type === 'lab') {
+      setApproveLabConfig({ isOpen: true, id, labName: name || '' });
+      return;
+    }
+
     const configMap = {
       accepted: { title: t('membership.approve'), message: t('membership.confirmApproveMessage'), type: 'success' },
       rejected: { title: t('membership.reject'), message: t('membership.confirmRejectMessage'), type: 'danger' },
@@ -53,6 +65,10 @@ const MembershipRequestsPage = () => {
       message: config.message,
       confirmType: config.type
     });
+  };
+
+  const handleApproveLabConfirm = (amount) => {
+    return handleUpdateStatus(approveLabConfig.id, 'accepted', 'lab', amount);
   };
 
   return (
@@ -101,6 +117,13 @@ const MembershipRequestsPage = () => {
         type={confirmConfig.confirmType}
         confirmText={t('membership.confirmYes')}
         cancelText={t('membership.confirmNo')}
+      />
+
+      <ApproveLabModal
+        isOpen={approveLabConfig.isOpen}
+        labName={approveLabConfig.labName}
+        onClose={() => setApproveLabConfig({ isOpen: false, id: null, labName: '' })}
+        onConfirm={handleApproveLabConfirm}
       />
     </div>
   );

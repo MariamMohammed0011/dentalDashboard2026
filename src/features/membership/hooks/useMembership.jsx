@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { membershipApi } from '../services/membershipApi';
 import { useSearch } from '../../../components/shared/Search/hooks/useSearch';
-import { useUpdateUserStatus } from '../../../hooks/useUpdateUserStatus';
 export const useMembership = () => {
   // ── حالات التحكم في القائمة والفلترة ──
   const [activeTab, setActiveTab] = useState('doctor');
@@ -38,13 +38,28 @@ export const useMembership = () => {
     staleTime: 1000 * 60 * 5,
   });
 
-  // 3. استخدام الهوك الموحد لتحديث الحالة (قبول، رفض، تعليق)
-  const { updateStatus, isPending } = useUpdateUserStatus(['membership-requests']);
+  // 3. تحديث حالة طلب الانتساب (قبول، رفض، تعليق)
+  // ⚠️ يجب استدعاء membershipApi.updateRequestStatus مباشرةً (وليس هوك حالة الحساب الرقمية
+  // useUpdateUserStatus) لأن حالات هذا الطلب (accepted/rejected/suspended) نصوص وليست أرقام،
+  // وتذهب لمسار موافقة/رفض/تعليق منفصل تماماً في الباك اند (/AdminAccounts/.../approve|reject|suspend)
+  const queryClient = useQueryClient();
+  const { mutateAsync: updateStatus, isPending } = useMutation({
+    mutationFn: ({ id, status, type, amount }) => membershipApi.updateRequestStatus(id, status, type, amount),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['membership-requests'] });
+      toast.success('تم تحديث حالة الطلب بنجاح');
+    },
+    onError: (e) => {
+      console.error(e);
+      const errMsg = e?.response?.data?.message || 'حدث خطأ أثناء تحديث حالة الطلب';
+      toast.error(errMsg);
+    },
+  });
 
   // ── دالات المعالجة (Handlers) ──
-
-  const handleUpdateStatus = (id, status, type) => {
-    updateStatus({ id, status, type: type || activeTab });
+  // ترجع Promise عمداً: مودال موافقة المخبر بينتظرها ليعرض الخطأ محلياً ويقفل نفسه بس عند النجاح
+  const handleUpdateStatus = (id, status, type, amount) => {
+    return updateStatus({ id, status, type: type || activeTab, amount });
   };
 
   const handleShowDetails = (request) => {

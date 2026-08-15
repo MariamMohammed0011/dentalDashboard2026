@@ -24,7 +24,7 @@ const StatusBadge = ({ doc, updatingDoctorId, onOpenModal }) => {
 
   if (isCurrentlyUpdating) {
     return (
-      <div className="inline-flex items-center gap-1.5   px-3 py-1.5 rounded-full text-[11px] font-black border bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border-slate-100 dark:border-slate-850 animate-pulse select-none">
+      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-black border bg-neutral-light-gray/40 text-text-muted border-border-subtle animate-pulse select-none">
         <Loader2 size={11} className="animate-spin text-primary shrink-0" />
         <span>{t('common.processing')}</span>
       </div>
@@ -33,21 +33,21 @@ const StatusBadge = ({ doc, updatingDoctorId, onOpenModal }) => {
 
   const getBadgeStyle = () => {
     if (currentStatus === 'active' || currentStatus === '2') {
-      return "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100/50 dark:border-emerald-900/30 hover:bg-emerald-100/50 dark:hover:bg-emerald-950/50";
+      return "bg-success-bg text-success border-success/20 hover:bg-success-bg/80";
     }
     if (currentStatus === 'suspended' || currentStatus === '4') {
-      return "bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border-rose-100/50 dark:border-rose-900/30 hover:bg-rose-100/50 dark:hover:bg-rose-950/50";
+      return "bg-danger-bg text-danger border-danger/20 hover:bg-danger-bg/80";
     }
     if (currentStatus === 'readonly' || currentStatus === 'read_only' || currentStatus === '3') {
-      return "bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 border-indigo-100/50 dark:border-indigo-900/30 hover:bg-indigo-100/50 dark:hover:bg-indigo-950/50";
+      return "bg-accent-indigo/10 text-accent-indigo border-accent-indigo/20 hover:bg-accent-indigo/20";
     }
     if (currentStatus === 'pendingadminapproval' || currentStatus === 'pending_admin_approval' || currentStatus === 'pending' || currentStatus === '1') {
-      return "bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-100/50 dark:border-amber-900/30 hover:bg-amber-100/50 dark:hover:bg-amber-950/50";
+      return "bg-warning-bg text-warning border-warning/20 hover:bg-warning-bg/80";
     }
     if (currentStatus === 'pendingverification' || currentStatus === 'pending_verification' || currentStatus === '0') {
-      return "bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 border-orange-100/50 dark:border-orange-900/30 hover:bg-orange-100/50 dark:hover:bg-orange-950/50";
+      return "bg-orange-500/10 text-orange-500 border-orange-500/20 hover:bg-orange-500/20";
     }
-    return "bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-150 dark:border-slate-700 hover:bg-slate-100";
+    return "bg-neutral-light-gray text-text-muted border-border-subtle hover:bg-neutral-light-gray/80";
   };
 
   const getStatusLabel = () => {
@@ -60,12 +60,12 @@ const StatusBadge = ({ doc, updatingDoctorId, onOpenModal }) => {
   };
 
   const getDotColor = () => {
-    if (currentStatus === 'active' || currentStatus === '2') return "bg-emerald-500 animate-pulse";
-    if (currentStatus === 'suspended' || currentStatus === '4') return "bg-rose-500";
-    if (currentStatus === 'readonly' || currentStatus === 'read_only' || currentStatus === '3') return "bg-indigo-500";
-    if (currentStatus === 'pendingadminapproval' || currentStatus === 'pending_admin_approval' || currentStatus === 'pending' || currentStatus === '1') return "bg-amber-500 animate-pulse";
+    if (currentStatus === 'active' || currentStatus === '2') return "bg-success animate-pulse";
+    if (currentStatus === 'suspended' || currentStatus === '4') return "bg-danger";
+    if (currentStatus === 'readonly' || currentStatus === 'read_only' || currentStatus === '3') return "bg-accent-indigo";
+    if (currentStatus === 'pendingadminapproval' || currentStatus === 'pending_admin_approval' || currentStatus === 'pending' || currentStatus === '1') return "bg-warning animate-pulse";
     if (currentStatus === 'pendingverification' || currentStatus === 'pending_verification' || currentStatus === '0') return "bg-orange-500 animate-pulse";
-    return "bg-slate-500";
+    return "bg-text-muted";
   };
 
   return (
@@ -75,7 +75,7 @@ const StatusBadge = ({ doc, updatingDoctorId, onOpenModal }) => {
         e.stopPropagation();
         onOpenModal(doc);
       }}
-      className={`inline-flex items-center gap-1 px-1 py-1.5 rounded-full text-[10px] font-black border transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-sm ${getBadgeStyle()}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[10px] font-black border transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-xs ${getBadgeStyle()}`}
     >
       <span className={`w-2 h-2 rounded-full shrink-0 ${getDotColor()}`} />
       <span>{getStatusLabel()}</span>
@@ -105,36 +105,32 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
     setTempStatus(Number(initialNumericStatus));
   };
 
-  // 💡 التعديل هنا: نستقبل newStatus القادم مباشرة من المودال عند الحفظ
   const handleConfirmStatusChange = (statusFromModal) => {
-  if (!selectedDocForStatus) return;
+    if (!selectedDocForStatus) return;
+    onToggleStatus(selectedDocForStatus.id, Number(statusFromModal));
+    setSelectedDocForStatus(null);
+  };
 
-  console.log("Status Selected :", statusFromModal);
-
-  onToggleStatus(selectedDocForStatus.id, Number(statusFromModal));
-
-  setSelectedDocForStatus(null);
-};
   return (
-    <div className="w-full flex flex-col gap-1  " dir="rtl">
+    <div className="w-full flex flex-col gap-2" dir="rtl">
       {/* Header Table */}
-      <div className="hidden md:flex items-center w-full px-6 py-2 text-slate-400 dark:text-slate-500 font-extrabold text-[12px] uppercase select-none ">
-        <div className="w-[26%] text-right">{t('doctors.doctor')}</div>
-        <div className="w-[26%] text-right">{t('doctors.clinicAndAddress')}</div>
-        <div className="w-[26%] text-right">{t('doctors.contact')}</div>
-        <div className="w-[11%] text-right">{t('doctors.joinDate')}</div>
-        <div className="w-[11%] text-center">{t('common.status')}</div>
+      <div className="hidden md:grid grid-cols-[1.2fr_1.3fr_1.2fr_0.9fr_1fr] items-center w-full px-6 py-3 text-text-muted font-extrabold text-[11px] uppercase select-none gap-3 bg-neutral-light-gray/40 rounded-xl border border-border-subtle/40">
+        <div className="text-right">{t('doctors.doctor')}</div>
+        <div className="text-right">{t('doctors.clinicAndAddress')}</div>
+        <div className="text-right">{t('doctors.contact')}</div>
+        <div className="text-right">{t('doctors.joinDate')}</div>
+        <div className="text-center">{t('common.status')}</div>
       </div>
 
       {/* Desktop List */}
       <div className="hidden md:flex flex-col gap-3">
         {isLoading ? (
           Array(4).fill(0).map((_, i) => (
-            <div key={i} className="animate-pulse bg-white/60 dark:bg-slate-900/40 border border-slate-100/60 dark:border-slate-800/60 rounded-2xl h-[78px] w-full" />
+            <div key={i} className="animate-pulse bg-bg-card border border-border-subtle rounded-2xl h-[78px] w-full" />
           ))
         ) : doctors.length === 0 ? (
-          <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-12 text-center text-text-muted dark:text-slate-500 font-bold w-full">
-            <Users size={36} className="mx-auto mb-2 text-text-muted/40 dark:text-slate-600" />
+          <div className="bg-bg-card border border-border-subtle rounded-2xl p-12 text-center text-text-muted font-bold w-full">
+            <Users size={36} className="mx-auto mb-2 opacity-40" />
             {t('doctors.noRegisteredDoctors')}
           </div>
         ) : (
@@ -146,10 +142,11 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
             return (
               <div
                 key={doc.id}
-                className="flex items-center w-full bg-white dark:bg-slate-900 border border-slate-100/60 dark:border-slate-800/60 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-primary/20 dark:hover:border-primary/30 transition-all duration-200 gap-2"
+                className="grid grid-cols-[1.2fr_1.3fr_1.2fr_0.9fr_1fr] items-center w-full bg-bg-card border border-border-subtle rounded-2xl px-6 py-3.5 shadow-xs hover:shadow-md hover:border-primary/30 transition-all duration-200 gap-3"
               >
-                <div className="w-[24%] flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-full border border-primary/20 shrink-0 overflow-hidden shadow-sm bg-sky-50 dark:bg-slate-850 flex items-center justify-center">
+                {/* Doctor Column */}
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-full border border-primary/20 shrink-0 overflow-hidden shadow-xs bg-primary-bg flex items-center justify-center">
                     <img
                       src={`https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name || t('doctors.doctor'))}&background=e0f2fe&color=367AFF&bold=true&size=64`}
                       alt={doc.name}
@@ -157,47 +154,51 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
                     />
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="font-extrabold text-text-main dark:text-gray-100 text-[13px] truncate leading-normal">{doc.name}</span>
-                    <span className="text-[10px] text-text-muted dark:text-slate-400 font-medium">ID: #{doc.id}</span>
+                    <span className="font-extrabold text-text-main text-[13px] truncate leading-tight">{doc.name}</span>
+                    <span className="text-[10px] text-text-muted font-medium mt-0.5">ID: #{doc.id}</span>
                   </div>
                 </div>
 
-                <div className="w-[26%] flex flex-col min-w-0">
-                  <span className="font-bold text-text-main dark:text-gray-200 text-[13px] truncate flex items-center gap-1">
-                    <Building2 size={12} className="text-sky-500 dark:text-sky-400 shrink-0" />
+                {/* Clinic Column */}
+                <div className="flex flex-col min-w-0 gap-1">
+                  <span className="font-bold text-text-main text-[13px] truncate flex items-center gap-2">
+                    <Building2 size={13} className="text-primary shrink-0" />
                     {doc.clinicName || t('common.unknown')}
                   </span>
                   {(doc.city || doc.country || doc.clinicAddress) && (
-                    <div className="flex items-center gap-0.5 text-text-muted dark:text-slate-400 font-medium text-[11px] truncate mt-0.5">
-                      <MapPin size={11} className="text-rose-500 dark:text-rose-400 shrink-0" />
-                      <span className="truncate">
+                    <div className="flex items-start gap-1.5 text-text-muted font-medium text-[10px] line-clamp-2">
+                      <MapPin size={12} className="text-danger shrink-0 mt-0.5" />
+                      <span>
                         {[doc.clinicAddress, doc.city, doc.country].filter(Boolean).join('، ')}
                       </span>
                     </div>
                   )}
                 </div>
 
-                <div className="w-[24%] flex flex-col gap-1 text-[11px] text-text-main dark:text-gray-300 font-medium min-w-0">
+                {/* Contact Column */}
+                <div className="flex flex-col gap-1.5">
                   {doc.phone && (
-                    <span className="flex items-center gap-1.5 justify-start">
-                      <Phone size={11} className="text-emerald-500 dark:text-emerald-400 shrink-0" />
-                      <span dir="ltr">{doc.phone}</span>
+                    <span className="flex items-center gap-2 text-[11px] text-text-main font-medium">
+                      <Phone size={12} className="text-success shrink-0" />
+                      <span dir="ltr" className="truncate">{doc.phone}</span>
                     </span>
                   )}
                   {doc.email && (
-                    <span className="flex items-center gap-1.5 justify-start">
-                      <Mail size={11} className="text-indigo-500 dark:text-indigo-400 shrink-0" />
-                      <span dir="ltr" className="text-text-muted dark:text-slate-400 truncate max-w-[170px]">{doc.email}</span>
+                    <span className="flex items-center gap-2 text-[11px] text-text-muted font-medium">
+                      <Mail size={12} className="text-accent-indigo shrink-0" />
+                      <span dir="ltr" className="truncate max-w-[160px]">{doc.email}</span>
                     </span>
                   )}
                 </div>
 
-                <div className="w-[12%] text-[12px] text-text-muted dark:text-slate-400 font-medium flex items-center gap-1 min-w-0">
-                  <Calendar size={12} className="text-violet-500 dark:text-violet-400 shrink-0" />
+                {/* Join Date Column */}
+                <div className="flex items-center gap-2 text-[12px] text-text-muted font-medium min-w-0">
+                  <Calendar size={13} className="text-accent-purple shrink-0" />
                   <span className="truncate">{formattedDate}</span>
                 </div>
 
-                <div className="w-[14%] flex justify-center shrink-0">
+                {/* Status Column */}
+                <div className="flex justify-center">
                   <StatusBadge doc={doc} updatingDoctorId={updatingDoctorId} onOpenModal={openStatusModal} />
                 </div>
               </div>
@@ -207,20 +208,20 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
       </div>
 
       {/* Mobile Grid */}
-      <div className="block md:hidden">
+      <div className="block md:hidden px-1 sm:px-0">
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {Array(3).fill(0).map((_, i) => (
-              <div key={i} className="bg-white/50 dark:bg-slate-800/30 p-5 rounded-2xl animate-pulse h-[140px]" />
+              <div key={i} className="bg-white/60 dark:bg-slate-800/50 border border-slate-100/60 dark:border-slate-700/40 p-5 rounded-2xl animate-pulse h-[320px]" />
             ))}
           </div>
         ) : doctors.length === 0 ? (
-          <div className="py-12 text-center text-text-muted dark:text-slate-500 font-bold">
-            <Users size={36} className="mx-auto mb-2 text-text-muted/40 dark:text-slate-600" />
-            {t('doctors.noRegisteredDoctors')}
+          <div className="py-12 text-center text-text-muted dark:text-slate-400 font-bold">
+            <Users size={32} className="mx-auto mb-3 text-text-muted/40 dark:text-slate-600" />
+            <p className="text-sm">{t('doctors.noRegisteredDoctors')}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 auto-rows-max">
             {doctors.map((doc) => (
               <DoctorCard
                 key={doc.id}
@@ -243,7 +244,7 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
         )}
       </div>
 
-      {/* Modal */}
+      {/* Status Modal */}
       <UserStatusModal
         isOpen={!!selectedDocForStatus}
         user={selectedDocForStatus}

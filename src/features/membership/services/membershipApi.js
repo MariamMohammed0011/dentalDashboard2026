@@ -43,9 +43,9 @@ export const membershipApi = {
   },
 
   // تحديث الحالة ليشمل (approve, reject, suspend)
-  updateRequestStatus: async (id, status, type) => {
+  updateRequestStatus: async (id, status, type, amount) => {
     const subPath = type === 'lab' ? 'labs' : 'dentists';
-    
+
     // الخرائط بين الحالة المرسلة والـ Action المطلوب في الـ URL
     const actionMap = {
       'accepted': 'approve',
@@ -55,8 +55,21 @@ export const membershipApi = {
     };
 
     const action = actionMap[status];
-    
+
     // الرابط النهائي كما في Swagger: /api/AdminAccounts/{labs/dentists}/{id}/{action}
+    // الموافقة على مخبر تتطلب تحديد سعر الاشتراك الشهري (يُطبّق بعد انتهاء الشهر المجاني)
+    if (type === 'lab' && action === 'approve') {
+      const formData = new FormData();
+      formData.append('SubscriptionAmount', Number(amount) || 0);
+
+      const response = await axiosInstance.put(`/AdminAccounts/${subPath}/${id}/${action}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      return response.data;
+    }
+
     const response = await axiosInstance.put(`/AdminAccounts/${subPath}/${id}/${action}`);
     return response.data;
   }

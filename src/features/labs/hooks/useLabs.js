@@ -11,8 +11,8 @@ export const useLabs = () => {
   // ── Filter States ──
   const [statusFilter, setStatusFilter] = useState('all');
   const [ratingSort, setRatingSort] = useState('all');
-  const [materialFilter, setMaterialFilter] = useState('all');
-  const [serviceFilter, setServiceFilter] = useState('all');
+  const [availabilityFilter, setAvailabilityFilter] = useState('all');
+  const [scanVisitFilter, setScanVisitFilter] = useState('all');
 
   // ── Status Modal States ──
   const [selectedLabForStatus, setSelectedLabForStatus] = useState(null);
@@ -34,27 +34,6 @@ export const useLabs = () => {
     return rawLabs.find((lab) => String(lab.id) === String(selectedLabId)) || null;
   }, [selectedLabId, rawLabs]);
 
-  // ── استخراج المواد والتخصصات المتاحة للفلترة ──
-  const { availableMaterials, availableServices } = useMemo(() => {
-    const materialsSet = new Set();
-    const servicesSet = new Set();
-
-    rawLabs.forEach(lab => {
-      if (!lab) return;
-      if (Array.isArray(lab.materials)) {
-        lab.materials.forEach(m => materialsSet.add(m));
-      }
-      if (Array.isArray(lab.specialties)) {
-        lab.specialties.forEach(s => servicesSet.add(s));
-      }
-    });
-
-    return {
-      availableMaterials: [...materialsSet].sort(),
-      availableServices: [...servicesSet].sort(),
-    };
-  }, [rawLabs]);
-
   // ── البحث حسب اسم المكان أو العنوان ──
   const { searchQuery, setSearchQuery, filteredData: searchFilteredLabs } = useSearch(
     rawLabs,
@@ -69,12 +48,15 @@ export const useLabs = () => {
       result = result.filter(lab => String(lab.status || '').toLowerCase() === statusFilter.toLowerCase());
     }
 
-    if (materialFilter !== 'all') {
-      result = result.filter(lab => Array.isArray(lab.materials) && lab.materials.includes(materialFilter));
+    if (availabilityFilter !== 'all') {
+      result = result.filter(lab => {
+        const isAvailable = String(lab.availability || '').toLowerCase() === 'available';
+        return availabilityFilter === 'available' ? isAvailable : !isAvailable;
+      });
     }
 
-    if (serviceFilter !== 'all') {
-      result = result.filter(lab => Array.isArray(lab.specialties) && lab.specialties.includes(serviceFilter));
+    if (scanVisitFilter !== 'all') {
+      result = result.filter(lab => (scanVisitFilter === 'yes' ? !!lab.hasScanVisitService : !lab.hasScanVisitService));
     }
 
     if (ratingSort !== 'all') {
@@ -86,15 +68,15 @@ export const useLabs = () => {
     }
 
     return result;
-  }, [searchFilteredLabs, statusFilter, ratingSort, materialFilter, serviceFilter]);
+  }, [searchFilteredLabs, statusFilter, ratingSort, availabilityFilter, scanVisitFilter]);
 
-  const hasActiveFilters = statusFilter !== 'all' || ratingSort !== 'all' || materialFilter !== 'all' || serviceFilter !== 'all' || searchQuery !== '';
+  const hasActiveFilters = statusFilter !== 'all' || ratingSort !== 'all' || availabilityFilter !== 'all' || scanVisitFilter !== 'all' || searchQuery !== '';
 
   const resetFilters = () => {
     setStatusFilter('all');
     setRatingSort('all');
-    setMaterialFilter('all');
-    setServiceFilter('all');
+    setAvailabilityFilter('all');
+    setScanVisitFilter('all');
     setSearchQuery('');
   };
 
@@ -173,12 +155,10 @@ export const useLabs = () => {
     setStatusFilter,
     ratingSort,
     setRatingSort,
-    materialFilter,
-    setMaterialFilter,
-    serviceFilter,
-    setServiceFilter,
-    availableMaterials,
-    availableServices,
+    availabilityFilter,
+    setAvailabilityFilter,
+    scanVisitFilter,
+    setScanVisitFilter,
     hasActiveFilters,
     resetFilters,
   };

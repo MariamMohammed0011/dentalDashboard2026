@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Check, RotateCcw, Filter, FlaskConical, Star, Wrench, Sparkles } from 'lucide-react';
+import { ChevronDown, Check, RotateCcw, Filter, FlaskConical, Star, Activity, Sparkles } from 'lucide-react';
 
 // ── Color presets for each filter type (تم إضافة ألوان الحدود الأساسية) ──
 const colorPresets = {
@@ -59,23 +59,23 @@ const FilterDropdown = ({ label, icon: Icon, value, options, onChange, colorKey 
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center justify-between gap-2 w-full bg-white dark:bg-slate-900 font-bold text-[13px] sm:text-sm rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 border shadow-sm hover:shadow-md focus:outline-none focus:ring-2 ${colors.ring} transition-all duration-200 cursor-pointer ${
-          isFiltered 
-            ? colors.active
-            : `${colors.border} text-text-main dark:text-gray-200`
-        }`}
-      >
-        <div className="flex items-center gap-2 min-w-0">
-          {Icon && <Icon size={24} className={`shrink-0 ${colors.icon}`} />}
-          <span className="truncate text-[16px]">{currentLabel}</span>
-        </div>
-        <ChevronDown 
-          size={20} 
-          className={`text-gray-400 dark:text-slate-500 transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180' : ''}`} 
-        />
-      </button>
+  type="button"
+  onClick={() => setIsOpen(!isOpen)}
+  className={`flex items-center justify-between gap-2 w-full bg-white dark:bg-slate-900 font-bold text-[13px] sm:text-sm rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 border shadow-sm hover:shadow-md focus:outline-none focus:ring-2 ${colors.ring} transition-all duration-200 cursor-pointer ${
+    isFiltered 
+      ? colors.active
+      : `${colors.border} text-slate-800 dark:text-slate-100`
+  }`}
+>
+  <div className="flex items-center gap-2 min-w-0">
+    {Icon && <Icon size={24} className={`shrink-0 ${colors.icon}`} />}
+    <span className="truncate text-[12px] font-zain font-black">{currentLabel}</span>
+  </div>
+  <ChevronDown 
+    size={20} 
+    className={`text-slate-400 dark:text-slate-400 transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180' : ''}`} 
+  />
+</button>
 
       {isOpen && (
         <div className={`absolute right-0 mt-2 w-full min-w-[180px] bg-white dark:bg-slate-900 border ${colors.border} rounded-2xl shadow-xl py-1.5 z-50 animate-in fade-in slide-in-from-top-1 duration-200 max-h-[250px] overflow-y-auto custom-scrollbar`}>
@@ -113,12 +113,10 @@ const LabsFilter = ({
   onStatusChange,
   ratingSort,
   onRatingSortChange,
-  materialFilter,
-  onMaterialChange,
-  serviceFilter,
-  onServiceChange,
-  availableMaterials = [],
-  availableServices = [],
+  availabilityFilter,
+  onAvailabilityChange,
+  scanVisitFilter,
+  onScanVisitChange,
   onResetFilters,
   hasActiveFilters
 }) => {
@@ -141,57 +139,54 @@ const LabsFilter = ({
     { id: 'asc', label: 'الأقل تقييماً أولاً' },
   ];
 
-  // Build materials options dynamically
-  const materialOptions = [
-    { id: 'all', label: 'كل المواد والأجهزة' },
-    ...availableMaterials.map(m => ({ id: m, label: m }))
+  // Availability filter options
+  const availabilityOptions = [
+    { id: 'all', label: 'كل المخابر' },
+    { id: 'available', label: 'متاح' },
+    { id: 'unavailable', label: 'غير متاح' },
   ];
 
-  // Build services options dynamically
-  const serviceOptions = [
+  // Scan Visit service filter options
+  const scanVisitOptions = [
     { id: 'all', label: 'كل الخدمات' },
-    ...availableServices.map(s => ({ id: s, label: s }))
+    { id: 'yes', label: 'يدعم خدمة Scan Visit' },
+    { id: 'no', label: 'لا يدعم خدمة Scan Visit' },
   ];
 
   return (
-    <div className="w-full font-ruqaa  flex flex-col gap-3 relative z-10" dir="rtl">
-    
+    <div className="w-full font-ruqaa flex flex-col gap-3 sm:gap-4 relative z-10" dir="rtl">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2.5 sm:gap-3 lg:gap-4">
+        {/* Rating Sort */}
+        <FilterDropdown
+          label="متوسط التقييم"
+          icon={Star}
+          value={ratingSort}
+          options={ratingOptions}
+          onChange={onRatingSortChange}
+          colorKey="amber"
+        />
 
-       
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-         
+        {/* Availability Filter */}
+        <FilterDropdown
+          label="حالة التوفر"
+          icon={Activity}
+          value={availabilityFilter}
+          options={availabilityOptions}
+          onChange={onAvailabilityChange}
+          colorKey="blue"
+        />
 
-          {/* Rating Sort */}
-          <FilterDropdown
-            label="متوسط التقييم"
-            icon={Star}
-            value={ratingSort}
-            options={ratingOptions}
-            onChange={onRatingSortChange}
-            colorKey="amber"
-          />
-
-          {/* Materials Filter */}
-          <FilterDropdown
-            label="المواد والأجهزة"
-            icon={Wrench}
-            value={materialFilter}
-            options={materialOptions}
-            onChange={onMaterialChange}
-            colorKey="blue"
-          />
-
-          {/* Services Filter */}
-          <FilterDropdown
-            label="الخدمات"
-            icon={Sparkles}
-            value={serviceFilter}
-            options={serviceOptions}
-            onChange={onServiceChange}
-            colorKey="violet"
-          />
-        </div>
+        {/* Scan Visit Service Filter */}
+        <FilterDropdown
+          label="الخدمات"
+          icon={Sparkles}
+          value={scanVisitFilter}
+          options={scanVisitOptions}
+          onChange={onScanVisitChange}
+          colorKey="violet"
+        />
       </div>
+    </div>
    
   );
 };

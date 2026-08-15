@@ -15,6 +15,7 @@
     "pending": "قيد المراجعة",
     "pendingVerification": "قيد التثبت",
     "pendingAdminApproval": "قيد مراجعة ",
+    "pendingPayment": "بانتظار الدفع",
     "readOnly": "قراءة فقط",
     "details": "التفاصيل",
     "avatar": "الصورة الشخصية",
@@ -59,14 +60,17 @@
   "userStatusModal": {
     "editDoctorStatus": "تعديل حالة حساب الطبيب",
     "editLabStatus": "تعديل حالة حساب المخبر",
+    "editLabTechStatus": "تعديل حالة حساب المخبري",
     "chooseDoctorStatus": "اختر الحالة الجديدة لحساب الطبيب المحدد أدناه",
     "chooseLabStatus": "اختر الحالة الجديدة لحساب المخبر المحدد أدناه",
+    "chooseLabTechStatus": "اختر الحالة الجديدة لحساب المخبري المحدد أدناه",
     "unknownDoctor": "طبيب غير معروف",
     "unknownLab": "مخبر غير معروف",
     "clinicNotSpecified": "عيادة غير محددة",
     "addressNotSpecified": "عنوان غير محدد",
     "pendingVerificationStatus": "قيد التثبت (Pending Verification)",
     "pendingAdminApprovalStatus": "قيد مراجعة الأدمن (Pending Admin Approval)",
+    "pendingPaymentStatus": "بانتظار الدفع (Pending Payment)",
     "activeStatus": "نشط (Active)",
     "readOnlyStatus": "قراءة فقط (Read Only)",
     "suspendedStatus": "معلق (Suspended)",
@@ -172,6 +176,9 @@
     "ownerName": "اسم صاحب المخبر",
     "phone": "رقم الهاتف",
     "address": "العنوان",
+    "available":"متاح",
+    "unavailable":"غير متاح",
+
     "detailsTitle": "تفاصيل حساب المخبر",
     "filterTitle": "تصفية المخابر",
     "allLabs": "جميع المخابر",
@@ -219,7 +226,8 @@
       "undefined": "غير محدد",
       "materialsAndDevices": "المواد المستخدمة والأجهزة:",
       "labDescription": "وصف وتعريف بالمخبر:",
-      "registrationDate": "تاريخ التسجيل المعتمد: {{date}}"
+      "registrationDate": "تاريخ التسجيل المعتمد: {{date}}",
+      "subscriptionInfo": "معلومات الاشتراك"
     }
   },
   "doctors": {

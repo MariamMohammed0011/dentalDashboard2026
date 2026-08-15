@@ -12,6 +12,12 @@ export const fetchExpiredSubscriptions = async () => {
   return response.data;
 };
 
+// 2.1 جلب حسابات المخابر التي وافق عليها الأدمن وبانتظار الدفع لتفعيل اشتراكها
+export const fetchPendingPaymentAccounts = async () => {
+  const response = await axiosInstance.get("/AdminAccounts/pending-payment");
+  return response.data;
+};
+
 // 3. تفعيل اشتراك لمخبر
 export const activateSubscription = async (labId, payload) => {
   const formData = new FormData();
@@ -35,6 +41,19 @@ export const renewSubscription = async (labId, payload) => {
   formData.append('PeriodEndUtc', payload.periodEndUtc);
 
   const response = await axiosInstance.post(`/LabSubscription/${labId}/renew`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+  return response.data;
+};
+
+// 5. تحديث قيمة الاشتراك دفعة واحدة لجميع المخابر المشتركين
+export const updateAllSubscriptionAmounts = async (newAmount) => {
+  const formData = new FormData();
+  formData.append('newAmount', newAmount);
+
+  const response = await axiosInstance.put('/LabSubscription/update-all-amounts', formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }

@@ -52,145 +52,205 @@ export default function InvoiceDetailsModal({ isOpen, onClose, invoice }) {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className="relative bg-white dark:bg-slate-950 w-full max-w-3xl rounded-2xl sm:rounded-[2.5rem] shadow-2xl overflow-hidden my-2 sm:my-6 border border-border-main flex flex-col text-right font-zain select-none print:shadow-none print:border-none print:w-full print:max-w-none print:my-0"
+            className="relative bg-white dark:bg-slate-950 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden my-auto sm:my-6 border border-border-main flex flex-col text-right font-zain select-none print:shadow-none print:border-none print:w-full print:max-w-none print:my-0 print:rounded-none"
           >
             {/* Modal Header Bar (Hidden in Print) */}
-            <div className="p-4 sm:p-6 bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 text-white flex items-center justify-between border-b border-slate-700/60 print:hidden">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20 shadow-sm shrink-0">
-                  <ShieldCheck size={24} className="text-emerald-400" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-base sm:text-lg font-black tracking-tight font-zain">{t('invoices.invoiceDetailsTitle')} #{invoice.id}</h3>
-                    <span className="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-primary/20 text-primary-light border border-primary/30">
-                      {invoice.categoryLabel || 'فاتورة رسمية'}
-                    </span>
+            <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 text-white print:hidden">
+              {/* Close Button - Top Right for mobile */}
+              <button
+                type="button"
+                onClick={onClose}
+                className="absolute top-3 right-3 sm:hidden p-2 bg-white/10 hover:bg-rose-500/20 text-white hover:text-rose-400 rounded-xl transition-all cursor-pointer z-10"
+              >
+                <X size={20} />
+              </button>
+
+              <div className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-700/60">
+                <div className="flex items-start gap-3 flex-1 min-w-0 pr-8 sm:pr-0">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20 shadow-sm shrink-0">
+                    <ShieldCheck size={24} className="text-emerald-400" />
                   </div>
-                  <p className="text-xs text-slate-400 font-medium font-zain mt-0.5">{t('invoices.electronicInvoiceReceipt')}</p>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-base sm:text-lg font-black tracking-tight font-zain break-words">{t('invoices.invoiceDetailsTitle')} #{invoice.id}</h3>
+                    <p className="text-xs text-slate-400 font-medium font-zain mt-1">{invoice.categoryLabel || 'فاتورة رسمية'}</p>
+                  </div>
+                </div>
+
+                <div className="hidden sm:flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={handlePrint}
+                    className="flex items-center gap-1.5 px-3.5 py-2 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-black transition-all cursor-pointer shadow-md active:scale-95 shrink-0 whitespace-nowrap"
+                  >
+                    <Printer size={16} />
+                    <span>{t('invoices.printInvoice')}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="p-2 bg-white/10 hover:bg-rose-500/20 text-white hover:text-rose-400 rounded-xl transition-all cursor-pointer shrink-0"
+                  >
+                    <X size={20} />
+                  </button>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              {/* Mobile Action Bar */}
+              <div className="sm:hidden p-3 flex gap-2 border-t border-slate-700/60">
                 <button
                   type="button"
                   onClick={handlePrint}
-                  className="flex items-center gap-1.5 px-3.5 py-2 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-black transition-all cursor-pointer shadow-md active:scale-95 shrink-0"
+                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg text-xs font-black transition-all cursor-pointer shadow-md active:scale-95"
                 >
-                  <Printer size={15} />
+                  <Printer size={16} />
                   <span>{t('invoices.printInvoice')}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="p-2 bg-white/10 hover:bg-rose-500/20 text-white hover:text-rose-400 rounded-xl transition-all cursor-pointer shrink-0"
-                >
-                  <X size={18} />
                 </button>
               </div>
             </div>
 
             {/* Invoice Document Body */}
-            <div className="p-5 sm:p-8 space-y-6 max-h-[82vh] overflow-y-auto custom-scrollbar print:max-h-none print:overflow-visible bg-white dark:bg-slate-900 text-text-main font-zain">
+            <div className="p-4 sm:p-8 space-y-4 sm:space-y-6 max-h-[82vh] overflow-y-auto custom-scrollbar print:max-h-none print:overflow-visible bg-white dark:bg-slate-900 text-text-main font-zain">
               
               {/* Top Branding & Invoice Status Header */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border-main/60 pb-6">
-                <div className="flex items-center gap-3.5">
-                  <div className="p-2.5 rounded-2xl bg-primary/10 border border-primary/20 shrink-0">
-                    <img src={logoImg} alt="Platform Logo" className="w-12 h-12 object-contain" />
+              <div className="border-b border-border-main/60 pb-4 sm:pb-6">
+                <div className="flex items-start gap-3 sm:gap-4 mb-4">
+                  <div className="p-2 sm:p-2.5 rounded-2xl bg-primary/10 border border-primary/20 shrink-0">
+                    <img src={logoImg} alt="Platform Logo" className="w-10 sm:w-12 h-10 sm:h-12 object-contain" />
                   </div>
-                  <div>
-                    <h2 className="text-lg sm:text-xl font-black text-text-main tracking-tight">{t('invoices.dentalDigitalPlatform')}</h2>
-                    <p className="text-xs text-text-muted font-bold mt-0.5">Dental Platform Advertising & Invoicing System</p>
+                  <div className="min-w-0 flex-1">
+                    <h2 className="text-sm sm:text-xl font-black text-text-main tracking-tight break-words">{t('invoices.dentalDigitalPlatform')}</h2>
+                    <p className="text-xs text-text-muted font-bold mt-1">Dental Platform Advertising & Invoicing System</p>
                   </div>
                 </div>
 
-                <div className="flex sm:flex-col justify-between sm:justify-center items-end w-full sm:w-auto border-t sm:border-t-0 border-border-main/50 pt-3 sm:pt-0">
-                  <span className="text-sm font-black text-text-main uppercase tracking-wider dir-ltr">
-                    INVOICE #{invoice.id}
-                  </span>
-                  <span className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-black mt-1 border ${
-                    isPaid 
-                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 shadow-2xs' 
-                      : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20 shadow-2xs'
-                  }`}>
-                    {isPaid ? <CheckCircle2 size={14} className="text-emerald-500" /> : <Clock size={14} className="text-rose-500" />}
-                    {isPaid ? t('invoices.paid') : t('invoices.unpaid')}
-                  </span>
+                <div className="grid grid-cols-2 gap-3 sm:flex sm:justify-between sm:items-center">
+                  <div className="col-span-1">
+                    <p className="text-xs text-text-muted font-bold uppercase tracking-wider mb-1">رقم الفاتورة</p>
+                    <p className="text-base sm:text-lg font-black text-text-main dir-ltr">#{invoice.id}</p>
+                  </div>
+                  <div className="col-span-1 flex justify-end">
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black border ${
+                      isPaid
+                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 shadow-2xs'
+                        : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20 shadow-2xs'
+                    }`}>
+                      {isPaid ? <CheckCircle2 size={16} className="text-emerald-500 shrink-0" /> : <Clock size={16} className="text-rose-500 shrink-0" />}
+                      <span>{isPaid ? t('invoices.paid') : t('invoices.unpaid')}</span>
+                    </span>
+                  </div>
                 </div>
               </div>
 
               {/* Grid Section 1: Client Info & Invoice Dates */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 bg-slate-50/80 dark:bg-slate-800/40 p-5 rounded-3xl border border-border-main/80">
-                {/* Billing Info */}
-                <div className="space-y-2.5">
-                  <span className="text-xs font-black text-text-muted uppercase tracking-wider block font-zain">
+              <div className="space-y-4">
+                {/* Advertiser Info Card */}
+                <div className="bg-slate-50/80 dark:bg-slate-800/40 p-4 rounded-2xl border border-border-main/80">
+                  <h3 className="text-xs font-black text-text-muted uppercase tracking-wider mb-3">
                     {t('invoices.advertiserInfo')}
-                  </span>
-                  <h4 className="text-base font-black text-text-main flex items-center gap-2">
-                    <User size={18} className="text-primary shrink-0" />
-                    <span>{invoice.userName || t('common.unknown')}</span>
-                  </h4>
+                  </h3>
 
-                  <div className="space-y-1.5 text-xs text-text-muted font-bold">
+                  <div className="space-y-3">
+                    {invoice.userName && (
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                          <User size={16} className="text-primary" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs text-text-muted font-bold">الاسم</p>
+                          <p className="text-sm font-black text-text-main break-words">{invoice.userName}</p>
+                        </div>
+                      </div>
+                    )}
+
                     {invoice.namePlace && (
-                      <p className="flex items-center gap-2 text-text-main">
-                        <Building2 size={15} className="text-sky-500 shrink-0" />
-                        <span>{invoice.namePlace}</span>
-                      </p>
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                          <Building2 size={16} className="text-sky-500" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs text-text-muted font-bold">المكان</p>
+                          <p className="text-sm font-bold text-text-main break-words">{invoice.namePlace}</p>
+                        </div>
+                      </div>
                     )}
+
                     {invoice.userEmail && (
-                      <p className="flex items-center gap-2 text-text-muted dir-ltr text-right">
-                        <Mail size={15} className="text-purple-500 shrink-0" />
-                        <span>{invoice.userEmail}</span>
-                      </p>
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                          <Mail size={16} className="text-purple-500" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs text-text-muted font-bold">البريد الإلكتروني</p>
+                          <p className="text-sm font-bold text-text-main break-all dir-ltr">{invoice.userEmail}</p>
+                        </div>
+                      </div>
                     )}
+
                     {invoice.userPhone && (
-                      <p className="flex items-center gap-2">
-                        <Phone size={15} className="text-emerald-500 shrink-0" />
-                        <span className="dir-ltr text-right">{invoice.userPhone}</span>
-                      </p>
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                          <Phone size={16} className="text-emerald-500" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs text-text-muted font-bold">الهاتف</p>
+                          <p className="text-sm font-bold text-text-main dir-ltr">{invoice.userPhone}</p>
+                        </div>
+                      </div>
                     )}
+
                     {(invoice.addressPlace || invoice.cityPlace || invoice.countryPlace) && (
-                      <p className="flex items-center gap-2">
-                        <MapPin size={15} className="text-rose-500 shrink-0" />
-                        <span>{[invoice.addressPlace, invoice.cityPlace, invoice.countryPlace].filter(Boolean).join(', ')}</span>
-                      </p>
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                          <MapPin size={16} className="text-rose-500" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs text-text-muted font-bold">العنوان</p>
+                          <p className="text-sm font-bold text-text-main break-words">{[invoice.addressPlace, invoice.cityPlace, invoice.countryPlace].filter(Boolean).join(', ')}</p>
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>
 
-                {/* Dates & Target Reference */}
-                <div className="space-y-3 md:border-r md:border-border-main/60 md:pr-6 pt-3 md:pt-0 border-t md:border-t-0 border-border-main/40">
-                  <span className="text-xs font-black text-text-muted uppercase tracking-wider block font-zain">
+                {/* Dates & Target Info Card */}
+                <div className="bg-slate-50/80 dark:bg-slate-800/40 p-4 rounded-2xl border border-border-main/80">
+                  <h3 className="text-xs font-black text-text-muted uppercase tracking-wider mb-3">
                     {t('invoices.invoiceDetailsAndDates')}
-                  </span>
+                  </h3>
 
-                  <div className="flex justify-between items-center text-xs font-bold border-b border-border-main/40 pb-2">
-                    <span className="text-text-muted flex items-center gap-1.5">
-                      <Calendar size={14} className="text-emerald-500" />
-                      {t('invoices.createdAt')}:
-                    </span>
-                    <span className="font-black text-text-main">{formatDate(invoice.createdAt)}</span>
-                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <Calendar size={16} className="text-emerald-500" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs text-text-muted font-bold">{t('invoices.createdAt')}</p>
+                        <p className="text-sm font-black text-text-main">{formatDate(invoice.createdAt)}</p>
+                      </div>
+                    </div>
 
-                  <div className="flex justify-between items-center text-xs font-bold border-b border-border-main/40 pb-2">
-                    <span className="text-text-muted flex items-center gap-1.5">
-                      <Clock size={14} className="text-amber-500" />
-                      {t('invoices.expiresAt')}:
-                    </span>
-                    <span className="font-black text-text-main">{formatDate(invoice.expiresAt)}</span>
-                  </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <Clock size={16} className="text-amber-500" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs text-text-muted font-bold">{t('invoices.expiresAt')}</p>
+                        <p className="text-sm font-black text-text-main">{formatDate(invoice.expiresAt)}</p>
+                      </div>
+                    </div>
 
-                  <div className="flex justify-between items-center text-xs font-bold">
-                    <span className="text-text-muted flex items-center gap-1.5">
-                      <Tag size={14} className="text-blue-500" />
-                      {t('invoices.target')}:
-                    </span>
-                    <span className="font-black text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-lg">
-                      {invoice.target || t('invoices.allCategories')}
-                    </span>
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <Tag size={16} className="text-blue-500" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs text-text-muted font-bold">{t('invoices.target')}</p>
+                        <span className="inline-block bg-primary/10 text-primary dark:text-primary-light border border-primary/20 px-2.5 py-0.5 rounded-lg font-black text-xs mt-1">
+                          {invoice.target || t('invoices.allCategories')}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -198,15 +258,16 @@ export default function InvoiceDetailsModal({ isOpen, onClose, invoice }) {
               {/* Service / Item Breakdown Table */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
-                    <Tag size={15} />
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
+                    <Tag size={16} />
                   </div>
                   <span className="text-sm font-black text-text-main uppercase tracking-wider font-zain">
                     {t('invoices.serviceDetails')}
                   </span>
                 </div>
-                
-                <div className="border border-border-main/80 rounded-2xl overflow-hidden shadow-2xs bg-white dark:bg-slate-900">
+
+                {/* Desktop Table View */}
+                <div className="hidden sm:block border border-border-main/80 rounded-2xl overflow-hidden shadow-2xs bg-white dark:bg-slate-900">
                   <table className="w-full text-right text-xs">
                     <thead className="bg-gradient-to-r from-slate-100 via-slate-50 to-slate-100 dark:from-slate-800 dark:via-slate-800/60 dark:to-slate-800 text-text-muted font-black border-b border-border-main/60">
                       <tr>
@@ -237,40 +298,86 @@ export default function InvoiceDetailsModal({ isOpen, onClose, invoice }) {
                     </tbody>
                   </table>
                 </div>
+
+                {/* Mobile Card View */}
+                <div className="sm:hidden bg-slate-50/80 dark:bg-slate-800/40 border border-border-main/80 rounded-2xl p-4 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <FileText size={16} className="text-primary" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs text-text-muted font-bold mb-1">{t('invoices.descriptionAndTitle')}</p>
+                      <p className="font-black text-sm text-text-main break-words">{invoice.title || t('invoices.paidAdOnPlatform')}</p>
+                      {invoice.content && (
+                        <p className="text-text-muted text-xs font-semibold bg-slate-200 dark:bg-slate-700 px-2.5 py-1 rounded-md mt-2 inline-block">
+                          {invoice.content}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="border-t border-border-main/40 pt-3 flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <Tag size={16} className="text-primary" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs text-text-muted font-bold mb-1">{t('invoices.target')}</p>
+                      <span className="inline-block bg-primary/10 text-primary dark:text-primary-light border border-primary/20 px-3 py-1 rounded-lg font-black text-xs">
+                        {invoice.target || t('common.all')}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-border-main/40 pt-3 flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <DollarSign size={16} className="text-emerald-500" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs text-text-muted font-bold mb-1">{t('invoices.amount')}</p>
+                      <p className="font-black text-lg text-emerald-600 dark:text-emerald-400 dir-ltr">
+                        {Number(invoice.price || 0).toLocaleString()} <span className="text-xs font-bold text-text-muted">ر.س</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Financial Totals Card */}
-              <div className="bg-gradient-to-br from-slate-50 via-slate-50/80 to-primary/5 dark:from-slate-900 dark:via-slate-800/50 dark:to-slate-800 p-5 rounded-3xl border border-border-main/80 shadow-sm space-y-3 max-w-md ml-0 mr-auto w-full">
-                <div className="flex justify-between items-center text-xs font-bold text-text-muted border-b border-border-main/40 pb-2">
-                  <span>{t('invoices.baseAmount')}:</span>
+              <div className="bg-gradient-to-br from-slate-50 via-slate-50/80 to-primary/5 dark:from-slate-900 dark:via-slate-800/50 dark:to-slate-800 p-4 sm:p-5 rounded-2xl border border-border-main/80 shadow-sm space-y-3 w-full">
+                {/* Base Amount */}
+                <div className="flex justify-between items-center text-xs font-bold pb-3 border-b border-border-main/40">
+                  <span className="text-text-muted">{t('invoices.baseAmount')}:</span>
                   <span className="font-black text-text-main text-sm">{Number(invoice.price || 0).toLocaleString()} <span className="text-xs font-bold text-text-muted">ر.س</span></span>
                 </div>
 
-                <div className="flex justify-between items-center text-xs font-bold text-text-muted border-b border-border-main/40 pb-2">
-                  <span>{t('invoices.vat')} (%0):</span>
+                {/* VAT */}
+                <div className="flex justify-between items-center text-xs font-bold pb-3 border-b border-border-main/40">
+                  <span className="text-text-muted">{t('invoices.vat')} (%0):</span>
                   <span className="font-black text-text-main text-sm">0 <span className="text-xs font-bold text-text-muted">ر.س</span></span>
                 </div>
 
                 {/* Highlighted Grand Total Box */}
-                <div className="bg-gradient-to-r from-primary via-blue-600 to-indigo-600 text-white shadow-lg shadow-primary/20 rounded-2xl p-4 flex justify-between items-center border border-white/20">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center border border-white/30 shrink-0">
-                      <DollarSign size={20} className="text-white" />
+                <div className="bg-gradient-to-r from-primary via-blue-600 to-indigo-600 text-white shadow-lg shadow-primary/20 rounded-2xl p-4 space-y-2 border border-white/20">
+                  <div className="flex items-center gap-2.5 mb-2">
+                    <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center border border-white/30 shrink-0">
+                      <DollarSign size={24} className="text-white" />
                     </div>
-                    <span className="font-black text-base font-zain tracking-wide">{t('invoices.grandTotal')}:</span>
+                    <span className="font-black text-base font-zain tracking-wide">{t('invoices.grandTotal')}</span>
                   </div>
-                  <span className="text-xl sm:text-2xl font-black dir-ltr font-zain tracking-tight">
-                    {Number(invoice.price || 0).toLocaleString()} <span className="text-xs font-bold opacity-90">ر.س</span>
-                  </span>
+                  <div className="bg-white/10 rounded-xl p-3 border border-white/20">
+                    <p className="text-lg sm:text-2xl font-black dir-ltr font-zain tracking-tight break-all">
+                      {Number(invoice.price || 0).toLocaleString()} <span className="text-sm font-bold opacity-90">ر.س</span>
+                    </p>
+                  </div>
                 </div>
               </div>
 
               {/* Official Documented Verification Footer */}
-              <div className="pt-4 border-t border-border-main/50 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-text-muted font-bold">
-                <p className="text-center sm:text-right">{t('invoices.invoiceThankYou')}</p>
-                <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-4 py-2 rounded-2xl border border-emerald-500/20 font-black shadow-2xs shrink-0">
-                  <CheckCircle2 size={16} className="text-emerald-500" />
-                  <span>{t('invoices.documentedElectronicInvoice')}</span>
+              <div className="pt-4 sm:pt-6 border-t border-border-main/50 space-y-3">
+                <p className="text-center text-xs sm:text-sm text-text-muted font-bold">{t('invoices.invoiceThankYou')}</p>
+                <div className="flex items-center justify-center gap-2 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-4 py-3 rounded-xl border border-emerald-500/20 font-black shadow-sm">
+                  <CheckCircle2 size={18} className="text-emerald-500 shrink-0" />
+                  <span className="text-xs sm:text-sm">{t('invoices.documentedElectronicInvoice')}</span>
                 </div>
               </div>
 

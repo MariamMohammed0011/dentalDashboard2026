@@ -2,32 +2,37 @@ import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { 
-  X, 
-  Building2, 
-  CheckCircle2, 
-  AlertTriangle, 
-  Clock, 
-  Check, 
-  Eye, 
+import {
+  X,
+  Building2,
+  CheckCircle2,
+  AlertTriangle,
+  Clock,
+  Check,
+  Eye,
   ShieldAlert,
   User,
-  SlidersHorizontal
+  SlidersHorizontal,
+  CreditCard
 } from 'lucide-react';
 
 // خريطة تحويل متكاملة للربط بين النصوص والأرقام
+// ⚠️ يجب أن تطابق enum الباك اند تماماً (GET /api/Enums/account-status):
+// 0 PendingVerification, 1 PendingAdminApproval, 2 PendingPayment, 3 Active, 4 ReadOnly, 5 Suspended
 const STATUS_LOOKUP = {
   'pendingverification': 0,
   'pendingadminapproval': 1,
   'pending': 1,
-  'active': 2,
-  'readonly': 3,
-  'suspended': 4,
+  'pendingpayment': 2,
+  'active': 3,
+  'readonly': 4,
+  'suspended': 5,
   '0': 0,
   '1': 1,
   '2': 2,
   '3': 3,
-  '4': 4
+  '4': 4,
+  '5': 5
 };
 
 // قائمة الحالات الخمس المعتمدة بتصميم ونظام ألوان عصري فخم
@@ -62,6 +67,21 @@ const ALL_STATUSES = [
   },
   {
     value: 2,
+    code: 'PendingPayment',
+    translationKey: 'userStatusModal.pendingPaymentStatus',
+    label: 'بانتظار الدفع (Pending Payment)',
+    icon: CreditCard,
+    labOnly: true,
+    styles: {
+      activeBorder: 'border-purple-500 bg-gradient-to-r from-purple-500/12 via-purple-500/5 to-transparent ring-2 ring-purple-500/25 shadow-sm',
+      activeIconBg: 'bg-gradient-to-br from-purple-500 to-fuchsia-500 text-white shadow-md shadow-purple-500/25',
+      inactiveIconBg: 'bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 border border-purple-200/50 dark:border-purple-900/30',
+      activeBadge: 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30',
+      checkBg: 'bg-gradient-to-br from-purple-500 to-fuchsia-500 text-white',
+    },
+  },
+  {
+    value: 3,
     code: 'Active',
     translationKey: 'userStatusModal.activeStatus',
     label: 'نشط (Active)',
@@ -75,7 +95,7 @@ const ALL_STATUSES = [
     },
   },
   {
-    value: 3,
+    value: 4,
     code: 'ReadOnly',
     translationKey: 'userStatusModal.readOnlyStatus',
     label: 'قراءة فقط (Read Only)',
@@ -89,7 +109,7 @@ const ALL_STATUSES = [
     },
   },
   {
-    value: 4,
+    value: 5,
     code: 'Suspended',
     translationKey: 'userStatusModal.suspendedStatus',
     label: 'معلق (Suspended)',
@@ -119,8 +139,12 @@ const parseLabel = (rawLabel) => {
 const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatus, onConfirm }) => {
   const { t } = useTranslation();
 
-  // الفرز مخصص حصراً: إما طبيب أو فني مخبر
+  // الفرز مخصص حصراً: إما طبيب أو فني مخبر أو مخبر
   const isDoctor = type === 'doctor' || type === 'dentist';
+  const isLabTechnician = type === 'labTechnician';
+
+  // بانتظار الدفع حالة خاصة بالمخابر (مرتبطة بالاشتراك) ولا تنطبق على الأطباء
+  const visibleStatuses = isDoctor ? ALL_STATUSES.filter((item) => !item.labOnly) : ALL_STATUSES;
 
   const normalizeStatus = (val) => {
     if (val === null || val === undefined) return null;
@@ -189,14 +213,18 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <h3 className="font-zain text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 leading-tight">
-                    {isDoctor 
+                    {isDoctor
                       ? (t('userStatusModal.editDoctorStatus') || 'تعديل حالة حساب الطبيب')
-                      : (t('userStatusModal.editLabStatus') || 'تعديل حالة حساب فني المخبر')}
+                      : isLabTechnician
+                        ? (t('userStatusModal.editLabTechStatus') || 'تعديل حالة حساب المخبري')
+                        : (t('userStatusModal.editLabStatus') || 'تعديل حالة حساب المخبر')}
                   </h3>
                   <p className="font-zain text-xs text-slate-400 dark:text-slate-400 font-medium">
-                    {isDoctor 
+                    {isDoctor
                       ? (t('userStatusModal.chooseDoctorStatus') || 'اختر الحالة الجديدة لحساب الطبيب')
-                      : (t('userStatusModal.chooseLabStatus') || 'اختر الحالة الجديدة لحساب فني المخبر')}
+                      : isLabTechnician
+                        ? (t('userStatusModal.chooseLabTechStatus') || 'اختر الحالة الجديدة لحساب المخبري المحدد أدناه')
+                        : (t('userStatusModal.chooseLabStatus') || 'اختر الحالة الجديدة لحساب المخبر المحدد أدناه')}
                   </p>
                 </div>
               </div>
@@ -247,7 +275,7 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
 
             {/* الخيارات الـ 5 المنسقة بألوان مريحة للعين */}
             <div className="flex flex-col gap-2 px-5 sm:px-6 py-1">
-              {ALL_STATUSES.map((item) => {
+              {visibleStatuses.map((item) => {
                 const IconComponent = item.icon;
                 const active = currentTempNumeric === item.value;
                 const rawText = item.translationKey ? t(item.translationKey) : item.label;
