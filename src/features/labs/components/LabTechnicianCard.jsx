@@ -2,7 +2,6 @@ import React from 'react';
 import { User, Eye, Building2, MapPin, ChevronDown, Loader2, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-// 🎨 زر شارة الحالة بتصميم شريط علوي بارز (Floating Status Pill)
 const StatusBadgeButton = ({ tech, updatingTechId, onOpenModal }) => {
   const { t } = useTranslation();
   const isCurrentlyUpdating = updatingTechId === tech.id;
@@ -85,23 +84,19 @@ const StatusBadgeButton = ({ tech, updatingTechId, onOpenModal }) => {
   );
 };
 
-// 💳 الكارد بالتصميم الجديد المتطور (New Sleek & Modern Design)
 const LabTechnicianCard = ({ tech, updatingTechId, onOpenStatusModal, onShowDetails }) => {
   return (
-    <div 
+    <div
       className="group relative bg-white dark:bg-slate-900/90 rounded-[2rem] border border-slate-100 dark:border-slate-800/80 hover:border-indigo-500/50 dark:hover:border-indigo-500/50 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 flex flex-col justify-between overflow-hidden"
       dir="rtl"
     >
-      {/* لمسة ديكورية خلفية (Accent Glow) */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl group-hover:bg-indigo-500/10 transition-all pointer-events-none" />
 
       <div className="p-6 relative z-10">
-        
-        {/* الترويسة: شارة الحالة + اسم ووظيفة الفني */}
+
         <div className="flex items-start justify-between gap-3 mb-6">
           <div className="flex items-center gap-3.5 min-w-0">
-            
-            {/* الصورة الشخصية مع إطار متدرج */}
+
             <div className="relative p-0.5 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 shrink-0 shadow-xs">
               <div className="w-13 h-13 sm:w-14 sm:h-14 bg-white dark:bg-slate-900 rounded-[0.9rem] flex items-center justify-center overflow-hidden">
                 {tech.profilePictureUrl ? (
@@ -112,7 +107,6 @@ const LabTechnicianCard = ({ tech, updatingTechId, onOpenStatusModal, onShowDeta
               </div>
             </div>
 
-            {/* الاسم وتصنيف الحساب */}
             <div className="flex flex-col min-w-0">
               <h3 className="font-black text-base sm:text-lg text-slate-900 dark:text-gray-100 truncate leading-snug group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" title={tech.name}>
                 {tech.name || 'بدون اسم'}
@@ -124,18 +118,15 @@ const LabTechnicianCard = ({ tech, updatingTechId, onOpenStatusModal, onShowDeta
             </div>
           </div>
 
-          {/* زر تعديل الحالة */}
-          <StatusBadgeButton 
-            tech={tech} 
-            updatingTechId={updatingTechId} 
-            onOpenModal={onOpenStatusModal} 
+          <StatusBadgeButton
+            tech={tech}
+            updatingTechId={updatingTechId}
+            onOpenModal={onOpenStatusModal}
           />
         </div>
 
-        {/* كبسولات المعلومات (Info Badges Grid) */}
         <div className="grid grid-cols-1 gap-2.5">
-          
-          {/* اسم مكان العمل */}
+
           <div className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/50 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
             <div className="p-1.5 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg shrink-0">
               <Building2 size={16} />
@@ -143,7 +134,6 @@ const LabTechnicianCard = ({ tech, updatingTechId, onOpenStatusModal, onShowDeta
             <span className="truncate">{tech.namePlace || 'مكان العمل غير محدد'}</span>
           </div>
 
-          {/* العنوان / المدينة */}
           <div className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/50 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
             <div className="p-1.5 bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-lg shrink-0">
               <MapPin size={16} />
@@ -154,7 +144,6 @@ const LabTechnicianCard = ({ tech, updatingTechId, onOpenStatusModal, onShowDeta
         </div>
       </div>
 
-      {/* زر عرض التفاصيل الفاخر بتأثير الماوس */}
       <button
         onClick={() => onShowDetails(tech.id)}
         className="w-full py-3.5 px-6 bg-slate-50 hover:bg-gradient-to-r hover:from-indigo-600 hover:to-purple-600 text-slate-700 hover:text-white dark:bg-slate-800/50 dark:hover:from-indigo-600 dark:hover:to-purple-600 dark:text-slate-200 dark:hover:text-white font-black text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer border-t border-slate-100 dark:border-slate-800/60"

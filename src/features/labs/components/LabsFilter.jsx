@@ -59,23 +59,22 @@ const FilterDropdown = ({ label, icon: Icon, value, options, onChange, colorKey 
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-  type="button"
-  onClick={() => setIsOpen(!isOpen)}
-  className={`flex items-center justify-between gap-2 w-full bg-white dark:bg-slate-900 font-bold text-[13px] sm:text-sm rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 border shadow-sm hover:shadow-md focus:outline-none focus:ring-2 ${colors.ring} transition-all duration-200 cursor-pointer ${
-    isFiltered 
-      ? colors.active
-      : `${colors.border} text-slate-800 dark:text-slate-100`
-  }`}
->
-  <div className="flex items-center gap-2 min-w-0">
-    {Icon && <Icon size={24} className={`shrink-0 ${colors.icon}`} />}
-    <span className="truncate text-[12px] font-zain font-black">{currentLabel}</span>
-  </div>
-  <ChevronDown 
-    size={20} 
-    className={`text-slate-400 dark:text-slate-400 transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180' : ''}`} 
-  />
-</button>
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className={`flex items-center justify-between gap-2 w-full bg-white dark:bg-slate-900 font-bold text-[13px] sm:text-sm rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 border shadow-sm hover:shadow-md focus:outline-none focus:ring-2 ${colors.ring} transition-all duration-200 cursor-pointer ${isFiltered
+            ? colors.active
+            : `${colors.border} text-slate-800 dark:text-slate-100`
+          }`}
+      >
+        <div className="flex items-center gap-2 min-w-0">
+          {Icon && <Icon size={24} className={`shrink-0 ${colors.icon}`} />}
+          <span className="truncate text-[12px] font-zain font-black">{currentLabel}</span>
+        </div>
+        <ChevronDown
+          size={20}
+          className={`text-slate-400 dark:text-slate-400 transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180' : ''}`}
+        />
+      </button>
 
       {isOpen && (
         <div className={`absolute right-0 mt-2 w-full min-w-[180px] bg-white dark:bg-slate-900 border ${colors.border} rounded-2xl shadow-xl py-1.5 z-50 animate-in fade-in slide-in-from-top-1 duration-200 max-h-[250px] overflow-y-auto custom-scrollbar`}>
@@ -89,11 +88,10 @@ const FilterDropdown = ({ label, icon: Icon, value, options, onChange, colorKey 
                   onChange(option.id);
                   setIsOpen(false);
                 }}
-                className={`flex items-center justify-between w-[calc(100%-8px)] mx-auto px-3 sm:px-4 py-2 sm:py-2.5 text-right text-[11px] sm:text-xs font-bold transition-all duration-200 rounded-xl cursor-pointer ${
-                  isSelected 
+                className={`flex items-center justify-between w-[calc(100%-8px)] mx-auto px-3 sm:px-4 py-2 sm:py-2.5 text-right text-[11px] sm:text-xs font-bold transition-all duration-200 rounded-xl cursor-pointer ${isSelected
                     ? colors.selected
                     : 'text-gray-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-text-main dark:hover:text-white'
-                }`}
+                  }`}
               >
                 <span>{option.label}</span>
                 {isSelected && <Check size={13} className={colors.check} />}
@@ -108,8 +106,8 @@ const FilterDropdown = ({ label, icon: Icon, value, options, onChange, colorKey 
 
 
 // ── Main LabsFilter Component ──
-const LabsFilter = ({ 
-  statusFilter, 
+const LabsFilter = ({
+  statusFilter,
   onStatusChange,
   ratingSort,
   onRatingSortChange,
@@ -121,7 +119,7 @@ const LabsFilter = ({
   hasActiveFilters
 }) => {
 
-  // Status filter options
+
   const statusOptions = [
     { id: 'all', label: 'كل الحالات' },
     { id: 'active', label: 'نشط' },
@@ -132,21 +130,21 @@ const LabsFilter = ({
     { id: 'rejected', label: 'مرفوض' },
   ];
 
-  // Rating sort options
+
   const ratingOptions = [
     { id: 'all', label: 'بدون ترتيب' },
     { id: 'desc', label: 'الأعلى تقييماً أولاً' },
     { id: 'asc', label: 'الأقل تقييماً أولاً' },
   ];
 
-  // Availability filter options
+
   const availabilityOptions = [
     { id: 'all', label: 'كل المخابر' },
     { id: 'available', label: 'متاح' },
     { id: 'unavailable', label: 'غير متاح' },
   ];
 
-  // Scan Visit service filter options
+
   const scanVisitOptions = [
     { id: 'all', label: 'كل الخدمات' },
     { id: 'yes', label: 'يدعم خدمة Scan Visit' },
@@ -166,7 +164,6 @@ const LabsFilter = ({
           colorKey="amber"
         />
 
-        {/* Availability Filter */}
         <FilterDropdown
           label="حالة التوفر"
           icon={Activity}
@@ -176,7 +173,6 @@ const LabsFilter = ({
           colorKey="blue"
         />
 
-        {/* Scan Visit Service Filter */}
         <FilterDropdown
           label="الخدمات"
           icon={Sparkles}
@@ -187,7 +183,7 @@ const LabsFilter = ({
         />
       </div>
     </div>
-   
+
   );
 };
 

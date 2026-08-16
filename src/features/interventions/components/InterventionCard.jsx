@@ -35,25 +35,22 @@ const InterventionCard = ({ complaint, onViewDetails }) => {
             <span className="text-xs font-black text-text-main bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-xl">
               #{id}
             </span>
-            <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5 ${
-              destination === 'Lab' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20' : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
-            }`}>
+            <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5 ${destination === 'Lab' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20' : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
+              }`}>
               {destination === 'Lab' ? <FlaskConical size={13} className="text-amber-500" /> : <MessageSquare size={13} className="text-blue-500" />}
               {destination === 'Lab' ? t('interventions.modal.targetLabBadge') : t('interventions.modal.targetAdmin')}
             </span>
           </div>
 
-          <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5 ${
-            isReplied
+          <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5 ${isReplied
               ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
               : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 animate-pulse'
-          }`}>
+            }`}>
             {isReplied ? <ShieldCheck size={14} className="text-emerald-500" /> : <Clock size={14} className="text-amber-500" />}
             {isReplied ? t('interventions.statusFilter.replied') : t('interventions.statusFilter.pending')}
           </span>
         </div>
 
-        {/* Doctor Details Header */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-black text-sm shrink-0 shadow-2xs">
             {user?.name ? user.name.charAt(0) : 'ط'}
@@ -69,7 +66,6 @@ const InterventionCard = ({ complaint, onViewDetails }) => {
           </div>
         </div>
 
-        {/* Title & Description Snippet */}
         <div className="space-y-1">
           <h5 className="text-xs font-black text-primary line-clamp-1">
             {title || t('interventions.modal.noSubject')}
@@ -80,7 +76,6 @@ const InterventionCard = ({ complaint, onViewDetails }) => {
         </div>
       </div>
 
-      {/* Footer: Date & Details Button */}
       <div className="pt-3 mt-4 border-t border-border-main/50 flex justify-between items-center text-xs">
         <span className="text-[11px] text-text-muted font-bold flex items-center gap-1.5">
           <Clock size={13} className="text-indigo-500 dark:text-indigo-400" />

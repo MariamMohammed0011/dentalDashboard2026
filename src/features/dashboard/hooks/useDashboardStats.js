@@ -48,7 +48,6 @@ const compensationTypeMap = {
   Acrylic: "أكريليك"
 };
 
-// دالة مساعدة لضمان استخراج مصفوفة آمنة من أي استجابة API
 const ensureArray = (data) => {
   if (Array.isArray(data)) return data;
   if (data && Array.isArray(data.data)) return data.data;
@@ -115,7 +114,6 @@ export const useDashboardStats = () => {
         ]);
 
         if (isMounted) {
-          // 💡 حماية وتأمين تحويل البيانات إلى المصفوفات
           const dentistsData = ensureArray(dentistsRes);
           const labsData = ensureArray(labsRes);
           const doctorsArray = ensureArray(doctorsRes);
@@ -125,7 +123,6 @@ export const useDashboardStats = () => {
           const caseOrdersList = ensureArray(caseOrdersRes);
           const rawAds = ensureArray(rawAdsRes);
 
-          // 1. تنسيق إحصائيات أوردرات الأطباء والمختبرات الشهرية
           const formattedDentists = dentistsData.map((d, index) => {
             const countSameName = dentistsData.filter(x => x.dentistName && x.dentistName === d.dentistName).length;
             const name = d.dentistName || `طبيب #${d.dentistId || d.id || index + 1}`;
@@ -147,7 +144,6 @@ export const useDashboardStats = () => {
           setDentistsOrdersData(formattedDentists);
           setLabsOrdersData(formattedLabs);
 
-          // 2. معالجة بيانات النمو المالي
           const rawGrowthData = ensureArray(financialGrowthRes);
           const formattedRevenue = [];
           let growthTotalAds = 0;
@@ -171,7 +167,6 @@ export const useDashboardStats = () => {
           });
           setFinancialGrowthData(formattedRevenue);
 
-          // 3. معالجة تقييم أداء المخابر
           const rawRatings = ensureArray(ratingsRes);
           const formattedRatings = [];
           rawRatings.forEach(item => {
@@ -194,7 +189,6 @@ export const useDashboardStats = () => {
           });
           setRatingsChartData(formattedRatings);
 
-          // 4. معالجة اتجاهات مواد التعويضات (Compensations Chart)
           const rawCompensations = Array.isArray(compensationsRes?.data)
             ? compensationsRes.data
             : ensureArray(compensationsRes);
@@ -209,7 +203,6 @@ export const useDashboardStats = () => {
           });
           setCompensationsChartData(formattedCompensations);
 
-          // 5. معالجة حالات الطلبيات
           const rawStatusData = ensureArray(statusRes);
           const activeStatusItems = rawStatusData.filter(item => (item.orderCount || 0) > 0);
           const statusListToUse = activeStatusItems.length > 0 ? activeStatusItems : rawStatusData;
@@ -223,35 +216,32 @@ export const useDashboardStats = () => {
           });
           setStatusChartData(formattedStatus);
 
-          // 6. حساب إحصائيات الأطباء
           const docTotal = typeof doctorsRes?.count === 'number' ? doctorsRes.count : doctorsArray.length;
           const docActive = doctorsArray.filter(d => {
             const st = String(d.status ?? '').toLowerCase().trim();
             return st === 'active' || st === 'approved' || st === '2';
           }).length;
-          
+
           const docPendingInDoctors = doctorsArray.filter(d => {
             const st = String(d.status ?? '').toLowerCase().trim();
-            return st === 'pendingadminapproval' || 
-                   st === 'pending_admin_approval' || 
-                   st === 'pending' || 
-                   st === 'pendingverification' || 
-                   st === 'pending_verification' || 
-                   st === '1' || 
-                   st === '0';
+            return st === 'pendingadminapproval' ||
+              st === 'pending_admin_approval' ||
+              st === 'pending' ||
+              st === 'pendingverification' ||
+              st === 'pending_verification' ||
+              st === '1' ||
+              st === '0';
           }).length;
-          
+
           const docPendingInRequests = pendingRequests.filter(r => r.type === 'doctor' || r.type === 'dentist').length;
           const docPending = docPendingInDoctors > 0 ? docPendingInDoctors : docPendingInRequests;
-
-          // 7. حساب إحصائيات المختبرات
           let labTotal = typeof labsListRes?.count === 'number' ? labsListRes.count : labsList.length;
-          let labActive = activeSubscriptions.length > 0 
-            ? activeSubscriptions.length 
+          let labActive = activeSubscriptions.length > 0
+            ? activeSubscriptions.length
             : labsList.filter(l => {
-                const st = String(l.status ?? '').toLowerCase().trim();
-                return st === 'active' || st === 'approved' || st === '2';
-              }).length;
+              const st = String(l.status ?? '').toLowerCase().trim();
+              return st === 'active' || st === 'approved' || st === '2';
+            }).length;
           let labSuspended = Math.max(0, labTotal - labActive);
 
           if (subscriptionsStatusRes?.statusDistribution) {
@@ -260,7 +250,6 @@ export const useDashboardStats = () => {
             labSuspended = subscriptionsStatusRes.statusDistribution.suspendedLabsCount ?? labSuspended;
           }
 
-          // 8. حساب إحصائيات الحالات النشطة (بناءً على الـ Enums الرسمية للنظام)
           const activeCases = caseOrdersList.filter(o => {
             const st = String(o.status ?? '').toLowerCase().trim();
             return st !== 'delivered' && st !== 'cancelled';
@@ -275,7 +264,6 @@ export const useDashboardStats = () => {
             return st === 'pennding' || st === 'pending' || st === 'requestinfo' || st === 'waitingforclarification';
           }).length;
 
-          // 9. حساب الإيرادات (باستخدام التقرير المالي المجمع المباشر إن توفر)
           let finalTotalRevenue = 0;
           let finalSubRevenue = 0;
           let finalAdsRevenue = 0;
@@ -288,7 +276,7 @@ export const useDashboardStats = () => {
             const subRevenue = activeSubscriptions.reduce((sum, item) => sum + Number(item.amount || item.price || 0), 0);
             const activeAds = rawAds.filter(ad => ad.isActive === true || String(ad.status).toLowerCase() === 'active');
             const adsRevenue = activeAds.reduce((sum, ad) => sum + Number(ad.price || ad.cost || 0), 0);
-            
+
             finalAdsRevenue = growthTotalAds > 0 ? growthTotalAds : adsRevenue;
             finalSubRevenue = growthTotalOrders > 0 ? growthTotalOrders : subRevenue;
             finalTotalRevenue = finalAdsRevenue + finalSubRevenue;

@@ -1,10 +1,13 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   Building2, Mail, Phone, MapPin, Clock, CreditCard, ChevronLeft
 } from 'lucide-react';
 import framerImg from '../../../assets/framer.png';
 
 export default function PendingPaymentGrid({ accounts, isLoading, onActivate }) {
+  const { t } = useTranslation();
+
   const formatDate = (date) => {
     if (!date) return 'N/A';
     return new Date(date).toLocaleDateString('en-US', {
@@ -30,8 +33,8 @@ export default function PendingPaymentGrid({ accounts, isLoading, onActivate }) 
         <div className="p-4 bg-purple-50 dark:bg-purple-950/30 rounded-2xl text-purple-500">
           <CreditCard size={36} />
         </div>
-        <p className="text-text-main text-base font-extrabold">لا يوجد حسابات بانتظار الدفع</p>
-        <p className="text-xs text-text-muted max-w-sm">كل المخابر المعتمدين إما فعّلوا اشتراكهم أو ما وصلوا لمرحلة الدفع بعد.</p>
+        <p className="text-text-main text-base font-extrabold">{t('subscription.pendingPaymentGrid.emptyTitle')}</p>
+        <p className="text-xs text-text-muted max-w-sm">{t('subscription.pendingPaymentGrid.emptyDesc')}</p>
       </div>
     );
   }
@@ -49,17 +52,14 @@ export default function PendingPaymentGrid({ accounts, isLoading, onActivate }) 
             whileHover={{ y: -6 }}
             className="bg-bg-card border rounded-[2.2rem] p-6 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group border-border-main/70 hover:border-purple-500/30 h-[300px] w-full"
           >
-            {/* Background Frame Texture */}
             <div className="absolute inset-0 opacity-[0.08] dark:opacity-[0.04] pointer-events-none z-0">
               <img src={framerImg} alt="" className="w-full h-full object-cover" />
             </div>
 
-            {/* Ambient Glow */}
             <div className="absolute -bottom-10 -left-10 w-32 h-32 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none bg-purple-500" />
 
             <div className="relative z-10 flex flex-col justify-between h-full w-full">
 
-              {/* 1. Header */}
               <div className="flex items-center justify-between gap-3 shrink-0">
                 <div className="flex items-center gap-3 min-w-0 flex-1">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-400 to-fuchsia-600 text-white shadow-lg shadow-purple-500/20 flex items-center justify-center shrink-0 group-hover:rotate-[6deg] transition-transform duration-300">
@@ -67,7 +67,7 @@ export default function PendingPaymentGrid({ accounts, isLoading, onActivate }) 
                   </div>
                   <div className="flex flex-col text-right min-w-0 flex-1">
                     <span className="text-[10px] text-text-muted font-black tracking-wider uppercase">
-                      المخبر #{acc.labId}
+                      {t('subscription.labIdLabel', { id: acc.labId })}
                     </span>
                     <h3 className="font-black text-text-main text-sm sm:text-base truncate leading-snug" title={acc.labName}>
                       {acc.labName}
@@ -77,43 +77,32 @@ export default function PendingPaymentGrid({ accounts, isLoading, onActivate }) 
 
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black border shrink-0 bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 border-purple-200/60 dark:border-purple-900/40">
                   <span className="w-2 h-2 rounded-full shrink-0 bg-purple-500 animate-pulse" />
-                  بانتظار الدفع
+                  {t('subscription.pendingPaymentGrid.pendingBadge')}
                 </span>
               </div>
 
-              {/* 2. Details */}
               <div className="flex flex-col justify-between gap-2.5 py-3 shrink-0">
                 <div className="flex items-center gap-2.5 text-xs text-text-muted h-5">
                   <Mail size={14} className="text-sky-500 shrink-0" />
-                  <span className="truncate font-semibold dir-ltr text-right flex-1" title={acc.email}>{acc.email || 'غير متوفر'}</span>
+                  <span className="truncate font-semibold dir-ltr text-right flex-1" title={acc.email}>{acc.email || t('subscription.notAvailable')}</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-xs text-text-muted h-5">
                   <Phone size={14} className="text-emerald-500 shrink-0" />
-                  <span className="truncate font-semibold dir-ltr text-right flex-1">{acc.phone || 'غير متوفر'}</span>
+                  <span className="truncate font-semibold dir-ltr text-right flex-1">{acc.phone || t('subscription.notAvailable')}</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-xs text-text-muted h-5">
                   <MapPin size={14} className="text-rose-500 shrink-0" />
                   <span className="truncate font-semibold flex-1">
-                    {[acc.cityPlace, acc.countryPlace].filter(Boolean).join('، ') || 'غير محدد'}
+                    {[acc.cityPlace, acc.countryPlace].filter(Boolean).join('، ') || t('common.notSpecified')}
                   </span>
                 </div>
                 <div className="flex items-center gap-2.5 text-xs text-text-muted h-5">
                   <Clock size={14} className="text-amber-500 shrink-0" />
-                  <span className="truncate font-semibold">بانتظار الدفع منذ {formatDate(acc.createdAt)}</span>
+                  <span className="truncate font-semibold">{t('subscription.pendingPaymentGrid.pendingSinceLabel', { date: formatDate(acc.createdAt) })}</span>
                 </div>
               </div>
 
-              {/* 3. Action */}
-              {/* <div className="flex items-center justify-end h-[46px] shrink-0">
-                <button
-                  onClick={() => onActivate(acc)}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-br from-purple-500 to-fuchsia-600 hover:from-purple-600 hover:to-fuchsia-700 text-white rounded-2xl text-xs font-black shadow-lg shadow-purple-500/20 transition-all active:scale-95 cursor-pointer group/btn"
-                >
-                  <CreditCard size={14} />
-                  <span>تفعيل الاشتراك</span>
-                  <ChevronLeft size={14} className="group-hover/btn:-translate-x-1 transition-transform" />
-                </button>
-              </div> */}
+
 
             </div>
           </motion.div>

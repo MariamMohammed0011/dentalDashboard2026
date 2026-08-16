@@ -45,7 +45,6 @@ const InterventionPage = () => {
         totalCount={allCount}
       />
 
-      {/* Error Banner */}
       {isError && (
         <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center gap-3 text-sm font-bold">
           <AlertCircle size={20} className="shrink-0 text-rose-500" />
@@ -53,7 +52,6 @@ const InterventionPage = () => {
         </div>
       )}
 
-      {/* Complaints Grid Section */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
@@ -87,7 +85,6 @@ const InterventionPage = () => {
           </div>
         )}
 
-        {/* Pagination Controls */}
         {pagination?.totalPages > 1 && (
           <div className="pt-6 border-t border-border-main/50">
             <MembershipPagination
@@ -98,7 +95,6 @@ const InterventionPage = () => {
         )}
       </motion.div>
 
-      {/* Complaint Details & Reply Modal */}
       {selectedComplaint && (
         <ComplaintDetailsModal
           complaint={selectedComplaint}

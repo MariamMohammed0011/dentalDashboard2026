@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Search, RotateCcw, Filter, ShieldCheck, Activity, Users, X, Sparkles, SlidersHorizontal, ChevronDown, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -43,7 +44,6 @@ const colorPresets = {
   },
 };
 
-// ── مكون القائمة المنسدلة المصممة والمخصصة (Custom Designed Dropdown) ──
 const CustomSelect = ({ label, icon: Icon, value, options, onChange, colorKey = 'blue' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -122,6 +122,7 @@ const CustomSelect = ({ label, icon: Icon, value, options, onChange, colorKey = 
 };
 
 const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState(filters.search || '');
   const [approvalStatusFilter, setApprovalStatusFilter] = useState(filters.approvalStatus || 'all');
   const [statusFilter, setStatusFilter] = useState(filters.status || 'all');
@@ -135,23 +136,23 @@ const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
   }, [filters]);
 
   const approvalStatusOptions = [
-    { id: 'all', label: 'كل الحالات' },
-    { id: 'pending', label: '⏳ قيد الانتظار' },
-    { id: 'approved', label: '✅ تمت الموافقة' },
-    { id: 'rejected', label: '❌ مرفوض' },
+    { id: 'all', label: t('ads.adsFilter.allStatuses') },
+    { id: 'pending', label: t('ads.adsFilter.statusPending') },
+    { id: 'approved', label: t('ads.adsFilter.statusApproved') },
+    { id: 'rejected', label: t('ads.adsFilter.statusRejected') },
   ];
 
   const statusOptions = [
-    { id: 'all', label: 'كل الحالات' },
-    { id: 'active', label: '🟢 نشط' },
-    { id: 'inactive', label: '⚪ غير نشط' },
+    { id: 'all', label: t('ads.adsFilter.allStatuses') },
+    { id: 'active', label: t('ads.adsFilter.activeStatus') },
+    { id: 'inactive', label: t('ads.adsFilter.inactiveStatus') },
   ];
 
   const typeOptions = [
-    { id: 'all', label: 'كل الجماهير' },
-    { id: 'dentists', label: '👨‍⚕️ أطباء الأسنان فقط' },
-    { id: 'labs', label: '🧪 مخابر الأسنان فقط' },
-    { id: 'both', label: '🤝 الأطباء والمخابر معاً' },
+    { id: 'all', label: t('ads.adsFilter.allAudiences') },
+    { id: 'dentists', label: t('ads.adsFilter.audienceDentistsEmoji') },
+    { id: 'labs', label: t('ads.adsFilter.audienceLabsEmoji') },
+    { id: 'both', label: t('ads.adsFilter.audienceBothEmoji') },
   ];
 
   const activeFiltersCount = [
@@ -168,7 +169,7 @@ const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
       status: statusFilter,
       type: typeFilter,
     });
-    toast.success('تم تطبيق فلاتر البحث بنجاح');
+    toast.success(t('ads.adsFilter.applySuccess'));
   };
 
   const handleReset = () => {
@@ -177,7 +178,7 @@ const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
     setStatusFilter('all');
     setTypeFilter('all');
     onResetFilters();
-    toast.info('تم إعادة تعيين الفلاتر');
+    toast.info(t('ads.adsFilter.resetSuccess'));
   };
 
   return (
@@ -187,18 +188,18 @@ const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
       transition={{ duration: 0.3 }}
       className="bg-white dark:bg-bg-card border border-border-main/70 rounded-[2rem] p-5 sm:p-6 shadow-sm shadow-slate-100/50 dark:shadow-none flex flex-col gap-5 relative z-30 transition-all duration-300"
     >
-      {/* 📌 Header Title Bar */}
+     
       <div className="flex items-center justify-between pb-3 border-b border-border-main/40">
         <div className="flex items-center gap-2.5">
           <div className="p-2 bg-primary/10 text-primary rounded-xl flex items-center justify-center">
             <SlidersHorizontal size={18} />
           </div>
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-black text-text-main">تصفية الإعلانات Advanced Filter</h3>
+            <h3 className="text-sm font-black text-text-main">{t('ads.adsFilter.title')}</h3>
             {activeFiltersCount > 0 && (
               <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-primary/10 text-primary border border-primary/20 flex items-center gap-1">
                 <Sparkles size={11} />
-                <span>{activeFiltersCount} نشطة</span>
+                <span>{activeFiltersCount} {t('ads.adsFilter.activeSuffix')}</span>
               </span>
             )}
           </div>
@@ -211,16 +212,15 @@ const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
             className="text-xs font-bold text-text-muted hover:text-red-500 transition-colors flex items-center gap-1 cursor-pointer"
           >
             <RotateCcw size={13} />
-            <span>مسح الكل</span>
+            <span>{t('ads.adsFilter.clearAll')}</span>
           </button>
         )}
       </div>
 
-      {/* 🔍 Custom Designed Filters & Search Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
-        {/* 1️⃣ Approval Status Filter with Blue Border */}
+       
         <CustomSelect
-          label="حالة التأكيد"
+          label={t('ads.adsFilter.approvalStatusLabel')}
           icon={ShieldCheck}
           value={approvalStatusFilter}
           options={approvalStatusOptions}
@@ -228,9 +228,9 @@ const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
           colorKey="blue"
         />
 
-        {/* 2️⃣ Active Status Filter with Emerald Border */}
+
         <CustomSelect
-          label="حالة الإعلان"
+          label={t('ads.adsFilter.statusLabel')}
           icon={Activity}
           value={statusFilter}
           options={statusOptions}
@@ -238,9 +238,9 @@ const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
           colorKey="emerald"
         />
 
-        {/* 3️⃣ Target Audience Filter with Amber Border */}
+
         <CustomSelect
-          label="الجمهور المستهدف"
+          label={t('ads.addAdForUserModal.audienceLabel')}
           icon={Users}
           value={typeFilter}
           options={typeOptions}
@@ -248,16 +248,16 @@ const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
           colorKey="amber"
         />
 
-        {/* 4️⃣ Search Query Input with Violet Border */}
+
         <div className="flex flex-col gap-2 text-right">
           <label className="text-[11px] font-black text-text-muted uppercase tracking-wider flex items-center gap-1.5 mr-1">
             <Search size={14} className="text-violet-500" />
-            البحث في الإعلانات
+            {t('ads.adsFilter.searchLabel')}
           </label>
           <div className="relative">
             <input
               type="text"
-              placeholder="اكتب عنوان أو اسم المعلن..."
+              placeholder={t('ads.adsFilter.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleApply()}
@@ -277,7 +277,7 @@ const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
         </div>
       </div>
 
-      {/* 🚀 Action Buttons Row */}
+     
       <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
         <div className="flex items-center gap-2.5">
           <button
@@ -286,7 +286,7 @@ const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
             className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 px-6 py-2.5 rounded-2xl font-bold text-xs sm:text-sm flex items-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-95 cursor-pointer"
           >
             <Filter size={16} />
-            <span>تطبيق الفلاتر</span>
+            <span>{t('ads.adsFilter.applyButton')}</span>
           </button>
 
           <button
@@ -295,13 +295,13 @@ const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
             className="bg-gray-100 dark:bg-slate-800/80 border border-border-main/50 text-text-muted hover:text-text-main hover:bg-gray-200 dark:hover:bg-slate-700 px-5 py-2.5 rounded-2xl font-bold text-xs sm:text-sm flex items-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-95 cursor-pointer"
           >
             <RotateCcw size={15} />
-            <span>إعادة تعيين</span>
+            <span>{t('ads.adsFilter.resetButton')}</span>
           </button>
         </div>
 
         {activeFiltersCount > 0 && (
           <span className="text-xs font-medium text-text-muted hidden sm:inline-block">
-            يتم تصفية النتائج بناءً على الاختيارات الحالية
+            {t('ads.adsFilter.activeFiltersHint')}
           </span>
         )}
       </div>

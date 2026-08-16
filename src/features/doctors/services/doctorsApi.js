@@ -9,9 +9,8 @@ export const doctorsApi = {
   updateStatus: async ({ id, status }) => {
     const formData = new FormData();
 
-    // انتبهي للحرف الكبير S
     formData.append("Status", Number(status));
-console.log("Sending Status =", status);
+    console.log("Sending Status =", status);
     const response = await axiosInstance.patch(
       `/Users/${id}/status`,
       formData,

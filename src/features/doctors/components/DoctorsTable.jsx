@@ -93,7 +93,7 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
     if (updatingDoctorId === doc.id) return;
 
     setSelectedDocForStatus(doc);
-    
+
     let initialNumericStatus;
     if (typeof doc.status === 'number') {
       initialNumericStatus = doc.status;
@@ -113,7 +113,6 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
 
   return (
     <div className="w-full flex flex-col gap-2" dir="rtl">
-      {/* Header Table */}
       <div className="hidden md:grid grid-cols-[1.2fr_1.3fr_1.2fr_0.9fr_1fr] items-center w-full px-6 py-3 text-text-muted font-extrabold text-[11px] uppercase select-none gap-3 bg-neutral-light-gray/40 rounded-xl border border-border-subtle/40">
         <div className="text-right">{t('doctors.doctor')}</div>
         <div className="text-right">{t('doctors.clinicAndAddress')}</div>
@@ -122,7 +121,6 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
         <div className="text-center">{t('common.status')}</div>
       </div>
 
-      {/* Desktop List */}
       <div className="hidden md:flex flex-col gap-3">
         {isLoading ? (
           Array(4).fill(0).map((_, i) => (
@@ -144,7 +142,6 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
                 key={doc.id}
                 className="grid grid-cols-[1.2fr_1.3fr_1.2fr_0.9fr_1fr] items-center w-full bg-bg-card border border-border-subtle rounded-2xl px-6 py-3.5 shadow-xs hover:shadow-md hover:border-primary/30 transition-all duration-200 gap-3"
               >
-                {/* Doctor Column */}
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-10 h-10 rounded-full border border-primary/20 shrink-0 overflow-hidden shadow-xs bg-primary-bg flex items-center justify-center">
                     <img
@@ -159,7 +156,6 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
                   </div>
                 </div>
 
-                {/* Clinic Column */}
                 <div className="flex flex-col min-w-0 gap-1">
                   <span className="font-bold text-text-main text-[13px] truncate flex items-center gap-2">
                     <Building2 size={13} className="text-primary shrink-0" />
@@ -175,7 +171,6 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
                   )}
                 </div>
 
-                {/* Contact Column */}
                 <div className="flex flex-col gap-1.5">
                   {doc.phone && (
                     <span className="flex items-center gap-2 text-[11px] text-text-main font-medium">
@@ -191,13 +186,11 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
                   )}
                 </div>
 
-                {/* Join Date Column */}
                 <div className="flex items-center gap-2 text-[12px] text-text-muted font-medium min-w-0">
                   <Calendar size={13} className="text-accent-purple shrink-0" />
                   <span className="truncate">{formattedDate}</span>
                 </div>
 
-                {/* Status Column */}
                 <div className="flex justify-center">
                   <StatusBadge doc={doc} updatingDoctorId={updatingDoctorId} onOpenModal={openStatusModal} />
                 </div>
@@ -207,7 +200,6 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
         )}
       </div>
 
-      {/* Mobile Grid */}
       <div className="block md:hidden px-1 sm:px-0">
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -244,7 +236,6 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
         )}
       </div>
 
-      {/* Status Modal */}
       <UserStatusModal
         isOpen={!!selectedDocForStatus}
         user={selectedDocForStatus}

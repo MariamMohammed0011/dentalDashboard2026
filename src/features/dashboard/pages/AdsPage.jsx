@@ -1,6 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const AdsPage = () => {
+  const { t } = useTranslation();
   const ads = Array(16).fill({
     source: "د. احمد غانم",
     duration: "7 ايام",
@@ -14,14 +16,14 @@ const AdsPage = () => {
       <div className="flex items-center justify-between mb-8 bg-transparent p-2 rounded-2xl">
         <div className="flex gap-2">
           <button className="bg-primary text-white px-8 py-2.5 rounded-xl font-bold shadow-lg shadow-primary/20 transition-transform active:scale-95">
-            إضافة اعلان
+            {t('ads.adsHeader.addAdButton')}
           </button>
           <button className="bg-red-500/10 text-red-500 px-8 py-2.5 rounded-xl font-bold border border-red-500/20 transition-transform active:scale-95">
-            إيقاف اعلان
+            {t('ads.adsHeader.stopAdButton')}
           </button>
         </div>
         <div className="bg-bg-card px-8 py-2.5 rounded-xl shadow-sm border border-border-main">
-          <h1 className="text-xl font-black text-text-main">الإعلانات</h1>
+          <h1 className="text-xl font-black text-text-main">{t('ads.title')}</h1>
         </div>
       </div>
 
@@ -31,7 +33,7 @@ const AdsPage = () => {
           <div key={index} className="bg-bg-card border border-border-main rounded-[2rem] overflow-hidden flex items-stretch shadow-sm hover:shadow-md transition-shadow">
             
             <button className="bg-primary text-white flex flex-col justify-center px-4 hover:bg-primary/90 transition-colors group">
-              <span className="[writing-mode:vertical-rl] rotate-180 text-sm font-black tracking-widest group-hover:scale-110 transition-transform">عرض</span>
+              <span className="[writing-mode:vertical-rl] rotate-180 text-sm font-black tracking-widest group-hover:scale-110 transition-transform">{t('common.view')}</span>
             </button>
 
             
@@ -39,15 +41,15 @@ const AdsPage = () => {
               <div className="space-y-2 text-right">
                 <div className="flex items-center gap-1 justify-end">
                    <span className="font-medium text-text-muted text-sm">{ad.source}</span>
-                   <p className="text-sm font-black text-text-main">:المصدر</p>
+                   <p className="text-sm font-black text-text-main">{t('ads.legacyAdsPage.sourceLabel')}</p>
                 </div>
                 <div className="flex items-center gap-1 justify-end">
                    <span className="font-medium text-text-muted text-sm">{ad.duration}</span>
-                   <p className="text-sm font-black text-text-main">:مدة الإعلان</p>
+                   <p className="text-sm font-black text-text-main">{t('ads.legacyAdsPage.durationLabel')}</p>
                 </div>
                 <div className="flex items-center gap-1 justify-end">
                    <span className="font-medium text-text-muted text-sm">{ad.status}</span>
-                   <p className="text-sm font-black text-text-main">:حالة الدفع</p>
+                   <p className="text-sm font-black text-text-main">{t('ads.legacyAdsPage.paymentStatusLabel')}</p>
                 </div>
               </div>
               

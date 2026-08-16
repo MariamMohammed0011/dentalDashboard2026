@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useMotionValue, useSpring } from 'framer-motion';
 
-/**
- * AnimatedNumber Component
- * Animates a numeric value from 0 (or previous value) to target value smoothly.
- * Supports prefix (e.g. '$'), suffix (e.g. '%'), and decimal control.
- */
 const AnimatedNumber = ({
   value = 0,
   duration = 1,

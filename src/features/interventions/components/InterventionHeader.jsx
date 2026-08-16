@@ -1,14 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { 
-  RefreshCw, 
-  Filter, 
-  Clock, 
-  ShieldCheck, 
-  Layers, 
-  ShieldAlert, 
-  FlaskConical, 
-  MessageSquareWarning 
+import {
+  RefreshCw,
+  Filter,
+  Clock,
+  ShieldCheck,
+  Layers,
+  ShieldAlert,
+  FlaskConical,
+  MessageSquareWarning
 } from 'lucide-react';
 
 const InterventionHeader = ({
@@ -36,8 +36,7 @@ const InterventionHeader = ({
 
   return (
     <div className="flex flex-col gap-5 w-full mb-2 font-zain select-none" dir="rtl">
-      
-      {/* 1. Header Title & Refresh Action */}
+
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-3 border-b border-border-main/40">
         <div>
           <div className="flex items-center gap-2.5 flex-wrap">
@@ -57,13 +56,11 @@ const InterventionHeader = ({
           </p>
         </div>
 
-       
+
       </div>
 
-      {/* 2. Responsive Controls Grid (No Scroll Layout) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 p-2 bg-bg-card/60 dark:bg-slate-900/40 rounded-3xl border border-border-main/60 backdrop-blur-xl">
-        
-        {/* Section 1: Destination Tabs */}
+
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-1.5 bg-slate-100/80 dark:bg-slate-900/80 rounded-2xl border border-slate-200/50 dark:border-slate-800/80">
           <span className="text-[11px] font-black text-text-muted px-2 hidden lg:inline-flex items-center gap-1.5 whitespace-nowrap">
             <Layers size={14} className="text-primary" />
@@ -77,11 +74,10 @@ const InterventionHeader = ({
                 <button
                   key={tab.id}
                   onClick={() => onTabChange(tab.id)}
-                  className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-black transition-all duration-200 text-center cursor-pointer ${
-                    isActive
+                  className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-black transition-all duration-200 text-center cursor-pointer ${isActive
                       ? 'text-white bg-primary shadow-md shadow-primary/20 scale-[1.02]'
                       : 'text-text-muted hover:text-text-main hover:bg-slate-200/50 dark:hover:bg-slate-800/50'
-                  }`}
+                    }`}
                 >
                   <Icon size={14} className={isActive ? 'text-white' : tab.color} />
                   <span className="truncate">{tab.label}</span>
@@ -91,7 +87,6 @@ const InterventionHeader = ({
           </div>
         </div>
 
-        {/* Section 2: Status Filter Controls */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-1.5 bg-slate-100/80 dark:bg-slate-900/80 rounded-2xl border border-slate-200/50 dark:border-slate-800/80">
           <span className="text-[11px] font-black text-text-muted px-2 hidden lg:inline-flex items-center gap-1.5 whitespace-nowrap">
             الحالة:
@@ -104,11 +99,10 @@ const InterventionHeader = ({
                 <button
                   key={f.id}
                   onClick={() => onStatusFilterChange(f.id)}
-                  className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-black transition-all duration-200 text-center cursor-pointer ${
-                    isActive
+                  className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-black transition-all duration-200 text-center cursor-pointer ${isActive
                       ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-md shadow-slate-900/10 scale-[1.02]'
                       : 'text-text-muted hover:text-text-main hover:bg-slate-200/50 dark:hover:bg-slate-800/50'
-                  }`}
+                    }`}
                 >
                   <Icon size={14} className={isActive ? (f.id === 'pending' ? 'text-amber-400' : f.id === 'replied' ? 'text-emerald-400' : 'text-indigo-400') : f.color} />
                   <span className="truncate">{f.label}</span>

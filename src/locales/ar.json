@@ -4,7 +4,10 @@
     "save": "حفظ",
     "edit": "تعديل",
     "delete": "حذف",
+    "close": "إغلاق",
     "add": "إضافة",
+    "view": "عرض",
+    "notSpecified": "غير محدد",
     "search": "بحث...",
     "status": "الحالة",
     "actions": "الإجراءات",
@@ -457,7 +460,216 @@
     "totalClients": "إجمالي العملاء",
     "deleteUserModalTitle": "حذف مستخدم الإعلانات",
     "deleteUserModalMessage": "هل أنت متأكد من رغبتك في حذف العميل \"{{name}}\"؟ سيتم حذف جميع إعلاناته المرتبطة به بشكل نهائي ولا يمكن التراجع عن هذا الإجراء.",
-    "deleteUserConfirm": "حذف المستخدم"
+    "deleteUserConfirm": "حذف المستخدم",
+    "noName": "بدون اسم",
+    "notSpecified": "غير محدد",
+    "addClientModal": {
+      "title": "إضافة مستخدم إعلانات جديد",
+      "subtitle": "أدخل بيانات العميل لإتاحة إضافة إعلانات له",
+      "nameLabel": "اسم العميل",
+      "namePlaceholder": "مثال: أحمد المحمد",
+      "phoneLabel": "رقم الهاتف",
+      "phonePlaceholder": "مثال: 963930000000+",
+      "phoneHint": "* يجب كتابة رمز الدولة مع علامة (+) ليتم قبول الرقم دولياً.",
+      "facilityLabel": "اسم المنشأة / العيادة",
+      "facilityPlaceholder": "مثال: عيادة السن الجميل",
+      "addressLabel": "العنوان بالتفصيل",
+      "addressPlaceholder": "مثال: شارع بغداد، بجانب صيدلية الشفاء",
+      "cityLabel": "المدينة",
+      "cityPlaceholder": "مثال: دمشق",
+      "countryLabel": "البلد",
+      "countryPlaceholder": "مثال: سوريا",
+      "submitting": "جاري الإضافة...",
+      "submit": "إضافة مستخدم"
+    },
+    "viewUserModal": {
+      "title": "تفاصيل بيانات العميل",
+      "accountId": "معرف الحساب: #{{id}}",
+      "roles": {
+        "adsclient": "عميل إعلانات",
+        "dentist": "طبيب أسنان",
+        "lab": "مختبر أسنان",
+        "admin": "مسؤول النظام",
+        "superadmin": "مسؤول النظام الرئيسي"
+      },
+      "facilitySection": "بيانات المنشأة / العيادة",
+      "facilityName": "اسم المنشأة",
+      "locationAddress": "الموقع / العنوان",
+      "cityAndCountry": "المدينة والبلد",
+      "defaultCity": "دمشق",
+      "contactSection": "بيانات التواصل والاتصال",
+      "phone": "رقم الهاتف",
+      "accountHistorySection": "تفاصيل تاريخ الحساب والنشاط",
+      "createdAt": "تاريخ الإنشاء",
+      "totalAds": "إجمالي الحملات الإعلانية",
+      "adsCount": "{{count}} إعلان",
+      "activeAdsSection": "الإعلانات الفعالة للمستخدم ({{count}})",
+      "loadingAds": "جاري تحميل الإعلانات...",
+      "adId": "معرف الإعلان: #{{id}}",
+      "campaignPrice": "سعر الحملة: {{price}} ل.س",
+      "untitledAd": "إعلان بدون عنوان",
+      "noContent": "لا يوجد محتوى",
+      "createdAtPrefix": "تاريخ الإنشاء: {{date}}",
+      "expiresAtPrefix": "ينتهي في: {{date}}",
+      "noActiveAds": "لا يوجد إعلانات فعالة حالياً لهذا المستخدم."
+    },
+    "usersTable": {
+      "filtersLabel": "الفلاتر:",
+      "filterAllUsers": "جميع المستخدمين",
+      "filterAdsClients": "عملاء الإعلانات",
+      "filterDoctors": "أطباء",
+      "filterLabs": "مخابر",
+      "adsFilterAll": "كل الإعلانات",
+      "adsFilterActive": "نشطة",
+      "adsFilterNone": "بدون إعلانات",
+      "colClient": "العميل",
+      "colFacility": "المنشأة",
+      "colContact": "التواصل",
+      "colAds": "الإعلانات",
+      "colActions": "العمليات",
+      "noResults": "لا توجد نتائج",
+      "mobileFacilityLabel": "المنشأة:",
+      "mobilePhoneLabel": "الهاتف:",
+      "mobileCityLabel": "المدينة:"
+    },
+    "adCard": {
+      "sourceLabel": "المصدر:",
+      "durationLabel": "مدة الإعلان:",
+      "paymentStatusLabel": "حالة الدفع:"
+    },
+    "editUserModal": {
+      "title": "تعديل بيانات العميل",
+      "subtitle": "تحديث المعلومات الأساسية وعنوان المنشأة",
+      "namePlaceholder": "أدخل اسم العميل بالكامل",
+      "phoneLabel": "بيانات التواصل (الهاتف)",
+      "phonePlaceholder": "09xxxxxxxx",
+      "facilityLabel": "المنشأة / العيادة",
+      "facilityPlaceholder": "اسم العيادة أو المختبر",
+      "addressPlaceholder": "الشارع، البناء، أو المعلم المميز",
+      "cityPlaceholder": "دمشق، حلب...",
+      "countryLabel": "الدولة",
+      "countryPlaceholder": "سوريا...",
+      "saving": "جاري الحفظ...",
+      "submit": "حفظ التعديلات"
+    },
+    "addAdForUserModal": {
+      "title": "إضافة إعلان جديد",
+      "forClientPrefix": "للعميل:",
+      "forClientSuffix": "({{phone}})",
+      "titleLabel": "عنوان الإعلان",
+      "titlePlaceholder": "مثال: خصم 50% على أجهزة التعقيم",
+      "titleRequired": "يرجى كتابة عنوان الإعلان",
+      "contentLabel": "محتوى / تفاصيل الإعلان",
+      "contentPlaceholder": "اكتب تفاصيل الإعلان هنا...",
+      "audienceLabel": "الجمهور المستهدف",
+      "audienceDentists": "أطباء الأسنان فقط",
+      "audienceLabs": "مخابر الأسنان فقط",
+      "audienceBoth": "الأطباء والمخابر معاً",
+      "expiresLabel": "تاريخ الانتهاء",
+      "expiresPlaceholder": "اختر تاريخ الانتهاء",
+      "imageLabel": "صورة الإعلان",
+      "imageRequired": "يرجى اختيار صورة الإعلان من الجهاز",
+      "changeImage": "تغيير الصورة",
+      "uploadPrompt": "اضغط هنا أو اسحب صورة الإعلان إلى هنا",
+      "uploadFormats": "تدعم صيغ PNG, JPG, JPEG",
+      "submitting": "جاري الإضافة...",
+      "submit": "إضافة الإعلان"
+    },
+    "addAdModal": {
+      "subtitle": "أدخل بيانات الحملة الإعلانية وصورة العرض",
+      "userLabel": "مستخدم الإعلانات (العميل)",
+      "loadingUsers": "جاري تحميل العملاء...",
+      "searchUserPlaceholder": "ابحث عن اسم العميل، رقم الهاتف...",
+      "noUsersFound": "لا يوجد مستخدمين مطابقين",
+      "userRequired": "يرجى اختيار مستخدم الإعلان",
+      "successToast": "تمت إضافة الإعلان بنجاح",
+      "errorFallback": "حدث خطأ أثناء إضافة الإعلان"
+    },
+    "adsFilter": {
+      "title": "تصفية الإعلانات Advanced Filter",
+      "activeSuffix": "نشطة",
+      "clearAll": "مسح الكل",
+      "approvalStatusLabel": "حالة التأكيد",
+      "statusLabel": "حالة الإعلان",
+      "searchLabel": "البحث في الإعلانات",
+      "searchPlaceholder": "اكتب عنوان أو اسم المعلن...",
+      "applyButton": "تطبيق الفلاتر",
+      "resetButton": "إعادة تعيين",
+      "activeFiltersHint": "يتم تصفية النتائج بناءً على الاختيارات الحالية",
+      "applySuccess": "تم تطبيق فلاتر البحث بنجاح",
+      "resetSuccess": "تم إعادة تعيين الفلاتر",
+      "allStatuses": "كل الحالات",
+      "statusPending": "⏳ قيد الانتظار",
+      "statusApproved": "✅ تمت الموافقة",
+      "statusRejected": "❌ مرفوض",
+      "activeStatus": "🟢 نشط",
+      "inactiveStatus": "⚪ غير نشط",
+      "allAudiences": "كل الجماهير",
+      "audienceDentistsEmoji": "👨‍⚕️ أطباء الأسنان فقط",
+      "audienceLabsEmoji": "🧪 مخابر الأسنان فقط",
+      "audienceBothEmoji": "🤝 الأطباء والمخابر معاً"
+    },
+    "adsHeader": {
+      "addAdButton": "إضافة اعلان",
+      "stopAdButton": "إيقاف اعلان"
+    },
+    "adsList": {
+      "noResults": "لا توجد إعلانات مطابقة لخيارات البحث الحالية",
+      "viewDetails": "عرض التفاصيل",
+      "audienceLabsOnly": "مخابر فقط",
+      "audienceAll": "الجميع",
+      "audienceDentistsOnly": "أطباء فقط",
+      "untitledAd": "بدون عنوان",
+      "noContentDetails": "لا يوجد تفاصيل إضافية لهذا الإعلان.",
+      "toggleStatusTitle": "تغيير الحالة النشطة",
+      "inactiveStatus": "غير نشط",
+      "editAdTitle": "تعديل الإعلان",
+      "alreadyApproved": "تمت الموافقة",
+      "approveAdTitle": "الموافقة على الإعلان",
+      "deleteAdTitle": "حذف الإعلان",
+      "paginationInfo": "صفحة {{page}} من {{totalPages}} (الإجمالي {{total}} إعلان)",
+      "prevPage": "الصفحة السابقة",
+      "nextPage": "الصفحة التالية"
+    },
+    "approveAdModal": {
+      "title": "الموافقة وتحديد سعر الحملة",
+      "adInfoLabel": "بيانات الإعلان المقبول",
+      "noTitleFallback": "لا يوجد عنوان",
+      "infoPrefix": "عند تأكيد هذا الإجراء، سيتم تحويل حالة الإعلان إلى",
+      "infoBold1": "مقبول مبدئياً",
+      "infoMiddle": "، وسيصل",
+      "infoBold2": "إشعار دفع مباشر",
+      "infoSuffix": "في حساب الطبيب بقيمة السعر المدخل للموافقة النهائية.",
+      "priceLabel": "سعر الحملة الإعلانية المقترح (ل.س)",
+      "pricePlaceholder": "أدخل السعر المقترح للحملة",
+      "currencySuffix": "ل.س",
+      "confirmButton": "قبول وإرسال الإشعار"
+    },
+    "editAdModal": {
+      "title": "تعديل معلومات الإعلان",
+      "imagePrompt": "اضغط هنا لاختيار صورة من جهازك",
+      "saving": "جاري الحفظ...",
+      "submit": "حفظ التعديلات"
+    },
+    "viewAdModal": {
+      "adIdLabel": "رقم الإعلان",
+      "activationStatusLabel": "حالة التفعيل",
+      "activeNowStatus": "نشط حالياً",
+      "reviewStatusLabel": "حالة المراجعة",
+      "approvedStatus": "مقبول وموافق عليه",
+      "campaignPriceLabel": "سعر الحملة الإعلانية",
+      "campaignPriceValue": "{{price}} ل.س",
+      "imagesCountLabel": "صور الإعلان ({{count}})",
+      "imageAltPrefix": "صورة {{index}}",
+      "closePreview": "إغلاق المعاينة",
+      "rejectAdButton": "رفض الإعلان",
+      "approveAdButton": "قبول الإعلان"
+    },
+    "legacyAdsPage": {
+      "sourceLabel": ":المصدر",
+      "durationLabel": ":مدة الإعلان",
+      "paymentStatusLabel": ":حالة الدفع"
+    }
   },
   "notifications": {
     "title": "الإشعارات",
@@ -524,7 +736,10 @@
       "contactRenew": "تواصل / تجديد"
     },
     "archiveTitle": "أرشيف تقارير النظام الموثقة",
-    "archiveDesc": "السجلات والتصديرات الموثقة لعمليات الأطباء والمخابر"
+    "archiveDesc": "السجلات والتصديرات الموثقة لعمليات الأطباء والمخابر",
+    "legacyPage": {
+      "placeholder": "محتوى صفحة التقارير سيظهر هنا."
+    }
   },
   "interventions": {
     "title": "سجلات الشكاوى والتدخلات",
@@ -569,6 +784,10 @@
       "replyPlaceholder": "اكتب نص الرد والتوضيح ليصل إشعار للطبيب المعالج...",
       "submitReply": "إرسال الرد وتحديث الشكوى",
       "sendingReply": "جاري إرسال الرد وتحديث الشكوى..."
+    },
+    "legacyPage": {
+      "title": "سجل التدخلات",
+      "placeholder": "محتوى صفحة سجل التدخلات سيظهر هنا."
     }
   },
   "subscription": {
@@ -605,7 +824,42 @@
     "selectLabPlaceholder": "-- اختر المخبر من القائمة --",
     "loadingLabs": "جاري تحميل المخابر...",
     "saving": "جاري الحفظ...",
-    "saveSubscription": "حفظ الاشتراك"
+    "saveSubscription": "حفظ الاشتراك",
+    "notAvailable": "غير متوفر",
+    "activateAndRenewButton": "تفعيل وتنشيط الاشتراك",
+    "labIdLabel": "المخبر #{{id}}",
+    "updateAllAmountsModal": {
+      "invalidAmount": "يرجى إدخال قيمة صحيحة أكبر من صفر",
+      "updateError": "حدث خطأ أثناء تحديث القيمة",
+      "title": "تعديل قيمة الاشتراك لجميع المخابر",
+      "subtitle": "تحديث موحّد لقيمة الاشتراك الشهري لكل المخابر المسجلين بالمنصة",
+      "warningNotice": "سيتم تطبيق هذه القيمة الجديدة فوراً على جميع المخابر المشتركين، تأكد من صحة المبلغ قبل الحفظ.",
+      "amountLabel": "القيمة الجديدة للاشتراك",
+      "amountPlaceholder": "أدخل القيمة الجديدة...",
+      "confirmButton": "تأكيد وتحديث القيمة"
+    },
+    "subscriptionModal": {
+      "subtitle": "إدخال بيانات خطة الاشتراك وتحديد المخبر والمدة المالية",
+      "labFallbackName": "مخبر #{{id}}",
+      "idLabel": "رقم المعرف:",
+      "searchLabPlaceholder": "ابحث عن اسم المخبر أو صاحب العمل...",
+      "noSearchResults": "لا توجد نتائج مطابقة لـ \"{{query}}\""
+    },
+    "subscriptionCard": {
+      "expiredValidityLabel": "منتهي الصلاحية"
+    },
+    "subscriptionCardGrid": {
+      "noSubsMessage": "لا توجد اشتراكات مسجلة في هذا القائمة حالياً.",
+      "consumedPeriodLabel": "نسبة استهلاك فترة الاشتراك",
+      "remainingDaysWarning": "متبقي {{count}} يوم ينتهي الموعد",
+      "renewAndExtendButton": "تجديد الاشتراك وتمديده"
+    },
+    "pendingPaymentGrid": {
+      "emptyTitle": "لا يوجد حسابات بانتظار الدفع",
+      "emptyDesc": "كل المخابر المعتمدين إما فعّلوا اشتراكهم أو ما وصلوا لمرحلة الدفع بعد.",
+      "pendingBadge": "بانتظار الدفع",
+      "pendingSinceLabel": "بانتظار الدفع منذ {{date}}"
+    }
   },
   "settings": {
     "title": "الإعدادات",

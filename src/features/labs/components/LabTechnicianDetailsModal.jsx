@@ -14,13 +14,12 @@ const LabTechnicianDetailsModal = ({ tech, isOpen, onClose }) => {
   // تنسيق تاريخ الإنشاء
   const formattedDate = tech?.createdAt
     ? new Date(tech.createdAt).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      })
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    })
     : (t('technicians.unspecified') || 'غير محدد');
 
-  // تركيب العنوان والمدينة
   const addressParts = tech ? [tech.addressPlace, tech.cityPlace, tech.countryPlace].filter(Boolean) : [];
   const fullAddress = addressParts.length > 0 ? addressParts.join('، ') : (t('common.unknown') || 'غير متوفر');
 
@@ -28,7 +27,6 @@ const LabTechnicianDetailsModal = ({ tech, isOpen, onClose }) => {
     <AnimatePresence>
       {isOpen && tech && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 overflow-hidden font-zain" dir="rtl">
-          {/* الخلفية المظلمة */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -37,7 +35,6 @@ const LabTechnicianDetailsModal = ({ tech, isOpen, onClose }) => {
             className="absolute inset-0 bg-black/60 backdrop-blur-md"
           />
 
-          {/* نافذة المودال */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 40 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -45,7 +42,6 @@ const LabTechnicianDetailsModal = ({ tech, isOpen, onClose }) => {
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             className="relative bg-white dark:bg-slate-900 w-full max-w-2xl rounded-3xl sm:rounded-[2.5rem] shadow-2xl overflow-hidden z-10 border border-slate-100 dark:border-slate-800"
           >
-            {/* الهيدر العلوي */}
             <div className="relative h-36 sm:h-40 bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-700 p-5 sm:p-8 flex items-end justify-between overflow-hidden">
               <div className="relative z-10 flex items-center gap-3 sm:gap-5 min-w-0">
                 <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white border border-white/30 shrink-0 overflow-hidden">
@@ -71,12 +67,10 @@ const LabTechnicianDetailsModal = ({ tech, isOpen, onClose }) => {
               </button>
             </div>
 
-            {/* محتوى التفاصيل */}
             <div className="p-4 sm:p-8 max-h-[75vh] overflow-y-auto custom-scrollbar space-y-4 sm:space-y-6">
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
 
-                {/* اسم المخبري */}
                 <div className="flex items-center gap-3 p-3.5 sm:p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl">
                   <div className="p-2.5 sm:p-3 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 rounded-xl shrink-0">
                     <User size={18} className="sm:w-5 sm:h-5" />
@@ -87,7 +81,6 @@ const LabTechnicianDetailsModal = ({ tech, isOpen, onClose }) => {
                   </div>
                 </div>
 
-                {/* البريد الإلكتروني */}
                 <div className="flex items-center gap-3 p-3.5 sm:p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl">
                   <div className="p-2.5 sm:p-3 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-xl shrink-0">
                     <Mail size={18} className="sm:w-5 sm:h-5" />
@@ -98,7 +91,6 @@ const LabTechnicianDetailsModal = ({ tech, isOpen, onClose }) => {
                   </div>
                 </div>
 
-                {/* رقم الهاتف */}
                 <div className="flex items-center gap-3 p-3.5 sm:p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl">
                   <div className="p-2.5 sm:p-3 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 rounded-xl shrink-0">
                     <Phone size={18} className="sm:w-5 sm:h-5" />
@@ -109,7 +101,6 @@ const LabTechnicianDetailsModal = ({ tech, isOpen, onClose }) => {
                   </div>
                 </div>
 
-                {/* اسم مكان العمل */}
                 <div className="flex items-center gap-3 p-3.5 sm:p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl">
                   <div className="p-2.5 sm:p-3 bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 rounded-xl shrink-0">
                     <Building2 size={18} className="sm:w-5 sm:h-5" />
@@ -120,7 +111,6 @@ const LabTechnicianDetailsModal = ({ tech, isOpen, onClose }) => {
                   </div>
                 </div>
 
-                {/* العنوان والمدينة */}
                 <div className="flex items-center gap-3 p-3.5 sm:p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl">
                   <div className="p-2.5 sm:p-3 bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 rounded-xl shrink-0">
                     <MapPin size={18} className="sm:w-5 sm:h-5" />
@@ -131,7 +121,6 @@ const LabTechnicianDetailsModal = ({ tech, isOpen, onClose }) => {
                   </div>
                 </div>
 
-                {/* تاريخ التسجيل */}
                 <div className="flex items-center gap-3 p-3.5 sm:p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl">
                   <div className="p-2.5 sm:p-3 bg-cyan-50 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400 rounded-xl shrink-0">
                     <Calendar size={18} className="sm:w-5 sm:h-5" />
@@ -144,7 +133,6 @@ const LabTechnicianDetailsModal = ({ tech, isOpen, onClose }) => {
 
               </div>
 
-              {/* حالة الحساب والمستندات */}
               <div className="p-4 sm:p-5 border border-slate-100 dark:border-slate-800 rounded-2xl space-y-4">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs font-bold text-gray-400">حالة الحساب الحالية:</span>
@@ -153,7 +141,6 @@ const LabTechnicianDetailsModal = ({ tech, isOpen, onClose }) => {
                   </span>
                 </div>
 
-                {/* مستند التحقق / التوثيق */}
                 <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800 gap-2">
                   <span className="text-xs font-bold text-gray-400">ملف توثيق المهنة:</span>
                   {tech.verificationDocumentPath ? (

@@ -16,10 +16,8 @@ import {
 
 const StatCard = ({ title, count, icon: Icon, color, borderAccent, progressPercentage, progressColor, subDetails }) => (
   <div className="group relative bg-bg-card border border-primary/30 hover:border-primary rounded-xl p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1 shadow-sm shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 flex flex-col justify-between h-full text-right overflow-hidden" dir="rtl">
-    {/* Accent Top Bar */}
     <div className={`absolute top-0 right-0 left-0 h-1 bg-gradient-to-l ${borderAccent} opacity-100 transition-opacity`} />
     
-    {/* Decorative Ambient Glow */}
     <div className={`absolute -bottom-8 -left-8 w-28 h-28 rounded-full ${color} opacity-[0.08] group-hover:opacity-[0.16] blur-xl transition-all duration-500 pointer-events-none`} />
 
     <div className="flex flex-col justify-between flex-1">
@@ -70,7 +68,6 @@ export default function DashboardHome() {
     getPeriodText
   } = useDashboardStats();
 
-  // 1. مخطط طلبات الأطباء (Grouped Side-by-Side Column Chart)
   const dentistsColumnConfig = {
     data: dentistsOrdersData,
     xField: 'displayName',
@@ -108,7 +105,6 @@ export default function DashboardHome() {
     },
   };
 
-  // 2. مخطط طلبات المختبرات (Grouped Side-by-Side Column Chart)
   const labsColumnConfig = {
     data: labsOrdersData,
     xField: 'displayName',
@@ -146,8 +142,7 @@ export default function DashboardHome() {
     },
   };
 
-  // خريطة ألوان مخصصة لكل حالة من حالات الطلبات (Enums)
-  const statusColorMap = {
+   const statusColorMap = {
     Pennding: '#F59E0B',
     Pending: '#F59E0B',
     Accepted: '#3B82F6',
@@ -172,7 +167,6 @@ export default function DashboardHome() {
     'ملغاة': '#EF4444',
   };
 
-  // 3. مخطط دورة حياة الطلبات (Pie Chart)
   const lifecycleConfig = {
     data: statusChartData || [],
     angleField: 'value',
@@ -204,7 +198,6 @@ export default function DashboardHome() {
     },
   };
 
-  // 4. مخطط اتجاهات مواد التعويضات (مربوط تماماً ببيانات الـ API)
   const trendsConfig = {
     data: compensationsChartData || [],
     xField: 'material',
@@ -240,7 +233,6 @@ export default function DashboardHome() {
     },
   };
 
-  // 5. مخطط تقييم أداء المخابر (Line Chart)
   const labConfig = {
     data: ratingsChartData || [],
     xField: 'lab',
@@ -276,7 +268,6 @@ export default function DashboardHome() {
     },
   };
 
-  // 6. مخطط الإيرادات والنمو المالي (Area Chart)
   const revenueConfig = {
     data: financialGrowthData || [],
     xField: 'month',
@@ -409,14 +400,14 @@ export default function DashboardHome() {
                     <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
                     <span>{t('dashboard.inProgressLabs')}</span>
                   </div>
-                  <span className="font-bold text-primary">{kpiStats.cases.inProgress} حالة</span>
+                  <span className="font-bold text-primary">{t('dashboard.casesCount', { count: kpiStats.cases.inProgress })}</span>
                 </div>
                 <div className="flex justify-between items-center text-xs">
                   <div className="flex items-center gap-1.5 text-text-muted font-medium">
                     <span className="w-2 h-2 rounded-full bg-purple-500 shrink-0" />
                     <span>{t('dashboard.waitingScannerDelivery')}</span>
                   </div>
-                  <span className="font-bold text-purple-600 dark:text-purple-400">{kpiStats.cases.waitingScanner} حالة</span>
+                  <span className="font-bold text-purple-600 dark:text-purple-400">{t('dashboard.casesCount', { count: kpiStats.cases.waitingScanner })}</span>
                 </div>
               </>
             }
@@ -521,7 +512,6 @@ export default function DashboardHome() {
 
       </div> 
 
-      {/* صف المخططات الثاني (اتجاهات مواد التعويضات ودورة الحياة) */}
       <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
 
         <div className="lg:col-span-6  p-4 sm:p-6 flex flex-col justify-between">
@@ -570,7 +560,6 @@ export default function DashboardHome() {
 
       </div>
 
-      {/* صف المخططات الثالث (أداء المخابر والتحليل المالي) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         <div className=" p-4 sm:p-6 flex flex-col justify-between">
@@ -593,15 +582,15 @@ export default function DashboardHome() {
             <div className="flex flex-wrap items-center justify-center gap-3 pt-3 border-t border-border-main/50 mt-2">
               <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
                 <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
-                <span>التقييم العام</span>
+                <span>{t('dashboard.overallRating')}</span>
               </div>
               <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
-                <span>تقييم الجودة</span>
+                <span>{t('dashboard.qualityRating')}</span>
               </div>
               <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
-                <span>الالتزام بالوقت</span>
+                <span>{t('dashboard.timeCommitment')}</span>
               </div>
             </div>
           )}
@@ -627,11 +616,11 @@ export default function DashboardHome() {
             <div className="flex flex-wrap items-center justify-center gap-3 pt-3 border-t border-border-main/50 mt-2">
               <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
                 <span className="w-2.5 h-2.5 rounded-full bg-purple-500 shrink-0" />
-                <span>عوائد المساحات الإعلانية ($)</span>
+                <span>{t('dashboard.adRevenueDollar')}</span>
               </div>
               <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
                 <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
-                <span>أرباح الطلبيات ($)</span>
+                <span>{t('dashboard.orderProfitsDollar')}</span>
               </div>
             </div>
           )}

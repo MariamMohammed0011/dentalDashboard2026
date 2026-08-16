@@ -126,7 +126,6 @@ export default function BlogsPage() {
   return (
     <div className="px-4 sm:px-8 lg:px-4 pb-10 min-h-full flex flex-col gap-8 text-right font-zain" dir="rtl">
 
-      {/* 📌 Header Title Bar with Search beside it */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4 pt-2">
         <div className="flex items-center gap-4">
           <div className="p-3.5 bg-primary/10 text-primary rounded-2xl shadow-sm border border-primary/20 flex items-center justify-center">
@@ -142,7 +141,6 @@ export default function BlogsPage() {
           </div>
         </div>
 
-        {/* Search component next to header */}
         <div className="w-full sm:w-80">
           <Search
             value={searchQuery}
@@ -154,7 +152,6 @@ export default function BlogsPage() {
         </div>
       </div>
 
-      {/* 📊 Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <BlogStatCard
           title={t('blogs.stats.total')}
@@ -182,12 +179,11 @@ export default function BlogsPage() {
         />
       </div>
 
-      {/* 🔍 Professional Filter & Search Section */}
-     <div className="py-2 flex flex-col gap-6">
-        {/* Top Filters Grid */}
+      <div className="py-2 flex flex-col gap-6">
+       
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 w-full">
 
-          {/* 1. Roles Custom Dropdown */}
+        
           <div className="flex flex-col gap-2">
             <label className="text-[11px] font-black text-text-muted uppercase tracking-wider flex items-center gap-1.5 mr-1 font-zain">
               <Filter size={14} className="text-primary" />
@@ -203,8 +199,7 @@ export default function BlogsPage() {
             />
           </div>
 
-          {/* 2. Post Status Custom Dropdown */}
-          <div className="flex flex-col gap-2">
+           <div className="flex flex-col gap-2">
             <label className="text-[11px] font-black text-text-muted uppercase tracking-wider flex items-center gap-1.5 mr-1 font-zain">
               <Sparkles size={14} className="text-amber-500" />
               <span>حالة النشر والمراجعة</span>

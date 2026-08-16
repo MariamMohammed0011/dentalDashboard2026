@@ -1,16 +1,18 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X, MapPin, Building2, Star, CheckCircle2,
-  XCircle, Award, Sparkles, Shield, Calendar, Clock
+  XCircle, Award, Sparkles, Shield, Calendar, Clock, User, ChevronLeft
 } from 'lucide-react';
 import { useLabAvailability } from '../hooks/useLabAvailability';
 import StarRating from '../../../components/shared/StarRating';
 
 const LabProfileDetailsModal = ({ lab, isOpen, onClose }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const getAvailabilityInfo = useLabAvailability();
 
   if (typeof document === 'undefined') return null;
@@ -23,6 +25,13 @@ const LabProfileDetailsModal = ({ lab, isOpen, onClose }) => {
   // تركيب العنوان والمنطقة من نفس الكائن
   const addressParts = lab ? [lab.addressPlace, lab.cityPlace, lab.countryPlace].filter(Boolean) : [];
   const fullAddress = addressParts.length > 0 ? addressParts.join('، ') : 'غير متوفر';
+
+  // الانتقال إلى ملف صاحب المخبر ضمن صفحة فنيي المخابر (نفس حساب المالك)
+  const handleGoToOwner = () => {
+    if (!lab?.ownerId) return;
+    onClose();
+    navigate(`/dashboard/lab-tech?ownerId=${lab.ownerId}`);
+  };
 
   return createPortal(
     <AnimatePresence>
@@ -92,6 +101,35 @@ const LabProfileDetailsModal = ({ lab, isOpen, onClose }) => {
 
             {/* Content Area */}
             <div className="p-4 sm:p-8 lg:p-10 max-h-[65vh] overflow-y-auto custom-scrollbar bg-white dark:bg-slate-900">
+
+              {/* زر الانتقال إلى ملف المالك ضمن صفحة فنيي المخابر */}
+              <motion.button
+                type="button"
+                onClick={handleGoToOwner}
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="w-full flex items-center justify-between gap-3 sm:gap-4 p-3.5 sm:p-4 mb-6 sm:mb-8 bg-slate-50 dark:bg-slate-800/50 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 border border-slate-100 dark:border-slate-800 hover:border-emerald-200 dark:hover:border-emerald-800/50 rounded-xl sm:rounded-2xl transition-all group/owner cursor-pointer text-right"
+              >
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                  <div className="p-3 bg-indigo-50 dark:bg-indigo-950/30 rounded-xl sm:rounded-2xl text-indigo-500 shrink-0">
+                    <User size={18} className="sm:w-5 sm:h-5" />
+                  </div>
+                  <div className="flex flex-col min-w-0 text-right">
+                    <span className="text-[9px] sm:text-[10px] text-gray-500 dark:text-slate-400 font-black mb-0.5 uppercase tracking-wider">
+                      {t('labs.detailsModal.ownerName')}
+                    </span>
+                    <span className="text-sm sm:text-base text-text-main dark:text-gray-200 font-bold truncate">
+                      {lab.ownerName || t('labs.detailsModal.notAvailableValue')}
+                    </span>
+                  </div>
+                </div>
+                <ChevronLeft
+                  size={20}
+                  className="text-gray-400 dark:text-slate-500 group-hover/owner:text-emerald-600 dark:group-hover/owner:text-emerald-400 group-hover/owner:-translate-x-1 transition-all shrink-0"
+                />
+              </motion.button>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 lg:gap-10">
                 
                 {/* الجانب الأيمن: الجاهزية والخبرة */}

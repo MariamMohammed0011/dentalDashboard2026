@@ -61,9 +61,8 @@ export default function ComplaintDetailsModal({ complaint, onClose, onSendReply,
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className="text-lg font-black text-text-main font-zain">{t('interventions.modal.title', { id })}</h3>
-                  <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
-                    destination === 'Lab' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20' : 'bg-primary/10 text-primary border border-primary/20'
-                  }`}>
+                  <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${destination === 'Lab' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20' : 'bg-primary/10 text-primary border border-primary/20'
+                    }`}>
                     {destination === 'Lab' ? t('interventions.modal.targetLabBadge') : t('interventions.modal.targetAdmin')}
                   </span>
                 </div>
@@ -82,9 +81,8 @@ export default function ComplaintDetailsModal({ complaint, onClose, onSendReply,
             </button>
           </div>
 
-          {/* Body Content */}
+
           <div className="p-6 overflow-y-auto space-y-6 flex-1 custom-scrollbar">
-            {/* User (Doctor) Info Card */}
             <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <img
                 src={getFullImageUrl(user?.profilePictureUrl) || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150'}
@@ -119,7 +117,6 @@ export default function ComplaintDetailsModal({ complaint, onClose, onSendReply,
               </div>
             </div>
 
-            {/* Target Lab Info (If destination === 'Lab') */}
             {destination === 'Lab' && targetLab && (
               <div className="bg-amber-500/[0.05] border border-amber-500/20 rounded-2xl p-4 space-y-2">
                 <div className="flex items-center justify-between">
@@ -144,7 +141,6 @@ export default function ComplaintDetailsModal({ complaint, onClose, onSendReply,
               </div>
             )}
 
-            {/* Complaint Text */}
             <div className="space-y-2">
               <span className="text-xs font-bold text-text-muted">{t('interventions.modal.subject')}</span>
               <h4 className="text-base font-black text-text-main">{title || t('interventions.modal.noSubject')}</h4>
@@ -153,7 +149,6 @@ export default function ComplaintDetailsModal({ complaint, onClose, onSendReply,
               </div>
             </div>
 
-            {/* Existing Reply or New Reply Form */}
             {isReplied ? (
               <div className="bg-emerald-500/[0.06] border border-emerald-500/20 rounded-2xl p-4 space-y-2">
                 <div className="flex items-center justify-between">

@@ -33,22 +33,19 @@ const UsersManagementPage = () => {
     return () => clearTimeout(handler);
   }, [searchQuery]);
 
-  // 1. Fetch Users Query (إرسال الاستعلام للباك إند)
-  const { data: users = [], isLoading } = useQuery({
+   const { data: users = [], isLoading } = useQuery({
     queryKey: ['ads-users', debouncedSearch],
     queryFn: () => usersApi.getUsers(debouncedSearch),
     placeholderData: (previousData) => previousData,
   });
 
-  // 1.5. Fetch Active Ads Count Query
-  const { data: activeAdsCount = 0, isLoading: isLoadingActiveAds } = useQuery({
+   const { data: activeAdsCount = 0, isLoading: isLoadingActiveAds } = useQuery({
     queryKey: ['active-ads-count'],
     queryFn: () => adsApi.getActiveAdsCount(),
     placeholderData: (previousData) => previousData,
   });
 
-  // 1.6. Fetch All Ads List Query (to calculate active ads count per user locally)
-  const { data: allAds = [] } = useQuery({
+   const { data: allAds = [] } = useQuery({
     queryKey: ['admin-ads-all-list'],
     queryFn: () => adsApi.getAllRawAds(),
     placeholderData: (previousData) => previousData,
@@ -63,8 +60,7 @@ const UsersManagementPage = () => {
     },
   });
 
-  // 3. Add Advertisement For User Mutation
-  const createAdMutation = useMutation({
+   const createAdMutation = useMutation({
     mutationFn: ({ userId, adData }) => adsApi.createAdForUser(userId, adData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ads-users'] });
@@ -95,8 +91,7 @@ const UsersManagementPage = () => {
     }
   });
 
-  // 4. Delete User Mutation
-  const deleteUserMutation = useMutation({
+   const deleteUserMutation = useMutation({
     mutationFn: (userId) => usersApi.deleteUser(userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ads-users'] });

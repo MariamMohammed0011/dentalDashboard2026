@@ -5,7 +5,6 @@ import { useUpdateUserStatus } from '../../../hooks/useUpdateUserStatus';
 
 export const useDoctors = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  // 💡 تأكد من وجود هذا السطر بالذات (سبب الخطأ الحالي)
   const [selectedStatus, setSelectedStatus] = useState('all');
 
   const { data, isLoading, isError } = useQuery({
@@ -20,7 +19,6 @@ export const useDoctors = () => {
 
   const allDoctors = data?.doctors || [];
 
-  // السطر 27 يقرأ selectedStatus بنجاح الآن
   const filteredDoctors = useMemo(() => {
     if (selectedStatus === 'all') return allDoctors;
 
@@ -57,8 +55,8 @@ export const useDoctors = () => {
     isError,
     currentPage,
     setCurrentPage,
-    selectedStatus,     
-    setSelectedStatus,   
+    selectedStatus,
+    setSelectedStatus,
     toggleStatus: (id, nextStatus) => updateStatus({ id, status: nextStatus, type: 'doctor' }),
     updatingDoctorId: updatingId,
   };

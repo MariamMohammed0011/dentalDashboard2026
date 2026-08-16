@@ -1,18 +1,19 @@
 import React from 'react';
-import { 
-  Megaphone, 
-  Building2, 
-  CheckCircle2, 
-  Check, 
-  Trash2, 
-  Eye, 
-  ChevronRight, 
+import { useTranslation } from 'react-i18next';
+import {
+  Megaphone,
+  Building2,
+  CheckCircle2,
+  Check,
+  Trash2,
+  Eye,
+  ChevronRight,
   ChevronLeft,
   Users,
   Pencil
 } from 'lucide-react';
 
-const AdsList = ({ 
+const AdsList = ({
   ads, 
   isLoading, 
   pagination, 
@@ -23,6 +24,8 @@ const AdsList = ({
   handleViewClick,
   handleEditClick
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="bg-transparent flex-grow flex flex-col">
       
@@ -44,7 +47,7 @@ const AdsList = ({
           ) : ads.length === 0 ? (
             <div className="col-span-full py-16 text-center text-gray-400 font-bold flex flex-col items-center justify-center bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8">
               <Megaphone size={48} className="text-gray-300 opacity-80 mb-3" />
-              لا توجد إعلانات مطابقة لخيارات البحث الحالية
+              {t('ads.adsList.noResults')}
             </div>
           ) : (
             ads.map((ad) => {
@@ -69,7 +72,7 @@ const AdsList = ({
                     <button
                       onClick={() => handleViewClick(ad)}
                       className="absolute top-3.5 left-3.5 z-10 w-9 h-9 rounded-full bg-[#10B981] hover:bg-[#059669] text-white flex items-center justify-center shadow-lg transition-all active:scale-95 cursor-pointer"
-                      title="عرض التفاصيل"
+                      title={t('ads.adsList.viewDetails')}
                     >
                       <Eye size={18} />
                     </button>
@@ -79,17 +82,17 @@ const AdsList = ({
                       {ad.type === 'labs' ? (
                         <div className="inline-flex items-center gap-1.5 text-white bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-bold shadow-sm">
                           <Building2 size={13} className="text-amber-400" />
-                          <span>مخابر فقط</span>
+                          <span>{t('ads.adsList.audienceLabsOnly')}</span>
                         </div>
                       ) : ad.type === 'both' ? (
                         <div className="inline-flex items-center gap-1.5 text-white bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-bold shadow-sm">
                           <Users size={13} className="text-indigo-400" />
-                          <span>الجميع</span>
+                          <span>{t('ads.adsList.audienceAll')}</span>
                         </div>
                       ) : (
                         <div className="inline-flex items-center gap-1.5 text-white bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-bold shadow-sm">
                           <CheckCircle2 size={13} className="text-sky-400" />
-                          <span>أطباء فقط</span>
+                          <span>{t('ads.adsList.audienceDentistsOnly')}</span>
                         </div>
                       )}
                     </div>
@@ -106,10 +109,10 @@ const AdsList = ({
                     
                     <div className="flex flex-col gap-1">
                       <h4 className="font-black text-gray-800 text-[15px] sm:text-base line-clamp-1">
-                        {ad.title || "بدون عنوان"}
+                        {ad.title || t('ads.adsList.untitledAd')}
                       </h4>
                       <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed min-h-[36px]">
-                        {ad.content || "لا يوجد تفاصيل إضافية لهذا الإعلان."}
+                        {ad.content || t('ads.adsList.noContentDetails')}
                       </p>
                     </div>
 
@@ -124,10 +127,10 @@ const AdsList = ({
                       <button
                         onClick={() => handleToggleStatus(ad)}
                         className="flex items-center gap-1.5 hover:opacity-80 transition-opacity cursor-pointer text-left"
-                        title="تغيير الحالة النشطة"
+                        title={t('ads.adsList.toggleStatusTitle')}
                       >
                         <span className={`w-2 h-2 rounded-full ${ad.status === 'active' ? 'bg-[#367AFF] animate-pulse' : 'bg-rose-500'}`} />
-                        <span className="text-[10px] text-gray-400 font-bold">{ad.status === 'active' ? 'نشط' : 'غير نشط'}</span>
+                        <span className="text-[10px] text-gray-400 font-bold">{ad.status === 'active' ? t('common.active') : t('ads.adsList.inactiveStatus')}</span>
                       </button>
                     </div>
 
@@ -138,10 +141,10 @@ const AdsList = ({
                       <button
                         onClick={() => handleEditClick(ad)}
                         className="flex-grow bg-[#E8F1FF] text-[#367AFF] hover:bg-[#367AFF] hover:text-white rounded-2xl py-2.5 px-4 font-bold text-xs flex items-center justify-center gap-1.5 transition-all duration-300 hover:shadow-md hover:shadow-blue-500/5 cursor-pointer"
-                        title="تعديل الإعلان"
+                        title={t('ads.adsList.editAdTitle')}
                       >
                         <Pencil size={13} />
-                        <span>تعديل</span>
+                        <span>{t('common.edit')}</span>
                       </button>
 
                      
@@ -153,7 +156,7 @@ const AdsList = ({
                             ? 'bg-green-50 border-green-100 text-green-500 cursor-not-allowed'
                             : 'bg-blue-50 border-blue-100 text-[#367AFF] hover:bg-[#367AFF] hover:text-white hover:shadow-md hover:shadow-blue-500/10 cursor-pointer animate-pulse'
                         }`}
-                        title={isApproved ? "تمت الموافقة" : "الموافقة على الإعلان"}
+                        title={isApproved ? t('ads.adsList.alreadyApproved') : t('ads.adsList.approveAdTitle')}
                       >
                         <Check size={14} strokeWidth={3} />
                       </button>
@@ -162,7 +165,7 @@ const AdsList = ({
                       <button
                         onClick={() => handleDeleteClick(ad.id)}
                         className="p-2.5 rounded-2xl border border-rose-100 bg-rose-50 text-rose-600 hover:bg-[#E11D48] hover:text-white hover:shadow-md hover:shadow-rose-500/10 transition-all active:scale-95 cursor-pointer"
-                        title="حذف الإعلان"
+                        title={t('ads.adsList.deleteAdTitle')}
                       >
                         <Trash2 size={14} />
                       </button>
@@ -181,22 +184,22 @@ const AdsList = ({
       {pagination && pagination.totalPages > 1 && (
         <div className="flex justify-between items-center p-5 border border-gray-100 rounded-[2rem] bg-white shadow-sm mt-auto">
           <div className="text-xs sm:text-sm text-gray-500 font-bold">
-            صفحة {pagination.page} من {pagination.totalPages} (الإجمالي {pagination.total} إعلان)
+            {t('ads.adsList.paginationInfo', { page: pagination.page, totalPages: pagination.totalPages, total: pagination.total })}
           </div>
           <div className="flex gap-2">
-            <button 
+            <button
               disabled={pagination.page === 1}
               onClick={() => setCurrentPage(pagination.page - 1)}
               className="p-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
-              title="الصفحة السابقة"
+              title={t('ads.adsList.prevPage')}
             >
               <ChevronRight size={16} strokeWidth={2.5} />
             </button>
-            <button 
+            <button
               disabled={pagination.page === pagination.totalPages}
               onClick={() => setCurrentPage(pagination.page + 1)}
               className="p-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
-              title="الصفحة التالية"
+              title={t('ads.adsList.nextPage')}
             >
               <ChevronLeft size={16} strokeWidth={2.5} />
             </button>

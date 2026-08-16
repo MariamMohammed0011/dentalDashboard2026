@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { X, User, Phone, Building2, MapPin, Globe, Save } from 'lucide-react';
 
 const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     Name: '',
     Phone: '',
@@ -77,8 +79,8 @@ const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
                   <User size={18} />
                 </div>
                 <div className="flex flex-col gap-0.5 text-right">
-                  <h3 className="font-extrabold text-slate-800 dark:text-slate-100 text-[15px]">تعديل بيانات العميل</h3>
-                  <p className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">تحديث المعلومات الأساسية وعنوان المنشأة</p>
+                  <h3 className="font-extrabold text-slate-800 dark:text-slate-100 text-[15px]">{t('ads.editUserModal.title')}</h3>
+                  <p className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">{t('ads.editUserModal.subtitle')}</p>
                 </div>
               </div>
               <button 
@@ -95,7 +97,7 @@ const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
               
               
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 mr-1 select-none">اسم العميل</label>
+                <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 mr-1 select-none">{t('ads.addClientModal.nameLabel')}</label>
                 <div className="relative flex items-center">
                   <input
                     type="text"
@@ -104,7 +106,7 @@ const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
                     onChange={handleChange}
                     required
                     className="w-full text-xs sm:text-sm font-bold pr-10 pl-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:focus:ring-primary/30 transition-all shadow-sm"
-                    placeholder="أدخل اسم العميل بالكامل"
+                    placeholder={t('ads.editUserModal.namePlaceholder')}
                   />
                   <User size={15} className="absolute right-3.5 text-blue-500/70 dark:text-blue-400/70" />
                 </div>
@@ -112,7 +114,7 @@ const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
 
               
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 mr-1 select-none">بيانات التواصل (الهاتف)</label>
+                <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 mr-1 select-none">{t('ads.editUserModal.phoneLabel')}</label>
                 <div className="relative flex items-center" dir="ltr">
                   <input
                     type="text"
@@ -121,7 +123,7 @@ const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
                     onChange={handleChange}
                     required
                     className="w-full text-xs sm:text-sm font-bold pr-10 pl-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 text-right focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:focus:ring-primary/30 transition-all shadow-sm"
-                    placeholder="09xxxxxxxx"
+                    placeholder={t('ads.editUserModal.phonePlaceholder')}
                   />
                   <Phone size={15} className="absolute right-3.5 text-emerald-500/70 dark:text-emerald-400/70" />
                 </div>
@@ -129,7 +131,7 @@ const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
 
               
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 mr-1 select-none">المنشأة / العيادة</label>
+                <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 mr-1 select-none">{t('ads.editUserModal.facilityLabel')}</label>
                 <div className="relative flex items-center">
                   <input
                     type="text"
@@ -137,7 +139,7 @@ const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
                     value={formData.NamePlace}
                     onChange={handleChange}
                     className="w-full text-xs sm:text-sm font-bold pr-10 pl-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:focus:ring-primary/30 transition-all shadow-sm"
-                    placeholder="اسم العيادة أو المختبر"
+                    placeholder={t('ads.editUserModal.facilityPlaceholder')}
                   />
                   <Building2 size={15} className="absolute right-3.5 text-purple-500/70 dark:text-purple-400/70" />
                 </div>
@@ -145,7 +147,7 @@ const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
 
               
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 mr-1 select-none">العنوان بالتفصيل</label>
+                <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 mr-1 select-none">{t('ads.addClientModal.addressLabel')}</label>
                 <div className="relative flex items-center">
                   <input
                     type="text"
@@ -153,7 +155,7 @@ const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
                     value={formData.AddressPlace}
                     onChange={handleChange}
                     className="w-full text-xs sm:text-sm font-bold pr-10 pl-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:focus:ring-primary/30 transition-all shadow-sm"
-                    placeholder="الشارع، البناء، أو المعلم المميز"
+                    placeholder={t('ads.editUserModal.addressPlaceholder')}
                   />
                   <MapPin size={15} className="absolute right-3.5 text-rose-500/70 dark:text-rose-400/70" />
                 </div>
@@ -162,7 +164,7 @@ const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
               
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 mr-1 select-none">المدينة</label>
+                  <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 mr-1 select-none">{t('ads.addClientModal.cityLabel')}</label>
                   <div className="relative flex items-center">
                     <input
                       type="text"
@@ -170,14 +172,14 @@ const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
                       value={formData.CityPlace}
                       onChange={handleChange}
                       className="w-full text-xs sm:text-sm font-bold pr-10 pl-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:focus:ring-primary/30 transition-all shadow-sm"
-                      placeholder="دمشق، حلب..."
+                      placeholder={t('ads.editUserModal.cityPlaceholder')}
                     />
                     <MapPin size={15} className="absolute right-3.5 text-rose-500/70 dark:text-rose-400/70" />
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 mr-1 select-none">الدولة</label>
+                  <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 mr-1 select-none">{t('ads.editUserModal.countryLabel')}</label>
                   <div className="relative flex items-center">
                     <input
                       type="text"
@@ -185,7 +187,7 @@ const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
                       value={formData.CountryPlace}
                       onChange={handleChange}
                       className="w-full text-xs sm:text-sm font-bold pr-10 pl-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:focus:ring-primary/30 transition-all shadow-sm"
-                      placeholder="سوريا..."
+                      placeholder={t('ads.editUserModal.countryPlaceholder')}
                     />
                     <Globe size={15} className="absolute right-3.5 text-cyan-500/70 dark:text-cyan-400/70" />
                   </div>
@@ -199,7 +201,7 @@ const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
                   disabled={isSubmitting}
                   className="px-5 py-2.5 rounded-xl text-xs font-black border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer"
                 >
-                  إلغاء
+                  {t('common.cancel')}
                 </button>
                 <button
                   type="submit"
@@ -207,7 +209,7 @@ const EditUserModal = ({ isOpen, onClose, user, onSave }) => {
                   className="px-6 py-2.5 rounded-xl text-xs font-black text-white bg-primary hover:bg-primary/95 shadow-md shadow-primary/20 flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
                 >
                   <Save size={14} />
-                  <span>{isSubmitting ? "جاري الحفظ..." : "حفظ التعديلات"}</span>
+                  <span>{isSubmitting ? t('ads.editUserModal.saving') : t('ads.editUserModal.submit')}</span>
                 </button>
               </div>
 

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import {
   FlaskConical,
   Eye,
@@ -92,6 +93,7 @@ const StatusBadgeButton = ({ tech, updatingTechId, onOpenModal }) => {
 
 const LabTechniciansPage = () => {
   const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const {
     technicians,
     pagination,
@@ -110,6 +112,15 @@ const LabTechniciansPage = () => {
     handleConfirmStatusChange,
     updatingTechId,
   } = useLabTechnicians();
+
+  // فتح ملف صاحب المخبر تلقائياً عند الوصول من صفحة تفاصيل المخبر عبر ?ownerId=
+  useEffect(() => {
+    const ownerId = searchParams.get('ownerId');
+    if (ownerId) {
+      handleShowDetails(ownerId);
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams]);
 
   return (
     <div className="flex flex-col gap-6 px-0 sm:px-0 w-full lg:px-4 pb-10 min-h-full" dir="rtl">

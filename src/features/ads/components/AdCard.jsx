@@ -1,7 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 const AdCard = ({ ad }) => {
+  const { t } = useTranslation();
   const { source, duration, paymentStatus, image } = ad;
 
   return (
@@ -24,19 +26,19 @@ const AdCard = ({ ad }) => {
         </div>
 
         <div className="text-[13px] font-bold text-gray-700 relative z-10">
-          المصدر: <span className="font-medium text-gray-500">{source}</span>
+          {t('ads.adCard.sourceLabel')} <span className="font-medium text-gray-500">{source}</span>
         </div>
         <div className="text-[13px] font-bold text-gray-700 relative z-10">
-          مدة الإعلان: <span className="font-medium text-gray-500">{duration}</span>
+          {t('ads.adCard.durationLabel')} <span className="font-medium text-gray-500">{duration}</span>
         </div>
         <div className="text-[13px] font-bold text-gray-700 relative z-10">
-          حالة الدفع: <span className="font-medium text-gray-500">{paymentStatus}</span>
+          {t('ads.adCard.paymentStatusLabel')} <span className="font-medium text-gray-500">{paymentStatus}</span>
         </div>
       </div>
 
-      
+
       <div className="w-full sm:w-[45px] bg-[#367AFF] flex items-center justify-center text-white font-bold text-sm sm:text-[13px] py-2.5 sm:py-0 cursor-pointer hover:bg-primary-dark transition-colors sm:[writing-mode:vertical-rl] sm:rotate-180">
-        عرض
+        {t('common.view')}
       </div>
     </motion.div>
   );

@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchActiveSubscriptions, fetchExpiredSubscriptions, fetchPendingPaymentAccounts, activateSubscription, renewSubscription, updateAllSubscriptionAmounts } from '../services/subscriptionApi';
 import { toast } from 'sonner';
-
-// حسابات "بانتظار الدفع" شكلها مختلف عن سجل الاشتراك (لا يوجد اشتراك فعلي بعد)
-// نوحّد الشكل هون عشان يشتغل عليها نفس البحث وزر "تفعيل الاشتراك" بدون أي تعديل إضافي
 const normalizePendingPaymentAccount = (acc) => ({
   labId: acc.id,
   labName: acc.namePlace || acc.name || `مخبر #${acc.id}`,
@@ -18,19 +15,17 @@ const normalizePendingPaymentAccount = (acc) => ({
 });
 
 export const useSubscriptions = () => {
-  const [activeTab, setActiveTab] = useState('active'); // 'active' | 'expired' | 'pendingPayment'
+  const [activeTab, setActiveTab] = useState('active');
   const [activeSubs, setActiveSubs] = useState([]);
   const [expiredSubs, setExpiredSubs] = useState([]);
   const [pendingPaymentAccounts, setPendingPaymentAccounts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // Modal States
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalType, setModalType] = useState('add'); // 'add' | 'activate' | 'renew'
+  const [modalType, setModalType] = useState('add');
   const [selectedSub, setSelectedSub] = useState(null);
 
-  // Bulk "update all amounts" Modal State
   const [amountModalOpen, setAmountModalOpen] = useState(false);
 
   const load = async () => {

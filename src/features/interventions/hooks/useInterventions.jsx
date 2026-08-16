@@ -11,8 +11,6 @@ export const useInterventions = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const itemsPerPage = 8;
-
-  // 1. جلب الشكاوى وسجلات التدخل من السيرفر
   const {
     data: allComplaints = [],
     isLoading,
@@ -25,14 +23,11 @@ export const useInterventions = () => {
     staleTime: 1000 * 60 * 3, // 3 minutes
   });
 
-  // 2. تصفية الشكاوى بناءً على البحث وحالة الرد
   const filteredComplaints = allComplaints.filter(item => {
-    // تصفية حسب حالة الرد (مكتملة / قيد الانتظار)
     const isReplied = Boolean(item.reply || item.repliedAtUtc);
     if (statusFilter === 'replied' && !isReplied) return false;
     if (statusFilter === 'pending' && isReplied) return false;
 
-    // تصفية حسب جملة البحث
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       const titleMatch = String(item.title || '').toLowerCase().includes(q);
@@ -46,7 +41,6 @@ export const useInterventions = () => {
     return true;
   });
 
-  // 3. التقسيم إلى صفحات (Pagination)
   const totalItems = filteredComplaints.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -58,15 +52,12 @@ export const useInterventions = () => {
     totalPages: totalPages,
   };
 
-  // 4. Mutation لإرسال رد الإدارة على الشكوى
   const replyMutation = useMutation({
     mutationFn: ({ userId, complaintId, replyText }) =>
       interventionsApi.replyToComplaint(userId, complaintId, replyText),
     onSuccess: (data, variables) => {
       toast.success(data?.message || 'تم إرسال الرد بنجاح وتحديث الشكوى وإرسال الإشعار للطبيب');
-      // إعادة جلب الشكاوى لتحديث الحالة فوراً
       queryClient.invalidateQueries(['complaints']);
-      // إذا كان المودال مفتوحاً للشكوى نفسها، نقوم بتحديث البيانات المحلية
       if (selectedComplaint && selectedComplaint.id === variables.complaintId) {
         setSelectedComplaint(prev => ({
           ...prev,

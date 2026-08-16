@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
-import { 
-  Megaphone, 
-  X, 
+import {
+  Megaphone,
+  X,
   Image as ImageIcon,
   User,
   Search,
@@ -21,6 +22,7 @@ import CalendarPicker from '../../../components/ui/CalendarPicker';
 import { usersApi } from '../services/usersApi';
 
 const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     title: '',
     content: '',
@@ -66,29 +68,29 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!selectedUser) {
-      toast.error('يرجى اختيار مستخدم الإعلان');
+      toast.error(t('ads.addAdModal.userRequired'));
       return;
     }
     if (!form.title.trim()) {
-      toast.error('يرجى كتابة عنوان الإعلان');
+      toast.error(t('ads.addAdForUserModal.titleRequired'));
       return;
     }
     if (!form.image) {
-      toast.error('يرجى اختيار صورة الإعلان من الجهاز');
+      toast.error(t('ads.addAdForUserModal.imageRequired'));
       return;
     }
 
-    onCreateAd({ 
-      userId: selectedUser.id, 
-      adData: form 
+    onCreateAd({
+      userId: selectedUser.id,
+      adData: form
     }, {
       onSuccess: () => {
-        toast.success('تمت إضافة الإعلان بنجاح');
+        toast.success(t('ads.addAdModal.successToast'));
         onClose();
       },
       onError: (error) => {
         console.error("Failed to create ad:", error);
-        const serverMessage = error.response?.data?.message || 'حدث خطأ أثناء إضافة الإعلان';
+        const serverMessage = error.response?.data?.message || t('ads.addAdModal.errorFallback');
         toast.error(serverMessage);
       }
     });
@@ -114,8 +116,8 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                   <Megaphone size={22} className="text-primary animate-pulse" />
                 </div>
                 <div>
-                  <h3 className="text-lg sm:text-xl font-black text-text-main">إضافة إعلان جديد</h3>
-                  <p className="text-xs text-text-muted font-medium mt-0.5">أدخل بيانات الحملة الإعلانية وصورة العرض</p>
+                  <h3 className="text-lg sm:text-xl font-black text-text-main">{t('ads.addAdForUserModal.title')}</h3>
+                  <p className="text-xs text-text-muted font-medium mt-0.5">{t('ads.addAdModal.subtitle')}</p>
                 </div>
               </div>
               <button 
@@ -128,17 +130,17 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
               </button>
             </div>
 
-            {/* Form Body */}
+           
             <form onSubmit={handleSubmit} className="flex flex-col flex-grow overflow-hidden">
               <div className="p-5 sm:p-6 flex flex-col gap-4.5 text-right overflow-y-auto flex-grow custom-scrollbar">
                 
-                {/* 1. Client User Field */}
+              
                 <div className="flex flex-col gap-1.5 relative">
                   <label className="text-text-main font-bold text-xs sm:text-sm flex items-center gap-1.5 mr-1">
                     <span className="p-1 rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400">
                       <User size={14} />
                     </span>
-                    مستخدم الإعلانات (العميل) <span className="text-rose-500">*</span>
+                    {t('ads.addAdModal.userLabel')} <span className="text-rose-500">*</span>
                   </label>
                   
                   {selectedUser ? (
@@ -170,7 +172,7 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                     <div className="relative">
                       <input
                         type="text"
-                        placeholder={isLoadingUsers ? "جاري تحميل العملاء..." : "ابحث عن اسم العميل، رقم الهاتف..."}
+                        placeholder={isLoadingUsers ? t('ads.addAdModal.loadingUsers') : t('ads.addAdModal.searchUserPlaceholder')}
                         value={userSearch}
                         onChange={(e) => {
                           setUserSearch(e.target.value);
@@ -192,7 +194,7 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                         <ChevronDown size={18} className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
                       </button>
 
-                      {/* Dropdown Menu */}
+                     
                       <AnimatePresence>
                         {isDropdownOpen && (
                           <>
@@ -231,7 +233,7 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                                 ))
                               ) : (
                                 <div className="px-4 py-6 text-center text-text-muted text-sm font-bold">
-                                  لا يوجد مستخدمين مطابقين
+                                  {t('ads.addAdModal.noUsersFound')}
                                 </div>
                               )}
                             </motion.div>
@@ -242,18 +244,18 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                   )}
                 </div>
 
-                {/* 2. Ad Title Field */}
+               
                 <div className="flex flex-col gap-1.5">
                   <label className="text-text-main font-bold text-xs sm:text-sm flex items-center gap-1.5 mr-1">
                     <span className="p-1 rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400">
                       <Megaphone size={14} />
                     </span>
-                    عنوان الإعلان <span className="text-rose-500">*</span>
+                    {t('ads.addAdForUserModal.titleLabel')} <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="مثال: خصم 50% على أجهزة التعقيم"
+                    placeholder={t('ads.addAdForUserModal.titlePlaceholder')}
                     value={form.title}
                     onChange={(e) => setForm({ ...form, title: e.target.value })}
                     className="bg-gray-50 dark:bg-slate-900 border-2 border-border-main/70 focus:border-amber-500 rounded-2xl px-4 py-3 text-text-main font-medium text-sm focus:outline-none transition-colors w-full"
@@ -261,16 +263,16 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                   />
                 </div>
 
-                {/* 3. Ad Content Field */}
+               
                 <div className="flex flex-col gap-1.5">
                   <label className="text-text-main font-bold text-xs sm:text-sm flex items-center gap-1.5 mr-1">
                     <span className="p-1 rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400">
                       <FileText size={14} />
                     </span>
-                    محتوى / تفاصيل الإعلان
+                    {t('ads.addAdForUserModal.contentLabel')}
                   </label>
                   <textarea
-                    placeholder="اكتب تفاصيل الإعلان هنا..."
+                    placeholder={t('ads.addAdForUserModal.contentPlaceholder')}
                     value={form.content}
                     onChange={(e) => setForm({ ...form, content: e.target.value })}
                     className="bg-gray-50 dark:bg-slate-900 border-2 border-border-main/70 focus:border-purple-500 rounded-2xl px-4 py-3 text-text-main font-medium text-sm focus:outline-none transition-colors w-full min-h-[85px] resize-none"
@@ -278,14 +280,13 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                   />
                 </div>
 
-                {/* 4. Target Audience & Expiration Date (Dual Grid) */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
                     <label className="text-text-main font-bold text-xs sm:text-sm flex items-center gap-1.5 mr-1">
                       <span className="p-1 rounded-lg bg-indigo-500/15 text-indigo-600 dark:text-indigo-400">
                         <Layers size={14} />
                       </span>
-                      الجمهور المستهدف
+                      {t('ads.addAdForUserModal.audienceLabel')}
                     </label>
                     <select
                       value={form.type}
@@ -293,9 +294,9 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                       className="bg-gray-50 dark:bg-slate-900 border-2 border-border-main/70 focus:border-indigo-500 rounded-2xl px-4 py-3 text-text-main font-bold text-sm focus:outline-none transition-colors w-full cursor-pointer appearance-none text-right"
                       disabled={isSubmitting}
                     >
-                      <option value="dentists">أطباء الأسنان فقط</option>
-                      <option value="labs">مخابر الأسنان فقط</option>
-                      <option value="both">الأطباء والمخابر معاً</option>
+                      <option value="dentists">{t('ads.addAdForUserModal.audienceDentists')}</option>
+                      <option value="labs">{t('ads.addAdForUserModal.audienceLabs')}</option>
+                      <option value="both">{t('ads.addAdForUserModal.audienceBoth')}</option>
                     </select>
                   </div>
 
@@ -304,26 +305,26 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                       <span className="p-1 rounded-lg bg-rose-500/15 text-rose-600 dark:text-rose-400">
                         <Calendar size={14} />
                       </span>
-                      تاريخ الانتهاء
+                      {t('ads.addAdForUserModal.expiresLabel')}
                     </label>
                     <div className="relative">
                       <CalendarPicker
                         value={form.expiresAt}
                         onChange={(val) => setForm({ ...form, expiresAt: val })}
                         disabled={isSubmitting}
-                        placeholder="اختر تاريخ الانتهاء"
+                        placeholder={t('ads.addAdForUserModal.expiresPlaceholder')}
                       />
                     </div>
                   </div>
                 </div>
 
-                {/* 5. Image Uploader Field */}
+               
                 <div className="flex flex-col gap-1.5">
                   <label className="text-text-main font-bold text-xs sm:text-sm flex items-center gap-1.5 mr-1">
                     <span className="p-1 rounded-lg bg-teal-500/15 text-teal-600 dark:text-teal-400">
                       <ImageIcon size={14} />
                     </span>
-                    صورة الإعلان <span className="text-rose-500">*</span>
+                    {t('ads.addAdForUserModal.imageLabel')} <span className="text-rose-500">*</span>
                   </label>
                   <div className="flex flex-col items-center gap-3 bg-slate-50 dark:bg-slate-900/60 border-2 border-dashed border-teal-500/30 hover:border-teal-500 rounded-3xl p-5 transition-colors relative cursor-pointer group">
                     <input
@@ -348,7 +349,7 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                         />
                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity font-bold text-sm gap-2">
                           <UploadCloud size={20} />
-                          <span>تغيير الصورة</span>
+                          <span>{t('ads.addAdForUserModal.changeImage')}</span>
                         </div>
                       </div>
                     ) : (
@@ -357,9 +358,9 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                           <UploadCloud size={32} />
                         </div>
                         <span className="text-xs font-bold text-text-main group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                          اضغط هنا أو اسحب صورة الإعلان إلى هنا
+                          {t('ads.addAdForUserModal.uploadPrompt')}
                         </span>
-                        <span className="text-[11px] text-text-muted font-medium">تدعم صيغ PNG, JPG, JPEG</span>
+                        <span className="text-[11px] text-text-muted font-medium">{t('ads.addAdForUserModal.uploadFormats')}</span>
                       </div>
                     )}
                   </div>
@@ -367,7 +368,7 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
 
               </div>
 
-              {/* Action Buttons */}
+              
               <div className="flex gap-3 justify-end items-center p-4 bg-slate-50 dark:bg-slate-900/80 border-t border-border-main/60 flex-shrink-0">
                 <button
                   type="button"
@@ -375,7 +376,7 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                   disabled={isSubmitting}
                   className="flex-1 py-3 border-2 border-border-main bg-white dark:bg-bg-card text-text-muted font-bold rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer disabled:opacity-50 text-xs sm:text-sm"
                 >
-                  إلغاء
+                  {t('common.cancel')}
                 </button>
                 <button
                   type="submit"
@@ -383,7 +384,7 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                   className="flex-1 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-2xl shadow-lg shadow-primary/25 transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 text-xs sm:text-sm"
                 >
                   <CheckCircle2 size={18} />
-                  <span>{isSubmitting ? 'جاري الإضافة...' : 'إضافة الإعلان'}</span>
+                  <span>{isSubmitting ? t('ads.addAdForUserModal.submitting') : t('ads.addAdForUserModal.submit')}</span>
                 </button>
               </div>
 

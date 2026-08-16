@@ -1,16 +1,11 @@
 import axiosInstance from "../../../api/axios";
 
-// Helper function to map backend advertisement models to frontend expectations
-// Helper function to map backend advertisement models to frontend expectations
 const mapAdToFrontend = (ad, clients = []) => {
   if (!ad) return null;
 
-  // Find the matching client to pull rich details (name, phone, place name)
   const userId = ad.userId || ad.user?.id || ad.user?.userId;
   const matchingClient = clients.find((c) => String(c.id) === String(userId));
 
-  // --- Target Audience ---
-  // The API returns a numeric field: 0 = Dentists, 1 = Labs, 2 = Both
   let type = 'dentists';
   const targetRaw = ad.targetAudience ?? ad.target ?? ad.targetAudienceId ?? ad.audienceType;
   if (targetRaw === 1 || targetRaw === '1' || (typeof targetRaw === 'string' && targetRaw.toLowerCase().includes('lab'))) {
@@ -18,7 +13,6 @@ const mapAdToFrontend = (ad, clients = []) => {
   } else if (targetRaw === 2 || targetRaw === '2' || (typeof targetRaw === 'string' && targetRaw.toLowerCase().includes('both'))) {
     type = 'both';
   } else if (targetRaw === undefined || targetRaw === null) {
-    // Fallback: Scan title and content to infer the target audience
     const titleLower = (ad.title || "").toLowerCase();
     const contentLower = (ad.content || "").toLowerCase();
     if (titleLower.includes("مخابر") && (titleLower.includes("أطباء") || titleLower.includes("اطباء"))) {
@@ -30,7 +24,6 @@ const mapAdToFrontend = (ad, clients = []) => {
     }
   }
 
-  // --- Image URLs Handling ---
   const baseUrlClean = axiosInstance.defaults.baseURL.replace('/api', '');
   let adImages = [];
 
@@ -60,14 +53,12 @@ const mapAdToFrontend = (ad, clients = []) => {
     }
   }
 
-  // Final fallback placeholder if no images found
   if (adImages.length === 0) {
     adImages = ['https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80'];
   }
 
   const imageUrl = adImages[0];
 
-  // --- Owner / Store Details ---
   const ownerName = matchingClient?.name || ad.userName || ad.user?.name || ad.user?.userName || ad.storeName
     || (userId ? `مستخدم #${userId}` : "مستخدم غير معروف");
   const storeNameVal = matchingClient?.namePlace || ownerName;
@@ -75,7 +66,6 @@ const mapAdToFrontend = (ad, clients = []) => {
   const ownerAvatar = ad.userAvatar || ad.user?.avatar || ad.storeAvatar
     || `https://ui-avatars.com/api/?name=${encodeURIComponent(ownerName)}&background=367AFF&color=fff`;
 
-  // --- Approval Status ---
   let approvalStatus = 'pending';
   if (ad.isApproved === true || ad.approvalStatus === 'approved' || (ad.status && String(ad.status).toLowerCase() === 'approved') || ad.isActive === true) {
     approvalStatus = 'approved';
@@ -83,7 +73,7 @@ const mapAdToFrontend = (ad, clients = []) => {
     approvalStatus = 'rejected';
   }
 
-  // --- Active Status ---
+
   const isActive = ad.isActive !== undefined ? ad.isActive : (ad.status === 'active');
 
   return {
@@ -112,14 +102,12 @@ export const adsApi = {
     try {
       let endpoint = "/Advertisement/admin/all";
 
-      // Determine endpoint based on filters.type (or target audience filter)
       if (filters.type === "labs") {
         endpoint = "/Advertisement/labs";
       } else if (filters.type === "dentists") {
         endpoint = "/Advertisement/dentists";
       }
 
-      // Fetch ads and clients list in parallel to map user/store details
       const [adsResponse, clientsResponse] = await Promise.allSettled([
         axiosInstance.get(endpoint),
         axiosInstance.get("/Advertisement/all")
@@ -128,10 +116,8 @@ export const adsApi = {
       const rawAds = adsResponse.status === "fulfilled" ? (adsResponse.value.data || []) : [];
       const rawClients = clientsResponse.status === "fulfilled" ? (clientsResponse.value.data || []) : [];
 
-      // Map and normalize all items
       let adsList = rawAds.map((ad) => mapAdToFrontend(ad, rawClients)).filter(Boolean);
 
-      // Apply client-side filters (fallback if backend doesn't filter)
       if (filters.approvalStatus && filters.approvalStatus !== 'all') {
         adsList = adsList.filter(ad => ad.approvalStatus === filters.approvalStatus);
       }
@@ -149,7 +135,6 @@ export const adsApi = {
         );
       }
 
-      // Pagination
       const total = adsList.length;
       const start = (page - 1) * limit;
       const paginatedData = adsList.slice(start, start + limit);

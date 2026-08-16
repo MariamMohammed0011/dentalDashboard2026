@@ -14,7 +14,6 @@ import EditAdModal from '../components/EditAdModal';
 
 const AdsPage = () => {
   const { t } = useTranslation();
-  // استدعاء كافة الحالات والدوال من الهوك الصافي
   const {
     ads,
     pagination,

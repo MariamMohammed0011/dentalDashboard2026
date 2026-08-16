@@ -15,10 +15,6 @@ import {
   SlidersHorizontal,
   CreditCard
 } from 'lucide-react';
-
-// خريطة تحويل متكاملة للربط بين النصوص والأرقام
-// ⚠️ يجب أن تطابق enum الباك اند تماماً (GET /api/Enums/account-status):
-// 0 PendingVerification, 1 PendingAdminApproval, 2 PendingPayment, 3 Active, 4 ReadOnly, 5 Suspended
 const STATUS_LOOKUP = {
   'pendingverification': 0,
   'pendingadminapproval': 1,
@@ -35,7 +31,6 @@ const STATUS_LOOKUP = {
   '5': 5
 };
 
-// قائمة الحالات الخمس المعتمدة بتصميم ونظام ألوان عصري فخم
 const ALL_STATUSES = [
   {
     value: 0,
@@ -138,12 +133,9 @@ const parseLabel = (rawLabel) => {
 
 const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatus, onConfirm }) => {
   const { t } = useTranslation();
-
-  // الفرز مخصص حصراً: إما طبيب أو فني مخبر أو مخبر
   const isDoctor = type === 'doctor' || type === 'dentist';
   const isLabTechnician = type === 'labTechnician';
 
-  // بانتظار الدفع حالة خاصة بالمخابر (مرتبطة بالاشتراك) ولا تنطبق على الأطباء
   const visibleStatuses = isDoctor ? ALL_STATUSES.filter((item) => !item.labOnly) : ALL_STATUSES;
 
   const normalizeStatus = (val) => {
@@ -164,14 +156,9 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
 
   useEffect(() => {
     if (isOpen && user) {
-      console.log('📋 ===== [ UserStatusModal Status List ] =====');
       ALL_STATUSES.forEach((st) => {
         console.log(`🔢 Enum: [${st.value}] ➔ Code: "${st.code}" | Label: "${st.label}"`);
       });
-      console.log('----------------------------------------------');
-      console.log(`👤 Original User Status: "${user.status}" ➔ Parsed Enum: [${userOriginalNumeric}]`);
-      console.log(`⏱️ Current Temp Status in Modal: [${currentTempNumeric}]`);
-      console.log('==============================================');
     }
   }, [isOpen, user, tempStatus, currentTempNumeric, userOriginalNumeric]);
 
@@ -187,7 +174,6 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
     <AnimatePresence>
       {isOpen && user && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-          {/* Backdrop خلفية زجاجية غامقة */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -196,7 +182,6 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
             className="fixed inset-0 bg-slate-950/70 backdrop-blur-md transition-opacity"
           />
 
-          {/* Modal Container النافذة الرئيسية */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 14 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -205,7 +190,6 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
             className="relative w-full max-w-[440px] bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-[2rem] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden z-10 flex flex-col text-right font-sans my-auto ring-1 ring-slate-950/5 dark:ring-white/10 before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-sky-400/50 before:to-transparent"
             dir="rtl"
           >
-            {/* Header الهيدر */}
             <div className="flex justify-between items-center px-5 sm:px-6 py-4 border-b border-slate-100 dark:border-slate-800/80 bg-gradient-to-b from-slate-50/90 to-white dark:from-slate-900/90 dark:to-slate-900">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-2xl bg-sky-50 dark:bg-sky-950/60 border border-sky-100 dark:border-sky-900/50 flex items-center justify-center text-sky-600 dark:text-sky-400 shadow-xs shrink-0">
@@ -237,15 +221,13 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
               </button>
             </div>
 
-            {/* User Info Bar كرت معلومات المستخدم */}
             <div className="mx-5 sm:mx-6 my-3 p-3 rounded-2xl bg-gradient-to-r from-slate-50 via-sky-50/20 to-indigo-50/20 dark:from-slate-800/50 dark:via-slate-800/30 dark:to-slate-800/20 border border-slate-200/70 dark:border-slate-700/60 shadow-xs flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0">
                 <div
-                  className={`w-10 h-10 rounded-xl overflow-hidden border shrink-0 flex items-center justify-center font-bold shadow-xs ${
-                    isDoctor
+                  className={`w-10 h-10 rounded-xl overflow-hidden border shrink-0 flex items-center justify-center font-bold shadow-xs ${isDoctor
                       ? 'border-sky-500/30 bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 ring-2 ring-sky-500/10'
                       : 'border-indigo-500/30 bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 ring-2 ring-indigo-500/10'
-                  }`}
+                    }`}
                 >
                   {isDoctor ? (
                     <img
@@ -264,8 +246,8 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
                   <span className="font-zain text-xs text-slate-500 dark:text-slate-400 font-semibold mt-0.5 flex items-center gap-1 truncate">
                     <Building2 size={12} className={isDoctor ? 'text-sky-500 shrink-0' : 'text-indigo-500 shrink-0'} />
                     <span className="truncate">
-                      {isDoctor 
-                        ? (user.clinicName || t('userStatusModal.clinicNotSpecified') || 'العيادة غير محددة') 
+                      {isDoctor
+                        ? (user.clinicName || t('userStatusModal.clinicNotSpecified') || 'العيادة غير محددة')
                         : (user.namePlace || t('userStatusModal.addressNotSpecified') || 'مكان العمل غير محدد')}
                     </span>
                   </span>
@@ -273,7 +255,6 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
               </div>
             </div>
 
-            {/* الخيارات الـ 5 المنسقة بألوان مريحة للعين */}
             <div className="flex flex-col gap-2 px-5 sm:px-6 py-1">
               {visibleStatuses.map((item) => {
                 const IconComponent = item.icon;
@@ -289,19 +270,17 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
                       console.log(`👉 Selected New Option ➔ Enum Value: ${item.value} ("${item.code}")`);
                       setTempStatus(item.value);
                     }}
-                    className={`w-full flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-2xl border text-right transition-all duration-200 cursor-pointer group ${
-                      active
+                    className={`w-full flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-2xl border text-right transition-all duration-200 cursor-pointer group ${active
                         ? `${item.styles.activeBorder}`
                         : 'border-slate-200/70 dark:border-slate-800/80 bg-white dark:bg-slate-800/30 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-700'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <div
-                        className={`w-8 h-8 rounded-xl shrink-0 flex items-center justify-center transition-all duration-200 ${
-                          active
+                        className={`w-8 h-8 rounded-xl shrink-0 flex items-center justify-center transition-all duration-200 ${active
                             ? item.styles.activeIconBg
                             : `${item.styles.inactiveIconBg} group-hover:scale-105`
-                        }`}
+                          }`}
                       >
                         <IconComponent size={16} />
                       </div>
@@ -311,11 +290,10 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
                         </span>
                         {en && (
                           <span
-                            className={`text-[10px] font-sans font-semibold px-2 py-0.5 rounded-md tracking-tight whitespace-nowrap transition-colors ${
-                              active
+                            className={`text-[10px] font-sans font-semibold px-2 py-0.5 rounded-md tracking-tight whitespace-nowrap transition-colors ${active
                                 ? item.styles.activeBadge
                                 : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200/50 dark:border-slate-700/50'
-                            }`}
+                              }`}
                           >
                             {en}
                           </span>
@@ -324,11 +302,10 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
                     </div>
 
                     <div
-                      className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 ${
-                        active
+                      className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 ${active
                           ? `${item.styles.checkBg} scale-100 shadow-xs`
                           : 'border-2 border-slate-300 dark:border-slate-700 opacity-40 group-hover:opacity-75 group-hover:border-slate-400'
-                      }`}
+                        }`}
                     >
                       {active && <Check size={12} strokeWidth={3} />}
                     </div>
@@ -337,7 +314,6 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
               })}
             </div>
 
-            {/* Footer Buttons الأزرار في الأسفل */}
             <div className="px-5 sm:px-6 py-3.5 mt-2 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/60 dark:bg-slate-900/60 flex items-center gap-3 justify-end">
               <button
                 type="button"
@@ -353,11 +329,10 @@ const UserStatusModal = ({ isOpen, user, type, onClose, tempStatus, setTempStatu
                   onConfirm(tempStatus);
                 }}
                 disabled={isSaveDisabled}
-                className={`px-6 py-2 rounded-xl text-xs font-black font-zain text-white active:scale-95 transition-all cursor-pointer ${
-                  isSaveDisabled
+                className={`px-6 py-2 rounded-xl text-xs font-black font-zain text-white active:scale-95 transition-all cursor-pointer ${isSaveDisabled
                     ? 'bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 cursor-not-allowed text-slate-400 dark:text-slate-600'
                     : 'bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 shadow-md shadow-sky-500/25 hover:shadow-lg'
-                }`}
+                  }`}
               >
                 {t('userStatusModal.saveStatus')}
               </button>

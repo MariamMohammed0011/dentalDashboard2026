@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { X, Megaphone, Coins, Send, Info } from 'lucide-react';
 
 const ApproveAdModal = ({ isOpen, onClose, ad, onConfirm }) => {
+  const { t } = useTranslation();
   const [price, setPrice] = useState('');
 
   useEffect(() => {
@@ -43,7 +45,7 @@ const ApproveAdModal = ({ isOpen, onClose, ad, onConfirm }) => {
             <div className="bg-[#E8F1FF] p-5 sm:p-6 text-right flex items-center justify-between border-b border-[#D2E4FF]/50 flex-shrink-0 animate-fade-in">
               <div className="flex items-center gap-3 text-[#367AFF]">
                 <Megaphone size={22} strokeWidth={2.5} />
-                <h3 className="text-lg font-black">الموافقة وتحديد سعر الحملة</h3>
+                <h3 className="text-lg font-black">{t('ads.approveAdModal.title')}</h3>
               </div>
               <button 
                 onClick={onClose}
@@ -60,10 +62,10 @@ const ApproveAdModal = ({ isOpen, onClose, ad, onConfirm }) => {
                 
                 <div className="bg-gray-50/80 border border-gray-100 p-4 rounded-2xl flex flex-col gap-1.5">
                   <div className="flex justify-between items-center text-xs text-gray-400 font-bold">
-                    <span>بيانات الإعلان المقبول</span>
+                    <span>{t('ads.approveAdModal.adInfoLabel')}</span>
                     <span className="font-mono bg-white px-2 py-0.5 rounded-lg border border-gray-200/50">#{ad.id}</span>
                   </div>
-                  <h4 className="font-bold text-gray-800 text-sm mt-1">{ad.title || "لا يوجد عنوان"}</h4>
+                  <h4 className="font-bold text-gray-800 text-sm mt-1">{ad.title || t('ads.approveAdModal.noTitleFallback')}</h4>
                   <div className="text-xs text-gray-500 flex items-center gap-1.5 mt-0.5">
                     <span className="font-bold text-[#367AFF]">{ad.storeName}</span>
                     <span className="text-gray-300">|</span>
@@ -75,7 +77,7 @@ const ApproveAdModal = ({ isOpen, onClose, ad, onConfirm }) => {
                 <div className="bg-blue-50/50 border border-blue-100/60 p-3.5 rounded-2xl flex items-start gap-2.5">
                   <Info size={16} className="text-[#367AFF] mt-0.5 flex-shrink-0" />
                   <p className="text-[11.5px] leading-relaxed text-blue-700/90 font-medium">
-                    عند تأكيد هذا الإجراء، سيتم تحويل حالة الإعلان إلى <strong>مقبول مبدئياً</strong>، وسيصل <strong>إشعار دفع مباشر</strong> في حساب الطبيب بقيمة السعر المدخل للموافقة النهائية.
+                    {t('ads.approveAdModal.infoPrefix')} <strong>{t('ads.approveAdModal.infoBold1')}</strong>{t('ads.approveAdModal.infoMiddle')} <strong>{t('ads.approveAdModal.infoBold2')}</strong> {t('ads.approveAdModal.infoSuffix')}
                   </p>
                 </div>
 
@@ -83,7 +85,7 @@ const ApproveAdModal = ({ isOpen, onClose, ad, onConfirm }) => {
                 <div className="flex flex-col gap-1.5 mt-1">
                   <label className="text-gray-600 font-bold text-xs sm:text-sm mr-1 flex items-center gap-1.5">
                     <Coins size={14} className="text-[#367AFF]" />
-                    سعر الحملة الإعلانية المقترح (ل.س)
+                    {t('ads.approveAdModal.priceLabel')}
                   </label>
                   <div className="relative">
                     <input
@@ -91,14 +93,14 @@ const ApproveAdModal = ({ isOpen, onClose, ad, onConfirm }) => {
                       required
                       min="0"
                       step="any"
-                      placeholder="أدخل السعر المقترح للحملة"
+                      placeholder={t('ads.approveAdModal.pricePlaceholder')}
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
                       className="bg-gray-50 border border-gray-200/80 rounded-2xl pl-16 pr-4 py-3 text-gray-700 font-extrabold text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full text-left"
                       dir="ltr"
                     />
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 pointer-events-none">
-                      ل.س
+                      {t('ads.approveAdModal.currencySuffix')}
                     </span>
                   </div>
                 </div>
@@ -112,14 +114,14 @@ const ApproveAdModal = ({ isOpen, onClose, ad, onConfirm }) => {
                   onClick={onClose}
                   className="flex-1 py-3 border border-[#DBEAFE] bg-white text-gray-500 font-bold rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer"
                 >
-                  إلغاء
+                  {t('common.cancel')}
                 </button>
                 <button
                   type="submit"
                   className="flex-1 py-3 bg-[#367AFF] text-white hover:bg-[#2563EB] font-bold rounded-2xl shadow-lg shadow-blue-500/10 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Send size={15} />
-                  قبول وإرسال الإشعار
+                  {t('ads.approveAdModal.confirmButton')}
                 </button>
               </div>
 

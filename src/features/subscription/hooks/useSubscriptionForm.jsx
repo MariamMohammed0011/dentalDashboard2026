@@ -15,7 +15,7 @@ export const useSubscriptionForm = ({ isOpen, type, initialData, onSubmit, onClo
   useEffect(() => {
     if (isOpen) {
       setError('');
-      // Set default dates
+     
       const today = new Date().toISOString().split('T')[0];
       const nextYearDate = new Date();
       nextYearDate.setFullYear(nextYearDate.getFullYear() + 1);
@@ -33,7 +33,6 @@ export const useSubscriptionForm = ({ isOpen, type, initialData, onSubmit, onClo
         setEndDate(nextYear);
       }
 
-      // Fetch labs if type is "add" (meaning we need to select a lab)
       if (type === 'add') {
         const fetchLabs = async () => {
           setLoadingLabs(true);

@@ -1,19 +1,14 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Phone, Building2, MapPin, Shield, Calendar, Megaphone, CheckCircle2, Clock, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { X, Users, Phone, Building2, MapPin, Shield, Calendar, Megaphone, CheckCircle2, Clock, Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { adsApi } from '../../services/adsApi';
 
-const roleTranslations = {
-  adsclient: 'عميل إعلانات',
-  dentist: 'طبيب أسنان',
-  lab: 'مختبر أسنان',
-  admin: 'مسؤول النظام',
-  superadmin: 'مسؤول النظام الرئيسي',
-};
-
 const ViewUserModal = ({ isOpen, onClose, user }) => {
+  const { t } = useTranslation();
+
   if (typeof document === 'undefined') return null;
 
   const { data: adsData, isLoading: isLoadingAds } = useQuery({
@@ -47,7 +42,7 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
           >
             
             <div className="flex justify-between items-center p-5 border-b border-border-main/30 flex-shrink-0">
-              <h3 className="text-lg font-black text-text-main">تفاصيل بيانات العميل</h3>
+              <h3 className="text-lg font-black text-text-main">{t('ads.viewUserModal.title')}</h3>
               
               <button 
                 onClick={onClose}
@@ -66,31 +61,31 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
                   {user.name ? user.name.charAt(0) : <Users size={24} />}
                 </div>
                 <div className="text-right flex flex-col flex-grow">
-                  <span className="font-extrabold text-text-main text-base sm:text-lg">{user.name || "بدون اسم"}</span>
-                  <span className="text-xs text-text-muted font-semibold mt-1">معرف الحساب: #{user.id}</span>
+                  <span className="font-extrabold text-text-main text-base sm:text-lg">{user.name || t('ads.noName')}</span>
+                  <span className="text-xs text-text-muted font-semibold mt-1">{t('ads.viewUserModal.accountId', { id: user.id })}</span>
                 </div>
                 <div className="flex flex-col gap-1.5 items-end">
-                  
+
                   {user.status?.toLowerCase() === 'active' ? (
                     <span className="inline-flex items-center gap-1 text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full text-xs font-bold">
                       <CheckCircle2 size={12} />
-                      نشط
+                      {t('common.active')}
                     </span>
                   ) : user.status?.toLowerCase() === 'suspended' ? (
                     <span className="inline-flex items-center gap-1 text-rose-500 bg-rose-500/10 border border-rose-500/20 px-2.5 py-1 rounded-full text-xs font-bold">
                       <X size={12} />
-                      معلق
+                      {t('common.suspended')}
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1 text-amber-500 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full text-xs font-bold">
                       <Clock size={12} />
-                      قيد المراجعة
+                      {t('common.pending')}
                     </span>
                   )}
-                  
+
                   <span className="inline-flex items-center gap-1 text-primary bg-primary/10 border border-primary/20 px-2.5 py-1 rounded-full text-xs font-bold">
                     <Shield size={12} />
-                    {roleTranslations[user.role?.toLowerCase()] || user.role}
+                    {t(`ads.viewUserModal.roles.${user.role?.toLowerCase()}`, { defaultValue: user.role })}
                   </span>
                 </div>
               </div>
@@ -99,26 +94,26 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
               <div className="flex flex-col gap-3">
                 <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-1">
                   <Building2 size={14} className="text-primary" />
-                  بيانات المنشأة / العيادة
+                  {t('ads.viewUserModal.facilitySection')}
                 </h4>
                 <div className="grid grid-cols-1 gap-3 bg-bg-main/20 p-4 rounded-2xl border border-border-main/30">
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-text-muted font-medium">اسم المنشأة</span>
-                    <span className="font-bold text-text-main">{user.namePlace || "غير محدد"}</span>
+                    <span className="text-text-muted font-medium">{t('ads.viewUserModal.facilityName')}</span>
+                    <span className="font-bold text-text-main">{user.namePlace || t('ads.notSpecified')}</span>
                   </div>
                   <div className="h-px bg-border-main/20" />
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-text-muted font-medium">الموقع / العنوان</span>
+                    <span className="text-text-muted font-medium">{t('ads.viewUserModal.locationAddress')}</span>
                     <span className="font-bold text-text-main flex items-center gap-1">
                       <MapPin size={14} className="text-text-muted/70" />
-                      <span>{user.addressPlace || user.cityPlace || "غير محدد"}</span>
+                      <span>{user.addressPlace || user.cityPlace || t('ads.notSpecified')}</span>
                     </span>
                   </div>
                   <div className="h-px bg-border-main/20" />
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-text-muted font-medium">المدينة والبلد</span>
+                    <span className="text-text-muted font-medium">{t('ads.viewUserModal.cityAndCountry')}</span>
                     <span className="font-bold text-text-main">
-                      {user.cityPlace || "دمشق"}
+                      {user.cityPlace || t('ads.viewUserModal.defaultCity')}
                       {user.countryPlace ? `، ${user.countryPlace}` : ""}
                     </span>
                   </div>
@@ -129,11 +124,11 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
               <div className="flex flex-col gap-3">
                 <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-1">
                   <Phone size={14} className="text-primary" />
-                  بيانات التواصل والاتصال
+                  {t('ads.viewUserModal.contactSection')}
                 </h4>
                 <div className="grid grid-cols-1 gap-3 bg-bg-main/20 p-4 rounded-2xl border border-border-main/30">
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-text-muted font-medium">رقم الهاتف</span>
+                    <span className="text-text-muted font-medium">{t('ads.viewUserModal.phone')}</span>
                     <span className="font-bold text-text-main select-all font-mono" dir="ltr">
                       {user.phone || "-"}
                     </span>
@@ -145,19 +140,19 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
               <div className="flex flex-col gap-3">
                 <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-1">
                   <Calendar size={14} className="text-primary" />
-                  تفاصيل تاريخ الحساب والنشاط
+                  {t('ads.viewUserModal.accountHistorySection')}
                 </h4>
                 <div className="grid grid-cols-1 gap-3 bg-bg-main/20 p-4 rounded-2xl border border-border-main/30">
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-text-muted font-medium">تاريخ الإنشاء</span>
+                    <span className="text-text-muted font-medium">{t('ads.viewUserModal.createdAt')}</span>
                     <span className="font-bold text-text-main">{formatDate(user.createdAt)}</span>
                   </div>
                   <div className="h-px bg-border-main/20" />
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-text-muted font-medium">إجمالي الحملات الإعلانية</span>
+                    <span className="text-text-muted font-medium">{t('ads.viewUserModal.totalAds')}</span>
                     <span className="font-black text-primary flex items-center gap-1">
                       <Megaphone size={14} />
-                      <span>{user.advertisementsCount || 0} إعلان</span>
+                      <span>{t('ads.viewUserModal.adsCount', { count: user.advertisementsCount || 0 })}</span>
                     </span>
                   </div>
                 </div>
@@ -167,13 +162,13 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
               <div className="flex flex-col gap-3 mt-2">
                 <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-1">
                   <Megaphone size={14} className="text-primary animate-pulse" />
-                  الإعلانات الفعالة للمستخدم ({adsData?.totalCount || 0})
+                  {t('ads.viewUserModal.activeAdsSection', { count: adsData?.totalCount || 0 })}
                 </h4>
-                
+
                 {isLoadingAds ? (
                   <div className="flex items-center justify-center p-8 bg-bg-main/20 rounded-2xl border border-border-main/30 gap-2">
                     <Loader2 size={18} className="text-primary animate-spin" />
-                    <span className="text-xs text-text-muted font-bold">جاري تحميل الإعلانات...</span>
+                    <span className="text-xs text-text-muted font-bold">{t('ads.viewUserModal.loadingAds')}</span>
                   </div>
                 ) : adsData?.advertisements?.length > 0 ? (
                   <div className="flex flex-col gap-4">
@@ -191,11 +186,11 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
                               className="w-full h-full object-cover"
                             />
                             <div className="absolute top-2.5 right-2.5 bg-black/60 backdrop-blur-md text-white text-[10px] font-black px-2 py-1 rounded-lg">
-                              معرف الإعلان: #{ad.id}
+                              {t('ads.viewUserModal.adId', { id: ad.id })}
                             </div>
                             {ad.price && (
                               <div className="absolute bottom-2.5 left-2.5 bg-emerald-500 text-white text-[10px] font-black px-2 py-1 rounded-lg">
-                                سعر الحملة: {ad.price.toLocaleString()} ل.س
+                                {t('ads.viewUserModal.campaignPrice', { price: ad.price.toLocaleString() })}
                               </div>
                             )}
                           </div>
@@ -203,19 +198,19 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
                         
                         
                         <div className="p-4 flex flex-col gap-2">
-                          <h5 className="font-bold text-text-main text-sm">{ad.title || "إعلان بدون عنوان"}</h5>
-                          <p className="text-xs text-text-muted font-medium leading-relaxed">{ad.content || "لا يوجد محتوى"}</p>
-                          
+                          <h5 className="font-bold text-text-main text-sm">{ad.title || t('ads.viewUserModal.untitledAd')}</h5>
+                          <p className="text-xs text-text-muted font-medium leading-relaxed">{ad.content || t('ads.viewUserModal.noContent')}</p>
+
                           <div className="h-px bg-border-main/20 my-1" />
-                          
+
                           <div className="flex justify-between items-center text-[10px] text-text-muted font-bold gap-2 flex-wrap">
                             <span className="flex items-center gap-1">
                               <Calendar size={10} />
-                              تاريخ الإنشاء: {formatDate(ad.createdAt)}
+                              {t('ads.viewUserModal.createdAtPrefix', { date: formatDate(ad.createdAt) })}
                             </span>
                             <span className="flex items-center gap-1 text-rose-500 bg-rose-500/10 px-2 py-0.5 rounded-md">
                               <Clock size={10} />
-                              ينتهي في: {formatDate(ad.expiresAt)}
+                              {t('ads.viewUserModal.expiresAtPrefix', { date: formatDate(ad.expiresAt) })}
                             </span>
                           </div>
                         </div>
@@ -224,7 +219,7 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
                   </div>
                 ) : (
                   <div className="text-center py-6 bg-bg-main/20 rounded-2xl border border-border-main/30 text-xs text-text-muted font-bold">
-                    {adsData?.message || "لا يوجد إعلانات فعالة حالياً لهذا المستخدم."}
+                    {adsData?.message || t('ads.viewUserModal.noActiveAds')}
                   </div>
                 )}
               </div>
@@ -237,7 +232,7 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
                 onClick={onClose}
                 className="w-full py-3 bg-primary text-white font-bold text-sm rounded-xl hover:bg-primary-dark transition-all active:scale-95 cursor-pointer shadow-md shadow-primary/10"
               >
-                إغلاق
+                {t('common.close')}
               </button>
             </div>
 

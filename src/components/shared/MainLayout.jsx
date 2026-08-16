@@ -12,32 +12,32 @@ export default function MainLayout() {
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-const { handleLogout, isLoggingOut } = useLogout();
+  const { handleLogout, isLoggingOut } = useLogout();
   return (
     <div className="flex min-h-screen bg-bg-main transition-colors duration-300" dir="rtl">
-      
+
       <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
 
-      
+
       <div className="flex-grow flex flex-col relative overflow-x-hidden overflow-y-auto">
-        
-        
+
+
         <Header handleLogout={handleLogout} setIsMobileMenuOpen={setIsMobileMenuOpen} />
-        
+
         <AnimatePresence>
           {isMobileMenuOpen && (
             <>
-       
-              <motion.div 
+
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden"
               />
-              
-          
-              <motion.div 
+
+
+              <motion.div
                 initial={{ x: '100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
@@ -47,7 +47,7 @@ const { handleLogout, isLoggingOut } = useLogout();
               >
                 <div className="px-6 mb-8 flex justify-between items-center">
                   <img src={logoImg} alt="Logo" className="w-12 h-12 object-contain" />
-                  <button 
+                  <button
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                   >
@@ -58,24 +58,24 @@ const { handleLogout, isLoggingOut } = useLogout();
                 <nav className="flex-grow overflow-y-auto no-scrollbar pb-6">
                   <div className="flex flex-col gap-1">
                     {navItems.map((item) => (
-                      <NavItem 
-                        key={item.to} 
-                        {...item} 
-                        isCollapsed={false} 
-                        onClick={() => setIsMobileMenuOpen(false)} 
+                      <NavItem
+                        key={item.to}
+                        {...item}
+                        isCollapsed={false}
+                        onClick={() => setIsMobileMenuOpen(false)}
                       />
                     ))}
                   </div>
                 </nav>
 
                 <div className="px-2 mt-auto border-t border-border-main pt-4">
-                   <NavItem 
-                    to="/dashboard/settings" 
-                    label="الاعدادات" 
-                    icon={Settings} 
-                    isCollapsed={false} 
-                    onClick={() => setIsMobileMenuOpen(false)} 
-                   />
+                  <NavItem
+                    to="/dashboard/settings"
+                    label="الاعدادات"
+                    icon={Settings}
+                    isCollapsed={false}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
                 </div>
               </motion.div>
             </>
@@ -83,12 +83,12 @@ const { handleLogout, isLoggingOut } = useLogout();
         </AnimatePresence>
         <MainComponent>
           <main className="h-full flex-grow flex flex-col">
-            <Outlet /> 
+            <Outlet />
           </main>
         </MainComponent>
 
-       
-       
+
+
       </div>
     </div>
   );

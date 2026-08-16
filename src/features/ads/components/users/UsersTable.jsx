@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Users,
   MapPin,
@@ -20,6 +21,7 @@ const UsersTable = ({
   onEditClick,
   onDeleteClick
 }) => {
+  const { t } = useTranslation();
   const [roleFilter, setRoleFilter] = useState('all');
   const [adsFilter, setAdsFilter] = useState('all');
 
@@ -35,15 +37,15 @@ const UsersTable = ({
   return (
     <div className="bg-transparent rounded-2xl overflow-hidden flex-grow flex flex-col space-y-4">
 
-      {/* Filters Bar */}
+    
       <div className="bg-white dark:bg-bg-card border border-border-main/50 rounded-2xl p-3 sm:p-4 shadow-sm">
         <div className="flex items-center gap-2 mb-3 sm:mb-0">
           <Filter size={16} className="text-primary shrink-0" />
-          <span className="text-xs sm:text-sm font-bold text-text-muted">الفلاتر:</span>
+          <span className="text-xs sm:text-sm font-bold text-text-muted">{t('ads.usersTable.filtersLabel')}</span>
         </div>
 
         <div className="flex flex-wrap gap-2 mt-2 sm:mt-0">
-          {/* Role Filter */}
+        
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setRoleFilter('all')}
@@ -53,7 +55,7 @@ const UsersTable = ({
                   : 'bg-slate-100 dark:bg-slate-800 text-text-muted hover:text-text-main'
               }`}
             >
-              جميع المستخدمين
+              {t('ads.usersTable.filterAllUsers')}
             </button>
             <button
               onClick={() => setRoleFilter('ADSClient')}
@@ -63,7 +65,7 @@ const UsersTable = ({
                   : 'bg-purple-500/10 text-purple-600 dark:text-purple-400 hover:bg-purple-500/20'
               }`}
             >
-              عملاء الإعلانات
+              {t('ads.usersTable.filterAdsClients')}
             </button>
             <button
               onClick={() => setRoleFilter('Dentist')}
@@ -73,7 +75,7 @@ const UsersTable = ({
                   : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20'
               }`}
             >
-              أطباء
+              {t('ads.usersTable.filterDoctors')}
             </button>
             <button
               onClick={() => setRoleFilter('Lab')}
@@ -83,7 +85,7 @@ const UsersTable = ({
                   : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20'
               }`}
             >
-              مخابر
+              {t('ads.usersTable.filterLabs')}
             </button>
           </div>
 
@@ -97,7 +99,7 @@ const UsersTable = ({
                   : 'bg-slate-100 dark:bg-slate-800 text-text-muted hover:text-text-main'
               }`}
             >
-              كل الإعلانات
+              {t('ads.usersTable.adsFilterAll')}
             </button>
             <button
               onClick={() => setAdsFilter('active')}
@@ -108,7 +110,7 @@ const UsersTable = ({
               }`}
             >
               <Zap size={12} />
-              نشطة
+              {t('ads.usersTable.adsFilterActive')}
             </button>
             <button
               onClick={() => setAdsFilter('inactive')}
@@ -118,22 +120,22 @@ const UsersTable = ({
                   : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20'
               }`}
             >
-              بدون إعلانات
+              {t('ads.usersTable.adsFilterNone')}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Desktop Table */}
+     
       <div className="hidden lg:block overflow-x-auto custom-scrollbar border border-border-main/50 rounded-2xl bg-white dark:bg-bg-card shadow-sm">
         <table className="w-full text-right border-collapse">
           <thead>
             <tr className="border-b border-border-main/30 text-text-muted font-bold text-xs bg-slate-50/80 dark:bg-slate-800/40">
-              <th className="py-4 px-4 text-right font-bold">العميل</th>
-              <th className="py-4 px-4 text-right font-bold">المنشأة</th>
-              <th className="py-4 px-4 text-right font-bold">التواصل</th>
-              <th className="py-4 px-4 text-center font-bold">الإعلانات</th>
-              <th className="py-4 px-4 text-center font-bold">العمليات</th>
+              <th className="py-4 px-4 text-right font-bold">{t('ads.usersTable.colClient')}</th>
+              <th className="py-4 px-4 text-right font-bold">{t('ads.usersTable.colFacility')}</th>
+              <th className="py-4 px-4 text-right font-bold">{t('ads.usersTable.colContact')}</th>
+              <th className="py-4 px-4 text-center font-bold">{t('ads.usersTable.colAds')}</th>
+              <th className="py-4 px-4 text-center font-bold">{t('ads.usersTable.colActions')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border-main/20">
@@ -149,7 +151,7 @@ const UsersTable = ({
               <tr>
                 <td colSpan="5" className="py-12 text-center text-text-muted font-bold">
                   <Users size={40} className="mx-auto mb-2 text-text-muted/40" />
-                  لا توجد نتائج
+                  {t('ads.usersTable.noResults')}
                 </td>
               </tr>
             ) : (
@@ -165,7 +167,7 @@ const UsersTable = ({
                           {user.name?.charAt(0) || <Users size={14} />}
                         </div>
                         <div className="text-right min-w-0">
-                          <p className="font-bold text-text-main text-sm truncate">{user.name || "بدون اسم"}</p>
+                          <p className="font-bold text-text-main text-sm truncate">{user.name || t('ads.noName')}</p>
                           <p className="text-xs text-text-muted">#{user.id}</p>
                         </div>
                       </div>
@@ -176,7 +178,7 @@ const UsersTable = ({
                         <p className="font-bold text-text-main text-sm truncate">{user.namePlace || "—"}</p>
                         <p className="text-xs text-text-muted flex items-center gap-1 mt-0.5">
                           <MapPin size={12} className="shrink-0" />
-                          {user.cityPlace || "غير محدد"}
+                          {user.cityPlace || t('ads.notSpecified')}
                         </p>
                       </div>
                     </td>
@@ -205,7 +207,7 @@ const UsersTable = ({
                         <button
                           onClick={() => onViewClick(user)}
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white text-slate-600 dark:text-slate-400 transition-all"
-                          title="عرض"
+                          title={t('common.view')}
                         >
                           <Eye size={14} />
                         </button>
@@ -213,7 +215,7 @@ const UsersTable = ({
                         <button
                           onClick={() => onEditClick(user)}
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-500/10 text-blue-600 hover:bg-blue-600 hover:text-white transition-all"
-                          title="تعديل"
+                          title={t('common.edit')}
                         >
                           <Pencil size={13} />
                         </button>
@@ -222,7 +224,7 @@ const UsersTable = ({
                           <button
                             onClick={() => onDeleteClick(user)}
                             className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-500/10 text-red-600 hover:bg-red-600 hover:text-white transition-all"
-                            title="حذف"
+                            title={t('common.delete')}
                           >
                             <Trash2 size={14} />
                           </button>
@@ -233,7 +235,7 @@ const UsersTable = ({
                           className="bg-primary hover:bg-primary-dark text-white px-3 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1 transition-all"
                         >
                           <Plus size={12} />
-                          إضافة
+                          {t('common.add')}
                         </button>
                       </div>
                     </td>
@@ -256,7 +258,7 @@ const UsersTable = ({
         ) : filteredUsers.length === 0 ? (
           <div className="py-12 text-center text-text-muted font-bold">
             <Users size={40} className="mx-auto mb-2 text-text-muted/40" />
-            لا توجد نتائج
+            {t('ads.usersTable.noResults')}
           </div>
         ) : (
           filteredUsers.map((user) => {
@@ -273,7 +275,7 @@ const UsersTable = ({
                       {user.name?.charAt(0) || <Users size={14} />}
                     </div>
                     <div className="text-right min-w-0">
-                      <p className="font-bold text-text-main text-sm break-words">{user.name || "بدون اسم"}</p>
+                      <p className="font-bold text-text-main text-sm break-words">{user.name || t('ads.noName')}</p>
                       <p className="text-xs text-text-muted">#{user.id}</p>
                     </div>
                   </div>
@@ -287,23 +289,23 @@ const UsersTable = ({
                   </div>
                 </div>
 
-                {/* Info */}
+               
                 <div className="space-y-2 text-xs border-t border-border-main/30 pt-3">
                   <div className="flex justify-between">
-                    <span className="text-text-muted font-bold">المنشأة:</span>
+                    <span className="text-text-muted font-bold">{t('ads.usersTable.mobileFacilityLabel')}</span>
                     <span className="text-text-main font-semibold break-words text-right flex-1">{user.namePlace || "—"}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-text-muted font-bold">الهاتف:</span>
+                    <span className="text-text-muted font-bold">{t('ads.usersTable.mobilePhoneLabel')}</span>
                     <span className="text-text-main font-semibold dir-ltr">{user.phone || "—"}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-text-muted font-bold">المدينة:</span>
+                    <span className="text-text-muted font-bold">{t('ads.usersTable.mobileCityLabel')}</span>
                     <span className="text-text-main font-semibold">{user.cityPlace || "—"}</span>
                   </div>
                 </div>
 
-                {/* Actions */}
+               
                 <div className="flex gap-2 pt-2 border-t border-border-main/30">
                   <button
                     onClick={() => onViewClick(user)}
@@ -333,7 +335,7 @@ const UsersTable = ({
                     className="flex-1 bg-primary hover:bg-primary-dark text-white rounded-lg font-bold text-xs py-1.5 flex items-center justify-center gap-1"
                   >
                     <Plus size={12} />
-                    إضافة
+                    {t('common.add')}
                   </button>
                 </div>
               </div>
