@@ -19,6 +19,7 @@ const DoctorsHeader = ({ selectedStatus, onStatusChange }) => {
     { id: 'active', label: t('doctors.filters.active') },
     { id: 'suspended', label: t('doctors.filters.suspended') },
     { id: 'pendingadminapproval', label: t('doctors.filters.pending') },
+    { id: 'readonly', label: t('common.readOnly') },
   ];
 
   const currentLabel = filters.find(f => f.id === selectedStatus)?.label || t('doctors.filters.title');

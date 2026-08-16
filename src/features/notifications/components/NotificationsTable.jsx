@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   BellRing, Check, CheckCheck,  Clock, Megaphone, Bell
 } from 'lucide-react';
@@ -10,6 +11,21 @@ const NotificationsTable = ({
   onToggleRead,
 
 }) => {
+  const navigate = useNavigate();
+
+  // 🎯 الانتقال المباشر لعنصر الإشعار (إعلان بانتظار الموافقة أو مدونة بانتظار المراجعة أو طلب انضمام)
+  const handleNotificationClick = (notif) => {
+    if (notif.type === 'ad' && notif.relatedId) {
+      navigate(`/dashboard/ads?adId=${notif.relatedId}`);
+    } else if (notif.type === 'blog' && notif.relatedId) {
+      navigate(`/dashboard/blogs?postId=${notif.relatedId}`);
+    } else if (notif.type === 'join') {
+      navigate('/dashboard/membership-requests');
+    }
+    if (!notif.read) {
+      onToggleRead(notif.id);
+    }
+  };
 
   const getIcon = (type, read) => {
     const baseClass = "p-2 rounded-xl shrink-0 transition-all duration-300 flex items-center justify-center border shadow-sm";
@@ -76,7 +92,8 @@ const NotificationsTable = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -30 }}
-                className={`flex items-center w-full bg-white dark:bg-slate-900 border border-slate-100/60 dark:border-slate-800/60 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-[#367AFF]/20 dark:hover:border-[#367AFF]/30 transition-all duration-200 gap-2 ${!notif.read ? 'border-r-4 border-r-[#367AFF]' : ''
+                onClick={() => handleNotificationClick(notif)}
+                className={`flex items-center w-full bg-white dark:bg-slate-900 border border-slate-100/60 dark:border-slate-800/60 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-[#367AFF]/20 dark:hover:border-[#367AFF]/30 transition-all duration-200 gap-2 cursor-pointer ${!notif.read ? 'border-r-4 border-r-[#367AFF]' : ''
                   }`}
               >
                 {/* ID */}
@@ -110,7 +127,10 @@ const NotificationsTable = ({
                 <div className="w-[13%] flex items-center justify-center gap-2 shrink-0">
                   {/* Mark as read/unread button */}
                   <button
-                    onClick={() => onToggleRead(notif.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onToggleRead(notif.id);
+                    }}
                     className={`p-2 rounded-xl border border-transparent transition-all duration-200 cursor-pointer ${notif.read
                         ? 'text-emerald-500 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10'
                         : 'text-primary hover:text-primary-dark hover:bg-primary/5'
@@ -149,7 +169,8 @@ const NotificationsTable = ({
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className={`bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-sm relative overflow-hidden flex flex-col gap-3 hover:shadow-md hover:border-[#367AFF]/25 transition-all duration-300 ${!notif.read ? 'border-r-4 border-r-[#367AFF]' : ''
+                  onClick={() => handleNotificationClick(notif)}
+                  className={`bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-sm relative overflow-hidden flex flex-col gap-3 hover:shadow-md hover:border-[#367AFF]/25 transition-all duration-300 cursor-pointer ${!notif.read ? 'border-r-4 border-r-[#367AFF]' : ''
                     }`}
                 >
                   <div className="flex justify-between items-center pb-2 border-b border-slate-100 dark:border-slate-800/50">
@@ -178,7 +199,10 @@ const NotificationsTable = ({
                   <div className="flex justify-end gap-1 pt-2.5 border-t border-slate-100 dark:border-slate-800/50">
                     {/* Mark as read/unread button */}
                     <button
-                      onClick={() => onToggleRead(notif.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleRead(notif.id);
+                      }}
                       className={`p-1.5 rounded-lg border border-transparent transition-all duration-200 cursor-pointer ${notif.read
                           ? 'text-emerald-500 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10'
                           : 'text-primary hover:text-primary-dark hover:bg-primary/5'

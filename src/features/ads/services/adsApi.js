@@ -1,11 +1,33 @@
 import axiosInstance from "../../../api/axios";
 
-const mapAdToFrontend = (ad, clients = []) => {
+// 🔒 سجل محلي للإعلانات التي سعّرها الأدمن بالفعل، لضمان عدم عودة زر الموافقة
+// حتى لو لم يُعِد الباك إند حقل السعر ضمن قائمة الإعلانات
+const PRICED_ADS_KEY = "priced_advertisement_ids";
+
+const getPricedAdIds = () => {
+  try {
+    return JSON.parse(localStorage.getItem(PRICED_ADS_KEY)) || [];
+  } catch {
+    return [];
+  }
+};
+
+const addPricedAdId = (id) => {
+  const ids = getPricedAdIds();
+  const idStr = String(id);
+  if (!ids.includes(idStr)) {
+    ids.push(idStr);
+    localStorage.setItem(PRICED_ADS_KEY, JSON.stringify(ids));
+  }
+};
+
+const mapAdToFrontend = (ad, clients = [], audienceSets = null) => {
   if (!ad) return null;
 
   const userId = ad.userId || ad.user?.id || ad.user?.userId;
   const matchingClient = clients.find((c) => String(c.id) === String(userId));
 
+  // الجمهور المستهدف حسب ترقيم الباك إند: 0 = أطباء الأسنان، 1 = المخابر، 2 = الاثنان معاً
   let type = 'dentists';
   const targetRaw = ad.targetAudience ?? ad.target ?? ad.targetAudienceId ?? ad.audienceType;
   if (targetRaw === 1 || targetRaw === '1' || (typeof targetRaw === 'string' && targetRaw.toLowerCase().includes('lab'))) {
@@ -13,14 +35,27 @@ const mapAdToFrontend = (ad, clients = []) => {
   } else if (targetRaw === 2 || targetRaw === '2' || (typeof targetRaw === 'string' && targetRaw.toLowerCase().includes('both'))) {
     type = 'both';
   } else if (targetRaw === undefined || targetRaw === null) {
-    const titleLower = (ad.title || "").toLowerCase();
-    const contentLower = (ad.content || "").toLowerCase();
-    if (titleLower.includes("مخابر") && (titleLower.includes("أطباء") || titleLower.includes("اطباء"))) {
-      type = "both";
-    } else if (titleLower.includes("مخابر") || titleLower.includes("مخبر")) {
-      type = "labs";
-    } else if (titleLower.includes("أطباء") || titleLower.includes("اطباء") || titleLower.includes("اسنان") || titleLower.includes("أسنان")) {
-      type = "dentists";
+    // الاعتماد على تصنيف الباك إند نفسه عبر نقطتي /dentists و /labs عند غياب الحقل الصريح
+    const adIdStr = String(ad.id ?? ad.advertisementId ?? "");
+    const inDentists = audienceSets?.dentistIds?.has(adIdStr);
+    const inLabs = audienceSets?.labIds?.has(adIdStr);
+
+    if (inDentists && inLabs) {
+      type = 'both';
+    } else if (inLabs) {
+      type = 'labs';
+    } else if (inDentists) {
+      type = 'dentists';
+    } else {
+      // الملاذ الأخير: استنتاج الجمهور من نص العنوان
+      const titleLower = (ad.title || "").toLowerCase();
+      if (titleLower.includes("مخابر") && (titleLower.includes("أطباء") || titleLower.includes("اطباء"))) {
+        type = "both";
+      } else if (titleLower.includes("مخابر") || titleLower.includes("مخبر")) {
+        type = "labs";
+      } else if (titleLower.includes("أطباء") || titleLower.includes("اطباء") || titleLower.includes("اسنان") || titleLower.includes("أسنان")) {
+        type = "dentists";
+      }
     }
   }
 
@@ -66,19 +101,41 @@ const mapAdToFrontend = (ad, clients = []) => {
   const ownerAvatar = ad.userAvatar || ad.user?.avatar || ad.storeAvatar
     || `https://ui-avatars.com/api/?name=${encodeURIComponent(ownerName)}&background=367AFF&color=fff`;
 
+  // السعر المحدد يعني أن الأدمن اعتمد الإعلان وأرسل السعر عبر accept-and-publish
+  // ويتم الاعتماد أيضاً على السجل المحلي لأن عملية التسعير تتم مرة واحدة فقط ولا يجوز تكرارها
+  const adIdVal = ad.id ?? ad.advertisementId;
+  const adPrice = ad.price ?? ad.cost ?? 0;
+  const hasPrice = Number(adPrice) > 0 || getPricedAdIds().includes(String(adIdVal));
+
+  const isActive = ad.isActive !== undefined ? ad.isActive : (ad.status === 'active');
+
+  // 🎯 تحديد مصدر الإعلان: عملاء الإعلانات (ADSClient) يتم إنشاؤهم من قبل الأدمن،
+  // أما الأطباء والمخابر فطلباتهم تصل من تطبيق الموبايل وتحتاج موافقة وتسعير
+  const ownerRole = matchingClient?.role || ad.user?.role || ad.userRole || "";
+  const isAdminCreated = String(ownerRole).toLowerCase() === 'adsclient';
+
+  // ⚠️ حالة الموافقة منفصلة عن حالة التفعيل (isActive) بالنسبة لطلبات التطبيق:
+  // فالإعلان قد يكون مُسعَّراً لكن الطبيب لم يدفع بعد، أو موافَقاً عليه لكنه موقوف مؤقتاً.
+  // أما إعلانات الأدمن فلا تمر بمرحلة مراجعة أصلاً لأنه هو من أنشأها ونشرها مباشرة.
   let approvalStatus = 'pending';
-  if (ad.isApproved === true || ad.approvalStatus === 'approved' || (ad.status && String(ad.status).toLowerCase() === 'approved') || ad.isActive === true) {
+  if (
+    ad.isApproved === true
+    || ad.approvalStatus === 'approved'
+    || (ad.status && String(ad.status).toLowerCase() === 'approved')
+    || hasPrice
+    || isAdminCreated
+  ) {
     approvalStatus = 'approved';
   } else if (ad.isApproved === false && (ad.approvalStatus === 'rejected' || (ad.status && String(ad.status).toLowerCase() === 'rejected'))) {
     approvalStatus = 'rejected';
   }
 
-
-  const isActive = ad.isActive !== undefined ? ad.isActive : (ad.status === 'active');
-
   return {
     id: ad.id || ad.advertisementId,
     userId: userId || 2,
+    ownerRole,
+    isAdminCreated,
+    hasPrice,
     title: ad.title || "",
     content: ad.content || "",
     type: type,
@@ -91,7 +148,7 @@ const mapAdToFrontend = (ad, clients = []) => {
     images: adImages,
     expiresAt: ad.expiresAt ? ad.expiresAt.split('T')[0] : "",
     createdAt: ad.createdAt || "",
-    price: ad.price ?? ad.cost ?? 0,
+    price: adPrice,
     raw: ad
   };
 };
@@ -100,24 +157,31 @@ const mapAdToFrontend = (ad, clients = []) => {
 export const adsApi = {
   getAds: async ({ page = 1, limit = 5, filters = {} } = {}) => {
     try {
-      let endpoint = "/Advertisement/admin/all";
-
-      if (filters.type === "labs") {
-        endpoint = "/Advertisement/labs";
-      } else if (filters.type === "dentists") {
-        endpoint = "/Advertisement/dentists";
-      }
-
-      const [adsResponse, clientsResponse] = await Promise.allSettled([
-        axiosInstance.get(endpoint),
-        axiosInstance.get("/Advertisement/all")
+      // الجلب دائماً من نقطة الأدمن لأنها الوحيدة التي تُرجع حالة الموافقة والسعر،
+      // بينما تُستخدم نقطتا /dentists و /labs كمرجع لتصنيف الجمهور المستهدف فقط
+      const [adsResponse, clientsResponse, dentistsResponse, labsResponse] = await Promise.allSettled([
+        axiosInstance.get("/Advertisement/admin/all"),
+        axiosInstance.get("/Advertisement/all"),
+        axiosInstance.get("/Advertisement/dentists"),
+        axiosInstance.get("/Advertisement/labs")
       ]);
 
       const rawAds = adsResponse.status === "fulfilled" ? (adsResponse.value.data || []) : [];
       const rawClients = clientsResponse.status === "fulfilled" ? (clientsResponse.value.data || []) : [];
+      const dentistAds = dentistsResponse.status === "fulfilled" ? (dentistsResponse.value.data || []) : [];
+      const labAds = labsResponse.status === "fulfilled" ? (labsResponse.value.data || []) : [];
 
-      let adsList = rawAds.map((ad) => mapAdToFrontend(ad, rawClients)).filter(Boolean);
+      const audienceSets = {
+        dentistIds: new Set(dentistAds.map((a) => String(a.id))),
+        labIds: new Set(labAds.map((a) => String(a.id)))
+      };
 
+      let adsList = rawAds.map((ad) => mapAdToFrontend(ad, rawClients, audienceSets)).filter(Boolean);
+
+      // فلترة الجمهور المستهدف (أطباء / مخابر / الاثنان معاً)
+      if (filters.type && filters.type !== 'all') {
+        adsList = adsList.filter(ad => ad.type === filters.type);
+      }
       if (filters.approvalStatus && filters.approvalStatus !== 'all') {
         adsList = adsList.filter(ad => ad.approvalStatus === filters.approvalStatus);
       }
@@ -153,6 +217,17 @@ export const adsApi = {
     }
   },
 
+  // جلب قائمة الجماهير المستهدفة المعتمدة من الباك إند (0 = أطباء، 1 = مخابر، 2 = الاثنان)
+  getTargetAudiences: async () => {
+    try {
+      const response = await axiosInstance.get('/Advertisement/target-audiences');
+      return Array.isArray(response.data) ? response.data : [];
+    } catch (error) {
+      console.error("Error in getTargetAudiences:", error);
+      return [];
+    }
+  },
+
   approveAd: async (userId, adId, price = 0) => {
     try {
       const formData = new FormData();
@@ -166,6 +241,10 @@ export const adsApi = {
           headers: { 'Content-Type': 'multipart/form-data' }
         }
       );
+
+      // تسجيل الإعلان كمُسعَّر بعد نجاح العملية لمنع إعادة التسعير نهائياً
+      addPricedAdId(adId);
+
       return response.data;
     } catch (error) {
       console.error("Error in approveAd:", error);

@@ -1,11 +1,11 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
-  Building2, Mail, Phone, MapPin, Clock, CreditCard, ChevronLeft
+  Building2, Mail, Phone, MapPin, Clock, CreditCard, ChevronLeft, RefreshCw
 } from 'lucide-react';
 import framerImg from '../../../assets/framer.png';
 
-export default function PendingPaymentGrid({ accounts, isLoading, onActivate }) {
+export default function PendingPaymentGrid({ accounts, isLoading, onActivate, onRenew }) {
   const { t } = useTranslation();
 
   const formatDate = (date) => {
@@ -21,7 +21,7 @@ export default function PendingPaymentGrid({ accounts, isLoading, onActivate }) 
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
         {Array(6).fill(0).map((_, i) => (
-          <div key={i} className="animate-pulse bg-white/60 dark:bg-slate-900/40 border border-slate-100/60 dark:border-slate-800/60 rounded-[2.2rem] h-[300px] w-full" />
+          <div key={i} className="animate-pulse bg-white/60 dark:bg-slate-900/40 border border-slate-100/60 dark:border-slate-800/60 rounded-[2.2rem] h-[330px] w-full" />
         ))}
       </div>
     );
@@ -50,7 +50,7 @@ export default function PendingPaymentGrid({ accounts, isLoading, onActivate }) 
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.3, delay: index * 0.04 }}
             whileHover={{ y: -6 }}
-            className="bg-bg-card border rounded-[2.2rem] p-6 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group border-border-main/70 hover:border-purple-500/30 h-[300px] w-full"
+            className="bg-bg-card border rounded-[2.2rem] p-6 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group border-border-main/70 hover:border-purple-500/30 h-[330px] w-full"
           >
             <div className="absolute inset-0 opacity-[0.08] dark:opacity-[0.04] pointer-events-none z-0">
               <img src={framerImg} alt="" className="w-full h-full object-cover" />
@@ -102,7 +102,15 @@ export default function PendingPaymentGrid({ accounts, isLoading, onActivate }) 
                 </div>
               </div>
 
-
+              <div className="flex items-center justify-end border-t border-slate-100 dark:border-slate-800/60 pt-3 mt-auto shrink-0">
+                <button
+                  onClick={() => (onRenew ? onRenew(acc) : onActivate && onActivate(acc))}
+                  className="flex items-center gap-1.5 px-4 py-2 bg-purple-50 hover:bg-purple-600 text-purple-600 hover:text-white dark:bg-purple-950/40 dark:hover:bg-purple-600 dark:text-purple-300 dark:hover:text-white rounded-xl text-xs font-black transition-all active:scale-95 cursor-pointer group/btn"
+                >
+                  <RefreshCw size={14} className="group-hover/btn:rotate-180 transition-transform duration-500" />
+                  <span>{t('subscription.renew')}</span>
+                </button>
+              </div>
 
             </div>
           </motion.div>

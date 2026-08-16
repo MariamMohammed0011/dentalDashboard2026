@@ -80,6 +80,7 @@ export const blogsApi = {
           content: post.content || "",
           publishDate: post.createdAt ? post.createdAt.split("T")[0] : "",
           image: imageUrl,
+          isSensitiveRedacted: post.isSensitiveRedacted || false,
           likes: 0,
           comments: 0,
           author: {
@@ -123,9 +124,15 @@ export const blogsApi = {
     return response.data;
   },
 
-  
+
   rejectBlog: async (id) => {
     const response = await axiosInstance.delete(`/DoctorBlog/${id}/reject`);
+    return response.data;
+  },
+
+
+  deleteBlog: async (id) => {
+    const response = await axiosInstance.delete(`/Posts/${id}`);
     return response.data;
   },
 

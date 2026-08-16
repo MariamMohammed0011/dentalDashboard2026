@@ -138,13 +138,13 @@ const UsersManagementPage = () => {
         </div>
 
        
-        <button
+        {/* <button
           onClick={() => setIsAddClientOpen(true)}
           className="bg-primary text-white hover:bg-primary-dark shadow-lg shadow-primary/10 rounded-2xl flex items-center gap-2 px-6 py-3 font-bold text-sm transition-all duration-300 hover:scale-[1.02] active:scale-95 whitespace-nowrap w-full sm:w-auto justify-center cursor-pointer"
         >
           <UserPlus size={18} strokeWidth={2.5} />
           {t('ads.addAdClient')}
-        </button>
+        </button> */}
       </div>
 
       

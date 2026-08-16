@@ -1,23 +1,44 @@
 import { useState, useEffect } from 'react';
-import { fetchActiveSubscriptions, fetchExpiredSubscriptions, fetchPendingPaymentAccounts, activateSubscription, renewSubscription, updateAllSubscriptionAmounts } from '../services/subscriptionApi';
+import { fetchActiveSubscriptions, fetchPendingPaymentAccounts, activateSubscription, renewSubscription, updateAllSubscriptionAmounts } from '../services/subscriptionApi';
+import { labsApi } from '../../labs/services/labsApi';
 import { toast } from 'sonner';
-const normalizePendingPaymentAccount = (acc) => ({
-  labId: acc.id,
-  labName: acc.namePlace || acc.name || `مخبر #${acc.id}`,
-  ownerName: acc.name,
-  email: acc.email,
-  phone: acc.phone,
-  addressPlace: acc.addressPlace,
-  cityPlace: acc.cityPlace,
-  countryPlace: acc.countryPlace,
-  status: acc.status,
-  createdAt: acc.createdAt,
-});
+
+const normalizePendingPaymentAccount = (acc, labsList = []) => {
+  let matchedLab = null;
+
+  if (labsList && labsList.length > 0) {
+    matchedLab = labsList.find(l => 
+      (acc.id && String(l.ownerId) === String(acc.id)) ||
+      (acc.ownerId && String(l.ownerId) === String(acc.ownerId)) ||
+      (acc.email && l.ownerEmail && l.ownerEmail.toLowerCase() === acc.email.toLowerCase()) ||
+      (acc.email && l.email && l.email.toLowerCase() === acc.email.toLowerCase())
+    );
+  }
+
+  const labId = matchedLab ? matchedLab.id : (acc.labId || acc.dentalLabId || (acc.ownerId && String(acc.id) !== String(acc.ownerId) ? acc.id : acc.labId || acc.id));
+  const labName = matchedLab?.labNamePlace || acc.labNamePlace || acc.namePlace || acc.labName || acc.name || `مخبر #${labId}`;
+  const ownerName = matchedLab?.ownerName || acc.ownerName || acc.name;
+  const email = matchedLab?.ownerEmail || acc.ownerEmail || acc.email;
+  const phone = matchedLab?.ownerPhone || acc.ownerPhone || acc.phone;
+
+  return {
+    ...acc,
+    labId: labId,
+    labName: labName,
+    ownerName: ownerName,
+    email: email,
+    phone: phone,
+    addressPlace: matchedLab?.addressPlace || acc.addressPlace,
+    cityPlace: matchedLab?.cityPlace || acc.cityPlace,
+    countryPlace: matchedLab?.countryPlace || acc.countryPlace,
+    status: acc.status,
+    createdAt: acc.createdAt,
+  };
+};
 
 export const useSubscriptions = () => {
   const [activeTab, setActiveTab] = useState('active');
   const [activeSubs, setActiveSubs] = useState([]);
-  const [expiredSubs, setExpiredSubs] = useState([]);
   const [pendingPaymentAccounts, setPendingPaymentAccounts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
@@ -31,19 +52,18 @@ export const useSubscriptions = () => {
   const load = async () => {
     setLoading(true);
     try {
-      const [activeData, expiredData, pendingPaymentData] = await Promise.all([
+      const [activeData, pendingPaymentData, labsData] = await Promise.all([
         fetchActiveSubscriptions().catch(() => []),
-        fetchExpiredSubscriptions().catch(() => []),
-        fetchPendingPaymentAccounts().catch(() => [])
+        fetchPendingPaymentAccounts().catch(() => []),
+        labsApi.getLabs().catch(() => [])
       ]);
 
       const activeArray = Array.isArray(activeData) ? activeData : (activeData?.subscriptions || []);
-      const expiredArray = Array.isArray(expiredData) ? expiredData : (expiredData?.subscriptions || []);
-      const pendingPaymentArray = Array.isArray(pendingPaymentData) ? pendingPaymentData : (pendingPaymentData?.accounts || []);
+      const pendingPaymentArray = Array.isArray(pendingPaymentData) ? pendingPaymentData : (pendingPaymentData?.accounts || pendingPaymentData?.data || []);
+      const labsArray = Array.isArray(labsData) ? labsData : (labsData?.data || labsData || []);
 
       setActiveSubs(activeArray);
-      setExpiredSubs(expiredArray);
-      setPendingPaymentAccounts(pendingPaymentArray.map(normalizePendingPaymentAccount));
+      setPendingPaymentAccounts(pendingPaymentArray.map(acc => normalizePendingPaymentAccount(acc, labsArray)));
     } catch (e) {
       console.error('Error loading subscriptions', e);
       toast.error('حدث خطأ أثناء تحميل بيانات الاشتراكات');
@@ -110,7 +130,7 @@ export const useSubscriptions = () => {
   };
 
   // تصفية الاشتراكات الحالية حسب التبويب المختار وجملة البحث
-  const rawList = activeTab === 'active' ? activeSubs : activeTab === 'expired' ? expiredSubs : pendingPaymentAccounts;
+  const rawList = activeTab === 'active' ? activeSubs : pendingPaymentAccounts;
   const filteredSubs = rawList.filter(item => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase().trim();
@@ -123,7 +143,6 @@ export const useSubscriptions = () => {
   return {
     subs: filteredSubs,
     activeCount: activeSubs.length,
-    expiredCount: expiredSubs.length,
     pendingPaymentCount: pendingPaymentAccounts.length,
     activeTab,
     setActiveTab,

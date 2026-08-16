@@ -22,6 +22,9 @@ export const useBlogs = () => {
   const [approveTarget, setApproveTarget] = useState(null);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
 
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchQuery);
@@ -107,6 +110,25 @@ export const useBlogs = () => {
     }
   };
 
+  const handleDeleteConfirm = async () => {
+    if (!deleteTarget) return;
+
+    try {
+      await blogsApi.deleteBlog(deleteTarget.id);
+      toast.success(`تم حذف المقال "${deleteTarget.title}" نهائياً.`);
+
+      if (activeArticle && activeArticle.id === deleteTarget.id) {
+        setActiveArticle(null);
+      }
+
+      fetchBlogsData();
+    } catch (error) {
+      toast.error("فشل في حذف المقال.");
+    } finally {
+      setDeleteTarget(null);
+    }
+  };
+
   return {
     blogs,
     stats,
@@ -132,6 +154,11 @@ export const useBlogs = () => {
     isApproveModalOpen,
     setIsApproveModalOpen,
     handleApproveConfirm,
+    deleteTarget,
+    setDeleteTarget,
+    isDeleteModalOpen,
+    setIsDeleteModalOpen,
+    handleDeleteConfirm,
     fetchBlogsData
   };
 };

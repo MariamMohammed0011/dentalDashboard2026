@@ -1,10 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Search, RotateCcw, Filter, ShieldCheck, Activity, Users, X, Sparkles, SlidersHorizontal, ChevronDown, Check } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import {
+  Search, RotateCcw, Activity, Users, X, Sparkles, SlidersHorizontal, ChevronDown, Check,
+  Layers, Power, PowerOff, Stethoscope, FlaskConical, Loader2
+} from 'lucide-react';
 import { toast } from 'sonner';
+import { adsApi } from '../services/adsApi';
 
-// 🎨 Presets للألوان والحدود الملونة التفاعلية لكل فلتر
+const AUDIENCE_ICONS = {
+  dentists: Stethoscope,
+  labs: FlaskConical,
+  both: Users,
+};
+
 const colorPresets = {
   blue: {
     border: 'border-blue-500/40 dark:border-blue-500/40 hover:border-blue-500',
@@ -44,7 +54,8 @@ const colorPresets = {
   },
 };
 
-const CustomSelect = ({ label, icon: Icon, value, options, onChange, colorKey = 'blue' }) => {
+const CustomSelect = ({ label, icon: Icon, value, options, onChange, colorKey = 'blue', isLoading = false, onOpen }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const colors = colorPresets[colorKey];
@@ -61,6 +72,7 @@ const CustomSelect = ({ label, icon: Icon, value, options, onChange, colorKey = 
 
   const selectedOption = options.find((o) => o.id === value);
   const currentLabel = selectedOption ? selectedOption.label : label;
+  const SelectedIcon = selectedOption?.icon;
   const isFiltered = value !== 'all' && value !== '';
 
   return (
@@ -72,12 +84,19 @@ const CustomSelect = ({ label, icon: Icon, value, options, onChange, colorKey = 
 
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          const next = !isOpen;
+          setIsOpen(next);
+          if (next && onOpen) onOpen();
+        }}
         className={`flex items-center justify-between gap-2 w-full bg-gray-50/80 dark:bg-slate-900/80 font-bold text-xs sm:text-sm rounded-2xl px-4 py-2.5 border-2 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 ${colors.ring} transition-all duration-300 cursor-pointer ${
           isFiltered ? colors.active : `${colors.border} text-text-main`
         }`}
       >
-        <span className="truncate">{currentLabel}</span>
+        <span className="flex items-center gap-2 min-w-0">
+          {SelectedIcon && <SelectedIcon size={15} className="shrink-0" />}
+          <span className="truncate">{currentLabel}</span>
+        </span>
         <ChevronDown
           size={18}
           className={`text-text-muted transition-transform duration-300 shrink-0 ${isOpen ? 'rotate-180 text-primary' : ''}`}
@@ -93,27 +112,38 @@ const CustomSelect = ({ label, icon: Icon, value, options, onChange, colorKey = 
             transition={{ duration: 0.15 }}
             className={`absolute top-full right-0 mt-2 w-full min-w-[200px] bg-white dark:bg-slate-900 border-2 ${colors.border} rounded-2xl shadow-2xl py-2 z-[100] max-h-[260px] overflow-y-auto custom-scrollbar`}
           >
-            {options.map((option) => {
-              const isSelected = value === option.id;
-              return (
-                <button
-                  key={option.id}
-                  type="button"
-                  onClick={() => {
-                    onChange(option.id);
-                    setIsOpen(false);
-                  }}
-                  className={`flex items-center justify-between w-[calc(100%-12px)] mx-auto px-3.5 py-2.5 my-0.5 text-right text-xs sm:text-sm font-bold transition-all duration-200 rounded-xl cursor-pointer ${
-                    isSelected
-                      ? colors.selected
-                      : 'text-text-main hover:bg-gray-100 dark:hover:bg-slate-800/80'
-                  }`}
-                >
-                  <span>{option.label}</span>
-                  {isSelected && <Check size={16} className={colors.check} />}
-                </button>
-              );
-            })}
+            {isLoading ? (
+              <div className="flex items-center justify-center gap-2 py-6 text-xs font-bold text-text-muted">
+                <Loader2 size={15} className="animate-spin text-primary" />
+                <span>{t('ads.adsFilter.loadingAudiences')}</span>
+              </div>
+            ) : (
+              options.map((option) => {
+                const isSelected = value === option.id;
+                const OptionIcon = option.icon;
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => {
+                      onChange(option.id);
+                      setIsOpen(false);
+                    }}
+                    className={`flex items-center justify-between w-[calc(100%-12px)] mx-auto px-3.5 py-2.5 my-0.5 text-right text-xs sm:text-sm font-bold transition-all duration-200 rounded-xl cursor-pointer ${
+                      isSelected
+                        ? colors.selected
+                        : 'text-text-main hover:bg-gray-100 dark:hover:bg-slate-800/80'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2 min-w-0">
+                      {OptionIcon && <OptionIcon size={15} className={`shrink-0 ${isSelected ? colors.check : colors.icon}`} />}
+                      <span className="truncate">{option.label}</span>
+                    </span>
+                    {isSelected && <Check size={16} className={`${colors.check} shrink-0`} />}
+                  </button>
+                );
+              })
+            )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -135,24 +165,55 @@ const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
     setTypeFilter(filters.type || 'all');
   }, [filters]);
 
-  const approvalStatusOptions = [
-    { id: 'all', label: t('ads.adsFilter.allStatuses') },
-    { id: 'pending', label: t('ads.adsFilter.statusPending') },
-    { id: 'approved', label: t('ads.adsFilter.statusApproved') },
-    { id: 'rejected', label: t('ads.adsFilter.statusRejected') },
-  ];
+  useEffect(() => {
+    if (searchQuery === (filters.search || '')) return;
+
+    const handler = setTimeout(() => {
+      onApplyFilters({
+        search: searchQuery,
+        approvalStatus: approvalStatusFilter,
+        status: statusFilter,
+        type: typeFilter,
+      });
+    }, 400);
+
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  const [shouldLoadAudiences, setShouldLoadAudiences] = useState(false);
+  const { data: apiAudiences = [], isFetching: isLoadingAudiences } = useQuery({
+    queryKey: ['ad-target-audiences'],
+    queryFn: () => adsApi.getTargetAudiences(),
+    enabled: shouldLoadAudiences,
+    staleTime: 1000 * 60 * 30,
+  });
 
   const statusOptions = [
-    { id: 'all', label: t('ads.adsFilter.allStatuses') },
-    { id: 'active', label: t('ads.adsFilter.activeStatus') },
-    { id: 'inactive', label: t('ads.adsFilter.inactiveStatus') },
+    { id: 'all', label: t('ads.adsFilter.allStatuses'), icon: Layers },
+    { id: 'active', label: t('ads.adsFilter.activeStatus'), icon: Power },
+    { id: 'inactive', label: t('ads.adsFilter.inactiveStatus'), icon: PowerOff },
   ];
 
+  const fallbackAudiences = [
+    { id: 'dentists', label: t('ads.adsFilter.audienceDentists'), icon: Stethoscope },
+    { id: 'labs', label: t('ads.adsFilter.audienceLabs'), icon: FlaskConical },
+    { id: 'both', label: t('ads.adsFilter.audienceBoth'), icon: Users },
+  ];
+
+  const mappedAudiences = apiAudiences.length > 0
+    ? apiAudiences.map((a) => {
+        const key = String(a.name || '').toLowerCase();
+        return {
+          id: key,
+          label: a.displayName || a.name,
+          icon: AUDIENCE_ICONS[key] || Users,
+        };
+      })
+    : fallbackAudiences;
+
   const typeOptions = [
-    { id: 'all', label: t('ads.adsFilter.allAudiences') },
-    { id: 'dentists', label: t('ads.adsFilter.audienceDentistsEmoji') },
-    { id: 'labs', label: t('ads.adsFilter.audienceLabsEmoji') },
-    { id: 'both', label: t('ads.adsFilter.audienceBothEmoji') },
+    { id: 'all', label: t('ads.adsFilter.allAudiences'), icon: Layers },
+    ...mappedAudiences,
   ];
 
   const activeFiltersCount = [
@@ -162,14 +223,14 @@ const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
     typeFilter !== 'all',
   ].filter(Boolean).length;
 
-  const handleApply = () => {
+  const applyImmediately = (partial) => {
     onApplyFilters({
       search: searchQuery,
       approvalStatus: approvalStatusFilter,
       status: statusFilter,
       type: typeFilter,
+      ...partial,
     });
-    toast.success(t('ads.adsFilter.applySuccess'));
   };
 
   const handleReset = () => {
@@ -188,7 +249,7 @@ const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
       transition={{ duration: 0.3 }}
       className="bg-white dark:bg-bg-card border border-border-main/70 rounded-[2rem] p-5 sm:p-6 shadow-sm shadow-slate-100/50 dark:shadow-none flex flex-col gap-5 relative z-30 transition-all duration-300"
     >
-     
+      {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-border-main/40">
         <div className="flex items-center gap-2.5">
           <div className="p-2 bg-primary/10 text-primary rounded-xl flex items-center justify-center">
@@ -217,98 +278,88 @@ const AdsFilter = ({ filters, onApplyFilters, onResetFilters }) => {
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
-       
-        <CustomSelect
-          label={t('ads.adsFilter.approvalStatusLabel')}
-          icon={ShieldCheck}
-          value={approvalStatusFilter}
-          options={approvalStatusOptions}
-          onChange={setApprovalStatusFilter}
-          colorKey="blue"
-        />
-
-
+      {/* Filters Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
         <CustomSelect
           label={t('ads.adsFilter.statusLabel')}
           icon={Activity}
           value={statusFilter}
           options={statusOptions}
-          onChange={setStatusFilter}
+          onChange={(val) => {
+            setStatusFilter(val);
+            applyImmediately({ status: val });
+          }}
           colorKey="emerald"
         />
-
 
         <CustomSelect
           label={t('ads.addAdForUserModal.audienceLabel')}
           icon={Users}
           value={typeFilter}
           options={typeOptions}
-          onChange={setTypeFilter}
+          onChange={(val) => {
+            setTypeFilter(val);
+            applyImmediately({ type: val });
+          }}
           colorKey="amber"
+          isLoading={isLoadingAudiences}
+          onOpen={() => setShouldLoadAudiences(true)}
         />
 
-
-        <div className="flex flex-col gap-2 text-right">
-          <label className="text-[11px] font-black text-text-muted uppercase tracking-wider flex items-center gap-1.5 mr-1">
-            <Search size={14} className="text-violet-500" />
-            {t('ads.adsFilter.searchLabel')}
-          </label>
-          <div className="relative">
-            <input
-              type="text"
-              placeholder={t('ads.adsFilter.searchPlaceholder')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleApply()}
-              className="bg-gray-50/80 dark:bg-slate-900/80 border-2 border-violet-500/40 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 rounded-2xl px-4 py-2.5 text-text-main font-bold text-xs sm:text-sm transition-all w-full pr-10 pl-8"
-            />
-            <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 text-violet-500" size={17} />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main p-0.5 rounded-full hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors"
-              >
-                <X size={14} />
-              </button>
+        {/* Reset Action Box aligned directly with selects */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between px-1 h-[14px]">
+            
+            {activeFiltersCount > 0 && (
+              <span className="text-[11px] font-bold text-primary animate-pulse">
+                {t('ads.adsFilter.activeFiltersHint')}
+              </span>
             )}
           </div>
-        </div>
-      </div>
-
-     
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-        <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            onClick={handleApply}
-            className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 px-6 py-2.5 rounded-2xl font-bold text-xs sm:text-sm flex items-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-95 cursor-pointer"
-          >
-            <Filter size={16} />
-            <span>{t('ads.adsFilter.applyButton')}</span>
-          </button>
-
           <button
             type="button"
             onClick={handleReset}
-            className="bg-gray-100 dark:bg-slate-800/80 border border-border-main/50 text-text-muted hover:text-text-main hover:bg-gray-200 dark:hover:bg-slate-700 px-5 py-2.5 rounded-2xl font-bold text-xs sm:text-sm flex items-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-95 cursor-pointer"
+            disabled={activeFiltersCount === 0}
+            className={`w-full py-2.5 px-4 rounded-2xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 border-2 transition-all duration-300 ${
+              activeFiltersCount > 0
+                ? 'bg-red-50/60 dark:bg-red-950/20 text-red-600 dark:text-red-400 border-red-500/30 hover:border-red-500 hover:bg-red-100/60 active:scale-95 cursor-pointer shadow-sm'
+                : 'bg-gray-50/80 dark:bg-slate-900/80 text-text-muted/60 border-border-main/40 cursor-not-allowed opacity-70'
+            }`}
           >
-            <RotateCcw size={15} />
+            <RotateCcw size={15} className={activeFiltersCount > 0 ? 'text-red-500' : ''} />
             <span>{t('ads.adsFilter.resetButton')}</span>
           </button>
         </div>
+      </div>
 
-        {activeFiltersCount > 0 && (
-          <span className="text-xs font-medium text-text-muted hidden sm:inline-block">
-            {t('ads.adsFilter.activeFiltersHint')}
-          </span>
-        )}
+      {/* Search Bar */}
+      <div className="flex flex-col gap-2 text-right">
+        <label className="text-[11px] font-black text-text-muted uppercase tracking-wider flex items-center gap-1.5 mr-1">
+          <Search size={14} className="text-violet-500" />
+          {t('ads.adsFilter.searchLabel')}
+        </label>
+        <div className="relative">
+          <input
+            type="text"
+            placeholder={t('ads.adsFilter.searchPlaceholder')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="bg-gray-50/80 dark:bg-slate-900/80 border-2 border-violet-500/40 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 rounded-2xl px-4 py-2.5 text-text-main font-bold text-xs sm:text-sm transition-all w-full pr-10 pl-8"
+          />
+          <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 text-violet-500" size={17} />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main p-0.5 rounded-full hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
       </div>
     </motion.div>
   );
 };
 
 export default AdsFilter;
-
-

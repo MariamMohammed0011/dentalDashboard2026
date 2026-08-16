@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import CalendarPicker from '../../../components/ui/CalendarPicker';
+import TargetAudienceSelect from './TargetAudienceSelect';
 
 const EditAdModal = ({ isOpen, onClose, ad, onUpdateAd, isSubmitting }) => {
   const { t } = useTranslation();
@@ -136,16 +137,11 @@ const EditAdModal = ({ isOpen, onClose, ad, onUpdateAd, isSubmitting }) => {
                       </span>
                       {t('ads.addAdForUserModal.audienceLabel')}
                     </label>
-                    <select
+                    <TargetAudienceSelect
                       value={form.type}
-                      onChange={(e) => setForm({ ...form, type: e.target.value })}
-                      className="bg-gray-50 dark:bg-slate-800/80 border border-gray-200/80 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-gray-800 dark:text-gray-100 font-bold text-sm focus:outline-none focus:border-[#367AFF] transition-colors w-full cursor-pointer appearance-none text-right"
-                      disabled={isSubmitting}
-                    >
-                      <option value="dentists">{t('ads.addAdForUserModal.audienceDentists')}</option>
-                      <option value="labs">{t('ads.addAdForUserModal.audienceLabs')}</option>
-                      <option value="both">{t('ads.addAdForUserModal.audienceBoth')}</option>
-                    </select>
+                      onChange={(val) => setForm({ ...form, type: val })}
+                      enabled={isOpen}
+                    />
                   </div>
 
                   <div className="flex flex-col gap-1.5">

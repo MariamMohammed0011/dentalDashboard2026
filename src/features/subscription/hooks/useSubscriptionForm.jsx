@@ -67,7 +67,7 @@ export const useSubscriptionForm = ({ isOpen, type, initialData, onSubmit, onClo
         periodEndUtc: endDate,
       };
       
-      const labId = type === 'add' ? selectedLabId : initialData.labId;
+      const labId = type === 'add' ? selectedLabId : (initialData?.labId || initialData?.id);
       await onSubmit(labId, payload);
       onClose();
     } catch (err) {

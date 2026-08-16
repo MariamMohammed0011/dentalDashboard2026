@@ -32,20 +32,20 @@ const STATUS_LOOKUP = {
 };
 
 const ALL_STATUSES = [
-  {
-    value: 0,
-    code: 'PendingVerification',
-    translationKey: 'userStatusModal.pendingVerificationStatus',
-    label: 'قيد التثبت (Pending Verification)',
-    icon: ShieldAlert,
-    styles: {
-      activeBorder: 'border-orange-500 bg-gradient-to-r from-orange-500/12 via-orange-500/5 to-transparent ring-2 ring-orange-500/25 shadow-sm',
-      activeIconBg: 'bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/25',
-      inactiveIconBg: 'bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 border border-orange-200/50 dark:border-orange-900/30',
-      activeBadge: 'bg-orange-500/15 text-orange-700 dark:text-orange-300 border border-orange-500/30',
-      checkBg: 'bg-gradient-to-br from-orange-500 to-amber-500 text-white',
-    },
-  },
+  // {
+  //   value: 0,
+  //   code: 'PendingVerification',
+  //   translationKey: 'userStatusModal.pendingVerificationStatus',
+  //   label: 'قيد التثبت (Pending Verification)',
+  //   icon: ShieldAlert,
+  //   styles: {
+  //     activeBorder: 'border-orange-500 bg-gradient-to-r from-orange-500/12 via-orange-500/5 to-transparent ring-2 ring-orange-500/25 shadow-sm',
+  //     activeIconBg: 'bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/25',
+  //     inactiveIconBg: 'bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 border border-orange-200/50 dark:border-orange-900/30',
+  //     activeBadge: 'bg-orange-500/15 text-orange-700 dark:text-orange-300 border border-orange-500/30',
+  //     checkBg: 'bg-gradient-to-br from-orange-500 to-amber-500 text-white',
+  //   },
+  // },
   {
     value: 1,
     code: 'PendingAdminApproval',
@@ -60,21 +60,21 @@ const ALL_STATUSES = [
       checkBg: 'bg-gradient-to-br from-amber-500 to-yellow-500 text-white',
     },
   },
-  {
-    value: 2,
-    code: 'PendingPayment',
-    translationKey: 'userStatusModal.pendingPaymentStatus',
-    label: 'بانتظار الدفع (Pending Payment)',
-    icon: CreditCard,
-    labOnly: true,
-    styles: {
-      activeBorder: 'border-purple-500 bg-gradient-to-r from-purple-500/12 via-purple-500/5 to-transparent ring-2 ring-purple-500/25 shadow-sm',
-      activeIconBg: 'bg-gradient-to-br from-purple-500 to-fuchsia-500 text-white shadow-md shadow-purple-500/25',
-      inactiveIconBg: 'bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 border border-purple-200/50 dark:border-purple-900/30',
-      activeBadge: 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30',
-      checkBg: 'bg-gradient-to-br from-purple-500 to-fuchsia-500 text-white',
-    },
-  },
+  // {
+  //   value: 2,
+  //   code: 'PendingPayment',
+  //   translationKey: 'userStatusModal.pendingPaymentStatus',
+  //   label: 'بانتظار الدفع (Pending Payment)',
+  //   icon: CreditCard,
+  //   labOnly: true,
+  //   styles: {
+  //     activeBorder: 'border-purple-500 bg-gradient-to-r from-purple-500/12 via-purple-500/5 to-transparent ring-2 ring-purple-500/25 shadow-sm',
+  //     activeIconBg: 'bg-gradient-to-br from-purple-500 to-fuchsia-500 text-white shadow-md shadow-purple-500/25',
+  //     inactiveIconBg: 'bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 border border-purple-200/50 dark:border-purple-900/30',
+  //     activeBadge: 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30',
+  //     checkBg: 'bg-gradient-to-br from-purple-500 to-fuchsia-500 text-white',
+  //   },
+  // },
   {
     value: 3,
     code: 'Active',

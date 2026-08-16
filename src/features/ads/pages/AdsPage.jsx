@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import { Megaphone, Plus, UserPlus } from 'lucide-react';
 import { useAdsPageLogic } from '../hooks/useAdsPageLogic'; // استدعاء الهوك الجديد
 
@@ -51,6 +52,20 @@ const AdsPage = () => {
     handleResetFilters,
     handleApplyFilters
   } = useAdsPageLogic();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // فتح تفاصيل الإعلان تلقائياً عند الوصول من إشعار "طلب إعلان" عبر ?adId=
+  useEffect(() => {
+    const adId = searchParams.get('adId');
+    if (adId && ads.length > 0) {
+      const target = ads.find((a) => String(a.id) === String(adId));
+      if (target) {
+        handleViewClick(target);
+        setSearchParams({}, { replace: true });
+      }
+    }
+  }, [searchParams, ads]);
 
   return (
     <div className="p-2 flex flex-col gap-6 bg-transparent" dir="rtl">

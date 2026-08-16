@@ -136,6 +136,8 @@ const UsersTable = ({
               <th className="py-4 px-4 text-right font-bold">{t('ads.usersTable.colContact')}</th>
               <th className="py-4 px-4 text-center font-bold">{t('ads.usersTable.colAds')}</th>
               <th className="py-4 px-4 text-center font-bold">{t('ads.usersTable.colActions')}</th>
+               <th className="py-4 px-4 text-center font-bold">{t('ads.usersTable.colActions')}</th>
+            
             </tr>
           </thead>
           <tbody className="divide-y divide-border-main/20">
@@ -220,15 +222,7 @@ const UsersTable = ({
                           <Pencil size={13} />
                         </button>
 
-                        {isAdsClient && (
-                          <button
-                            onClick={() => onDeleteClick(user)}
-                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-500/10 text-red-600 hover:bg-red-600 hover:text-white transition-all"
-                            title={t('common.delete')}
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        )}
+                      
 
                         <button
                           onClick={() => onAddAdClick(user)}
@@ -239,6 +233,17 @@ const UsersTable = ({
                         </button>
                       </div>
                     </td>
+                     <td className="py-3.5 px-4">
+  {isAdsClient && (
+                          <button
+                            onClick={() => onDeleteClick(user)}
+                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-500/10 text-red-600 hover:bg-red-600 hover:text-white transition-all"
+                            title={t('common.delete')}
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        )}
+                     </td>
                   </tr>
                 );
               })

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
@@ -9,7 +9,8 @@ import {
   Building2,
   MapPin,
   ChevronDown,
-  Loader2
+  Loader2,
+  Check
 } from 'lucide-react';
 
 import LabTechnicianDetailsModal from '../components/LabTechnicianDetailsModal';
@@ -82,12 +83,88 @@ const StatusBadgeButton = ({ tech, updatingTechId, onOpenModal }) => {
         e.stopPropagation();
         onOpenModal(tech);
       }}
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black border transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-sm hover:shadow-md ${getBadgeStyle()}`}
+      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs  border transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-sm font-medium hover:shadow-md ${getBadgeStyle()}`}
     >
-      <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${getDotColor()}`} />
+      <span className={`w-2 h-2 rounded-full shrink-0 ${getDotColor()}`} />
       <span className="font-zain text-xs sm:text-sm">{getStatusLabel()}</span>
-      <ChevronDown size={12} className="opacity-70 shrink-0" />
+      <ChevronDown size={10} className="opacity-70 shrink-0" />
     </button>
+  );
+};
+
+// 🎨 قائمة تصفية الفنيين حسب الحالة
+const StatusFilterDropdown = ({ value, onChange }) => {
+  const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const filters = [
+    { id: 'all', label: t('common.all') },
+    { id: 'active', label: t('common.active') },
+    { id: 'suspended', label: t('common.suspended') },
+    { id: 'readonly', label: t('common.readOnly') },
+    // { id: 'pendingpayment', label: t('common.pendingPayment') },
+    { id: 'pendingadminapproval', label: t('common.pendingAdminApproval') },
+  ];
+
+  const currentLabel = filters.find((f) => f.id === value)?.label || t('technicians.filters.title');
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div className="relative w-full" ref={dropdownRef}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className={`flex items-center justify-between w-full bg-bg-card text-text-main font-bold text-xs rounded-2xl px-4 py-2.5 sm:py-3 border shadow-sm transition-all duration-300 cursor-pointer ${isOpen
+            ? 'border-primary/40 shadow-md ring-1 ring-primary/20'
+            : 'border-border-subtle hover:border-border-main hover:shadow-md'
+          } focus:outline-none focus:ring-2 focus:ring-primary/20`}
+      >
+        <span className="truncate">{currentLabel}</span>
+        <ChevronDown
+          size={16}
+          className={`text-text-muted transition-transform duration-300 shrink-0 ${isOpen ? 'rotate-180' : ''}`}
+        />
+      </button>
+
+      {isOpen && (
+        <div className="absolute left-0 right-0 mt-3 w-full bg-bg-card border border-border-subtle rounded-2xl shadow-xl py-2 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+          {filters.map((filter, index) => {
+            const isSelected = value === filter.id;
+            return (
+              <button
+                key={filter.id}
+                type="button"
+                onClick={() => {
+                  onChange(filter.id);
+                  setIsOpen(false);
+                }}
+                className={`flex items-center justify-between w-[calc(100%-16px)] mx-2 px-3.5 py-3 text-right text-xs font-bold transition-all duration-300 rounded-xl cursor-pointer group ${isSelected
+                    ? 'bg-gradient-to-r from-primary/15 to-primary/5 text-primary shadow-sm border border-primary/20'
+                    : 'text-text-muted hover:bg-neutral-light-gray/40 hover:text-text-main'
+                  } ${index !== filters.length - 1 ? 'border-b border-transparent group-hover:border-border-subtle' : ''}`}
+              >
+                <span className="truncate">{filter.label}</span>
+                {isSelected && (
+                  <div className="ml-2 flex-shrink-0">
+                    <Check size={16} className="text-primary animate-in scale-in-95 duration-200" />
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -100,6 +177,8 @@ const LabTechniciansPage = () => {
     isLoading,
     searchQuery,
     setSearchQuery,
+    statusFilter,
+    setStatusFilter,
     setCurrentPage,
     techDetails,
     handleShowDetails,
@@ -123,7 +202,7 @@ const LabTechniciansPage = () => {
   }, [searchParams]);
 
   return (
-    <div className="flex flex-col gap-6 px-0 sm:px-0 w-full lg:px-4 pb-10 min-h-full" dir="rtl">
+    <div className="flex flex-col gap-6 px-0 sm:px-0 w-full lg:px-1 pb-10 min-h-full" dir="rtl">
 
       {/* ── الهيدر العلوي ── */}
       <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center py-2 px-0 gap-4 w-full">
@@ -132,17 +211,24 @@ const LabTechniciansPage = () => {
           {t('technicians.title') || 'فنيي المخابر'}
         </h1>
 
-        <div className="w-full sm:w-80 lg:w-96 shrink-0">
-          <Search
-            value={searchQuery}
-            onChange={setSearchQuery}
-            placeholder={t('technicians.searchPlaceholder') || 'ابحث باسم المخبري، البريد أو المدينة...'}
-            width="100%"
-            className="w-full"
-            onClear={() => setSearchQuery('')}
-          />
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+         
+
+          <div className="w-full sm:w-52 shrink-0">
+            <StatusFilterDropdown value={statusFilter} onChange={setStatusFilter} />
+          </div>
         </div>
       </div>
+       <div className="w-full  shrink-0">
+            <Search
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder={t('technicians.searchPlaceholder') || 'ابحث باسم المخبري، البريد أو المدينة...'}
+              width="100%"
+              className="w-full"
+              onClear={() => setSearchQuery('')}
+            />
+          </div>
 
       {/* ── الجدول الشبكي ── */}
       <motion.div
@@ -150,7 +236,7 @@ const LabTechniciansPage = () => {
         animate={{ opacity: 1, y: 0 }}
         className="w-full"
       >
-        <div className="hidden md:block w-full bg-white dark:bg-slate-800/60 rounded-3xl border border-slate-100/60 dark:border-slate-700/40 shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        <div className="hidden md:block w-full bg-white dark:bg-slate-800/60 rounded-xl border border-slate-100/60 dark:border-slate-700/40 shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
   <table className="w-full text-right border-collapse table-fixed">
 
     {/* الترويسة الملونة متطابقة مع جدول الأطباء في الدارك */}

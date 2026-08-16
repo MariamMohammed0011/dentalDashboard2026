@@ -4,19 +4,6 @@ import { useTranslation } from 'react-i18next';
 import UserStatusModal from '../../../components/shared/UserStatusModal';
 import DoctorCard from './DoctorCard';
 
-const STATUS_LOOKUP = {
-  'pendingverification': 0,
-  'pending_verification': 0,
-  'pendingadminapproval': 1,
-  'pending_admin_approval': 1,
-  'pending': 1,
-  'active': 2,
-  'readonly': 3,
-  'read_only': 3,
-  'suspended': 4,
-  '0': 0, '1': 1, '2': 2, '3': 3, '4': 4
-};
-
 const StatusBadge = ({ doc, updatingDoctorId, onOpenModal }) => {
   const { t } = useTranslation();
   const isCurrentlyUpdating = updatingDoctorId === doc.id;
@@ -93,16 +80,7 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
     if (updatingDoctorId === doc.id) return;
 
     setSelectedDocForStatus(doc);
-
-    let initialNumericStatus;
-    if (typeof doc.status === 'number') {
-      initialNumericStatus = doc.status;
-    } else {
-      const cleanKey = String(doc.status ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
-      initialNumericStatus = STATUS_LOOKUP[cleanKey] ?? (isNaN(Number(doc.status)) ? 0 : Number(doc.status));
-    }
-
-    setTempStatus(Number(initialNumericStatus));
+    setTempStatus(doc.status);
   };
 
   const handleConfirmStatusChange = (statusFromModal) => {

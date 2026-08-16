@@ -5,6 +5,8 @@ import {
   Building2,
   CheckCircle2,
   Check,
+  X,
+  Clock,
   Trash2,
   Eye,
   ChevronRight,
@@ -51,7 +53,6 @@ const AdsList = ({
             </div>
           ) : (
             ads.map((ad) => {
-              const isApproved = ad.approvalStatus === 'approved';
               return (
                 <div 
                   key={ad.id} 
@@ -136,39 +137,70 @@ const AdsList = ({
 
                     
                     <div className="flex items-center gap-2 mt-auto pt-3 border-t border-gray-100/60">
-                      
-                     
-                      <button
-                        onClick={() => handleEditClick(ad)}
-                        className="flex-grow bg-[#E8F1FF] text-[#367AFF] hover:bg-[#367AFF] hover:text-white rounded-2xl py-2.5 px-4 font-bold text-xs flex items-center justify-center gap-1.5 transition-all duration-300 hover:shadow-md hover:shadow-blue-500/5 cursor-pointer"
-                        title={t('ads.adsList.editAdTitle')}
-                      >
-                        <Pencil size={13} />
-                        <span>{t('common.edit')}</span>
-                      </button>
 
-                     
-                      <button
-                        onClick={() => handleApproveAd(ad)}
-                        disabled={isApproved}
-                        className={`p-2.5 rounded-2xl border transition-all duration-200 flex items-center justify-center ${
-                          isApproved
-                            ? 'bg-green-50 border-green-100 text-green-500 cursor-not-allowed'
-                            : 'bg-blue-50 border-blue-100 text-[#367AFF] hover:bg-[#367AFF] hover:text-white hover:shadow-md hover:shadow-blue-500/10 cursor-pointer animate-pulse'
-                        }`}
-                        title={isApproved ? t('ads.adsList.alreadyApproved') : t('ads.adsList.approveAdTitle')}
-                      >
-                        <Check size={14} strokeWidth={3} />
-                      </button>
+                      {/* إعلانات الأدمن: تعديل فقط */}
+                      {ad.isAdminCreated && (
+                        <button
+                          onClick={() => handleEditClick(ad)}
+                          className="flex-grow bg-[#E8F1FF] text-[#367AFF] hover:bg-[#367AFF] hover:text-white rounded-2xl py-2.5 px-4 font-bold text-xs flex items-center justify-center gap-1.5 transition-all duration-300 hover:shadow-md hover:shadow-blue-500/5 cursor-pointer"
+                          title={t('ads.adsList.editAdTitle')}
+                        >
+                          <Pencil size={13} />
+                          <span>{t('common.edit')}</span>
+                        </button>
+                      )}
 
-                     
-                      <button
-                        onClick={() => handleDeleteClick(ad.id)}
-                        className="p-2.5 rounded-2xl border border-rose-100 bg-rose-50 text-rose-600 hover:bg-[#E11D48] hover:text-white hover:shadow-md hover:shadow-rose-500/10 transition-all active:scale-95 cursor-pointer"
-                        title={t('ads.adsList.deleteAdTitle')}
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                      {/* طلبات الإعلانات القادمة من التطبيق: موافقة وتسعير + حذف */}
+                      {!ad.isAdminCreated && (
+                        <>
+                          {ad.approvalStatus === 'rejected' ? (
+                            <div className="flex-grow bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl py-2.5 px-4 font-bold text-xs flex items-center justify-center gap-1.5">
+                              <X size={14} strokeWidth={3} />
+                              <span>{t('common.rejected')}</span>
+                            </div>
+                          ) : !ad.hasPrice ? (
+                            /* لم يسعّره الأدمن بعد: زر الموافقة وتحديد السعر */
+                            <button
+                              onClick={() => handleApproveAd(ad)}
+                              className="flex-grow bg-blue-50 border border-blue-100 text-[#367AFF] hover:bg-[#367AFF] hover:text-white rounded-2xl py-2.5 px-4 font-bold text-xs flex items-center justify-center gap-1.5 transition-all duration-300 hover:shadow-md hover:shadow-blue-500/10 cursor-pointer"
+                              title={t('ads.adsList.approveAdTitle')}
+                            >
+                              <Check size={14} strokeWidth={3} />
+                              <span>{t('ads.adsList.approveAdTitle')}</span>
+                            </button>
+                          ) : ad.status === 'active' ? (
+                            /* سعّره الأدمن ووافق عليه الطبيب من التطبيق ودفع */
+                            <div className="flex-grow bg-green-50 border border-green-100 text-green-600 rounded-2xl py-2.5 px-4 font-bold text-xs flex items-center justify-center gap-1.5">
+                              <Check size={14} strokeWidth={3} />
+                              <span>{t('ads.adsList.alreadyApproved')}</span>
+                              {Number(ad.price) > 0 && (
+                                <span className="text-green-500/80 font-black">
+                                  · {t('ads.viewAdModal.campaignPriceValue', { price: Number(ad.price).toLocaleString() })}
+                                </span>
+                              )}
+                            </div>
+                          ) : (
+                            /* سعّره الأدمن وبانتظار موافقة الطبيب النهائية ودفعه */
+                            <div className="flex-grow bg-amber-50 border border-amber-100 text-amber-600 rounded-2xl py-2.5 px-4 font-bold text-xs flex items-center justify-center gap-1.5">
+                              <Clock size={14} strokeWidth={3} />
+                              <span>{t('ads.adsList.awaitingFinalApproval')}</span>
+                              {Number(ad.price) > 0 && (
+                                <span className="text-amber-500/80 font-black">
+                                  · {t('ads.viewAdModal.campaignPriceValue', { price: Number(ad.price).toLocaleString() })}
+                                </span>
+                              )}
+                            </div>
+                          )}
+
+                          <button
+                            onClick={() => handleDeleteClick(ad.id)}
+                            className="p-2.5 rounded-2xl border border-rose-100 bg-rose-50 text-rose-600 hover:bg-[#E11D48] hover:text-white hover:shadow-md hover:shadow-rose-500/10 transition-all active:scale-95 cursor-pointer shrink-0"
+                            title={t('ads.adsList.deleteAdTitle')}
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </>
+                      )}
 
                     </div>
 

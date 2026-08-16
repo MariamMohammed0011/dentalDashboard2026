@@ -173,7 +173,7 @@ const ViewAdModal = ({ isOpen, onClose, selectedAd, handleApproveAd, handleRejec
                 {t('ads.viewAdModal.closePreview')}
               </button>
 
-              {selectedAd.approvalStatus === 'pending' && (
+              {selectedAd.approvalStatus === 'pending' && !selectedAd.isAdminCreated && !selectedAd.hasPrice && (
                 <>
                   <button
                     onClick={() => {

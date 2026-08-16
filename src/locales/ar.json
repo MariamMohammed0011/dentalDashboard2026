@@ -273,7 +273,10 @@
     "noTechniciansFound": "لا يوجد مخبرين طابقوا شروط البحث",
     "unspecified": "غير محدد",
     "unspecifiedLocation": "غير محددة",
-    "noName": "بدون اسم"
+    "noName": "بدون اسم",
+    "filters": {
+      "title": "تصفية حسب الحالة"
+    }
   },
   "orders": {
     "title": "الطلبات",
@@ -417,6 +420,7 @@
       "reviewLabel": "مراجعة",
       "approve": "قبول المنشور",
       "reject": "رفض المنشور",
+      "delete": "حذف المنشور نهائياً",
       "closeReview": "إغلاق المراجعة"
     },
     "emptyState": {
@@ -432,7 +436,17 @@
       "title": "قبول ونشر المنشور",
       "desc": "هل أنت متأكد من رغبتك في الموافقة على نشر المقال \"{{title}}\"؟ سيصبح مرئياً للجميع.",
       "confirm": "قبول ونشر"
-    }
+    },
+    "deleteModal": {
+      "title": "حذف المنشور نهائياً",
+      "desc": "هل أنت متأكد من رغبتك في حذف المقال \"{{title}}\" نهائياً؟ سيتم حذف المنشور ومرفقاته بشكل كامل ولا يمكن التراجع عن هذا الإجراء.",
+      "confirm": "حذف نهائي"
+    },
+    "sensitiveContent": {
+      "label": "محتوى حساس، اضغط للعرض"
+    },
+    "contentSectionLabel": "محتوى المقال",
+    "postIdLabel": "معرف المنشور"
   },
   "ads": {
     "title": "الإعلانات",
@@ -599,15 +613,16 @@
       "applySuccess": "تم تطبيق فلاتر البحث بنجاح",
       "resetSuccess": "تم إعادة تعيين الفلاتر",
       "allStatuses": "كل الحالات",
-      "statusPending": "⏳ قيد الانتظار",
-      "statusApproved": "✅ تمت الموافقة",
-      "statusRejected": "❌ مرفوض",
-      "activeStatus": "🟢 نشط",
-      "inactiveStatus": "⚪ غير نشط",
+      "statusPending": "قيد الانتظار",
+      "statusApproved": "تمت الموافقة",
+      "statusRejected": "مرفوض",
+      "activeStatus": "نشط",
+      "inactiveStatus": "غير نشط",
       "allAudiences": "كل الجماهير",
-      "audienceDentistsEmoji": "👨‍⚕️ أطباء الأسنان فقط",
-      "audienceLabsEmoji": "🧪 مخابر الأسنان فقط",
-      "audienceBothEmoji": "🤝 الأطباء والمخابر معاً"
+      "audienceDentists": "أطباء الأسنان فقط",
+      "audienceLabs": "مخابر الأسنان فقط",
+      "audienceBoth": "الأطباء والمخابر معاً",
+      "loadingAudiences": "جاري تحميل الجماهير..."
     },
     "adsHeader": {
       "addAdButton": "إضافة اعلان",
@@ -625,6 +640,7 @@
       "inactiveStatus": "غير نشط",
       "editAdTitle": "تعديل الإعلان",
       "alreadyApproved": "تمت الموافقة",
+      "awaitingFinalApproval": "لم تتم الموافقة بعد",
       "approveAdTitle": "الموافقة على الإعلان",
       "deleteAdTitle": "حذف الإعلان",
       "paginationInfo": "صفحة {{page}} من {{totalPages}} (الإجمالي {{total}} إعلان)",

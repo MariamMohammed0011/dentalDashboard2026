@@ -183,13 +183,24 @@ export const notificationsService = {
 
     const type = mapNotificationType(n.type || (adObj ? "ad" : ""), n.blogPostType, text);
 
+    // 🎯 استخراج معرف العنصر المرتبط (إعلان/مدونة/طلب انضمام) للانتقال المباشر إليه عند فتح الإشعار
+    let relatedId = null;
+    if (type === "ad") {
+      relatedId = adObj?.id ?? n.advertisementId ?? n.adId ?? null;
+    } else if (type === "blog") {
+      relatedId = n.blogPostId ?? n.postId ?? n.blogId ?? null;
+    } else if (type === "join") {
+      relatedId = n.membershipRequestId ?? n.requestId ?? null;
+    }
+
     return {
       id: rawId,
       type: type,
       text: text,
       time: formatTimeArabic(n.createdAt),
       read: n.isRead || localReadIds.includes(rawId),
-      createdAt: n.createdAt
+      createdAt: n.createdAt,
+      relatedId
     };
   },
 

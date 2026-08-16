@@ -141,7 +141,7 @@ const LabTechnicianDetailsModal = ({ tech, isOpen, onClose }) => {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800 gap-2">
+                {/* <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800 gap-2">
                   <span className="text-xs font-bold text-gray-400">ملف توثيق المهنة:</span>
                   {tech.verificationDocumentPath ? (
                     <a
@@ -156,7 +156,7 @@ const LabTechnicianDetailsModal = ({ tech, isOpen, onClose }) => {
                   ) : (
                     <span className="text-xs text-gray-400 font-bold">لا يوجد مستند مرفق</span>
                   )}
-                </div>
+                </div> */}
               </div>
 
             </div>
