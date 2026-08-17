@@ -59,53 +59,61 @@ const InterventionHeader = ({
 
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 p-2 bg-bg-card/60 dark:bg-slate-900/40 rounded-3xl border border-border-main/60 backdrop-blur-xl">
+      {/* Filter Controls Section (Stacked full-width rows like Notifications page) */}
+      <div className="flex flex-col gap-4 w-full font-zain">
 
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-1.5 bg-slate-100/80 dark:bg-slate-900/80 rounded-2xl border border-slate-200/50 dark:border-slate-800/80">
-          <span className="text-[11px] font-black text-text-muted px-2 hidden lg:inline-flex items-center gap-1.5 whitespace-nowrap">
-            <Layers size={14} className="text-primary" />
-            الجهة:
-          </span>
-          <div className="grid grid-cols-3 gap-1 w-full">
+        {/* 1. Target Destination Filter (Full Row) */}
+        <div className="flex flex-col gap-2 w-full">
+          <label className="text-xs font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5 mr-1">
+            <Layers size={15} className="text-sky-500" />
+            <span>تصفية حسب الجهة الموجه إليها:</span>
+          </label>
+          <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs w-full">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
+                  type="button"
                   onClick={() => onTabChange(tab.id)}
-                  className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-black transition-all duration-200 text-center cursor-pointer ${isActive
-                      ? 'text-white bg-primary shadow-md shadow-primary/20 scale-[1.02]'
-                      : 'text-text-muted hover:text-text-main hover:bg-slate-200/50 dark:hover:bg-slate-800/50'
-                    }`}
+                  className={`py-2 px-4 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap ${
+                    isActive
+                      ? 'bg-sky-500 text-white font-black shadow-xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
                 >
-                  <Icon size={14} className={isActive ? 'text-white' : tab.color} />
-                  <span className="truncate">{tab.label}</span>
+                  <Icon size={15} className={isActive ? 'text-white' : tab.color} />
+                  <span>{tab.label}</span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-1.5 bg-slate-100/80 dark:bg-slate-900/80 rounded-2xl border border-slate-200/50 dark:border-slate-800/80">
-          <span className="text-[11px] font-black text-text-muted px-2 hidden lg:inline-flex items-center gap-1.5 whitespace-nowrap">
-            الحالة:
-          </span>
-          <div className="grid grid-cols-3 gap-1 w-full">
+        {/* 2. Status Filter (Full Row) */}
+        <div className="flex flex-col gap-2 w-full">
+          <label className="text-xs font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5 mr-1">
+            <Filter size={15} className="text-amber-500" />
+            <span>تصفية حسب حالة الشكوى:</span>
+          </label>
+          <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs w-full">
             {statusFilters.map((f) => {
               const Icon = f.icon;
               const isActive = statusFilter === f.id;
               return (
                 <button
                   key={f.id}
+                  type="button"
                   onClick={() => onStatusFilterChange(f.id)}
-                  className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-black transition-all duration-200 text-center cursor-pointer ${isActive
-                      ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-md shadow-slate-900/10 scale-[1.02]'
-                      : 'text-text-muted hover:text-text-main hover:bg-slate-200/50 dark:hover:bg-slate-800/50'
-                    }`}
+                  className={`py-2 px-4 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap ${
+                    isActive
+                      ? 'bg-sky-500 text-white font-black shadow-xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
                 >
-                  <Icon size={14} className={isActive ? (f.id === 'pending' ? 'text-amber-400' : f.id === 'replied' ? 'text-emerald-400' : 'text-indigo-400') : f.color} />
-                  <span className="truncate">{f.label}</span>
+                  <Icon size={15} className={isActive ? 'text-white' : f.color} />
+                  <span>{f.label}</span>
                 </button>
               );
             })}

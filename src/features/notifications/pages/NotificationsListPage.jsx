@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import {
   Bell, BellRing, Eye, EyeOff,
-  UserPlus, Megaphone, Filter, Sparkles
+  UserPlus, Megaphone, Filter, Sparkles, AlertCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -101,8 +101,9 @@ const NotificationsListPage = () => {
 
   const typeTabs = [
     { id: 'all', label: 'الكل', icon: Bell, activeColor: 'bg-primary text-white border-2 border-primary shadow-md shadow-primary/30 scale-[1.02]', inactiveColor: 'bg-blue-50/70 dark:bg-blue-950/30 text-blue-900 dark:text-blue-200 border-2 border-blue-200 dark:border-blue-800/60 hover:bg-blue-100 dark:hover:bg-blue-900/50', iconColor: 'text-primary' },
-    { id: 'join', label: 'طلب موافقة', icon: UserPlus, activeColor: 'bg-emerald-500 text-white border-2 border-emerald-500 shadow-md shadow-emerald-500/30 scale-[1.02]', inactiveColor: 'bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200 border-2 border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/50', iconColor: 'text-emerald-500' },
+    { id: 'join', label: 'المنشورات', icon: UserPlus, activeColor: 'bg-emerald-500 text-white border-2 border-emerald-500 shadow-md shadow-emerald-500/30 scale-[1.02]', inactiveColor: 'bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200 border-2 border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/50', iconColor: 'text-emerald-500' },
     { id: 'ad', label: 'إعلانات', icon: Megaphone, activeColor: 'bg-sky-500 text-white border-2 border-sky-500 shadow-md shadow-sky-500/30 scale-[1.02]', inactiveColor: 'bg-sky-50/70 dark:bg-sky-950/30 text-sky-900 dark:text-sky-200 border-2 border-sky-200 dark:border-sky-800/60 hover:bg-sky-100 dark:hover:bg-sky-900/50', iconColor: 'text-sky-500' },
+    { id: 'complaint', label: 'الشكاوى والتنبيهات', icon: AlertCircle, activeColor: 'bg-rose-500 text-white border-2 border-rose-500 shadow-md shadow-rose-500/30 scale-[1.02]', inactiveColor: 'bg-rose-50/70 dark:bg-rose-950/30 text-rose-900 dark:text-rose-200 border-2 border-rose-200 dark:border-rose-800/60 hover:bg-rose-100 dark:hover:bg-rose-900/50', iconColor: 'text-rose-500' },
   ];
 
   return (
@@ -110,22 +111,17 @@ const NotificationsListPage = () => {
 
       {/* 1. Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4 mt-2">
-        <div className="flex items-center gap-4">
-          <div className="p-3.5 bg-primary/10 text-primary rounded-2xl shadow-sm border border-primary/20 flex items-center justify-center">
-            <Bell size={28} className="text-primary" />
-          </div>
-          <div className="text-right">
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl sm:text-3xl font-black text-text-main tracking-tight">مركز الإشعارات والتنبيهات</h1>
-              {totalUnread > 0 && (
-                <span className="bg-red-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-sm">
-                  {totalUnread} غير مقروء
-                </span>
-              )}
-            </div>
-            <p className="text-text-muted text-xs sm:text-sm mt-1 font-medium">متابعة كافة الإشعارات والطلبات والتنبيهات الواردة على المنصة بشكل مباشر</p>
-          </div>
-        </div>
+     <div className="flex items-center gap-4">
+  <div className="p-3.5 bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-2xl shadow-sm border border-rose-500/20 flex items-center justify-center">
+    <Bell size={28} className="text-rose-600 dark:text-rose-400" />
+  </div>
+  <div className="text-right">
+    <div className="flex items-center gap-3">
+      <h1 className="text-2xl sm:text-3xl font-black text-text-main tracking-tight">مركز الإشعارات والتنبيهات</h1>
+    </div>
+    <p className="text-text-muted text-xs sm:text-sm mt-1 font-medium">متابعة كافة الإشعارات والطلبات والتنبيهات الواردة على المنصة بشكل مباشر</p>
+  </div>
+</div>
 
 
       </div>
@@ -220,16 +216,16 @@ const NotificationsListPage = () => {
         transition={{ duration: 0.4, delay: 0.25 }}
         className="  p-5 sm:p-7  flex flex-col gap-6 w-full"
       >
-        {/* Top Controls Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+        {/* Filters Controls Section (Each filter on its own line) */}
+        <div className="flex flex-col gap-4 w-full font-zain">
 
-          {/* Filter by Type */}
-          <div className="flex flex-col gap-2">
-            <label className="text-[11px] font-black text-text-muted uppercase tracking-wider flex items-center gap-1.5 mr-1">
-              <Filter size={14} className="text-primary animate-pulse" />
-              تصفية حسب نوع الإشعار
+          {/* 1. Filter by Type (Full Row) */}
+          <div className="flex flex-col gap-2 w-full">
+            <label className="text-xs font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5 mr-1">
+              <Filter size={15} className="text-sky-500" />
+              <span>تصفية حسب نوع الإشعار:</span>
             </label>
-            <div className="flex flex-wrap gap-2 p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm w-full">
+            <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs w-full">
               {typeTabs.map(tab => {
                 const TabIcon = tab.icon;
                 const isSelected = selectedType === tab.id;
@@ -238,10 +234,13 @@ const NotificationsListPage = () => {
                     key={tab.id}
                     type="button"
                     onClick={() => setSelectedType(tab.id)}
-                    className={`py-2 px-3 rounded-xl text-xs font-black transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer ${isSelected ? tab.activeColor : tab.inactiveColor
-                      }`}
+                    className={`py-2 px-4 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap ${
+                      isSelected
+                        ? 'bg-sky-500 text-white font-black shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    }`}
                   >
-                    <TabIcon size={15} className={isSelected ? 'text-white' : tab.iconColor} />
+                    <TabIcon size={15} className={isSelected ? 'text-white' : 'text-slate-400'} />
                     <span>{tab.label}</span>
                   </button>
                 );
@@ -249,17 +248,17 @@ const NotificationsListPage = () => {
             </div>
           </div>
 
-          {/* Filter by Read Status */}
-          <div className="flex flex-col gap-2">
-            <label className="text-[11px] font-black text-text-muted uppercase tracking-wider flex items-center gap-1.5 mr-1">
-              <Sparkles size={14} className="text-amber-500 animate-pulse" />
-              حالة القراءة
+          {/* 2. Filter by Read Status (Full Row) */}
+          <div className="flex flex-col gap-2 w-full">
+            <label className="text-xs font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5 mr-1">
+              <Sparkles size={15} className="text-amber-500" />
+              <span>تصفية حسب حالة القراءة:</span>
             </label>
-            <div className="flex gap-2 p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm w-full">
+            <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs w-full">
               {[
-                { id: 'all', label: 'الكل', icon: Bell, activeColor: 'bg-primary text-white border-2 border-primary shadow-md shadow-primary/30 scale-[1.02]', inactiveColor: 'bg-blue-50/70 dark:bg-blue-950/30 text-blue-900 dark:text-blue-200 border-2 border-blue-200 dark:border-blue-800/60', iconColor: 'text-primary' },
-                { id: 'unread', label: 'غير المقروءة', icon: EyeOff, activeColor: 'bg-red-500 text-white border-2 border-red-500 shadow-md shadow-red-500/30 scale-[1.02]', inactiveColor: 'bg-red-50/70 dark:bg-red-950/30 text-red-900 dark:text-red-200 border-2 border-red-200 dark:border-red-800/60', iconColor: 'text-red-500' },
-                { id: 'read', label: 'المقروءة', icon: Eye, activeColor: 'bg-emerald-500 text-white border-2 border-emerald-500 shadow-md shadow-emerald-500/30 scale-[1.02]', inactiveColor: 'bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200 border-2 border-emerald-200 dark:border-emerald-800/60', iconColor: 'text-emerald-500' },
+                { id: 'all', label: 'الكل (جميع الإشعارات)', icon: Bell },
+                { id: 'unread', label: 'الإشعارات غير المقروءة', icon: EyeOff },
+                { id: 'read', label: 'الإشعارات المقروءة', icon: Eye },
               ].map(status => {
                 const StatusIcon = status.icon;
                 const isSelected = selectedStatus === status.id;
@@ -268,10 +267,13 @@ const NotificationsListPage = () => {
                     key={status.id}
                     type="button"
                     onClick={() => setSelectedStatus(status.id)}
-                    className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer ${isSelected ? status.activeColor : status.inactiveColor
-                      }`}
+                    className={`py-2 px-4 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap ${
+                      isSelected
+                        ? 'bg-sky-500 text-white font-black shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    }`}
                   >
-                    <StatusIcon size={15} className={isSelected ? 'text-white' : status.iconColor} />
+                    <StatusIcon size={15} className={isSelected ? 'text-white' : 'text-slate-400'} />
                     <span>{status.label}</span>
                   </button>
                 );

@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { AlertCircle, Inbox } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import InterventionHeader from '../components/InterventionHeader';
-import InterventionCard from '../components/InterventionCard';
+import InterventionTable from '../components/InterventionTable';
 import ComplaintDetailsModal from '../components/ComplaintDetailsModal';
 import MembershipPagination from '../../membership/components/MembershipPagination';
 import { useInterventions } from '../hooks/useInterventions';
@@ -57,33 +57,11 @@ const InterventionPage = () => {
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col gap-6"
       >
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
-            {Array(6).fill(0).map((_, i) => (
-              <div key={i} className="h-[200px] bg-bg-card border border-border-main/50 rounded-[1.8rem] animate-pulse" />
-            ))}
-          </div>
-        ) : complaints.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 px-4 text-center border-2 border-dashed border-border-main rounded-[2rem] bg-bg-card">
-            <div className="w-16 h-16 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center mb-4 shadow-sm">
-              <Inbox size={32} className="text-primary" />
-            </div>
-            <h3 className="text-lg font-black text-text-main">{t('interventions.emptyState.title')}</h3>
-            <p className="text-xs text-text-muted max-w-md mt-1 font-medium">
-              {t('interventions.emptyState.desc')}
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6">
-            {complaints.map((item) => (
-              <InterventionCard
-                key={item.id}
-                complaint={item}
-                onViewDetails={setSelectedComplaint}
-              />
-            ))}
-          </div>
-        )}
+        <InterventionTable
+          complaints={complaints}
+          isLoading={isLoading}
+          onViewDetails={setSelectedComplaint}
+        />
 
         {pagination?.totalPages > 1 && (
           <div className="pt-6 border-t border-border-main/50">

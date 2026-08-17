@@ -58,6 +58,14 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
   });
 
   const filteredUsers = users.filter(user => {
+    const isSystemAdmin = 
+      user.role?.toLowerCase() === 'systemadmin' || 
+      user.role?.toLowerCase() === 'admin' || 
+      user.name === 'System Admin' ||
+      user.role === 'مسؤول النظام';
+
+    if (isSystemAdmin) return false;
+
     const q = userSearch.toLowerCase();
     return (
       (user.name || '').toLowerCase().includes(q) ||

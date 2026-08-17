@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  BellRing, Check, CheckCheck,  Clock, Megaphone, Bell
+  BellRing, Check, CheckCheck, Clock, Megaphone, Bell, AlertCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -9,11 +9,10 @@ const NotificationsTable = ({
   notifications,
   isLoading,
   onToggleRead,
-
 }) => {
   const navigate = useNavigate();
 
-  // 🎯 الانتقال المباشر لعنصر الإشعار (إعلان بانتظار الموافقة أو مدونة بانتظار المراجعة أو طلب انضمام)
+  // 🎯 الانتقال المباشر لعنصر الإشعار (إعلان/مدونة/طلب انضمام/شكوى جديدة)
   const handleNotificationClick = (notif) => {
     if (notif.type === 'ad' && notif.relatedId) {
       navigate(`/dashboard/ads?adId=${notif.relatedId}`);
@@ -21,7 +20,10 @@ const NotificationsTable = ({
       navigate(`/dashboard/blogs?postId=${notif.relatedId}`);
     } else if (notif.type === 'join') {
       navigate('/dashboard/membership-requests');
+    } else if (notif.type === 'complaint' || notif.text?.includes('شكوى') || notif.text?.includes('شكوي')) {
+      navigate('/dashboard/intervention-log');
     }
+
     if (!notif.read) {
       onToggleRead(notif.id);
     }
@@ -35,9 +37,10 @@ const NotificationsTable = ({
       colorClass = "bg-gray-50/50 text-gray-400 border-gray-100 dark:bg-gray-900/30 dark:text-gray-600 dark:border-gray-900/60";
     } else {
       switch (type) {
-        
+        case 'complaint':
+          colorClass = "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:bg-rose-500/20 dark:border-rose-500/20";
+          break;
         case 'blog':
-     
         case 'ad':
           colorClass = "bg-sky-500/10 text-sky-600 border-sky-500/10 dark:bg-sky-500/20 dark:border-sky-500/20";
           break;
@@ -49,6 +52,7 @@ const NotificationsTable = ({
     const iconProps = { size: 18, className: "stroke-[2.25] transition-transform duration-300" };
 
     switch (type) {
+      case 'complaint': return <div className={`${baseClass} ${colorClass}`}><AlertCircle {...iconProps} /></div>;
       case 'blog':
       case 'ad': return <div className={`${baseClass} ${colorClass}`}><Megaphone {...iconProps} /></div>;
       default: return <div className={`${baseClass} ${colorClass}`}><Bell {...iconProps} /></div>;
@@ -56,9 +60,10 @@ const NotificationsTable = ({
   };
 
   const notifBadge = {
-    blog: { label: "طلب موافقة", color: "bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-200/50 dark:border-amber-900/30" },
+    blog: { label: "المنشورات", color: "bg-indigo-50 dark:bg-indigo-950/20 text-indigo-700 dark:text-indigo-400 border-indigo-200/50 dark:border-indigo-900/30" },
     join: { label: "طلب انضمام", color: "bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-200/50 dark:border-emerald-900/30" },
-    ad: { label: "طلب إعلان", color: "bg-sky-50 dark:bg-sky-950/20 text-sky-700 dark:text-sky-400 border-sky-200/50 dark:border-sky-900/30" }
+    ad: { label: "طلب إعلان", color: "bg-sky-50 dark:bg-sky-950/20 text-sky-700 dark:text-sky-400 border-sky-200/50 dark:border-sky-900/30" },
+    complaint: { label: "شكوى جديدة", color: "bg-rose-50 dark:bg-rose-950/20 text-rose-700 dark:text-rose-400 border-rose-200/50 dark:border-rose-900/30" }
   };
 
   return (

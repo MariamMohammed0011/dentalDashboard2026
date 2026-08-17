@@ -44,6 +44,16 @@ const mapNotificationType = (type, blogPostType, message) => {
   const lowerType = currentType.toLowerCase();
   const lowerMessage = message ? message.toLowerCase() : "";
 
+  // مطابقة الشكاوى والتنبيهات
+  if (
+    lowerType.includes("complaint") ||
+    lowerType.includes("ticket") ||
+    lowerMessage.includes("شكوى") ||
+    lowerMessage.includes("شكوي")
+  ) {
+    return "complaint";
+  }
+
   // مطابقة المدونات أو طلبات موافقة المدونة أولاً لتأخذ الأولوية
   if (
     lowerType.includes("blog") ||
@@ -191,6 +201,8 @@ export const notificationsService = {
       relatedId = n.blogPostId ?? n.postId ?? n.blogId ?? null;
     } else if (type === "join") {
       relatedId = n.membershipRequestId ?? n.requestId ?? null;
+    } else if (type === "complaint") {
+      relatedId = n.complaintId ?? n.id ?? null;
     }
 
     return {
@@ -262,7 +274,7 @@ export const notificationsService = {
     return newNotif;
   },
 
-  // تحديث حالة إشعار معين ليصبح مقروءاً
+  // تحديث حالة إشعار معين ليصبح مقروءاً محلياً
   markAsRead: async (id) => {
     addLocalReadId(id);
     try {
@@ -271,15 +283,10 @@ export const notificationsService = {
       localStorage.setItem("mock_notifications", JSON.stringify(updated));
     } catch (e) { }
 
-    try {
-      await axiosInstance.put(`/DoctorBlog/notifications/${id}/read`);
-    } catch (error) {
-      // تجاهل الخطأ
-    }
     return await notificationsService.getNotifications();
   },
 
-  // قراءة جميع الإشعارات
+  // قراءة جميع الإشعارات محلياً
   markAllAsRead: async () => {
     try {
       const localNotifs = JSON.parse(localStorage.getItem("mock_notifications") || "[]");
@@ -290,11 +297,8 @@ export const notificationsService = {
     try {
       const notifications = await notificationsService.getNotifications();
       notifications.forEach(n => addLocalReadId(n.id));
+    } catch (error) { }
 
-      await axiosInstance.put(`/DoctorBlog/notifications/read-all`);
-    } catch (error) {
-      // تجاهل الخطأ
-    }
     return await notificationsService.getNotifications();
   },
 

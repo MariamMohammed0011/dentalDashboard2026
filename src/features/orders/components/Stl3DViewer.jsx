@@ -184,64 +184,86 @@ const Stl3DViewer = ({ fileUrl, fileName = 'نموذج STL' }) => {
       controls.update();
     };
 
-    // 6. Load STL logic
-    setIsLoading(true);
-    setError(false);
-    setUsingFallback(false);
+    // 6. Safe STL Fetch & Validation (Prevents RangeError memory crashes from HTML/404 responses)
+    const loadSTL = async (url) => {
+      try {
+        setIsLoading(true);
+        setError(false);
 
-    if (fileUrl && typeof fileUrl === 'string' && fileUrl !== '#') {
-      const loader = new STLLoader();
-      loader.load(
-        fileUrl,
-        (geometry) => {
-          geometry.computeVertexNormals();
-          geometry.center();
-
-          const preset = MATERIAL_PRESETS[0];
-          const material = new THREE.MeshPhysicalMaterial({
-            color: preset.color,
-            metalness: preset.metalness,
-            roughness: preset.roughness,
-            clearcoat: preset.clearcoat,
-            wireframe: isWireframe,
-            side: THREE.DoubleSide
-          });
-
-          const mesh = new THREE.Mesh(geometry, material);
-          if (meshRef.current) scene.remove(meshRef.current);
-          meshRef.current = mesh;
-          scene.add(mesh);
-
-          fitObjectToView(mesh);
-          setIsLoading(false);
-        },
-        (xhr) => {
-          // Progress can be tracked if needed
-        },
-        (err) => {
-          console.warn("Could not load STL URL directly, creating demo 3D preview model:", err);
-          // Fallback to demo 3D model
-          const demoGroup = createDemoToothGeometry();
-          if (meshRef.current) scene.remove(meshRef.current);
-          meshRef.current = demoGroup;
-          scene.add(demoGroup);
-
-          fitObjectToView(demoGroup);
-          setUsingFallback(true);
-          setIsLoading(false);
+        if (!url || url === '#' || typeof url !== 'string') {
+          throw new Error('Invalid or empty URL');
         }
-      );
-    } else {
-      // Demo model when URL is placeholder
-      const demoGroup = createDemoToothGeometry();
-      if (meshRef.current) scene.remove(meshRef.current);
-      meshRef.current = demoGroup;
-      scene.add(demoGroup);
 
-      fitObjectToView(demoGroup);
-      setUsingFallback(true);
-      setIsLoading(false);
-    }
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error(`HTTP error ${res.status}`);
+        }
+
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('text/html')) {
+          throw new Error('Received HTML page instead of binary STL file');
+        }
+
+        const buffer = await res.arrayBuffer();
+        if (buffer.byteLength < 84) {
+          throw new Error('Buffer size too small for STL header');
+        }
+
+        // Inspect header bytes to check for HTML responses
+        const headerSlice = new Uint8Array(buffer, 0, Math.min(buffer.byteLength, 100));
+        const headerStr = new TextDecoder('utf-8').decode(headerSlice);
+        if (headerStr.startsWith('<!DOCTYPE') || headerStr.startsWith('<html') || headerStr.includes('<head>')) {
+          throw new Error('Response content is HTML');
+        }
+
+        // Validate binary STL facet count to prevent memory overflow
+        const dataView = new DataView(buffer);
+        const facetCount = dataView.getUint32(80, true);
+        const expectedMinSize = 84 + facetCount * 50;
+
+        if (facetCount > 5000000 || (facetCount > 0 && buffer.byteLength < expectedMinSize - 100)) {
+          if (!headerStr.trim().startsWith('solid')) {
+            throw new Error('Invalid binary facet count');
+          }
+        }
+
+        const loader = new STLLoader();
+        const geometry = loader.parse(buffer);
+        geometry.computeVertexNormals();
+        geometry.center();
+
+        const preset = MATERIAL_PRESETS[0];
+        const material = new THREE.MeshPhysicalMaterial({
+          color: preset.color,
+          metalness: preset.metalness,
+          roughness: preset.roughness,
+          clearcoat: preset.clearcoat,
+          wireframe: isWireframe,
+          side: THREE.DoubleSide
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        if (meshRef.current) scene.remove(meshRef.current);
+        meshRef.current = mesh;
+        scene.add(mesh);
+
+        fitObjectToView(mesh);
+        setUsingFallback(false);
+        setIsLoading(false);
+      } catch (err) {
+        console.warn("STL file fetch/validation skipped or failed, rendering interactive 3D preview model:", err.message);
+        const demoGroup = createDemoToothGeometry();
+        if (meshRef.current) scene.remove(meshRef.current);
+        meshRef.current = demoGroup;
+        scene.add(demoGroup);
+
+        fitObjectToView(demoGroup);
+        setUsingFallback(true);
+        setIsLoading(false);
+      }
+    };
+
+    loadSTL(fileUrl);
 
     // 7. Animation Loop
     const animate = () => {

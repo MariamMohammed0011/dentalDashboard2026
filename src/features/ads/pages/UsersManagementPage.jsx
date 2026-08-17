@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Users, UserPlus, Search, Megaphone } from 'lucide-react';
+import { Users, UserPlus, Search, Megaphone, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { usersApi } from '../services/usersApi';
 import { adsApi } from '../services/adsApi';
@@ -108,7 +108,17 @@ const UsersManagementPage = () => {
     }
   });
 
-  const filteredUsers = users.map(user => {
+  // تصفية المستخدمين لاستثناء حسابات الأدمن (System Admin)
+  const nonAdminUsers = users.filter(user => {
+    const isSystemAdmin = 
+      user.role?.toLowerCase() === 'systemadmin' || 
+      user.role?.toLowerCase() === 'admin' || 
+      user.name === 'System Admin' ||
+      user.role === 'مسؤول النظام';
+    return !isSystemAdmin;
+  });
+
+  const filteredUsers = nonAdminUsers.map(user => {
     const userActiveAdsCount = allAds.filter(ad => {
       const adUserId = ad.userId || ad.user?.id || ad.user?.userId;
       const isUserMatch = String(adUserId) === String(user.id);
@@ -123,74 +133,68 @@ const UsersManagementPage = () => {
   });
 
   return (
-    <div className="p-2 flex flex-col gap-6 bg-transparent" dir="rtl">
+    <div className="p-2 sm:p-4 flex flex-col gap-5 bg-transparent font-zain" dir="rtl">
       
-      
+      {/* 1. Page Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4">
-        <div className="flex items-center gap-4">
-          <div className="p-3.5 bg-primary/10 text-primary rounded-2xl shadow-sm border border-primary/20 flex items-center justify-center">
-            <Users size={28} className="text-primary" />
+        <div className="flex items-center gap-3.5">
+          <div className="p-3 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-2xl border border-sky-500/20 shadow-xs flex items-center justify-center shrink-0">
+            <Users size={26} />
           </div>
           <div className="text-right">
-            <h1 className="text-2xl sm:text-3xl font-black text-text-main tracking-tight">{t('ads.usersManagementTitle')}</h1>
-            <p className="text-text-muted text-xs sm:text-sm mt-1 font-medium">{t('ads.usersManagementDesc')}</p>
+            <h1 className="text-xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{t('ads.usersManagementTitle') || 'إدارة المستخدمين'}</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-0.5 font-medium">{t('ads.usersManagementDesc') || 'إدارة حسابات عملاء الإعلانات وإنشاء الحملات الإعلانية المخصصة لهم'}</p>
           </div>
         </div>
-
-       
-        {/* <button
-          onClick={() => setIsAddClientOpen(true)}
-          className="bg-primary text-white hover:bg-primary-dark shadow-lg shadow-primary/10 rounded-2xl flex items-center gap-2 px-6 py-3 font-bold text-sm transition-all duration-300 hover:scale-[1.02] active:scale-95 whitespace-nowrap w-full sm:w-auto justify-center cursor-pointer"
-        >
-          <UserPlus size={18} strokeWidth={2.5} />
-          {t('ads.addAdClient')}
-        </button> */}
       </div>
 
-      
-      <div className="bg-white dark:bg-bg-card border border-border-main/50 rounded-[2rem] py-4 px-6 shadow-sm flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-8 w-full mt-2">
-        
-       
-        <div className="flex-shrink-0 w-full lg:w-80 flex flex-col gap-1.5">
-          <label className="text-[11px] font-black text-text-muted text-right mr-1">{t('ads.quickSearch')}</label>
+      {/* 2. Top Toolbar: Professional Wider Search Bar + Micro Stat Pills */}
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 w-full">
+        {/* Professional Wider Search Bar with Primary Color */}
+        <div className="relative w-full md:w-[520px] lg:w-[620px] group flex items-center">
           <div className="relative w-full">
             <input
               type="text"
-              placeholder={t('ads.searchUsersPlaceholder')}
+              placeholder={t('ads.searchUsersPlaceholder') || 'ابحث باسم العميل، رقم الهاتف، أو المنشأة...'}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pr-10 pl-4 py-2.5 rounded-2xl border border-border-main/50 bg-bg-main/30 text-text-main placeholder-text-muted/50 font-bold text-xs sm:text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-right"
+              className="w-full pr-12 pl-10 py-3.5 rounded-2xl border-2 border-sky-500/40 dark:border-sky-500/30 bg-sky-500/5 dark:bg-slate-900/90 text-slate-900 dark:text-slate-100 placeholder-slate-400 font-bold text-xs sm:text-sm focus:outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/20 shadow-xs transition-all text-right font-zain"
             />
-            <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 text-text-muted/50" size={16} />
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-sky-500 text-white shadow-xs flex items-center justify-center pointer-events-none">
+              <Search size={16} strokeWidth={2.5} />
+            </div>
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute left-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-all cursor-pointer"
+              >
+                <X size={14} />
+              </button>
+            )}
           </div>
         </div>
 
-       
-        <div className="hidden lg:block w-[1px] h-10 bg-border-main/20" />
-
-        
-        <div className="flex-grow grid grid-cols-2 gap-4 divide-x divide-x-reverse divide-border-main/20">
-          
-          
-          <div className="flex flex-col items-center justify-center px-4 text-center">
-            <span className="text-xs font-bold text-text-muted mb-1.5 block">{t('ads.totalClients')}</span>
-            <div className="flex items-center gap-2">
-              <span className="text-xl sm:text-2xl font-black text-text-main">{isLoading ? '...' : users.length}</span>
-              <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse flex-shrink-0" />
+        {/* Micro Stat Badges */}
+        <div className="flex items-center gap-3 self-end md:self-auto">
+          {/* Total Clients Stat */}
+          <div className="px-4 py-2 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-sky-500 animate-pulse shrink-0" />
+            <div className="flex items-center gap-1.5 text-xs font-bold">
+              <span className="text-slate-500 dark:text-slate-400">{t('ads.totalClients') || 'إجمالي العملاء'}:</span>
+              <span className="text-sm font-black text-slate-900 dark:text-slate-100">{isLoading ? '...' : nonAdminUsers.length}</span>
             </div>
           </div>
 
-          
-          <div className="flex flex-col items-center justify-center px-4 text-center">
-            <span className="text-xs font-bold text-text-muted mb-1.5 block">{t('ads.activeAds')}</span>
-            <div className="flex items-center gap-2">
-              <span className="text-xl sm:text-2xl font-black text-text-main">{isLoading || isLoadingActiveAds ? '...' : activeAdsCount}</span>
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 flex-shrink-0" />
+          {/* Active Ads Stat */}
+          <div className="px-4 py-2 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
+            <div className="flex items-center gap-1.5 text-xs font-bold">
+              <span className="text-slate-500 dark:text-slate-400">{t('ads.activeAds') || 'الإعلانات النشطة'}:</span>
+              <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">{isLoading || isLoadingActiveAds ? '...' : activeAdsCount}</span>
             </div>
           </div>
-
         </div>
-
       </div>
 
       <UsersTable 

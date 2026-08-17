@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Eye, Clock, User, Building2, Truck } from 'lucide-react';
+import { Eye, Clock, User, Building2, Tag, Calendar, FileText, Inbox, ChevronLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
-import framerImg from '../../../assets/framer.png';
 import OrderDetailsModal from './OrderDetailsModal';
 
 const OrdersTable = ({ orders, isLoading }) => {
@@ -10,130 +9,244 @@ const OrdersTable = ({ orders, isLoading }) => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const getStatusBadgeStyle = (statusStr) => {
+    const status = String(statusStr || '').toLowerCase().trim();
+    if (status.includes('مقبول') || status.includes('accepted') || status.includes('مكتمل') || status.includes('completed')) {
+      return {
+        bg: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200/80 dark:border-emerald-800/50',
+        dot: 'bg-emerald-500 animate-pulse'
+      };
+    }
+    if (status.includes('انتظار') || status.includes('pending') || status.includes('معلق')) {
+      return {
+        bg: 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200/80 dark:border-amber-800/50',
+        dot: 'bg-amber-500 animate-pulse'
+      };
+    }
+    if (status.includes('مرفوض') || status.includes('rejected') || status.includes('ملغى') || status.includes('cancelled')) {
+      return {
+        bg: 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border-rose-200/80 dark:border-rose-800/50',
+        dot: 'bg-rose-500'
+      };
+    }
+    if (status.includes('جاهز') || status.includes('ready')) {
+      return {
+        bg: 'bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 border-sky-200/80 dark:border-sky-800/50',
+        dot: 'bg-sky-500 animate-pulse'
+      };
+    }
+    return {
+      bg: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700',
+      dot: 'bg-slate-400'
+    };
+  };
+
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      <div className="w-full bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-12 flex flex-col justify-center items-center gap-3 font-zain">
+        <div className="animate-spin rounded-full h-10 w-10 border-3 border-sky-500 border-t-transparent"></div>
+        <span className="text-sm font-bold text-slate-500 dark:text-slate-400">جاري تحميل طلبات الأطباء...</span>
       </div>
     );
   }
 
   return (
-    <div className="w-full" dir="rtl">
-      <div className="hidden md:block overflow-hidden">
-        <table className="w-full text-center border-collapse  table-auto">
+    <div className="w-full font-zain" dir="rtl">
+      {/* Table Container - Desktop View */}
+      <div className="hidden md:block bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
+        <table className="w-full text-right border-collapse table-fixed">
           <thead>
-            <tr className="bg-neutral-light-gray border-b border-gray-300">
-              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300 last:border-l-0">{t('orders.orderNumber')}</th>
-              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">{t('orders.doctor')}</th>
-              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">{t('orders.lab')}</th>
-              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">{t('orders.orderStatus')}</th>
-              <th className="px-4 py-5 font-bold text-gray-700 text-sm border-l border-gray-300">{t('orders.createdAt')}</th>
-              <th className="px-4 py-5 font-bold text-gray-700 text-sm">{t('orders.view')}</th>
+            <tr className="bg-slate-50/90 dark:bg-slate-800/50 border-b border-slate-200/80 dark:border-slate-800 text-xs font-black text-slate-600 dark:text-slate-300">
+              <th className="py-4 px-5 text-right w-[14%]">
+                <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+                  <FileText size={14} className="text-sky-500" />
+                  <span>{t('orders.orderNumber') || 'رقم الطلب'}</span>
+                </div>
+              </th>
+              <th className="py-4 px-5 text-right w-[24%]">
+                <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+                  <User size={14} className="text-sky-500" />
+                  <span>{t('orders.doctor') || 'الطبيب'}</span>
+                </div>
+              </th>
+              <th className="py-4 px-5 text-right w-[24%]">
+                <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+                  <Building2 size={14} className="text-emerald-500" />
+                  <span>{t('orders.lab') || 'المخبر'}</span>
+                </div>
+              </th>
+              <th className="py-4 px-5 text-center w-[16%]">
+                <div className="flex items-center justify-center gap-1.5 text-slate-500 dark:text-slate-400">
+                  <Tag size={14} className="text-amber-500" />
+                  <span>{t('orders.orderStatus') || 'حالة الطلب'}</span>
+                </div>
+              </th>
+              <th className="py-4 px-5 text-center w-[14%]">
+                <div className="flex items-center justify-center gap-1.5 text-slate-500 dark:text-slate-400">
+                  <Calendar size={14} className="text-blue-500" />
+                  <span>{t('orders.createdAt') || 'تاريخ الإنشاء'}</span>
+                </div>
+              </th>
+              <th className="py-4 px-5 text-center w-[8%]">
+                <span className="text-slate-500 dark:text-slate-400">{t('orders.view') || 'عرض'}</span>
+              </th>
             </tr>
           </thead>
-          <tbody>
-            {orders?.map((order) => (
-              <tr
-                key={order.id}
-                className="bg-transparent hover:bg-gray-50/50 transition-colors border-b border-gray-200 last:border-b-0"
-              >
-                <td className="px-4 py-4 text-gray-600 text-sm border-l border-gray-200 last:border-l-0">{order.id}</td>
-                <td className="px-4 py-4 text-gray-600 text-sm border-l border-gray-200 font-medium">{order.doctor}</td>
-                <td className="px-4 py-4 text-gray-600 text-sm border-l border-gray-200 font-medium">{order.lab}</td>
-                <td className="px-4 py-4 text-gray-600 text-sm border-l border-gray-200">
-                  <span className="text-primary font-bold">{order.orderStatus}</span>
-                </td>
-                <td className="px-4 py-4 font-bold text-gray-400 text-sm border-l border-gray-200">{order.createdAt}</td>
-                <td className="px-4 py-4">
-                  <button
-                    onClick={() => {
-                      setSelectedOrder(order);
-                      setIsModalOpen(true);
-                    }}
-                    className="p-2 text-blue-600 hover:scale-110 transition-transform cursor-pointer"
+
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80 text-xs font-bold text-slate-800 dark:text-slate-200">
+            {orders && orders.length > 0 ? (
+              orders.map((order) => {
+                const statusStyle = getStatusBadgeStyle(order.orderStatus || order.status);
+                return (
+                  <tr
+                    key={order.id}
+                    className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors duration-150 group"
                   >
-                    <Eye size={22} />
-                  </button>
+                    {/* Order ID */}
+                    <td className="py-4 px-5 text-right">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-500/10 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 font-mono font-bold text-xs border border-sky-500/20">
+                        #{order.id}
+                      </span>
+                    </td>
+
+                    {/* Doctor Name */}
+                    <td className="py-4 px-5 text-right">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-sky-600 dark:text-sky-400 flex items-center justify-center text-xs font-black shrink-0 border border-slate-200/60 dark:border-slate-700/60">
+                          {order.doctor ? order.doctor.charAt(0) : 'D'}
+                        </div>
+                        <span className="font-bold text-slate-800 dark:text-slate-100 text-sm truncate" title={order.doctor}>
+                          {order.doctor || t('orders.unknownDoctor') || 'طبيب غير محدد'}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Lab Name */}
+                    <td className="py-4 px-5 text-right">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/20">
+                          <Building2 size={16} />
+                        </div>
+                        <span className="font-semibold text-slate-700 dark:text-slate-200 text-xs truncate" title={order.lab}>
+                          {order.lab || t('orders.unknownLab') || 'مخبر غير محدد'}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Order Status */}
+                    <td className="py-4 px-5 text-center">
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${statusStyle.bg}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${statusStyle.dot}`} />
+                        <span>{order.orderStatus || order.status}</span>
+                      </span>
+                    </td>
+
+                    {/* Created At */}
+                    <td className="py-4 px-5 text-center">
+                      <span className="text-slate-500 dark:text-slate-400 text-xs font-semibold dir-ltr inline-block">
+                        {order.createdAt}
+                      </span>
+                    </td>
+
+                    {/* Action Button */}
+                    <td className="py-4 px-5 text-center">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedOrder(order);
+                          setIsModalOpen(true);
+                        }}
+                        className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-500 dark:hover:text-white transition-all duration-200 cursor-pointer shadow-xs active:scale-95"
+                        title={t('orders.view') || 'عرض التفاصيل'}
+                      >
+                        <Eye size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
+            ) : (
+              <tr>
+                <td colSpan={6} className="py-12 text-center text-slate-400 font-bold text-sm">
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <Inbox size={36} className="text-slate-300 dark:text-slate-700" />
+                    <span>لا توجد طلبات أطباء مطابقة حالياً.</span>
+                  </div>
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 md:hidden">
-        {orders?.map((order, index) => (
-          <motion.div
-            key={order.id}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.05 }}
-            whileHover={{ y: -4 }}
-            className="bg-white p-5 rounded-[1.8rem] shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-all duration-300"
-          >
-             <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0">
-              <img src={framerImg} alt="" className="w-full h-full object-cover" />
-            </div>
-
-            <div className="absolute right-0 top-0 bottom-0 w-1.5 bg-primary transform scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-top z-20 rounded-l-full" />
-
-             <div className="relative z-10">
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                    <span className="text-[10px] font-black">#{order.id}</span>
+      {/* Cards View - Mobile View */}
+      <div className="grid grid-cols-1 gap-4 md:hidden">
+        {orders && orders.length > 0 ? (
+          orders.map((order, index) => {
+            const statusStyle = getStatusBadgeStyle(order.orderStatus || order.status);
+            return (
+              <motion.div
+                key={order.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.04 }}
+                className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3"
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-md bg-sky-500/10 text-sky-600 dark:text-sky-400 font-mono font-bold text-xs border border-sky-500/20">
+                      #{order.id}
+                    </span>
+                    <span className="text-xs text-slate-400 font-medium flex items-center gap-1">
+                      <Clock size={12} />
+                      {order.createdAt}
+                    </span>
                   </div>
-                  <span className="text-[12px] text-gray-400 flex items-center gap-1">
-                    <Clock size={12} />
-                    {order.createdAt}
+
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border ${statusStyle.bg}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${statusStyle.dot}`} />
+                    <span>{order.orderStatus || order.status}</span>
                   </span>
                 </div>
+
+                {/* Details */}
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-slate-400 font-medium">{t('orders.doctor') || 'الطبيب'}:</span>
+                    <span className="font-bold text-slate-800 dark:text-slate-100">{order.doctor}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-slate-400 font-medium">{t('orders.lab') || 'المخبر'}:</span>
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">{order.lab}</span>
+                  </div>
+                </div>
+
+                {/* Action button */}
                 <button
+                  type="button"
                   onClick={() => {
                     setSelectedOrder(order);
                     setIsModalOpen(true);
                   }}
-                  className="w-9 h-9 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm cursor-pointer"
+                  className="w-full py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-500 transition-all text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center justify-center gap-2 border border-slate-200/60 dark:border-slate-700"
                 >
-                  <Eye size={18} />
+                  <Eye size={15} />
+                  <span>{t('orders.view') || 'عرض التفاصيل'}</span>
                 </button>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-full bg-gray-50 text-gray-400">
-                      <User size={14} />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-[11px] text-gray-400">{t('orders.doctor')}</span>
-                      <span className="text-[14px] font-bold text-gray-700">{order.doctor}</span>
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end">
-                    <span className="text-[11px] text-gray-400">{t('orders.orderStatus')}</span>
-                    <span className="text-[13px] font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-lg mt-1">{order.orderStatus}</span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 pt-4 border-t border-gray-50">
-                  <div className="flex items-center gap-2">
-                    <Building2 size={14} className="text-gray-300" />
-                    <div className="flex flex-col">
-                      <span className="text-[10px] text-gray-400">{t('orders.lab')}</span>
-                      <span className="text-[12px] font-semibold text-gray-600 truncate">{order.lab}</span>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        ))}
+              </motion.div>
+            );
+          })
+        ) : (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 text-center text-slate-400 font-bold text-xs border border-slate-200/80 dark:border-slate-800">
+            لا توجد طلبات للعرض حالياً.
+          </div>
+        )}
       </div>
 
-       <OrderDetailsModal
+      {/* Order Details Modal */}
+      <OrderDetailsModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         order={selectedOrder}
