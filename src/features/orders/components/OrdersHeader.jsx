@@ -20,8 +20,8 @@ const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) =>
           <ClipboardList size={28} className="text-brand-blue" />
         </div>
 
-        <h1 className="text-[18px] sm:text-[22px] font-bold text-gray-700">
-          {t('orders.headerTitle')}
+         <h1 className="text-xl sm:text-3xl font-zain font-black text-text-main flex items-center gap-3 shrink-0">
+         {t('orders.headerTitle')}
         </h1>
       </div>
 
