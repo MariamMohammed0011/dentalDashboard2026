@@ -1,15 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { X, User, Mail, Phone, MapPin, Building2, Globe, FileText, Calendar, Loader2 } from 'lucide-react';
+import { X, User, Mail, Phone, MapPin, Building2, Globe, FileText, Calendar, Loader2, ZoomIn } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axiosInstance from '../../../api/axios';
 
 const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
   const { t } = useTranslation();
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
   if (typeof document === 'undefined') return null;
 
   const isDoctor = request ? (request.role?.toLowerCase() === 'dentist' || request.type === 'doctor') : true;
+
+  const handleModalClose = () => {
+    setIsPreviewOpen(false);
+    onClose();
+  };
 
   return createPortal(
     <AnimatePresence>
@@ -19,7 +26,7 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={handleModalClose}
             className="absolute inset-0 bg-black/60 backdrop-blur-md"
           />
 
@@ -82,7 +89,7 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
 
                   <button
                     type="button"
-                    onClick={onClose}
+                    onClick={handleModalClose}
                     className="absolute top-4 left-4 sm:top-6 md:top-8 sm:left-6 md:left-8 p-2 sm:p-2.5 md:p-3 bg-white/10 hover:bg-white/20 rounded-lg sm:rounded-2xl text-white transition-all hover:rotate-90 backdrop-blur-xl border border-white/10 z-[60] cursor-pointer"
                   >
                     <X size={16} className="sm:w-5 sm:h-5 md:w-6 md:h-6" />
@@ -212,30 +219,77 @@ const MembershipDetailsModal = ({ request, isOpen, onClose, isLoading }) => {
                             </div>
                           </div>
 
-                          <a
-                            href={fullImageUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={`px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 text-white text-[11px] sm:text-[12px] md:text-[13px] font-black rounded-lg sm:rounded-2xl transition-all hover:-translate-y-1 active:scale-95 whitespace-nowrap ${isDoctor
+                          <button
+                            type="button"
+                            onClick={() => setIsPreviewOpen(true)}
+                            className={`px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 text-white text-[11px] sm:text-[12px] md:text-[13px] font-black rounded-lg sm:rounded-2xl transition-all hover:-translate-y-1 active:scale-95 whitespace-nowrap flex items-center gap-2 cursor-pointer ${isDoctor
                                 ? 'bg-[#367AFF] shadow-[0_10px_30px_rgba(54,122,255,0.3)] hover:bg-[#0051FF]'
                                 : 'bg-[#10B981] shadow-[0_10px_30px_rgba(16,185,129,0.3)] hover:bg-[#047857]'
                               }`}
                           >
-                            {t('membership.detailsModal.previewDoc')}
-                          </a>
+                            <ZoomIn size={16} />
+                            <span>{t('membership.detailsModal.previewDoc')}</span>
+                          </button>
                         </div>
 
-                        <div className="mt-2 w-full overflow-hidden rounded-lg sm:rounded-2xl border border-gray-200 bg-white p-1 sm:p-2 shadow-sm">
+                        {/* Image Box (Click to enlarge) */}
+                        <div
+                          onClick={() => setIsPreviewOpen(true)}
+                          className="mt-2 w-full overflow-hidden rounded-lg sm:rounded-2xl border border-gray-200 bg-white p-1 sm:p-2 shadow-sm cursor-pointer group/img relative hover:border-primary/50 transition-all duration-300"
+                          title={t('membership.detailsModal.clickToEnlarge') || 'انقر لتكبير الوثيقة'}
+                        >
                           <img
                             src={fullImageUrl}
                             alt="Verification Document"
-                            className="w-full h-auto max-h-40 sm:max-h-60 object-contain rounded-md sm:rounded-xl"
+                            className="w-full h-auto max-h-40 sm:max-h-60 object-contain rounded-md sm:rounded-xl group-hover/img:scale-[1.02] transition-transform duration-300"
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.src = `https://placehold.co/600x400?text=${encodeURIComponent(t('membership.detailsModal.imageLoadError'))}`;
                             }}
                           />
+                          <div className="absolute inset-0 bg-black/30 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 text-white font-bold text-xs rounded-lg sm:rounded-2xl backdrop-blur-xs">
+                            <ZoomIn size={18} />
+                            <span>{t('membership.detailsModal.clickToEnlarge') || 'انقر لتكبير الوثيقة'}</span>
+                          </div>
                         </div>
+
+                        {/* Lightbox Modal */}
+                        <AnimatePresence>
+                          {isPreviewOpen && (
+                            <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4" dir="rtl">
+                              <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setIsPreviewOpen(false)}
+                                className="absolute inset-0 bg-black/85 backdrop-blur-md"
+                              />
+
+                              <motion.div
+                                initial={{ opacity: 0, scale: 0.85 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.85 }}
+                                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                                className="relative z-10 max-w-4xl max-h-[90vh] flex flex-col items-center justify-center"
+                              >
+                                <button
+                                  type="button"
+                                  onClick={() => setIsPreviewOpen(false)}
+                                  className="absolute -top-12 left-0 p-2.5 bg-white/20 hover:bg-white/40 text-white rounded-full transition-all cursor-pointer shadow-lg backdrop-blur-md"
+                                  title="إغلاق"
+                                >
+                                  <X size={20} />
+                                </button>
+
+                                <img
+                                  src={fullImageUrl}
+                                  alt="Verification Document Large"
+                                  className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/20"
+                                />
+                              </motion.div>
+                            </div>
+                          )}
+                        </AnimatePresence>
                       </motion.div>
                     );
                   })()}

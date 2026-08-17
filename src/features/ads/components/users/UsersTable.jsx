@@ -110,7 +110,7 @@ const UsersTable = ({
     <div className="bg-transparent rounded-2xl overflow-hidden flex-grow flex flex-col space-y-4 font-zain" dir="rtl">
       
       {/* Filters Bar */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-3 sm:p-3.5 shadow-xs flex flex-wrap items-center justify-between gap-3 font-zain">
+      <div className="  p-3 sm:p-3.5 shadow-xs flex flex-wrap items-center justify-between gap-3 font-zain">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
             <Filter size={16} />

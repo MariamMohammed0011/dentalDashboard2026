@@ -388,7 +388,8 @@
       "region": "المنطقة",
       "verificationDoc": "وثيقة التحقق",
       "verifyDocDesc": "تحقق من صحة المستندات المرفقة",
-      "previewDoc": "معاينة الوثيقة في علامة تبويب جديدة",
+      "previewDoc": "معاينة الوثيقة",
+      "clickToEnlarge": "انقر لتكبير الوثيقة",
       "imageLoadError": "خطأ في تحميل الصورة"
     }
   },

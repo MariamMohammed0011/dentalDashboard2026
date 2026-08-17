@@ -139,7 +139,7 @@ const UsersManagementPage = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4">
         <div className="flex items-center gap-3.5">
           <div className="p-3 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-2xl border border-sky-500/20 shadow-xs flex items-center justify-center shrink-0">
-            <Users size={26} />
+            <Users size={20} />
           </div>
           <div className="text-right">
             <h1 className="text-xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{t('ads.usersManagementTitle') || 'إدارة المستخدمين'}</h1>
@@ -148,17 +148,16 @@ const UsersManagementPage = () => {
         </div>
       </div>
 
-      {/* 2. Top Toolbar: Professional Wider Search Bar + Micro Stat Pills */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 w-full">
-        {/* Professional Wider Search Bar with Primary Color */}
-        <div className="relative w-full md:w-[520px] lg:w-[620px] group flex items-center">
+      {/* 2. Top Toolbar: Full Width Search Bar */}
+      <div className="w-full">
+        <div className="relative w-full group flex items-center">
           <div className="relative w-full">
             <input
               type="text"
               placeholder={t('ads.searchUsersPlaceholder') || 'ابحث باسم العميل، رقم الهاتف، أو المنشأة...'}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pr-12 pl-10 py-3.5 rounded-2xl border-2 border-sky-500/40 dark:border-sky-500/30 bg-sky-500/5 dark:bg-slate-900/90 text-slate-900 dark:text-slate-100 placeholder-slate-400 font-bold text-xs sm:text-sm focus:outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/20 shadow-xs transition-all text-right font-zain"
+              className="w-full pr-12 pl-10 py-3.5 rounded-2xl border-2 border-sky-500/40 dark:border-sky-500/30 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 font-bold text-xs sm:text-sm focus:outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/20 shadow-xs transition-all text-right font-zain"
             />
             <div className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-sky-500 text-white shadow-xs flex items-center justify-center pointer-events-none">
               <Search size={16} strokeWidth={2.5} />
@@ -172,27 +171,6 @@ const UsersManagementPage = () => {
                 <X size={14} />
               </button>
             )}
-          </div>
-        </div>
-
-        {/* Micro Stat Badges */}
-        <div className="flex items-center gap-3 self-end md:self-auto">
-          {/* Total Clients Stat */}
-          <div className="px-4 py-2 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-sky-500 animate-pulse shrink-0" />
-            <div className="flex items-center gap-1.5 text-xs font-bold">
-              <span className="text-slate-500 dark:text-slate-400">{t('ads.totalClients') || 'إجمالي العملاء'}:</span>
-              <span className="text-sm font-black text-slate-900 dark:text-slate-100">{isLoading ? '...' : nonAdminUsers.length}</span>
-            </div>
-          </div>
-
-          {/* Active Ads Stat */}
-          <div className="px-4 py-2 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
-            <div className="flex items-center gap-1.5 text-xs font-bold">
-              <span className="text-slate-500 dark:text-slate-400">{t('ads.activeAds') || 'الإعلانات النشطة'}:</span>
-              <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">{isLoading || isLoadingActiveAds ? '...' : activeAdsCount}</span>
-            </div>
           </div>
         </div>
       </div>

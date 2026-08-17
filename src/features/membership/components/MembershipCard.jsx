@@ -19,7 +19,7 @@ const MembershipCard = ({ request, onUpdateStatus, onShowDetails }) => {
   const isDoctor = type === 'doctor';
 
   return (
-    <div dir="rtl" className=" card group relative w-full h-[220px] bg-white rounded-[2.5rem] border border-slate-100 p-3 transition-all duration-500 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] hover:-translate-y-2 overflow-hidden flex flex-col">
+    <div dir="rtl" className=" card group relative w-full h-[220px] bg-white rounded-[2.5rem] border border-slate-100 p-2 transition-all duration-500 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] hover:-translate-y-2 overflow-hidden flex flex-col">
       <div className={`absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-0 group-hover:h-32 transition-all duration-700 rounded-l-full z-30 ${isDoctor ? 'bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]'}`} />
     
       <div className="relative z-10 flex flex-col h-full">
