@@ -298,9 +298,9 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
                     {isLoadingStl ? (
                       <div className="flex items-center justify-center py-8 gap-2 text-xs font-medium text-sky-600 dark:text-sky-400">
                         <Loader2 size={16} className="animate-spin" />
-                        <span>{t('orders.loadingStlFiles') || 'جاري جلب المسحات الرقمية...'}</span>
+                        <span>{t('orders.loadingStlFiles') || 'جاري فحص وجلب المسحات الرقمية...'}</span>
                       </div>
-                    ) : (
+                    ) : stlFiles.length > 0 ? (
                       <>
                         {stlFiles.length > 1 && (
                           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-slate-200 dark:border-slate-800">
@@ -313,7 +313,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
                                   onClick={() => setActiveStlIndex(idx)}
                                   className={`px-2.5 py-1 rounded text-xs font-medium transition-colors flex items-center gap-1.5 shrink-0 ${
                                     activeStlIndex === idx
-                                      ? 'bg-sky-500 text-white'
+                                      ? 'bg-sky-500 text-white font-bold'
                                       : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
                                   }`}
                                 >
@@ -336,6 +336,18 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
                           }
                         />
                       </>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center py-8 px-4 text-center bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-300 dark:border-slate-800 space-y-2">
+                        <div className="p-3 bg-amber-500/10 text-amber-500 rounded-2xl border border-amber-500/20">
+                          <FileCode size={26} />
+                        </div>
+                        <h4 className="text-sm font-black text-slate-800 dark:text-slate-200">
+                          لم يتم إرفاق ملف طبعة رقمية (STL)
+                        </h4>
+                        <p className="text-xs font-medium text-slate-500 dark:text-slate-400 max-w-sm">
+                          لم يتم العثور على مسح ثلاثي الأبعاد مرفوع لهذا الطلب في النظام حتى الآن.
+                        </p>
+                      </div>
                     )}
                   </div>
                 </div>

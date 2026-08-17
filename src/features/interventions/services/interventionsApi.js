@@ -1,34 +1,55 @@
 import axiosInstance from '../../../api/axios';
+import { usersApi } from '../../ads/services/usersApi';
 
 export const interventionsApi = {
   // جلب شكاوى المخابر
-  getLabComplaints: async () => {
+  getLabComplaints: async (usersMap = {}) => {
     const response = await axiosInstance.get('/Complaints/labs');
-    return Array.isArray(response.data) ? response.data : [];
+    const list = Array.isArray(response.data) ? response.data : [];
+    return list.map(item => ({
+      ...item,
+      user: usersMap[item.userId] || item.user || null
+    }));
   },
 
   // جلب شكاوى الإدارة
-  getAdminComplaints: async () => {
+  getAdminComplaints: async (usersMap = {}) => {
     const response = await axiosInstance.get('/Complaints/admin');
-    return Array.isArray(response.data) ? response.data : [];
+    const list = Array.isArray(response.data) ? response.data : [];
+    return list.map(item => ({
+      ...item,
+      user: usersMap[item.userId] || item.user || null
+    }));
   },
 
-  // جلب كافة الشكاوى حسب التبويب المطلوب (الكل / الإدارة / المخابر)
+  // جلب كافة الشكاوى حسب التبويب المطلوب (الكل / الإدارة / المخابر) مع ربط بيانات مقدم الشكوى (الطبيب/المستخدم)
   getComplaintsByType: async (type = 'all') => {
+    let usersMap = {};
+    try {
+      const usersList = await usersApi.getUsers();
+      if (Array.isArray(usersList)) {
+        usersList.forEach(u => {
+          if (u.id) usersMap[u.id] = u;
+        });
+      }
+    } catch (e) {
+      console.warn('Could not fetch users list for complaints mapping:', e);
+    }
+
     if (type === 'admin') {
-      const adminData = await interventionsApi.getAdminComplaints();
+      const adminData = await interventionsApi.getAdminComplaints(usersMap);
       return adminData.sort((a, b) => new Date(b.createdAtUtc || 0) - new Date(a.createdAtUtc || 0));
     }
 
     if (type === 'lab') {
-      const labData = await interventionsApi.getLabComplaints();
+      const labData = await interventionsApi.getLabComplaints(usersMap);
       return labData.sort((a, b) => new Date(b.createdAtUtc || 0) - new Date(a.createdAtUtc || 0));
     }
 
     // النوع 'all' - جلب الاثنين ودمجهما
     const [labData, adminData] = await Promise.all([
-      interventionsApi.getLabComplaints().catch(() => []),
-      interventionsApi.getAdminComplaints().catch(() => [])
+      interventionsApi.getLabComplaints(usersMap).catch(() => []),
+      interventionsApi.getAdminComplaints(usersMap).catch(() => [])
     ]);
 
     const combined = [...labData, ...adminData];
@@ -38,25 +59,22 @@ export const interventionsApi = {
   // إرسال رد على الشكوى للـ API: POST /api/Complaints/reply/{userId}/{complaintId}
   replyToComplaint: async (userId, complaintId, replyText) => {
     try {
-      // تجربة إرسال السلسلة النصية المباشرة JSON string
+      const formData = new FormData();
+      formData.append('ReplyText', replyText);
+
       const response = await axiosInstance.post(
         `/Complaints/reply/${userId}/${complaintId}`,
-        JSON.stringify(replyText),
+        formData,
         {
-          headers: { 'Content-Type': 'application/json' }
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         }
       );
       return response.data;
     } catch (err) {
-      // محاولة بديلة في حال كان كائن DTO متوقع { reply: "..." }
-      const response = await axiosInstance.post(
-        `/Complaints/reply/${userId}/${complaintId}`,
-        { reply: replyText },
-        {
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-      return response.data;
+      console.error(`Error replying to complaint ${complaintId}:`, err);
+      throw err;
     }
   }
 };

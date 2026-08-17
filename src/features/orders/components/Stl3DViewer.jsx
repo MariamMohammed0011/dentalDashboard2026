@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import axiosInstance from '../../../api/axios';
+import axios from 'axios';
 import {
   RotateCw,
   Maximize2,
@@ -14,7 +16,10 @@ import {
   AlertCircle,
   Loader2,
   Sparkles,
-  ShieldAlert
+  ShieldAlert,
+  Download,
+  ZoomIn,
+  ZoomOut
 } from 'lucide-react';
 
 const MATERIAL_PRESETS = [
@@ -35,6 +40,7 @@ const Stl3DViewer = ({ fileUrl, fileName = 'نموذج STL' }) => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [isAutoRotate, setIsAutoRotate] = useState(false);
   const [isWireframe, setIsWireframe] = useState(false);
   const [activeMaterialId, setActiveMaterialId] = useState('ivory');
@@ -59,30 +65,29 @@ const Stl3DViewer = ({ fileUrl, fileName = 'نموذج STL' }) => {
       }
     }
     crownGeo.computeVertexNormals();
-
-    const matProps = MATERIAL_PRESETS[0];
-    const mat = new THREE.MeshPhysicalMaterial({
-      color: matProps.color,
-      metalness: matProps.metalness,
-      roughness: matProps.roughness,
-      clearcoat: matProps.clearcoat,
-      wireframe: isWireframe
+    const crownMat = new THREE.MeshPhysicalMaterial({
+      color: 0xf4f1ea,
+      metalness: 0.05,
+      roughness: 0.25,
+      clearcoat: 0.6,
+      side: THREE.DoubleSide
     });
-
-    const crownMesh = new THREE.Mesh(crownGeo, mat);
-    crownMesh.position.y = 0.5;
+    const crownMesh = new THREE.Mesh(crownGeo, crownMat);
+    crownMesh.position.y = 0.9;
     group.add(crownMesh);
 
-    // Roots
+    // Root 1
     const rootGeo1 = new THREE.ConeGeometry(0.45, 1.6, 16);
-    const rootMesh1 = new THREE.Mesh(rootGeo1, mat);
-    rootMesh1.position.set(-0.4, -1.0, 0);
+    const rootMat1 = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.5 });
+    const rootMesh1 = new THREE.Mesh(rootGeo1, rootMat1);
+    rootMesh1.position.set(-0.4, -0.8, 0);
     rootMesh1.rotation.z = 0.15;
     group.add(rootMesh1);
 
+    // Root 2
     const rootGeo2 = new THREE.ConeGeometry(0.45, 1.6, 16);
-    const rootMesh2 = new THREE.Mesh(rootGeo2, mat);
-    rootMesh2.position.set(0.4, -1.0, 0);
+    const rootMesh2 = new THREE.Mesh(rootGeo2, rootMat1);
+    rootMesh2.position.set(0.4, -0.8, 0);
     rootMesh2.rotation.z = -0.15;
     group.add(rootMesh2);
 
@@ -93,7 +98,7 @@ const Stl3DViewer = ({ fileUrl, fileName = 'نموذج STL' }) => {
     if (!containerRef.current) return;
 
     const width = containerRef.current.clientWidth || 600;
-    const height = containerRef.current.clientHeight || 360;
+    const height = containerRef.current.clientHeight || 420;
 
     // 1. Scene setup
     const scene = new THREE.Scene();
@@ -142,70 +147,78 @@ const Stl3DViewer = ({ fileUrl, fileName = 'نموذج STL' }) => {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.maxDistance = 30;
-    controls.minDistance = 1.5;
+    controls.minDistance = 0.5;
+    controls.maxDistance = 1000; // Unlimited zoom out space
     controlsRef.current = controls;
 
-    // Function to apply material to mesh
-    const updateMeshMaterial = (object, matId, wireframe) => {
-      const preset = MATERIAL_PRESETS.find(p => p.id === matId) || MATERIAL_PRESETS[0];
-      const newMaterial = new THREE.MeshPhysicalMaterial({
-        color: preset.color,
-        metalness: preset.metalness,
-        roughness: preset.roughness,
-        clearcoat: preset.clearcoat,
-        wireframe: wireframe,
-        side: THREE.DoubleSide
-      });
-
-      object.traverse((child) => {
-        if (child.isMesh) {
-          child.material = newMaterial;
-        }
-      });
-    };
-
-    // Helper to center and position loaded mesh
+    // Helper to center, normalize scale, and frame object in view
     const fitObjectToView = (obj) => {
+      if (!obj) return;
+
+      // 1. Reset scale and compute original bounding box
+      obj.scale.set(1, 1, 1);
       const box = new THREE.Box3().setFromObject(obj);
-      const center = box.getCenter(new THREE.Vector3());
       const size = box.getSize(new THREE.Vector3());
-
-      obj.position.sub(center); // center object at origin
-
       const maxDim = Math.max(size.x, size.y, size.z);
-      const fov = camera.fov * (Math.PI / 180);
-      let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2)) * 1.5;
-      cameraZ = Math.max(cameraZ, 4);
 
-      camera.position.set(0, maxDim * 0.3, cameraZ);
+      // 2. Normalize scale so model fits inside a standard 4.5-unit box
+      if (maxDim > 0) {
+        const targetSize = 4.5;
+        const scaleFactor = targetSize / maxDim;
+        obj.scale.set(scaleFactor, scaleFactor, scaleFactor);
+      }
+
+      // 3. Re-center scaled geometry at origin (0,0,0)
+      const scaledBox = new THREE.Box3().setFromObject(obj);
+      const scaledCenter = scaledBox.getCenter(new THREE.Vector3());
+      obj.position.sub(scaledCenter);
+
+      // 4. Set camera at a comfortable, spacious distance away from the model
+      const scaledSize = scaledBox.getSize(new THREE.Vector3());
+      const scaledMaxDim = Math.max(scaledSize.x, scaledSize.y, scaledSize.z);
+      const fov = camera.fov * (Math.PI / 180);
+      const cameraDistance = (scaledMaxDim / (2 * Math.tan(fov / 2))) * 2.6;
+
+      camera.position.set(0, scaledMaxDim * 0.3, Math.max(cameraDistance, 14));
       camera.lookAt(0, 0, 0);
-      controls.target.set(0, 0, 0);
-      controls.update();
+
+      if (controlsRef.current) {
+        controlsRef.current.target.set(0, 0, 0);
+        controlsRef.current.maxDistance = 1000;
+        controlsRef.current.update();
+      }
     };
 
-    // 6. Safe STL Fetch & Validation (Prevents RangeError memory crashes from HTML/404 responses)
+    // 6. Safe STL Fetch & Validation (Prevents RangeError memory crashes)
     const loadSTL = async (url) => {
       try {
         setIsLoading(true);
         setError(false);
+        setErrorMessage('');
 
         if (!url || url === '#' || typeof url !== 'string') {
           throw new Error('Invalid or empty URL');
         }
 
-        const res = await fetch(url);
-        if (!res.ok) {
-          throw new Error(`HTTP error ${res.status}`);
+        let buffer;
+        try {
+          // 1. Try fetching via axiosInstance (with authorization & cookies)
+          const response = await axiosInstance.get(url, { responseType: 'arraybuffer' });
+          buffer = response.data;
+        } catch (e1) {
+          try {
+            // 2. Try direct axios request
+            const response = await axios.get(url, { responseType: 'arraybuffer' });
+            buffer = response.data;
+          } catch (e2) {
+            // 3. Fallback native fetch
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+            buffer = await res.arrayBuffer();
+          }
         }
 
-        const contentType = res.headers.get('content-type') || '';
-        if (contentType.includes('text/html')) {
-          throw new Error('Received HTML page instead of binary STL file');
-        }
-
-        const buffer = await res.arrayBuffer();
-        if (buffer.byteLength < 84) {
+        if (!buffer || buffer.byteLength < 84) {
           throw new Error('Buffer size too small for STL header');
         }
 
@@ -251,14 +264,13 @@ const Stl3DViewer = ({ fileUrl, fileName = 'نموذج STL' }) => {
         setUsingFallback(false);
         setIsLoading(false);
       } catch (err) {
-        console.warn("STL file fetch/validation skipped or failed, rendering interactive 3D preview model:", err.message);
-        const demoGroup = createDemoToothGeometry();
-        if (meshRef.current) scene.remove(meshRef.current);
-        meshRef.current = demoGroup;
-        scene.add(demoGroup);
-
-        fitObjectToView(demoGroup);
-        setUsingFallback(true);
+        console.warn("Failed to load STL file:", err.message);
+        if (meshRef.current) {
+          scene.remove(meshRef.current);
+          meshRef.current = null;
+        }
+        setError(true);
+        setUsingFallback(false);
         setIsLoading(false);
       }
     };
@@ -322,18 +334,30 @@ const Stl3DViewer = ({ fileUrl, fileName = 'نموذج STL' }) => {
     applyMat(meshRef.current);
   }, [activeMaterialId, isWireframe]);
 
-  // Reset Camera View
   const handleResetView = () => {
     if (controlsRef.current && cameraRef.current && meshRef.current) {
-      const box = new THREE.Box3().setFromObject(meshRef.current);
-      const size = box.getSize(new THREE.Vector3());
-      const maxDim = Math.max(size.x, size.y, size.z);
+      const scaledBox = new THREE.Box3().setFromObject(meshRef.current);
+      const scaledSize = scaledBox.getSize(new THREE.Vector3());
+      const scaledMaxDim = Math.max(scaledSize.x, scaledSize.y, scaledSize.z);
       const fov = cameraRef.current.fov * (Math.PI / 180);
-      let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2)) * 1.5;
-      cameraZ = Math.max(cameraZ, 4);
+      const cameraDistance = (scaledMaxDim / (2 * Math.tan(fov / 2))) * 2.6;
 
-      cameraRef.current.position.set(0, maxDim * 0.3, cameraZ);
+      cameraRef.current.position.set(0, scaledMaxDim * 0.3, Math.max(cameraDistance, 14));
       controlsRef.current.target.set(0, 0, 0);
+      controlsRef.current.update();
+    }
+  };
+
+  const handleZoomIn = () => {
+    if (controlsRef.current && cameraRef.current) {
+      cameraRef.current.position.multiplyScalar(0.75);
+      controlsRef.current.update();
+    }
+  };
+
+  const handleZoomOut = () => {
+    if (controlsRef.current && cameraRef.current) {
+      cameraRef.current.position.multiplyScalar(1.4);
       controlsRef.current.update();
     }
   };
@@ -358,7 +382,27 @@ const Stl3DViewer = ({ fileUrl, fileName = 'نموذج STL' }) => {
         </div>
 
         {/* Action Controls */}
-        <div className="pointer-events-auto flex items-center gap-1.5 bg-slate-900/85 backdrop-blur-md p-1.5 rounded-xl border border-slate-700/60 shadow-lg">
+        <div className="pointer-events-auto flex items-center gap-1 bg-slate-900/85 backdrop-blur-md p-1 rounded-xl border border-slate-700/60 shadow-lg">
+          {/* Zoom In Button */}
+          <button
+            type="button"
+            onClick={handleZoomIn}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all"
+            title="تكبير المشهد (Zoom In)"
+          >
+            <ZoomIn size={15} />
+          </button>
+
+          {/* Zoom Out Button */}
+          <button
+            type="button"
+            onClick={handleZoomOut}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all"
+            title="تصغير / إبعاد الكاميرا (Zoom Out)"
+          >
+            <ZoomOut size={15} />
+          </button>
+
           {/* Wireframe toggle */}
           <button
             type="button"
@@ -388,10 +432,25 @@ const Stl3DViewer = ({ fileUrl, fileName = 'نموذج STL' }) => {
             type="button"
             onClick={handleResetView}
             className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all"
-            title="إعادة ضبط الزاوية"
+            title="إعادة ضبط الزاوية وإرجاع الكاميرا"
           >
             <RefreshCw size={15} />
           </button>
+
+          {/* Download STL Button */}
+          {fileUrl && fileUrl !== '#' && (
+            <a
+              href={fileUrl}
+              download={fileName || 'digital_scan.stl'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-sky-400 hover:bg-slate-800 transition-all flex items-center gap-1 text-xs font-bold"
+              title="تحميل ملف STL إلى جهازك"
+            >
+              <Download size={15} />
+              <span className="hidden sm:inline">تحميل</span>
+            </a>
+          )}
 
           {/* Fullscreen toggle */}
           <button
@@ -413,17 +472,30 @@ const Stl3DViewer = ({ fileUrl, fileName = 'نموذج STL' }) => {
 
       {/* Loading Overlay */}
       {isLoading && (
-        <div className="absolute inset-0 z-30 bg-slate-950/80 backdrop-blur-sm flex flex-col items-center justify-center gap-3 text-sky-400">
+        <div className="absolute inset-0 z-30 bg-slate-950/80 backdrop-blur-sm flex flex-col items-center justify-center gap-3 text-sky-400 font-zain">
           <Loader2 size={32} className="animate-spin" />
-          <span className="text-xs font-bold text-slate-300">جاري تحميل المعاينة ثلاثية الأبعاد...</span>
+          <span className="text-xs font-bold text-slate-300">جاري تحميل المسح الرقمي ثلاثي الأبعاد...</span>
         </div>
       )}
 
-      {/* Fallback Notice (if loaded demo mesh) */}
-      {usingFallback && !isLoading && (
-        <div className="absolute bottom-3 left-3 z-20 pointer-events-auto bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700/60 shadow-lg text-[11px] text-slate-300 flex items-center gap-2">
-          <Sparkles size={13} className="text-amber-400 shrink-0" />
-          <span>معاينة ثلاثية الأبعاد تفاعلية للنموذج الرقمي</span>
+      {/* Error Overlay */}
+      {error && !isLoading && (
+        <div className="absolute inset-0 z-30 bg-slate-950/90 backdrop-blur-sm flex flex-col items-center justify-center gap-2.5 p-6 text-center text-rose-400 font-zain">
+          <AlertCircle size={32} className="text-rose-500" />
+          <span className="text-sm font-black text-slate-200">تعذر عرض ملف الـ STL في المتصفح مباشرة</span>
+          <span className="text-xs text-slate-400 max-w-xs font-medium">قد يكون ذلك بسب أذونات الوصول أو قيود الاستضافة المحلية. يمكنك تنزيل الملف مباشرة واستعراضه:</span>
+          {fileUrl && fileUrl !== '#' && (
+            <a
+              href={fileUrl}
+              download={fileName || 'scan.stl'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 py-2 px-4 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-black flex items-center gap-2 shadow-md transition-all cursor-pointer"
+            >
+              <Download size={15} />
+              <span>تنزيل ملف الـ STL المباشر</span>
+            </a>
+          )}
         </div>
       )}
 
