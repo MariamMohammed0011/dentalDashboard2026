@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Phone, Mail, Calendar, Building2, Users, Loader2, ChevronDown } from 'lucide-react';
+import { MapPin, Phone, Mail, Calendar, Building2, Users, Loader2, ChevronDown, User, PhoneCall, ShieldCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import UserStatusModal from '../../../components/shared/UserStatusModal';
 import DoctorCard from './DoctorCard';
@@ -11,8 +11,8 @@ const StatusBadge = ({ doc, updatingDoctorId, onOpenModal }) => {
 
   if (isCurrentlyUpdating) {
     return (
-      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-black border bg-neutral-light-gray/40 text-text-muted border-border-subtle animate-pulse select-none">
-        <Loader2 size={11} className="animate-spin text-primary shrink-0" />
+      <div className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-black border bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 border-slate-200 dark:border-slate-700 animate-pulse select-none whitespace-nowrap">
+        <Loader2 size={12} className="animate-spin text-primary shrink-0" />
         <span>{t('common.processing')}</span>
       </div>
     );
@@ -20,21 +20,21 @@ const StatusBadge = ({ doc, updatingDoctorId, onOpenModal }) => {
 
   const getBadgeStyle = () => {
     if (currentStatus === 'active' || currentStatus === '2') {
-      return "bg-success-bg text-success border-success/20 hover:bg-success-bg/80";
+      return "bg-emerald-50 text-emerald-600 border-emerald-200/80 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/50 hover:bg-emerald-100/80 dark:hover:bg-emerald-900/60";
     }
     if (currentStatus === 'suspended' || currentStatus === '4') {
-      return "bg-danger-bg text-danger border-danger/20 hover:bg-danger-bg/80";
+      return "bg-rose-50 text-rose-600 border-rose-200/80 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/50 hover:bg-rose-100/80 dark:hover:bg-rose-900/60";
     }
     if (currentStatus === 'readonly' || currentStatus === 'read_only' || currentStatus === '3') {
-      return "bg-accent-indigo/10 text-accent-indigo border-accent-indigo/20 hover:bg-accent-indigo/20";
+      return "bg-indigo-50 text-indigo-600 border-indigo-200/80 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-800/50 hover:bg-indigo-100/80 dark:hover:bg-indigo-900/60";
     }
     if (currentStatus === 'pendingadminapproval' || currentStatus === 'pending_admin_approval' || currentStatus === 'pending' || currentStatus === '1') {
-      return "bg-warning-bg text-warning border-warning/20 hover:bg-warning-bg/80";
+      return "bg-amber-50 text-amber-600 border-amber-200/80 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/50 hover:bg-amber-100/80 dark:hover:bg-amber-900/60";
     }
     if (currentStatus === 'pendingverification' || currentStatus === 'pending_verification' || currentStatus === '0') {
-      return "bg-orange-500/10 text-orange-500 border-orange-500/20 hover:bg-orange-500/20";
+      return "bg-orange-50 text-orange-600 border-orange-200/80 dark:bg-orange-950/40 dark:text-orange-400 dark:border-orange-800/50 hover:bg-orange-100/80 dark:hover:bg-orange-900/60";
     }
-    return "bg-neutral-light-gray text-text-muted border-border-subtle hover:bg-neutral-light-gray/80";
+    return "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 hover:bg-slate-200";
   };
 
   const getStatusLabel = () => {
@@ -47,12 +47,12 @@ const StatusBadge = ({ doc, updatingDoctorId, onOpenModal }) => {
   };
 
   const getDotColor = () => {
-    if (currentStatus === 'active' || currentStatus === '2') return "bg-success animate-pulse";
-    if (currentStatus === 'suspended' || currentStatus === '4') return "bg-danger";
-    if (currentStatus === 'readonly' || currentStatus === 'read_only' || currentStatus === '3') return "bg-accent-indigo";
-    if (currentStatus === 'pendingadminapproval' || currentStatus === 'pending_admin_approval' || currentStatus === 'pending' || currentStatus === '1') return "bg-warning animate-pulse";
+    if (currentStatus === 'active' || currentStatus === '2') return "bg-emerald-500 animate-pulse";
+    if (currentStatus === 'suspended' || currentStatus === '4') return "bg-rose-500";
+    if (currentStatus === 'readonly' || currentStatus === 'read_only' || currentStatus === '3') return "bg-indigo-500";
+    if (currentStatus === 'pendingadminapproval' || currentStatus === 'pending_admin_approval' || currentStatus === 'pending' || currentStatus === '1') return "bg-amber-500 animate-pulse";
     if (currentStatus === 'pendingverification' || currentStatus === 'pending_verification' || currentStatus === '0') return "bg-orange-500 animate-pulse";
-    return "bg-text-muted";
+    return "bg-slate-400";
   };
 
   return (
@@ -62,16 +62,16 @@ const StatusBadge = ({ doc, updatingDoctorId, onOpenModal }) => {
         e.stopPropagation();
         onOpenModal(doc);
       }}
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[10px] font-black border transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-xs ${getBadgeStyle()}`}
+      className={`inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-zain font-black border transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-xs whitespace-nowrap ${getBadgeStyle()}`}
     >
       <span className={`w-2 h-2 rounded-full shrink-0 ${getDotColor()}`} />
       <span>{getStatusLabel()}</span>
-      <ChevronDown size={11} className="opacity-70 shrink-0" />
+      <ChevronDown size={13} className="opacity-70 shrink-0" />
     </button>
   );
 };
 
-const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorId }) => {
+const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorId, searchQuery = '' }) => {
   const { t } = useTranslation();
   const [selectedDocForStatus, setSelectedDocForStatus] = useState(null);
   const [tempStatus, setTempStatus] = useState(null);
@@ -89,96 +89,137 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
     setSelectedDocForStatus(null);
   };
 
+  const emptyMessage = searchQuery 
+    ? (t('doctors.noMatchingSearch') || 'لا يوجد أطباء طابقوا شروط البحث')
+    : (t('doctors.noRegisteredDoctors') || 'لا يوجد أطباء مسجلون حالياً');
+
   return (
-    <div className="w-full flex flex-col gap-2" dir="rtl">
-      <div className="hidden md:grid grid-cols-[1.2fr_1.3fr_1.2fr_0.9fr_1fr] items-center w-full px-6 py-3 text-text-muted font-extrabold text-[11px] uppercase select-none gap-3 bg-neutral-light-gray/40 rounded-xl border border-border-subtle/40">
-        <div className="text-right">{t('doctors.doctor')}</div>
-        <div className="text-right">{t('doctors.clinicAndAddress')}</div>
-        <div className="text-right">{t('doctors.contact')}</div>
-        <div className="text-right">{t('doctors.joinDate')}</div>
-        <div className="text-center">{t('common.status')}</div>
-      </div>
+    <div className="w-full font-zain" dir="rtl">
+      {/* ── Table view for medium and large screens ── */}
+      <div className="hidden md:flex flex-col gap-3 w-full overflow-x-auto pb-2">
+        <div className="min-w-[820px] flex flex-col gap-3">
+          {/* Header Row */}
+          <div className="grid grid-cols-[1.3fr_1.4fr_1.2fr_0.9fr_1.1fr] items-center w-full px-6 py-3.5 bg-slate-100/80 dark:bg-slate-800/60 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 text-xs font-black text-slate-600 dark:text-slate-300 gap-4 select-none">
+            <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+              <User size={15} className="shrink-0" />
+              <span>{t('doctors.doctor')}</span>
+            </div>
 
-      <div className="hidden md:flex flex-col gap-3">
-        {isLoading ? (
-          Array(4).fill(0).map((_, i) => (
-            <div key={i} className="animate-pulse bg-bg-card border border-border-subtle rounded-2xl h-[78px] w-full" />
-          ))
-        ) : doctors.length === 0 ? (
-          <div className="bg-bg-card border border-border-subtle rounded-2xl p-12 text-center text-text-muted font-bold w-full">
-            <Users size={36} className="mx-auto mb-2 opacity-40" />
-            {t('doctors.noRegisteredDoctors')}
+            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
+              <Building2 size={15} className="shrink-0" />
+              <span>{t('doctors.clinicAndAddress')}</span>
+            </div>
+
+            <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+              <PhoneCall size={15} className="shrink-0" />
+              <span>{t('doctors.contact')}</span>
+            </div>
+
+            <div className="flex items-center justify-center gap-1.5 text-purple-600 dark:text-purple-400 whitespace-nowrap">
+              <Calendar size={15} className="shrink-0" />
+              <span>{t('doctors.joinDate')}</span>
+            </div>
+
+            <div className="flex items-center justify-center gap-1.5 text-rose-600 dark:text-rose-400 whitespace-nowrap">
+              <ShieldCheck size={15} className="shrink-0" />
+              <span>{t('common.status')}</span>
+            </div>
           </div>
-        ) : (
-          doctors.map((doc) => {
-            const formattedDate = doc.createdAt
-              ? new Date(doc.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' })
-              : t('common.unknown');
 
-            return (
-              <div
-                key={doc.id}
-                className="grid grid-cols-[1.2fr_1.3fr_1.2fr_0.9fr_1fr] items-center w-full bg-bg-card border border-border-subtle rounded-2xl px-6 py-3.5 shadow-xs hover:shadow-md hover:border-primary/30 transition-all duration-200 gap-3"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-full border border-primary/20 shrink-0 overflow-hidden shadow-xs bg-primary-bg flex items-center justify-center">
-                    <img
-                      src={`https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name || t('doctors.doctor'))}&background=e0f2fe&color=367AFF&bold=true&size=64`}
-                      alt={doc.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="font-extrabold text-text-main text-[13px] truncate leading-tight">{doc.name}</span>
-                    <span className="text-[10px] text-text-muted font-medium mt-0.5">ID: #{doc.id}</span>
-                  </div>
-                </div>
+          {/* Rows */}
+          {isLoading ? (
+            Array(4).fill(0).map((_, i) => (
+              <div key={i} className="animate-pulse bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl h-[82px] w-full" />
+            ))
+          ) : doctors.length === 0 ? (
+            <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-12 text-center text-slate-400 font-bold w-full">
+              <Users size={40} className="mx-auto mb-2 opacity-30 text-slate-400" />
+              <span>{emptyMessage}</span>
+            </div>
+          ) : (
+            doctors.map((doc) => {
+              const formattedDate = doc.createdAt
+                ? new Date(doc.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' })
+                : t('common.unknown');
 
-                <div className="flex flex-col min-w-0 gap-1">
-                  <span className="font-bold text-text-main text-[13px] truncate flex items-center gap-2">
-                    <Building2 size={13} className="text-primary shrink-0" />
-                    {doc.clinicName || t('common.unknown')}
-                  </span>
-                  {(doc.city || doc.country || doc.clinicAddress) && (
-                    <div className="flex items-start gap-1.5 text-text-muted font-medium text-[10px] line-clamp-2">
-                      <MapPin size={12} className="text-danger shrink-0 mt-0.5" />
-                      <span>
-                        {[doc.clinicAddress, doc.city, doc.country].filter(Boolean).join('، ')}
+              return (
+                <div
+                  key={doc.id}
+                  className="grid grid-cols-[1.3fr_1.4fr_1.2fr_0.9fr_1.1fr] items-center w-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl px-6 py-4 shadow-xs hover:shadow-md hover:border-primary/30 transition-all duration-200 gap-4"
+                >
+                  {/* 1. الطبيب */}
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <div className="w-11 h-11 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center font-black text-xs border border-sky-500/20 shrink-0 overflow-hidden shadow-xs">
+                      <img
+                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name || t('doctors.doctor'))}&background=e0f2fe&color=367AFF&bold=true&size=64`}
+                        alt={doc.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-base leading-snug truncate" title={doc.name}>
+                        {doc.name}
+                      </span>
+                      <span className="text-[11px] font-mono text-slate-400 font-semibold mt-0.5 dir-ltr text-right">
+                        #{doc.id}
                       </span>
                     </div>
-                  )}
-                </div>
+                  </div>
 
-                <div className="flex flex-col gap-1.5">
-                  {doc.phone && (
-                    <span className="flex items-center gap-2 text-[11px] text-text-main font-medium">
-                      <Phone size={12} className="text-success shrink-0" />
-                      <span dir="ltr" className="truncate">{doc.phone}</span>
+                  {/* 2. العيادة والعنوان */}
+                  <div className="flex flex-col min-w-0 gap-1">
+                    <span className="font-bold text-slate-800 dark:text-slate-200 text-xs sm:text-sm truncate flex items-center gap-1.5" title={doc.clinicName}>
+                      <Building2 size={14} className="text-blue-500 shrink-0" />
+                      {doc.clinicName || t('common.unknown')}
                     </span>
-                  )}
-                  {doc.email && (
-                    <span className="flex items-center gap-2 text-[11px] text-text-muted font-medium">
-                      <Mail size={12} className="text-accent-indigo shrink-0" />
-                      <span dir="ltr" className="truncate max-w-[160px]">{doc.email}</span>
-                    </span>
-                  )}
-                </div>
+                    {(doc.city || doc.country || doc.clinicAddress) && (
+                      <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 text-xs font-medium truncate" title={[doc.clinicAddress, doc.city, doc.country].filter(Boolean).join('، ')}>
+                        <MapPin size={13} className="text-rose-500 shrink-0" />
+                        <span className="truncate">
+                          {[doc.clinicAddress, doc.city, doc.country].filter(Boolean).join('، ')}
+                        </span>
+                      </div>
+                    )}
+                  </div>
 
-                <div className="flex items-center gap-2 text-[12px] text-text-muted font-medium min-w-0">
-                  <Calendar size={13} className="text-accent-purple shrink-0" />
-                  <span className="truncate">{formattedDate}</span>
-                </div>
+                  {/* 3. التواصل */}
+                  <div className="flex flex-col gap-1 min-w-0">
+                    {doc.phone && (
+                      <span className="flex items-center gap-1.5 text-xs text-slate-700 dark:text-slate-300 font-mono font-bold">
+                        <Phone size={13} className="text-emerald-500 shrink-0" />
+                        <span dir="ltr" className="truncate">{doc.phone}</span>
+                      </span>
+                    )}
+                    {doc.email && (
+                      <span className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                        <Mail size={13} className="text-indigo-500 shrink-0" />
+                        <span dir="ltr" className="truncate max-w-[190px]">{doc.email}</span>
+                      </span>
+                    )}
+                  </div>
 
-                <div className="flex justify-center">
-                  <StatusBadge doc={doc} updatingDoctorId={updatingDoctorId} onOpenModal={openStatusModal} />
+                  {/* 4. تاريخ الانضمام */}
+                  <div className="flex justify-center">
+                    <div className="inline-flex items-center justify-center gap-1.5 text-xs text-slate-600 dark:text-slate-300 font-semibold bg-slate-100/80 dark:bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-200/60 dark:border-slate-700/60 whitespace-nowrap">
+                      <Calendar size={13} className="text-purple-500 shrink-0" />
+                      <span className="truncate">{formattedDate}</span>
+                    </div>
+                  </div>
+
+                  {/* 5. الحالة */}
+                  <div className="flex justify-center">
+                    <StatusBadge doc={doc} updatingDoctorId={updatingDoctorId} onOpenModal={openStatusModal} />
+                  </div>
                 </div>
-              </div>
-            );
-          })
-        )}
+              );
+            })
+          )}
+        </div>
       </div>
 
-      <div className="block md:hidden px-1 sm:px-0">
+      {/* ── Mobile view ── */}
+      <div className="block md:hidden space-y-3">
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {Array(3).fill(0).map((_, i) => (
@@ -186,9 +227,9 @@ const DoctorsTable = ({ doctors = [], isLoading, onToggleStatus, updatingDoctorI
             ))}
           </div>
         ) : doctors.length === 0 ? (
-          <div className="py-12 text-center text-text-muted dark:text-slate-400 font-bold">
-            <Users size={32} className="mx-auto mb-3 text-text-muted/40 dark:text-slate-600" />
-            <p className="text-sm">{t('doctors.noRegisteredDoctors')}</p>
+          <div className="py-12 text-center text-slate-400 font-bold bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800">
+            <Users size={32} className="mx-auto mb-3 opacity-40 text-slate-400" />
+            <p className="text-sm font-zain">{emptyMessage}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 auto-rows-max">

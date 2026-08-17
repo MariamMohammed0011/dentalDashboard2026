@@ -44,7 +44,7 @@ const DoctorsHeader = ({ selectedStatus, onStatusChange }) => {
         </h1>
         {!isLoading && count > 0 && (
           <div
-            onClick={() => navigate('/dashboard/membership-requests')}
+            onClick={() => navigate('/dashboard/membership-requests?tab=doctor')}
             className="flex items-center justify-between gap-2.5 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl px-3.5 py-1.5 sm:py-2 hover:shadow-md hover:border-primary/20 dark:hover:border-primary/30 transition-all duration-300 cursor-pointer group select-none shadow-sm"
           >
             <span className="text-xs font-black text-primary whitespace-nowrap">

@@ -249,6 +249,8 @@
     "contact": "التواصل",
     "joinDate": "تاريخ الانضمام",
     "noRegisteredDoctors": "لا يوجد أطباء مسجلون حالياً",
+    "noMatchingSearch": "لا يوجد أطباء طابقوا شروط البحث",
+    "searchPlaceholder": "ابحث باسم الطبيب...",
     "joinedAt": "انضم في",
     "activeAccount": "حساب نشط",
     "inactiveAccount": "معلق / غير نشط",

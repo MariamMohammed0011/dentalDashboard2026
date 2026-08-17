@@ -1,12 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { membershipApi } from '../services/membershipApi';
 import { useSearch } from '../../../components/shared/Search/hooks/useSearch';
+
 export const useMembership = () => {
+  const [searchParams] = useSearchParams();
+  const tabFromUrl = searchParams.get('tab');
+  const initialTab = (tabFromUrl && ['all', 'doctor', 'lab'].includes(tabFromUrl)) ? tabFromUrl : 'all';
+
   // ── حالات التحكم في القائمة والفلترة ──
-  const [activeTab, setActiveTab] = useState('doctor');
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    const currentTabParam = searchParams.get('tab');
+    if (currentTabParam && ['all', 'doctor', 'lab'].includes(currentTabParam)) {
+      setActiveTab(currentTabParam);
+    }
+  }, [searchParams]);
 
   // ── حالة التحكم في المودال (ID المستخدم المختار) ──
   const [selectedUserId, setSelectedUserId] = useState(null);

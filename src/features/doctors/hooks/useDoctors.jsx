@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { doctorsApi } from '../services/doctorsApi';
 import { useUpdateUserStatus } from '../../../hooks/useUpdateUserStatus';
+import { useSearch } from '../../../components/shared/Search/hooks/useSearch';
 
 export const useDoctors = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -19,13 +20,22 @@ export const useDoctors = () => {
 
   const allDoctors = data?.doctors || [];
 
-  const filteredDoctors = useMemo(() => {
-    if (selectedStatus === 'all') return allDoctors;
+  const { searchQuery, setSearchQuery, filteredData: searchFilteredDoctors } = useSearch(
+    allDoctors,
+    ['name']
+  );
 
-    return allDoctors.filter((doc) => {
-      return String(doc.status || '').toLowerCase() === selectedStatus.toLowerCase();
-    });
-  }, [allDoctors, selectedStatus]);
+  const filteredDoctors = useMemo(() => {
+    let result = searchFilteredDoctors;
+
+    if (selectedStatus !== 'all') {
+      result = result.filter((doc) => {
+        return String(doc.status || '').toLowerCase() === selectedStatus.toLowerCase();
+      });
+    }
+
+    return result;
+  }, [searchFilteredDoctors, selectedStatus]);
 
   const limit = 6;
   const totalDoctors = filteredDoctors.length;
@@ -57,6 +67,8 @@ export const useDoctors = () => {
     setCurrentPage,
     selectedStatus,
     setSelectedStatus,
+    searchQuery,
+    setSearchQuery,
     toggleStatus: (id, nextStatus) => updateStatus({ id, status: nextStatus, type: 'doctor' }),
     updatingDoctorId: updatingId,
   };

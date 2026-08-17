@@ -28,7 +28,7 @@ const OrdersPage = () => {
   }) : [];
 
   return (
-    <div className="flex flex-col w-full gap-8 px-6 pb-10 min-h-full" dir="rtl">
+    <div className="flex flex-col w-full gap-8 px-1 pb-10 min-h-full" dir="rtl">
       <div className="flex flex-col w-full">
         <div className="w-full mb-4">
           <OrdersHeader 

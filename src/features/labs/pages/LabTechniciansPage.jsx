@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
   FlaskConical,
   Eye,
@@ -9,6 +9,7 @@ import {
   Building2,
   MapPin,
   ChevronDown,
+  ChevronLeft,
   Loader2,
   Check
 } from 'lucide-react';
@@ -18,6 +19,7 @@ import UserStatusModal from '../../../components/shared/UserStatusModal';
 import { useLabTechnicians } from '../hooks/useLabTechnicians';
 import Search from '../../../components/shared/Search/Search';
 import MembershipPagination from '../../membership/components/MembershipPagination';
+import { useMembership } from '../../membership/hooks/useMembership';
 
 // 🎨 مكون شارة الحالة
 const StatusBadgeButton = ({ tech, updatingTechId, onOpenModal }) => {
@@ -28,51 +30,46 @@ const StatusBadgeButton = ({ tech, updatingTechId, onOpenModal }) => {
   if (isCurrentlyUpdating) {
     return (
       <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-neutral-light-gray/40 text-text-muted animate-pulse select-none border border-border-subtle">
-        <Loader2 size={11} className="animate-spin text-accent-indigo shrink-0" />
-        <span className="font-zain">{t('common.processing') || 'جاري التحديث...'}</span>
+        <Loader2 size={11} className="animate-spin text-primary shrink-0" />
+        <span>{t('common.processing')}</span>
       </div>
     );
   }
 
   const getBadgeStyle = () => {
-    if (currentStatus === 'active' || currentStatus === '3') {
+    if (currentStatus === 'active' || currentStatus === '2') {
       return "bg-success-bg text-success border-success/20 hover:bg-success-bg/80";
     }
-    if (currentStatus === 'suspended' || currentStatus === '5') {
+    if (currentStatus === 'suspended' || currentStatus === '4') {
       return "bg-danger-bg text-danger border-danger/20 hover:bg-danger-bg/80";
     }
-    if (currentStatus === 'readonly' || currentStatus === '4') {
+    if (currentStatus === 'readonly' || currentStatus === 'read_only' || currentStatus === '3') {
       return "bg-accent-indigo/10 text-accent-indigo border-accent-indigo/20 hover:bg-accent-indigo/20";
     }
-    if (currentStatus === 'pendingpayment' || currentStatus === '2') {
-      return "bg-purple-500/10 text-purple-600 border-purple-500/20 hover:bg-purple-500/20";
-    }
-    if (currentStatus === 'pendingadminapproval' || currentStatus === 'pending' || currentStatus === '1') {
+    if (currentStatus === 'pendingadminapproval' || currentStatus === 'pending_admin_approval' || currentStatus === 'pending' || currentStatus === '1') {
       return "bg-warning-bg text-warning border-warning/20 hover:bg-warning-bg/80";
     }
-    if (currentStatus === 'pendingverification' || currentStatus === '0') {
+    if (currentStatus === 'pendingverification' || currentStatus === 'pending_verification' || currentStatus === '0') {
       return "bg-orange-500/10 text-orange-500 border-orange-500/20 hover:bg-orange-500/20";
     }
     return "bg-neutral-light-gray text-text-muted border-border-subtle hover:bg-neutral-light-gray/80";
   };
 
   const getStatusLabel = () => {
-    if (currentStatus === 'active' || currentStatus === '3') return t('common.active') || 'نشط';
-    if (currentStatus === 'suspended' || currentStatus === '5') return t('common.suspended') || 'معلق';
-    if (currentStatus === 'readonly' || currentStatus === '4') return t('common.readOnly') || 'قراءة فقط';
-    if (currentStatus === 'pendingpayment' || currentStatus === '2') return t('common.pendingPayment') || 'بانتظار الدفع';
-    if (currentStatus === 'pendingadminapproval' || currentStatus === 'pending' || currentStatus === '1') return t('common.pendingAdminApproval') || 'قيد المراجعة';
-    if (currentStatus === 'pendingverification' || currentStatus === '0') return t('common.pendingVerification') || 'قيد التثبت';
-    return tech.status || t('technicians.unspecified') || 'غير محدد';
+    if (currentStatus === 'active' || currentStatus === '2') return t('common.active') || 'نشط';
+    if (currentStatus === 'suspended' || currentStatus === '4') return t('common.suspended') || 'معلق';
+    if (currentStatus === 'readonly' || currentStatus === 'read_only' || currentStatus === '3') return t('common.readOnly') || 'قراءة فقط';
+    if (currentStatus === 'pendingadminapproval' || currentStatus === 'pending_admin_approval' || currentStatus === 'pending' || currentStatus === '1') return t('common.pending') || 'قيد الانتظار';
+    if (currentStatus === 'pendingverification' || currentStatus === 'pending_verification' || currentStatus === '0') return t('common.pendingVerification') || 'قيد التثبت';
+    return tech.status || t('common.unknown');
   };
 
   const getDotColor = () => {
-    if (currentStatus === 'active' || currentStatus === '3') return "bg-success animate-pulse";
-    if (currentStatus === 'suspended' || currentStatus === '5') return "bg-danger";
-    if (currentStatus === 'readonly' || currentStatus === '4') return "bg-accent-indigo";
-    if (currentStatus === 'pendingpayment' || currentStatus === '2') return "bg-purple-500 animate-pulse";
-    if (currentStatus === 'pendingadminapproval' || currentStatus === 'pending' || currentStatus === '1') return "bg-warning animate-pulse";
-    if (currentStatus === 'pendingverification' || currentStatus === '0') return "bg-orange-500 animate-pulse";
+    if (currentStatus === 'active' || currentStatus === '2') return "bg-success animate-pulse";
+    if (currentStatus === 'suspended' || currentStatus === '4') return "bg-danger";
+    if (currentStatus === 'readonly' || currentStatus === 'read_only' || currentStatus === '3') return "bg-accent-indigo";
+    if (currentStatus === 'pendingadminapproval' || currentStatus === 'pending_admin_approval' || currentStatus === 'pending' || currentStatus === '1') return "bg-warning animate-pulse";
+    if (currentStatus === 'pendingverification' || currentStatus === 'pending_verification' || currentStatus === '0') return "bg-orange-500 animate-pulse";
     return "bg-text-muted";
   };
 
@@ -83,11 +80,11 @@ const StatusBadgeButton = ({ tech, updatingTechId, onOpenModal }) => {
         e.stopPropagation();
         onOpenModal(tech);
       }}
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs  border transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-sm font-medium hover:shadow-md ${getBadgeStyle()}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[10px] font-black border transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-xs ${getBadgeStyle()}`}
     >
       <span className={`w-2 h-2 rounded-full shrink-0 ${getDotColor()}`} />
-      <span className="font-zain text-xs sm:text-sm">{getStatusLabel()}</span>
-      <ChevronDown size={10} className="opacity-70 shrink-0" />
+      <span>{getStatusLabel()}</span>
+      <ChevronDown size={11} className="opacity-70 shrink-0" />
     </button>
   );
 };
@@ -103,7 +100,6 @@ const StatusFilterDropdown = ({ value, onChange }) => {
     { id: 'active', label: t('common.active') },
     { id: 'suspended', label: t('common.suspended') },
     { id: 'readonly', label: t('common.readOnly') },
-    // { id: 'pendingpayment', label: t('common.pendingPayment') },
     { id: 'pendingadminapproval', label: t('common.pendingAdminApproval') },
   ];
 
@@ -170,7 +166,12 @@ const StatusFilterDropdown = ({ value, onChange }) => {
 
 const LabTechniciansPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { requests, isLoading: isLoadingRequests } = useMembership();
+  const pendingLabRequests = requests?.filter(r => r.status === 'pending' && r.type === 'lab') || [];
+  const pendingCount = pendingLabRequests.length;
+
   const {
     technicians,
     pagination,
@@ -206,10 +207,36 @@ const LabTechniciansPage = () => {
 
       {/* ── الهيدر العلوي ── */}
       <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center py-2 px-0 gap-4 w-full">
-        <h1 className="text-xl sm:text-3xl font-zain font-black text-text-main flex items-center gap-3 shrink-0">
-          <FlaskConical size={28} className="text-accent-indigo shrink-0" />
-          {t('technicians.title') || 'فنيي المخابر'}
-        </h1>
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full sm:w-auto justify-between sm:justify-start">
+          <h1 className="text-xl sm:text-3xl font-zain font-black text-text-main flex items-center gap-3 shrink-0">
+            <FlaskConical size={28} className="text-accent-indigo shrink-0" />
+            {t('technicians.title') || 'فنيي المخابر'}
+          </h1>
+          {!isLoadingRequests && pendingCount > 0 && (
+            <div
+              onClick={() => navigate('/dashboard/membership-requests?tab=lab')}
+              className="flex items-center justify-between gap-2.5 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl px-3.5 py-1.5 sm:py-2 hover:shadow-md hover:border-primary/20 dark:hover:border-primary/30 transition-all duration-300 cursor-pointer group select-none shadow-sm"
+            >
+              <span className="text-xs font-black text-primary whitespace-nowrap">
+                {t('doctors.pendingApprovalRequests') || 'طلبات بانتظار الموافقة'}
+              </span>
+
+              <div className="flex items-center gap-2">
+                <div className="flex items-center">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-white dark:border-slate-900 bg-primary text-[10px] text-white flex items-center justify-center font-black shadow-sm z-30 ring-1 ring-primary/10">
+                    +{pendingCount}
+                  </div>
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-white dark:border-slate-900 bg-slate-100 dark:bg-slate-800 -mr-2.5 shadow-sm z-20" />
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-white dark:border-slate-900 bg-slate-200 dark:bg-slate-700 -mr-2.5 shadow-sm z-10" />
+                </div>
+
+                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-350 shrink-0">
+                  <ChevronLeft size={15} className="group-hover:translate-x-[-2px] transition-transform" />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
          
