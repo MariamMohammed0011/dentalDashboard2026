@@ -110,57 +110,56 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-md" dir="rtl">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 xs:p-4 bg-black/70 backdrop-blur-md overflow-y-auto font-zain" dir="rtl">
           <motion.div
             initial={{ scale: 0.92, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.92, opacity: 0, y: 20 }}
             transition={{ duration: 0.25 }}
-            className="bg-white dark:bg-bg-card rounded-[2.5rem] shadow-2xl max-w-lg w-full max-h-[92vh] flex flex-col overflow-hidden border border-border-main/80 relative"
+            className="bg-white dark:bg-slate-900 rounded-2xl xs:rounded-3xl shadow-2xl w-full max-w-sm xs:max-w-md sm:max-w-lg max-h-[92vh] flex flex-col overflow-hidden border border-slate-200/60 dark:border-slate-700/60 relative my-auto"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-500/10 via-indigo-500/5 to-primary/10 dark:from-slate-800 dark:to-slate-900 p-5 sm:p-6 text-right flex items-center justify-between border-b border-border-main/60 flex-shrink-0">
-              <div className="flex items-center gap-3.5">
-                <div className="p-3 bg-gradient-to-br from-primary/20 via-blue-500/20 to-indigo-500/20 text-primary rounded-2xl border border-primary/20 shadow-sm shrink-0">
-                  <Megaphone size={22} className="text-primary animate-pulse" />
+            <div className="bg-gradient-to-r from-blue-50 via-indigo-50/50 to-blue-50/30 dark:from-slate-800/60 dark:via-slate-800/50 dark:to-slate-800/60 p-4 xs:p-5 sm:p-6 text-right flex items-start xs:items-center justify-between border-b border-slate-200/60 dark:border-slate-700/60 flex-shrink-0 gap-3">
+              <div className="flex items-start xs:items-center gap-2.5 xs:gap-3.5 flex-1 min-w-0">
+                <div className="p-2 xs:p-2.5 sm:p-3 bg-gradient-to-br from-blue-500/20 via-indigo-500/15 to-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg xs:rounded-xl sm:rounded-2xl border border-blue-200/60 dark:border-blue-800/40 shadow-sm shrink-0">
+                  <Megaphone size={18} className="xs:w-6 xs:h-6 sm:w-7 sm:h-7 animate-pulse" />
                 </div>
-                <div>
-                  <h3 className="text-lg sm:text-xl font-black text-text-main">{t('ads.addAdForUserModal.title')}</h3>
-                  <p className="text-xs text-text-muted font-medium mt-0.5">{t('ads.addAdModal.subtitle')}</p>
+                <div className="min-w-0">
+                  <h3 className="text-base xs:text-lg sm:text-xl font-black text-slate-900 dark:text-white break-words leading-tight">{t('ads.addAdForUserModal.title')}</h3>
+                  <p className="text-[11px] xs:text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">{t('ads.addAdModal.subtitle')}</p>
                 </div>
               </div>
-              <button 
+              <button
                 type="button"
                 onClick={onClose}
-                className="p-2 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-2xl text-text-muted hover:text-text-main transition-colors cursor-pointer"
+                className="p-1.5 xs:p-2 hover:bg-slate-300/40 dark:hover:bg-slate-700 rounded-lg xs:rounded-xl sm:rounded-2xl text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors cursor-pointer shrink-0"
                 disabled={isSubmitting}
               >
-                <X size={20} strokeWidth={2.5} />
+                <X size={18} className="xs:w-5 xs:h-5" strokeWidth={2.5} />
               </button>
             </div>
 
-           
-            <form onSubmit={handleSubmit} className="flex flex-col flex-grow overflow-hidden">
-              <div className="p-5 sm:p-6 flex flex-col gap-4.5 text-right overflow-y-auto flex-grow custom-scrollbar">
-                
-              
-                <div className="flex flex-col gap-1.5 relative">
-                  <label className="text-text-main font-bold text-xs sm:text-sm flex items-center gap-1.5 mr-1">
-                    <span className="p-1 rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400">
-                      <User size={14} />
+
+            <form onSubmit={handleSubmit} className="flex flex-col flex-grow overflow-hidden font-zain">
+              <div className="p-4 xs:p-5 sm:p-6 sm:p-7 flex flex-col gap-3.5 xs:gap-4 sm:gap-5 text-right overflow-y-auto flex-grow custom-scrollbar">
+
+                <div className="flex flex-col gap-1.5 xs:gap-2 relative">
+                  <label className="text-slate-700 dark:text-slate-300 font-black text-xs xs:text-sm flex items-center gap-1.5 xs:gap-2 mr-1">
+                    <span className="p-1 xs:p-1.5 rounded-lg xs:rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400 flex-shrink-0">
+                      <User size={14} className="xs:w-4 xs:h-4" />
                     </span>
-                    {t('ads.addAdModal.userLabel')} <span className="text-rose-500">*</span>
+                    {t('ads.addAdModal.userLabel')} <span className="text-red-500">*</span>
                   </label>
-                  
+
                   {selectedUser ? (
-                    <div className="flex items-center justify-between bg-blue-500/10 border-2 border-blue-500/30 rounded-2xl p-3.5 transition-all">
-                      <div className="flex items-center gap-3 text-right">
-                        <div className="p-2.5 bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-xl border border-blue-500/30 shrink-0">
-                          <User size={18} />
+                    <div className="flex items-center justify-between gap-2 xs:gap-3 bg-gradient-to-r from-blue-50 to-blue-50/50 dark:from-blue-900/20 dark:to-blue-900/10 border-2 border-blue-200/60 dark:border-blue-800/40 rounded-lg xs:rounded-xl sm:rounded-2xl p-2.5 xs:p-3 sm:p-3.5 transition-all">
+                      <div className="flex items-center gap-2 xs:gap-3 text-right flex-1 min-w-0">
+                        <div className="p-1.5 xs:p-2 bg-gradient-to-br from-blue-500/20 to-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg xs:rounded-lg border border-blue-200/60 dark:border-blue-800/40 shrink-0">
+                          <User size={16} className="xs:w-5 xs:h-5" />
                         </div>
-                        <div>
-                          <div className="text-sm font-black text-text-main">{selectedUser.name}</div>
-                          <div className="text-xs text-text-muted font-medium mt-0.5">
+                        <div className="min-w-0">
+                          <div className="text-xs xs:text-sm font-black text-slate-900 dark:text-white truncate">{selectedUser.name}</div>
+                          <div className="text-[10px] xs:text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5 truncate">
                             {selectedUser.phone} {selectedUser.namePlace ? `| ${selectedUser.namePlace}` : ''}
                           </div>
                         </div>
@@ -171,10 +170,10 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                           setSelectedUser(null);
                           setUserSearch('');
                         }}
-                        className="p-2 hover:bg-blue-500/20 rounded-xl text-blue-600 dark:text-blue-400 transition-colors cursor-pointer"
+                        className="p-1.5 hover:bg-blue-500/20 rounded-lg text-blue-600 dark:text-blue-400 transition-colors cursor-pointer shrink-0"
                         disabled={isSubmitting}
                       >
-                        <X size={16} strokeWidth={2.5} />
+                        <X size={14} className="xs:w-4 xs:h-4" strokeWidth={2.5} />
                       </button>
                     </div>
                   ) : (
@@ -189,7 +188,7 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
                         }}
                         onFocus={() => setIsDropdownOpen(true)}
                         disabled={isLoadingUsers || isSubmitting}
-                        className="bg-gray-50 dark:bg-slate-900 border-2 border-border-main/70 focus:border-primary rounded-2xl pr-11 pl-10 py-3 text-text-main font-medium text-sm focus:outline-none transition-colors w-full text-right"
+                        className="bg-gradient-to-r from-slate-50 to-slate-50/50 dark:from-slate-800/60 dark:to-slate-800/40 border-2 border-slate-200/60 dark:border-slate-700/60 rounded-lg xs:rounded-xl sm:rounded-2xl pr-10 xs:pr-11 pl-9 xs:pl-10 py-2.5 xs:py-3 text-slate-800 dark:text-slate-100 font-semibold text-xs xs:text-sm focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 dark:focus:border-blue-400 transition-all w-full text-right placeholder-slate-400/60"
                       />
                       <div className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-lg bg-blue-500/10 text-blue-500 pointer-events-none">
                         <Search size={16} />
