@@ -44,13 +44,13 @@ export default function LoginForm() {
                 />
               </div>
 
-              <div className="flex items-center justify-start px-2">
+              {/* <div className="flex items-center justify-start px-2">
                 <label className="flex items-center gap-2 cursor-pointer group">
                   <input type="checkbox" name="rememberMe" className="w-4 h-4 rounded border-none text-primary focus:ring-0 shadow-sm" />
 
                   <span className="text-xs font-bold text-gray-600 group-hover:text-primary">{t('auth.rememberMe')}</span>
                 </label>
-              </div>
+              </div> */}
 
               <div className="pt-4">
                 <button
