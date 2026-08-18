@@ -88,7 +88,7 @@ export const NavItem = ({ to, labelKey, icon: Icon, isCollapsed, onClick, childr
                     key={child.to}
                     to={child.to}
                     onClick={onClick}
-                    className={`py-2 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-right ${
+                    className={`py-2 px-3 rounded-xl text-xs sm:text-sm font-bold font-zain transition-all duration-200 text-right ${
                       isChildActive
                         ? "text-primary font-black bg-primary/10 dark:bg-primary/20 shadow-2xs"
                         : "text-text-muted hover:text-primary hover:bg-white/10 dark:hover:bg-white/5"
@@ -173,7 +173,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
   return (
     <aside 
       className={`h-screen flex flex-col py-4 bg-bg-main z-20 transition-all duration-300 relative border-l border-border-main hidden lg:flex flex-shrink-0 select-none ${
-        isCollapsed ? "w-[60px] min-w-[60px] max-w-[60px]" : "w-[220px] min-w-[220px] max-w-[220px]"
+        isCollapsed ? "w-[60px] min-w-[60px] max-w-[60px]" : "w-[230px] min-w-[230px] max-w-[230px]"
       }`} 
       dir="rtl"
     > 
