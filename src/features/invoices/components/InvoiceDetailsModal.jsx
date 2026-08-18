@@ -55,32 +55,50 @@ export default function InvoiceDetailsModal({ isOpen, onClose, invoice }) {
             className="relative bg-white dark:bg-slate-950 w-full max-w-sm xs:max-w-md sm:max-w-2xl lg:max-w-3xl rounded-lg xs:rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden my-auto sm:my-6 border border-border-main flex flex-col text-right font-zain select-none print:shadow-none print:border-none print:w-full print:max-w-none print:my-0 print:rounded-none"
           >
             {/* Modal Header Bar (Hidden in Print) */}
-            <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 text-white print:hidden">
+            <div className="relative bg-white dark:bg-slate-900 border-b border-border-main/60 print:hidden">
               {/* Close Button - Top Right for mobile */}
               <button
                 type="button"
                 onClick={onClose}
-                className="absolute top-2 right-2 sm:hidden p-1.5 xs:p-2 bg-white/10 hover:bg-rose-500/20 text-white hover:text-rose-400 rounded-lg xs:rounded-lg transition-all cursor-pointer z-10"
+                className="absolute top-2 right-2 sm:hidden p-1.5 xs:p-2 bg-slate-200/60 dark:bg-slate-800 text-slate-500 dark:text-slate-300 hover:bg-rose-500 hover:text-white rounded-lg transition-all cursor-pointer z-10"
               >
                 <X size={16} className="xs:w-5 xs:h-5" />
               </button>
 
-              <div className="p-2.5 xs:p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 xs:gap-3 sm:gap-3 border-b border-slate-700/60">
+              <div className="p-2.5 xs:p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 xs:gap-3 sm:gap-4">
                 <div className="flex items-start gap-2 xs:gap-3 flex-1 min-w-0 pr-8 sm:pr-0">
-                  <div className="w-8 xs:w-9 sm:w-10 h-8 xs:h-9 sm:h-10 rounded-lg xs:rounded-lg sm:rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20 shadow-sm shrink-0">
-                    <ShieldCheck size={18} className="xs:w-5 xs:h-5 sm:w-6 sm:h-6 text-emerald-400" />
+                  <div className="w-8 xs:w-10 sm:w-12 h-8 xs:h-10 sm:h-12 rounded-lg xs:rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 text-primary flex items-center justify-center border border-primary/30 shadow-sm shrink-0">
+                    <ShieldCheck size={18} className="xs:w-6 xs:h-6 sm:w-7 sm:h-7 text-primary" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-xs xs:text-sm sm:text-lg font-black tracking-tight font-zain break-words">{t('invoices.invoiceDetailsTitle')} #{invoice.id}</h3>
-                    <p className="text-[10px] xs:text-xs text-slate-400 font-medium font-zain mt-0.5">{invoice.categoryLabel || 'فاتورة رسمية'}</p>
+                    <h3 className="text-xs xs:text-sm sm:text-lg font-black tracking-tight font-zain text-text-main break-words">{t('invoices.invoiceDetailsTitle')} #{invoice.id}</h3>
+                    <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                      <span className={`inline-flex items-center gap-1 px-2 xs:px-2.5 py-0.5 xs:py-1 rounded-lg text-[10px] xs:text-xs font-bold border ${
+                        isPaid
+                          ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                          : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                      }`}>
+                        {isPaid ? <CheckCircle2 size={12} className="xs:w-3.5 xs:h-3.5" /> : <Clock size={12} className="xs:w-3.5 xs:h-3.5" />}
+                        <span>{isPaid ? t('invoices.paid') : t('invoices.unpaid')}</span>
+                      </span>
+                      <span className="text-[10px] xs:text-xs text-text-muted font-medium">{invoice.categoryLabel || 'فاتورة رسمية'}</span>
+                    </div>
                   </div>
                 </div>
 
                 <div className="hidden sm:flex items-center gap-2 shrink-0">
                   <button
                     type="button"
+                    onClick={handlePrint}
+                    className="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white text-text-main dark:text-slate-300 rounded-lg transition-all cursor-pointer flex items-center gap-2"
+                    title="طباعة الفاتورة"
+                  >
+                    <Printer size={18} />
+                  </button>
+                  <button
+                    type="button"
                     onClick={onClose}
-                    className="p-2 bg-white/10 hover:bg-rose-500/20 text-white hover:text-rose-400 rounded-xl transition-all cursor-pointer shrink-0"
+                    className="p-2 bg-slate-200/60 dark:bg-slate-800 text-slate-500 dark:text-slate-300 hover:bg-rose-500 hover:text-white rounded-lg transition-all cursor-pointer"
                   >
                     <X size={20} />
                   </button>
@@ -88,7 +106,7 @@ export default function InvoiceDetailsModal({ isOpen, onClose, invoice }) {
               </div>
 
               {/* Mobile Action Bar */}
-              <div className="sm:hidden p-2 xs:p-3 flex gap-1.5 xs:gap-2 border-t border-slate-700/60">
+              <div className="sm:hidden p-2 xs:p-3 flex gap-1.5 xs:gap-2 border-t border-border-main/40">
                 <button
                   type="button"
                   onClick={handlePrint}
@@ -105,31 +123,21 @@ export default function InvoiceDetailsModal({ isOpen, onClose, invoice }) {
             <div className="p-2.5 xs:p-4 sm:p-8 space-y-3 xs:space-y-4 sm:space-y-6 max-h-[82vh] overflow-y-auto custom-scrollbar print:max-h-none print:overflow-visible bg-white dark:bg-slate-900 text-text-main font-zain">
 
               {/* Top Branding & Invoice Status Header */}
-              <div className="border-b border-border-main/60 pb-3 xs:pb-4 sm:pb-6">
-                <div className="flex items-start gap-2 xs:gap-3 sm:gap-4 mb-3 xs:mb-4">
-                  <div className="p-1 xs:p-1.5 sm:p-2.5 rounded-lg xs:rounded-lg sm:rounded-2xl bg-primary/10 border border-primary/20 shrink-0">
-                    <img src={logoImg} alt="Platform Logo" className="w-8 xs:w-9 sm:w-12 h-8 xs:h-9 sm:h-12 object-contain" />
+              <div className="border-b border-border-main/60 pb-4 xs:pb-5 sm:pb-6">
+                <div className="flex items-center justify-between gap-3 xs:gap-4 mb-4 xs:mb-5">
+                  <div className="flex items-center gap-2 xs:gap-3 sm:gap-4 flex-1">
+                    <div className="p-1.5 xs:p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/30 shrink-0 shadow-sm">
+                      <img src={logoImg} alt="Platform Logo" className="w-8 xs:w-10 sm:w-12 h-8 xs:h-10 sm:h-12 object-contain" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h2 className="text-xs xs:text-sm sm:text-lg font-black text-text-main tracking-tight break-words leading-tight">{t('invoices.dentalDigitalPlatform')}</h2>
+                      <p className="text-[9px] xs:text-xs text-text-muted font-medium mt-0.5">Digital Platform for Dental Services</p>
+                    </div>
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <h2 className="text-xs xs:text-sm sm:text-xl font-black text-text-main tracking-tight break-words">{t('invoices.dentalDigitalPlatform')}</h2>
-                    <p className="text-[10px] xs:text-xs text-text-muted font-bold mt-0.5">Dental Platform Advertising & Invoicing</p>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-2 xs:gap-3 sm:flex sm:justify-between sm:items-center">
-                  <div className="col-span-1">
-                    <p className="text-[10px] xs:text-xs text-text-muted font-bold uppercase tracking-wider mb-0.5">رقم الفاتورة</p>
-                    <p className="text-sm xs:text-base sm:text-lg font-black text-text-main dir-ltr">#{invoice.id}</p>
-                  </div>
-                  <div className="col-span-1 flex justify-end">
-                    <span className={`inline-flex items-center gap-1 xs:gap-1.5 px-2 xs:px-3 py-1 xs:py-1.5 rounded-full text-[10px] xs:text-xs font-black border ${
-                      isPaid
-                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 shadow-2xs'
-                        : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20 shadow-2xs'
-                    }`}>
-                      {isPaid ? <CheckCircle2 size={14} className="xs:w-4 xs:h-4 text-emerald-500 shrink-0" /> : <Clock size={14} className="xs:w-4 xs:h-4 text-rose-500 shrink-0" />}
-                      <span>{isPaid ? t('invoices.paid') : t('invoices.unpaid')}</span>
-                    </span>
+                  <div className="flex flex-col items-end gap-1.5 shrink-0">
+                    <p className="text-[10px] xs:text-xs text-text-muted font-bold uppercase tracking-wider">رقم الفاتورة</p>
+                    <p className="text-base xs:text-lg sm:text-xl font-black text-primary dir-ltr">#{invoice.id}</p>
                   </div>
                 </div>
               </div>
