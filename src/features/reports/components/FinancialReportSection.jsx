@@ -64,19 +64,19 @@ export default function FinancialReportSection({ financialData, isLoading }) {
     >
       {/* Title Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-sm shrink-0">
-            <TrendingUp size={24} />
+       
+       
+       <div className="flex items-center gap-4">
+          <div className="p-3.5 rounded-2xl bg-emerald-500/10 text-emerald-500  shadow-sm border border-primary/20 flex items-center justify-center">
+            <TrendingUp size={20} />
           </div>
-          <div>
-            <h2 className="text-xl font-zain sm:text-2xl font-black text-text-main tracking-tight">{t('reports.financial.title')}</h2>
-            <p className="text-xs font-zain sm:text-sm text-text-muted mt-0.5 font-medium">{t('reports.financial.desc')}</p>
+          <div className="text-right">
+            <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight">
+              {t('reports.financial.title')}
+            </h1>
+            
           </div>
         </div>
-        <span className="flex items-center gap-1.5 text-xs font-bold font-zain px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-          <Sparkles size={14} className="animate-pulse" />
-          {t('common.active')}
-        </span>
       </div>
 
       {/* KPI Cards Grid */}

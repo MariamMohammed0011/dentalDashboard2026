@@ -58,17 +58,17 @@ const InterventionTable = ({ complaints = [], isLoading, onViewDetails }) => {
   return (
     <div className="font-zain" dir="rtl">
       {/* Desktop Table View */}
-      <div className="hidden lg:block overflow-hidden border border-slate-200/80 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-900 shadow-xs">
-        <table className="w-full text-right border-collapse table-fixed">
+      <div className="hidden lg:block overflow-hidden border border-slate-200/80 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900 shadow-xs">
+        <table className="w-full text-center border-collapse table-fixed">
           <thead>
             <tr className="bg-slate-50/90 dark:bg-slate-800/50 border-b border-slate-200/80 dark:border-slate-800 text-xs font-black text-slate-600 dark:text-slate-300">
-              <th className="py-4 px-4 text-right w-[6%]">
+              <th className="py-4 px-4 text-center w-[6%]">
                 <span>#ID</span>
               </th>
-              <th className="py-4 px-4 text-right w-[22%]">
-                <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+              <th className="py-4 px-4 text-center w-[20%] ">
+                <div className="flex items-center text-center justify-center   gap-1.5 text-slate-500 dark:text-slate-400">
                   <Building2 size={15} className="text-sky-500 shrink-0" />
-                  <span>المنشئ / العيادة</span>
+                  <span>  العيادة</span>
                 </div>
               </th>
               <th className="py-4 px-4 text-center w-[24%]">
@@ -77,8 +77,8 @@ const InterventionTable = ({ complaints = [], isLoading, onViewDetails }) => {
                   <span>الجهة الموجه إليها</span>
                 </div>
               </th>
-              <th className="py-4 px-4 text-right w-[26%]">
-                <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+              <th className="py-4 px-4 text-center w-[28%]">
+                <div className="flex items-center text-center justify-center gap-1.5 text-slate-500 dark:text-slate-400">
                   <MessageSquare size={15} className="text-indigo-500 shrink-0" />
                   <span>مضمون الشكوى</span>
                 </div>
@@ -90,7 +90,7 @@ const InterventionTable = ({ complaints = [], isLoading, onViewDetails }) => {
                 </div>
               </th>
               <th className="py-4 px-4 text-center w-[7%]">
-                <span>الإجراءات</span>
+                <span>عرض</span>
               </th>
             </tr>
           </thead>
@@ -113,19 +113,19 @@ const InterventionTable = ({ complaints = [], isLoading, onViewDetails }) => {
               return (
                 <tr key={id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors duration-150 group">
                   {/* Complaint ID */}
-                  <td className="py-4 px-4 text-right">
+                  <td className="py-4 px-4 text-center">
                     <span className="text-xs font-mono font-bold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 px-2.5 py-1 rounded-xl">
                       #{id}
                     </span>
                   </td>
 
                   {/* Doctor & Clinic */}
-                  <td className="py-4 px-4 text-right">
+                  <td className="py-4 px-4 text-center">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-9 h-9 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center font-black text-xs border border-sky-500/20 shrink-0">
+                      {/* <div className="w-9 h-9 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center font-black text-xs border border-sky-500/20 shrink-0">
                         {user?.name ? user.name.charAt(0) : 'ط'}
-                      </div>
-                      <div className="text-right min-w-0">
+                      </div> */}
+                      <div className="text-center min-w-0">
                         <p className="font-bold text-slate-900 dark:text-slate-100 text-sm truncate" title={user?.name}>
                           {user?.name || t('doctors.doctor') || 'طبيب'}
                         </p>
@@ -154,7 +154,7 @@ const InterventionTable = ({ complaints = [], isLoading, onViewDetails }) => {
                   </td>
 
                   {/* Title & Text Snippet */}
-                  <td className="py-4 px-4 text-right">
+                  <td className="py-4 px-4 text-center">
                     <div className="min-w-0 pr-1">
                       <p className="font-black text-slate-900 dark:text-slate-100 text-xs truncate" title={title}>
                         {title || t('interventions.modal.noSubject') || 'بدون عنوان'}
@@ -275,8 +275,7 @@ const InterventionTable = ({ complaints = [], isLoading, onViewDetails }) => {
                   className="px-3 py-1.5 rounded-xl bg-sky-500 text-white font-bold text-xs flex items-center gap-1 shadow-xs"
                 >
                   <Eye size={13} />
-                  <span>معاينة التفاصيل والرد</span>
-                </button>
+                  </button>
               </div>
             </div>
           );

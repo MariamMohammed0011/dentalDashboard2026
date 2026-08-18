@@ -38,10 +38,21 @@ const DoctorsHeader = ({ selectedStatus, onStatusChange }) => {
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-2 px-0 gap-3 sm:gap-4 w-full" dir="rtl">
 
       <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full sm:w-auto justify-between sm:justify-start">
-        <h1 className="text-xl sm:text-3xl font-zain font-black text-text-main flex items-center gap-3 shrink-0">
-          <Users size={28} className="text-primary" />
-          {t('doctors.title')}
-        </h1>
+        {/* <h1 className="text-xl sm:text-3xl font-zain font-bold text-text-main flex items-center gap-3 shrink-0">
+          size={20} className="text-primary" />
+          
+        </h1> */}
+        <div className="flex items-center gap-4">
+          <div className="p-3.5 bg-primary/10 text-primary rounded-2xl shadow-sm border border-primary/20 flex items-center justify-center">
+            <Users size={20} className="text-primary" />
+          </div>
+          <div className="text-right">
+            <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight">
+              {t('doctors.title')}
+            </h1>
+            
+          </div>
+        </div>
         {!isLoading && count > 0 && (
           <div
             onClick={() => navigate('/dashboard/membership-requests?tab=doctor')}

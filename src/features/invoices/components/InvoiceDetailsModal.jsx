@@ -77,15 +77,7 @@ export default function InvoiceDetailsModal({ isOpen, onClose, invoice }) {
                 </div>
 
                 <div className="hidden sm:flex items-center gap-2 shrink-0">
-                  <button
-                    type="button"
-                    onClick={handlePrint}
-                    className="flex items-center gap-1.5 px-3.5 py-2 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-black transition-all cursor-pointer shadow-md active:scale-95 shrink-0 whitespace-nowrap"
-                  >
-                    <Printer size={16} />
-                    <span>{t('invoices.printInvoice')}</span>
-                  </button>
-
+                 
                   <button
                     type="button"
                     onClick={onClose}
@@ -342,35 +334,6 @@ export default function InvoiceDetailsModal({ isOpen, onClose, invoice }) {
                 </div>
               </div>
 
-              {/* Financial Totals Card */}
-              <div className="bg-gradient-to-br from-slate-50 via-slate-50/80 to-primary/5 dark:from-slate-900 dark:via-slate-800/50 dark:to-slate-800 p-4 sm:p-5 rounded-2xl border border-border-main/80 shadow-sm space-y-3 w-full">
-                {/* Base Amount */}
-                <div className="flex justify-between items-center text-xs font-bold pb-3 border-b border-border-main/40">
-                  <span className="text-text-muted">{t('invoices.baseAmount')}:</span>
-                  <span className="font-black text-text-main text-sm">{Number(invoice.price || 0).toLocaleString()} <span className="text-xs font-bold text-text-muted">ر.س</span></span>
-                </div>
-
-                {/* VAT */}
-                <div className="flex justify-between items-center text-xs font-bold pb-3 border-b border-border-main/40">
-                  <span className="text-text-muted">{t('invoices.vat')} (%0):</span>
-                  <span className="font-black text-text-main text-sm">0 <span className="text-xs font-bold text-text-muted">ر.س</span></span>
-                </div>
-
-                {/* Highlighted Grand Total Box */}
-                <div className="bg-gradient-to-r from-primary via-blue-600 to-indigo-600 text-white shadow-lg shadow-primary/20 rounded-2xl p-4 space-y-2 border border-white/20">
-                  <div className="flex items-center gap-2.5 mb-2">
-                    <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center border border-white/30 shrink-0">
-                      <DollarSign size={24} className="text-white" />
-                    </div>
-                    <span className="font-black text-base font-zain tracking-wide">{t('invoices.grandTotal')}</span>
-                  </div>
-                  <div className="bg-white/10 rounded-xl p-3 border border-white/20">
-                    <p className="text-lg sm:text-2xl font-black dir-ltr font-zain tracking-tight break-all">
-                      {Number(invoice.price || 0).toLocaleString()} <span className="text-sm font-bold opacity-90">ر.س</span>
-                    </p>
-                  </div>
-                </div>
-              </div>
 
               {/* Official Documented Verification Footer */}
               <div className="pt-4 sm:pt-6 border-t border-border-main/50 space-y-3">

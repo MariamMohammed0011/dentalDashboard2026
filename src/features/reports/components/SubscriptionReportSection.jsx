@@ -73,15 +73,18 @@ export default function SubscriptionReportSection({ subscriptionData, isLoading,
       className="space-y-6 font-zain w-full overflow-hidden"
       dir="rtl"
     >
-      {/* Header & Days Selector (بدون سكرول) */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-500 border border-blue-500/20 shadow-sm shrink-0">
-            <FlaskConical size={24} />
+     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        
+
+        <div className="flex items-center gap-4">
+          <div className="p-3.5  bg-blue-500/10 text-blue-500 rounded-2xl shadow-sm border border-primary/20 flex items-center justify-center">
+            <FlaskConical size={20}  />
           </div>
-          <div>
-            <h2 className="text-xl sm:text-2xl font-black text-text-main tracking-tight">{t('reports.subscriptionsReport.title')}</h2>
-            <p className="text-xs sm:text-sm text-text-muted font-medium">{t('reports.subscriptionsReport.desc')}</p>
+          <div className="text-right">
+            <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight">
+              {t('reports.subscriptionsReport.title')}
+            </h1>
+            
           </div>
         </div>
 

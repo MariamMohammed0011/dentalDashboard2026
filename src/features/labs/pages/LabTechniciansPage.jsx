@@ -205,13 +205,22 @@ const LabTechniciansPage = () => {
   return (
     <div className="flex flex-col gap-6 px-0 sm:px-0 w-full lg:px-1 pb-10 min-h-full" dir="rtl">
 
-      {/* ── الهيدر العلوي ── */}
+      
       <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center py-2 px-0 gap-4 w-full">
         <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full sm:w-auto justify-between sm:justify-start">
-          <h1 className="text-xl sm:text-3xl font-zain font-black text-text-main flex items-center gap-3 shrink-0">
-            <FlaskConical size={28} className="text-accent-indigo shrink-0" />
-            {t('technicians.title') || 'فنيي المخابر'}
-          </h1>
+        
+
+          <div className="flex items-center gap-4">
+          <div className="p-3.5 bg-primary/10 text-primary rounded-2xl shadow-sm border border-primary/20 flex items-center justify-center">
+            <FlaskConical size={20}  />
+          </div>
+          <div className="text-right">
+            <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight">
+               {t('technicians.title')}
+            </h1>
+            
+          </div>
+        </div>
           {!isLoadingRequests && pendingCount > 0 && (
             <div
               onClick={() => navigate('/dashboard/membership-requests?tab=lab')}

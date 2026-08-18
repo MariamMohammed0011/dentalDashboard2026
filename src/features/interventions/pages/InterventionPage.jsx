@@ -31,7 +31,7 @@ const InterventionPage = () => {
   } = useInterventions();
 
   return (
-    <div className="p-4 sm:p-4 lg:p-4 flex flex-col gap-6 bg-transparent font-zain" dir="rtl">
+    <div className=" flex flex-col gap-6 bg-transparent font-zain" dir="rtl">
       {/* Top Header Controls */}
       <InterventionHeader
         activeTab={activeTab}

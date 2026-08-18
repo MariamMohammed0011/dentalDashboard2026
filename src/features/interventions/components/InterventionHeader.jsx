@@ -40,20 +40,31 @@ const InterventionHeader = ({
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-3 border-b border-border-main/40">
         <div>
           <div className="flex items-center gap-2.5 flex-wrap">
-            <div className="p-2 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20 shadow-sm shrink-0">
-              <MessageSquareWarning size={22} className="text-amber-500 animate-pulse" />
+            {/* <div className="p-2 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20 shadow-sm shrink-0">
+              < size={22} className="text-amber-500 animate-pulse" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-text-main tracking-tight font-zain">
-              {t('interventions.headerTitle')}
+             
+            </h1> */}
+            <div className="flex items-center gap-4">
+          <div className="p-3.5 bg-primary/10 text-primary rounded-2xl shadow-sm border border-primary/20 flex items-center justify-center">
+            <MessageSquareWarning size={20} className="text-primary" />
+          </div>
+          <div className="text-right">
+            <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight">
+             {t('interventions.headerTitle')}
             </h1>
-            <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-black bg-primary/10 text-primary border border-primary/20 shadow-sm backdrop-blur-md">
+            
+          </div>
+        </div>
+            {/* <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-black bg-primary/10 text-primary border border-primary/20 shadow-sm backdrop-blur-md">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
               {t('interventions.registeredCount', { count: totalCount })}
-            </span>
+            </span> */}
           </div>
-          <p className="text-xs sm:text-sm text-text-muted mt-1 font-medium font-zain">
+          {/* <p className="text-xs sm:text-sm text-text-muted mt-1 font-medium font-zain">
             {t('interventions.subtitle')}
-          </p>
+          </p> */}
         </div>
 
 

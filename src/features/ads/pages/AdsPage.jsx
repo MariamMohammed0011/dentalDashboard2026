@@ -74,12 +74,11 @@ const AdsPage = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4">
         <div className="flex items-center gap-4">
           <div className="p-3.5 bg-[#E8F1FF] text-[#367AFF] rounded-2xl shadow-sm border border-[#D2E4FF]/50 flex items-center justify-center">
-            <Megaphone size={28} className="text-[#367AFF]" />
+            <Megaphone size={20} className="text-[#367AFF]" />
           </div>
           <div className="text-right">
-            <h1 className="text-2xl sm:text-3xl font-black text-gray-800 tracking-tight">{t('ads.headerTitle')}</h1>
-            <p className="text-gray-500 text-xs sm:text-sm mt-1 font-medium">{t('ads.headerDesc')}</p>
-          </div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 tracking-tight">{t('ads.headerTitle')}</h1>
+            </div>
         </div>
 
        

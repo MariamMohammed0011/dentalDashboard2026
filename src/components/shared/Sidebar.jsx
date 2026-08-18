@@ -173,7 +173,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
   return (
     <aside 
       className={`h-screen flex flex-col py-4 bg-bg-main z-20 transition-all duration-300 relative border-l border-border-main hidden lg:flex flex-shrink-0 select-none ${
-        isCollapsed ? "w-[80px] min-w-[80px] max-w-[80px]" : "w-[260px] min-w-[260px] max-w-[260px]"
+        isCollapsed ? "w-[60px] min-w-[60px] max-w-[60px]" : "w-[220px] min-w-[220px] max-w-[220px]"
       }`} 
       dir="rtl"
     > 

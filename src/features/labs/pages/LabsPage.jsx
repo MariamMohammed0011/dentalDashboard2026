@@ -53,19 +53,33 @@ const LabsPage = () => {
     <div className="flex flex-col gap-6 px-2 sm:px-8 lg:px-2 pb-10 min-h-full" dir="rtl">
 
       <div className="flex flex-col sm:flex-row justify-between items-center py-2 px-0 gap-4 w-full" dir="rtl">
-        <h1 className="text-2xl sm:text-3xl font-medium text-text-main  flex items-center gap-2">
-          <FlaskConical size={28} className="text-emerald-600 dark:text-emerald-400" />
-          {t('labs.title')}
-        </h1>
+        {/* <h1 className="text-2xl sm:text-3xl font-medium text-text-main  flex items-center gap-2">
+          < size={20} className="text-emerald-600 dark:text-emerald-400" />
+         
+        </h1> */}
+        <div className="flex items-center gap-4">
+                  <div className="p-3 bg-emerald-500/10 text-emerald-500 rounded-2xl border border-emerald-500/20 shadow-sm shrink-0">
+           
+                    
+                    
+                    <FlaskConical size={20}  />
+                  </div>
+                  <div className="text-right">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight">
+                      {t('labs.title')}
+                    </h1>
+                    
+                  </div>
+                </div>
 
-        <Search
+        {/* <Search
           value={searchQuery}
           onChange={setSearchQuery}
           placeholder={t('labs.searchPlaceholder')}
 
-          className="w-full "
+          className="w-[80px] "
           onClear={() => setSearchQuery('')}
-        />
+        /> */}
       </div>
 
       {/* قسم الفلترة */}

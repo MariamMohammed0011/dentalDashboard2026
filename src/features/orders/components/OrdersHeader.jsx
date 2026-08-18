@@ -14,16 +14,27 @@ const OrdersHeader = ({ searchTerm, setSearchTerm, sortOrder, setSortOrder }) =>
   return (
     <div className="flex flex-col sm:flex-row justify-between items-center py-2 sm:py-3  bg-transparent border-b border-gray-200/50 gap-4 mb-2" dir="rtl">
 
-      <div className="shrink-0 w-full sm:w-auto text-right flex items-center gap-2">
+      {/* <div className="shrink-0 w-full sm:w-auto text-right flex items-center gap-2">
 
-        <div className="p-3.5 bg-brand-blue-light text-brand-blue rounded-2xl shadow-sm border border-brand-blue-border/50 flex items-center justify-center">
-          <ClipboardList size={28} className="text-brand-blue" />
+        <div className="p-3.5  rounded-2xl shadow-sm border border-brand-blue-border/50 flex items-center justify-center">
+          < size={28} className="text-brand-blue" />
         </div>
 
          <h1 className="text-xl sm:text-3xl font-zain font-black text-text-main flex items-center gap-3 shrink-0">
-         {t('orders.headerTitle')}
+        
         </h1>
-      </div>
+      </div> */}
+      <div className="flex items-center gap-4">
+          <div className="p-3.5 bg-brand-blue-light text-brand-blue rounded-2xl shadow-sm border border-primary/20 flex items-center justify-center">
+            <ClipboardList size={20} className="text-primary" />
+          </div>
+          <div className="text-right">
+            <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight">
+              {t('orders.headerTitle')}
+            </h1>
+            
+          </div>
+        </div>
 
       <div className="flex items-center gap-3 w-full sm:w-auto flex-grow max-w-lg">
         <div className="relative flex-grow">

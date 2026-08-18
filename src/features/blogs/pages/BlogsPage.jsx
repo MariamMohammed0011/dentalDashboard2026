@@ -246,20 +246,18 @@ export default function BlogsPage() {
   ];
 
   return (
-    <div className="px-4 sm:px-8 lg:px-4 pb-10 min-h-full flex flex-col gap-8 text-right font-zain" dir="rtl">
+    <div className="px-2 sm:px-6 lg:px-2 pb-10 min-h-full flex flex-col gap-8 text-right font-zain" dir="rtl">
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4 pt-2">
         <div className="flex items-center gap-4">
           <div className="p-3.5 bg-primary/10 text-primary rounded-2xl shadow-sm border border-primary/20 flex items-center justify-center">
-            <BookOpen size={28} className="text-primary" />
+            <BookOpen size={20} className="text-primary" />
           </div>
           <div className="text-right">
-            <h1 className="text-2xl sm:text-3xl font-black text-text-main tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight">
               {t('blogs.headerTitle')}
             </h1>
-            <p className="text-text-muted text-xs sm:text-sm font-bold mt-1">
-              {t('blogs.headerDesc')}
-            </p>
+            
           </div>
         </div>
 

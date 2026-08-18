@@ -201,12 +201,12 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
                   </div>
 
                   {/* Shade Color */}
-                  <div className="p-3">
+                  <div className="p-3 ">
                     <span className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 font-medium">
                       <Sparkles size={13} className="text-amber-500" />
-                      {t('orders.shadeColor') || 'لون الأسنان'}
+                      {t('orders.shadeColor') }
                     </span>
-                    <span className="text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded w-max mt-1.5 block">
+                    <span className="text-xs   font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded w-max mt-1.5 block">
                       {order.shade || t('common.unknown') || 'غير محدد'}
                     </span>
                   </div>

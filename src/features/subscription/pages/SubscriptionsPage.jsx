@@ -50,15 +50,13 @@ export default function SubscriptionsPage() {
         <div className="text-right w-full sm:w-auto">
           <div className="flex items-center gap-3.5">
             <div className="p-3 bg-emerald-500/10 text-emerald-500 rounded-2xl border border-emerald-500/20 shadow-sm shrink-0">
-              <CreditCard size={28} />
+              <CreditCard size={20} />
             </div>
             <div>
-              <h1 className="font-zain text-xl sm:text-2xl font-black text-text-main">
+              <h1 className="font-zain text-xl sm:text-2xl font-bold text-text-main">
                 {t('subscription.headerTitle')}
               </h1>
-              <p className="text-text-muted text-xs font-bold mt-0.5">
-                {t('subscription.headerDesc')}
-              </p>
+             
             </div>
           </div>
         </div>

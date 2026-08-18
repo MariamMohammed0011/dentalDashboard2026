@@ -142,9 +142,8 @@ const UsersManagementPage = () => {
             <Users size={20} />
           </div>
           <div className="text-right">
-            <h1 className="text-xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{t('ads.usersManagementTitle') || 'إدارة المستخدمين'}</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-0.5 font-medium">{t('ads.usersManagementDesc') || 'إدارة حسابات عملاء الإعلانات وإنشاء الحملات الإعلانية المخصصة لهم'}</p>
-          </div>
+            <h1 className="text-xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">{t('ads.usersManagementTitle') || 'إدارة المستخدمين'}</h1>
+            </div>
         </div>
       </div>
 

@@ -31,22 +31,21 @@ export default function InvoicesPage() {
   } = useInvoices();
 
   return (
-    <div className="p-3 sm:p-4 lg:p-4 flex flex-col gap-4 sm:gap-6 bg-transparent font-zain" dir="rtl">
+    <div className=" flex flex-col gap-4 sm:gap-6 bg-transparent font-zain" dir="rtl">
 
-      {/* ── Header ── */}
-      <div className="flex flex-col gap-3 w-full border-b border-border-main/60 pb-4 sm:pb-6">
-        <div className="flex items-start gap-2.5 sm:gap-3">
-          <Receipt className="text-primary shrink-0 mt-0.5" size={28} />
-          <div>
-            <h1 className="text-lg sm:text-2xl font-black text-text-main">
-              {t('invoices.headerTitle')}
+      
+
+      <div className="flex items-center gap-4">
+          <div className="p-3.5 bg-primary/10 text-primary  shadow-sm border border-primary/20 flex items-center justify-center">
+            <Receipt size={26} className="text-primary" />
+          </div>
+          <div className="text-right">
+            <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight">
+               {t('invoices.headerTitle')}
             </h1>
-            <p className="text-text-muted text-xs font-bold mt-1">
-              {t('invoices.headerDesc')}
-            </p>
+            
           </div>
         </div>
-      </div>
 
       {/* ── KPI Stat Cards ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
