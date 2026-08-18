@@ -110,108 +110,121 @@ export default function InvoicesPage() {
         </div>
       </div>
 
-      {/* ── Main Filter Bar (Responsive 2-Tier Controls - No Horizontal Scroll) ── */}
-      <div className="bg-white dark:bg-bg-card p-3 sm:p-4 lg:p-5 rounded-xl sm:rounded-2xl lg:rounded-[2rem] border border-border-main/80 shadow-sm flex flex-col gap-3 sm:gap-4">
+      {/* ── Main Filter Bar (Responsive 2-Tier Controls) ── */}
+      <div className="bg-gradient-to-r from-white via-slate-50/50 to-white dark:from-slate-800/60 dark:via-slate-800/50 dark:to-slate-800/60 p-4 xs:p-5 sm:p-6 rounded-xl xs:rounded-2xl sm:rounded-3xl border border-slate-200/60 dark:border-slate-700/40 shadow-sm flex flex-col gap-4 xs:gap-5 sm:gap-6">
 
         {/* Tier 1: Status Tabs Switcher */}
-        <div className="grid grid-cols-3 sm:flex items-center gap-1 sm:gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1 sm:p-1.5 rounded-lg sm:rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
+        <div className="flex flex-col xs:flex-col sm:flex-row gap-2 xs:gap-3">
+          <div className="text-xs xs:text-sm font-black text-slate-600 dark:text-slate-400 uppercase tracking-wider shrink-0 py-1.5">
+            {t('common.status')}:
+          </div>
+          <div className="grid grid-cols-3 gap-1.5 xs:gap-2 sm:flex sm:gap-2 bg-gradient-to-r from-slate-100/60 to-slate-100/40 dark:from-slate-800/40 dark:to-slate-800/20 p-1.5 xs:p-2 rounded-lg xs:rounded-xl border border-slate-200/50 dark:border-slate-700/30 flex-1 sm:flex-none">
             <button
               type="button"
               onClick={() => setActiveTab('paid')}
-              className={`flex flex-col sm:flex-row items-center justify-center gap-1 px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-black transition-all cursor-pointer whitespace-nowrap ${
+              className={`flex items-center justify-center gap-1.5 xs:gap-2 px-2 xs:px-3 sm:px-4 py-1.5 xs:py-2 rounded-lg xs:rounded-xl text-[11px] xs:text-xs sm:text-sm font-black transition-all duration-300 cursor-pointer whitespace-nowrap ${
                 activeTab === 'paid'
-                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
-                  : 'text-text-muted hover:text-text-main'
+                  ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white shadow-lg shadow-emerald-500/30 border border-emerald-400'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              <CheckCircle2 size={14} className="sm:size-4" />
-              <span className="hidden sm:inline">{t('invoices.paidTab')}</span>
-              <span className="text-[10px] font-bold">{paidCount}</span>
+              <CheckCircle2 size={14} className="xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
+              <span className="hidden xs:inline">{t('invoices.paidTab')}</span>
+              <span className="inline xs:hidden">{paidCount}</span>
+              <span className="text-[10px] xs:text-xs font-bold">{paidCount}</span>
             </button>
 
             <button
               type="button"
               onClick={() => setActiveTab('unpaid')}
-              className={`flex flex-col sm:flex-row items-center justify-center gap-1 px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-black transition-all cursor-pointer whitespace-nowrap ${
+              className={`flex items-center justify-center gap-1.5 xs:gap-2 px-2 xs:px-3 sm:px-4 py-1.5 xs:py-2 rounded-lg xs:rounded-xl text-[11px] xs:text-xs sm:text-sm font-black transition-all duration-300 cursor-pointer whitespace-nowrap ${
                 activeTab === 'unpaid'
-                  ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20'
-                  : 'text-text-muted hover:text-text-main'
+                  ? 'bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/30 border border-red-400'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              <Clock size={14} className="sm:size-4" />
-              <span className="hidden sm:inline">{t('invoices.unpaidTab')}</span>
-              <span className="text-[10px] font-bold">{unpaidCount}</span>
+              <Clock size={14} className="xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
+              <span className="hidden xs:inline">{t('invoices.unpaidTab')}</span>
+              <span className="inline xs:hidden">بانتظار</span>
+              <span className="text-[10px] xs:text-xs font-bold">{unpaidCount}</span>
             </button>
 
             <button
               type="button"
               onClick={() => setActiveTab('all')}
-              className={`flex flex-col sm:flex-row items-center justify-center gap-1 px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-black transition-all cursor-pointer whitespace-nowrap ${
+              className={`flex items-center justify-center gap-1.5 xs:gap-2 px-2 xs:px-3 sm:px-4 py-1.5 xs:py-2 rounded-lg xs:rounded-xl text-[11px] xs:text-xs sm:text-sm font-black transition-all duration-300 cursor-pointer whitespace-nowrap ${
                 activeTab === 'all'
-                  ? 'bg-primary text-white shadow-md shadow-primary/20'
-                  : 'text-text-muted hover:text-text-main'
+                  ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/30 border border-blue-400'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              <Receipt size={14} className="sm:size-4" />
-              <span className="hidden sm:inline">{t('invoices.allTab')}</span>
-              <span className="text-[10px] font-bold">{paidCount + unpaidCount}</span>
+              <Receipt size={14} className="xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
+              <span className="hidden xs:inline">{t('invoices.allTab')}</span>
+              <span className="inline xs:hidden">الكل</span>
+              <span className="text-[10px] xs:text-xs font-bold">{paidCount + unpaidCount}</span>
             </button>
           </div>
+        </div>
 
-        {/* Tier 2: Category Filter Pills (Wrap flexibly without scrolling) */}
-        <div className="pt-3 border-t border-border-main/50 flex flex-wrap items-center gap-1.5 sm:gap-2">
-          <span className="text-xs font-black text-text-muted flex items-center gap-1 shrink-0">
-            <Filter size={14} className="text-primary" />
-            <span className="hidden sm:inline">التصنيف:</span>
-          </span>
+        {/* Divider */}
+        <div className="h-px bg-gradient-to-r from-slate-200/0 via-slate-200/60 to-slate-200/0 dark:from-slate-700/0 dark:via-slate-700/40 dark:to-slate-700/0" />
 
-          <button
-            type="button"
-            onClick={() => setSelectedCategory('all')}
-            className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-black transition-all cursor-pointer whitespace-nowrap ${
-              selectedCategory === 'all'
-                ? 'bg-primary text-white shadow-md shadow-primary/20 border border-primary'
-                : 'bg-slate-100 dark:bg-slate-800 text-text-muted hover:text-text-main border border-transparent'
-            }`}
-          >
-            {t('invoices.allUsers')}
-          </button>
+        {/* Tier 2: Category Filter Pills */}
+        <div className="flex flex-col xs:flex-col sm:flex-row gap-2.5 xs:gap-3 sm:gap-4">
+          <div className="text-xs xs:text-sm font-black text-slate-600 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5 xs:gap-2 shrink-0 py-1.5">
+            <Filter size={16} className="xs:w-5 xs:h-5 text-blue-600 dark:text-blue-400" />
+            <span className="hidden xs:inline">التصنيف:</span>
+          </div>
 
-          <button
-            type="button"
-            onClick={() => setSelectedCategory('dentists')}
-            className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-black transition-all cursor-pointer whitespace-nowrap ${
-              selectedCategory === 'dentists'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20 border border-blue-600'
-                : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 border border-blue-500/20'
-            }`}
-          >
-            {t('invoices.dentists')}
-          </button>
+          <div className="flex flex-wrap gap-1.5 xs:gap-2 flex-1">
+            <button
+              type="button"
+              onClick={() => setSelectedCategory('all')}
+              className={`px-2.5 xs:px-3.5 sm:px-4 py-1.5 xs:py-2 rounded-lg xs:rounded-xl text-[11px] xs:text-xs sm:text-sm font-black transition-all duration-300 cursor-pointer whitespace-nowrap border-2 ${
+                selectedCategory === 'all'
+                  ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white border-blue-400 shadow-lg shadow-blue-500/20'
+                  : 'bg-white dark:bg-slate-700/30 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700/40 hover:border-slate-300 dark:hover:border-slate-600/60'
+              }`}
+            >
+              {t('invoices.allUsers')}
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setSelectedCategory('labs')}
-            className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-black transition-all cursor-pointer whitespace-nowrap ${
-              selectedCategory === 'labs'
-                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 border border-emerald-600'
-                : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20'
-            }`}
-          >
-            {t('invoices.labs')}
-          </button>
+            <button
+              type="button"
+              onClick={() => setSelectedCategory('dentists')}
+              className={`px-2.5 xs:px-3.5 sm:px-4 py-1.5 xs:py-2 rounded-lg xs:rounded-xl text-[11px] xs:text-xs sm:text-sm font-black transition-all duration-300 cursor-pointer whitespace-nowrap border-2 ${
+                selectedCategory === 'dentists'
+                  ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white border-blue-400 shadow-lg shadow-blue-500/20'
+                  : 'bg-blue-50/60 dark:bg-blue-900/10 text-blue-700 dark:text-blue-400 border-blue-200/60 dark:border-blue-800/30 hover:border-blue-300 dark:hover:border-blue-800/60'
+              }`}
+            >
+              {t('invoices.dentists')}
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setSelectedCategory('adsClients')}
-            className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-black transition-all cursor-pointer whitespace-nowrap ${
-              selectedCategory === 'adsClients'
-                ? 'bg-purple-600 text-white shadow-md shadow-purple-600/20 border border-purple-600'
-                : 'bg-purple-500/10 text-purple-600 dark:text-purple-400 hover:bg-purple-500/20 border border-purple-500/20'
-            }`}
-          >
-            {t('invoices.adsClients')}
-          </button>
+            <button
+              type="button"
+              onClick={() => setSelectedCategory('labs')}
+              className={`px-2.5 xs:px-3.5 sm:px-4 py-1.5 xs:py-2 rounded-lg xs:rounded-xl text-[11px] xs:text-xs sm:text-sm font-black transition-all duration-300 cursor-pointer whitespace-nowrap border-2 ${
+                selectedCategory === 'labs'
+                  ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white border-emerald-400 shadow-lg shadow-emerald-500/20'
+                  : 'bg-emerald-50/60 dark:bg-emerald-900/10 text-emerald-700 dark:text-emerald-400 border-emerald-200/60 dark:border-emerald-800/30 hover:border-emerald-300 dark:hover:border-emerald-800/60'
+              }`}
+            >
+              {t('invoices.labs')}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setSelectedCategory('adsClients')}
+              className={`px-2.5 xs:px-3.5 sm:px-4 py-1.5 xs:py-2 rounded-lg xs:rounded-xl text-[11px] xs:text-xs sm:text-sm font-black transition-all duration-300 cursor-pointer whitespace-nowrap border-2 ${
+                selectedCategory === 'adsClients'
+                  ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white border-purple-400 shadow-lg shadow-purple-500/20'
+                  : 'bg-purple-50/60 dark:bg-purple-900/10 text-purple-700 dark:text-purple-400 border-purple-200/60 dark:border-purple-800/30 hover:border-purple-300 dark:hover:border-purple-800/60'
+              }`}
+            >
+              {t('invoices.adsClients')}
+            </button>
+          </div>
         </div>
 
       </div>
