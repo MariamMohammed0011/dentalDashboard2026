@@ -121,6 +121,21 @@ export default function InvoicesPage() {
           <div className="grid grid-cols-3 gap-1.5 xs:gap-2 sm:flex sm:gap-2 bg-gradient-to-r from-slate-100/60 to-slate-100/40 dark:from-slate-800/40 dark:to-slate-800/20 p-1.5 xs:p-2 rounded-lg xs:rounded-xl border border-slate-200/50 dark:border-slate-700/30 flex-1 sm:flex-none">
             <button
               type="button"
+              onClick={() => setActiveTab('all')}
+              className={`flex items-center justify-center gap-1.5 xs:gap-2 px-2 xs:px-3 sm:px-4 py-1.5 xs:py-2 rounded-lg xs:rounded-xl text-[11px] xs:text-xs sm:text-sm font-black transition-all duration-300 cursor-pointer whitespace-nowrap ${
+                activeTab === 'all'
+                  ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/30 border border-blue-400'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+              }`}
+            >
+              <Receipt size={14} className="xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
+              <span className="hidden xs:inline">{t('invoices.allTab')}</span>
+              <span className="inline xs:hidden">الكل</span>
+              <span className="text-[10px] xs:text-xs font-bold">{paidCount + unpaidCount}</span>
+            </button>
+
+            <button
+              type="button"
               onClick={() => setActiveTab('paid')}
               className={`flex items-center justify-center gap-1.5 xs:gap-2 px-2 xs:px-3 sm:px-4 py-1.5 xs:py-2 rounded-lg xs:rounded-xl text-[11px] xs:text-xs sm:text-sm font-black transition-all duration-300 cursor-pointer whitespace-nowrap ${
                 activeTab === 'paid'
@@ -130,7 +145,7 @@ export default function InvoicesPage() {
             >
               <CheckCircle2 size={14} className="xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
               <span className="hidden xs:inline">{t('invoices.paidTab')}</span>
-              <span className="inline xs:hidden">{paidCount}</span>
+              <span className="inline xs:hidden">مدفوعة</span>
               <span className="text-[10px] xs:text-xs font-bold">{paidCount}</span>
             </button>
 
@@ -145,23 +160,8 @@ export default function InvoicesPage() {
             >
               <Clock size={14} className="xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
               <span className="hidden xs:inline">{t('invoices.unpaidTab')}</span>
-              <span className="inline xs:hidden">بانتظار</span>
+              <span className="inline xs:hidden">غير مدفوعة</span>
               <span className="text-[10px] xs:text-xs font-bold">{unpaidCount}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab('all')}
-              className={`flex items-center justify-center gap-1.5 xs:gap-2 px-2 xs:px-3 sm:px-4 py-1.5 xs:py-2 rounded-lg xs:rounded-xl text-[11px] xs:text-xs sm:text-sm font-black transition-all duration-300 cursor-pointer whitespace-nowrap ${
-                activeTab === 'all'
-                  ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/30 border border-blue-400'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-              }`}
-            >
-              <Receipt size={14} className="xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
-              <span className="hidden xs:inline">{t('invoices.allTab')}</span>
-              <span className="inline xs:hidden">الكل</span>
-              <span className="text-[10px] xs:text-xs font-bold">{paidCount + unpaidCount}</span>
             </button>
           </div>
         </div>
