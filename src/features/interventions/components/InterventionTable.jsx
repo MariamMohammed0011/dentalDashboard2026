@@ -201,7 +201,7 @@ const InterventionTable = ({ complaints = [], isLoading, onViewDetails }) => {
       </div>
 
       {/* Mobile Card View */}
-      <div className="block lg:hidden space-y-3">
+      <div className="block lg:hidden space-y-2.5 px-0.5">
         {complaints.map((item) => {
           const {
             id,
@@ -218,64 +218,65 @@ const InterventionTable = ({ complaints = [], isLoading, onViewDetails }) => {
           const isLabTarget = destination === 'Lab';
 
           return (
-            <div key={id} className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-xs">
+            <div key={id} className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 space-y-2.5 sm:space-y-3 shadow-xs">
               {/* Header */}
               <div className="flex justify-between items-start gap-2">
-                <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                  <span className="text-xs font-mono font-bold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 px-2.5 py-0.5 rounded-lg">
+                <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-1">
+                  <span className="text-[10px] sm:text-xs font-mono font-bold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 px-2 sm:px-2.5 py-0.5 rounded-lg">
                     #{id}
                   </span>
-                  <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                  <span className={`inline-flex items-center gap-0.5 sm:gap-1 px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold border ${
                     isLabTarget
                       ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
                       : 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20'
                   }`}>
-                    {isLabTarget ? <FlaskConical size={12} /> : <ShieldAlert size={12} />}
-                    <span>{isLabTarget ? 'موجهة للمخبر' : 'موجهة للإدارة'}</span>
+                    {isLabTarget ? <FlaskConical size={10} className="sm:w-3 sm:h-3" /> : <ShieldAlert size={10} className="sm:w-3 sm:h-3" />}
+                    <span className="hidden xs:inline">{isLabTarget ? 'موجهة للمخبر' : 'موجهة للإدارة'}</span>
                   </span>
                 </div>
 
-                <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                <span className={`inline-flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold border ${
                   isReplied
                     ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
                     : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
                 }`}>
-                  {isReplied ? <ShieldCheck size={12} /> : <Clock size={12} />}
-                  <span>{isReplied ? 'تم الرد' : 'بانتظار الرد'}</span>
+                  {isReplied ? <ShieldCheck size={10} className="sm:w-3 sm:h-3" /> : <Clock size={10} className="sm:w-3 sm:h-3" />}
+                  <span className="hidden xs:inline">{isReplied ? 'تم الرد' : 'بانتظار'}</span>
                 </span>
               </div>
 
               {/* Creator Info */}
-              <div className="flex items-center gap-3 pt-1">
-                <div className="w-9 h-9 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center font-black text-xs border border-sky-500/20 shrink-0">
+              <div className="flex items-center gap-2 sm:gap-3 pt-0.5">
+                <div className="w-8 sm:w-9 h-8 sm:h-9 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center font-black text-[10px] sm:text-xs border border-sky-500/20 shrink-0">
                   {user?.name ? user.name.charAt(0) : 'ط'}
                 </div>
                 <div className="text-right min-w-0">
-                  <p className="font-bold text-slate-900 dark:text-slate-100 text-sm truncate">{user?.name || 'طبيب'}</p>
-                  <p className="text-xs text-slate-400 font-medium truncate">{user?.namePlace || 'العيادة'}</p>
+                  <p className="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm truncate">{user?.name || 'طبيب'}</p>
+                  <p className="text-[10px] sm:text-xs text-slate-400 font-medium truncate">{user?.namePlace || 'العيادة'}</p>
                 </div>
               </div>
 
               {/* Content */}
-              <div className="space-y-1 bg-slate-50/70 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200/50 dark:border-slate-800">
-                <p className="font-black text-slate-900 dark:text-slate-100 text-xs">{title || 'بدون عنوان'}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">{text || 'لا يوجد تفاصيل'}</p>
+              <div className="space-y-0.5 sm:space-y-1 bg-slate-50/70 dark:bg-slate-800/40 p-2 sm:p-3 rounded-lg sm:rounded-xl border border-slate-200/50 dark:border-slate-800">
+                <p className="font-black text-slate-900 dark:text-slate-100 text-[10px] sm:text-xs leading-tight sm:leading-normal">{title || 'بدون عنوان'}</p>
+                <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">{text || 'لا يوجد تفاصيل'}</p>
               </div>
 
               {/* Footer */}
-              <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
-                <span className="text-[11px] text-slate-400 font-bold flex items-center gap-1">
-                  <Clock size={12} />
+              <div className="flex items-center justify-between pt-1.5 sm:pt-2 border-t border-slate-100 dark:border-slate-800 gap-2">
+                <span className="text-[9px] sm:text-[11px] text-slate-400 font-bold flex items-center gap-0.5 sm:gap-1">
+                  <Clock size={10} className="sm:w-3 sm:h-3" />
                   <span>{formatDate(createdAtUtc)}</span>
                 </span>
 
                 <button
                   type="button"
                   onClick={() => onViewDetails(item)}
-                  className="px-3 py-1.5 rounded-xl bg-sky-500 text-white font-bold text-xs flex items-center gap-1 shadow-xs"
+                  className="px-2.5 sm:px-3 py-1.5 rounded-lg sm:rounded-xl bg-sky-500 text-white font-bold text-xs sm:text-sm flex items-center gap-1 shadow-xs active:scale-95 transition-transform duration-150 min-h-8 sm:min-h-9"
                 >
-                  <Eye size={13} />
-                  </button>
+                  <Eye size={14} className="sm:w-4 sm:h-4" />
+                  <span className="hidden xs:inline">عرض</span>
+                </button>
               </div>
             </div>
           );
