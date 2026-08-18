@@ -2,6 +2,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap');
 @import "tailwindcss";
 
+/* 🌙 ربط متغير dark: في Tailwind v4 بكلاس .dark اليدوي بدلاً من الاعتماد فقط على
+   تفضيل نظام التشغيل (prefers-color-scheme)، حتى تعمل كل كلاسات dark:* بشكل صحيح
+   عند تبديل الوضع الليلي يدوياً عبر ThemeContext */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* 🎨 نظام الألوان والفيجوال وتوحيد جميع المتغيرات (Color Palette Variables) */
 :root {
   /* 1. ألوان الخلفيات والأساسيات (Main & Card Backgrounds) */
