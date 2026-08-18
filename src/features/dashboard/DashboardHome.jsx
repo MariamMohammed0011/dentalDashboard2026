@@ -580,15 +580,15 @@ export default function DashboardHome() {
           </div>
           {ratingsChartData.length > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-3 pt-3 border-t border-border-main/50 mt-2">
-              <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
+              <div className="flex items-center gap-1.5 bg-neutral-light-gray px-2.5 py-1 rounded-xl border border-border-main text-xs font-bold text-text-main">
                 <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
                 <span>{t('dashboard.overallRating')}</span>
               </div>
-              <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
+              <div className="flex items-center gap-1.5 bg-neutral-light-gray px-2.5 py-1 rounded-xl border border-border-main text-xs font-bold text-text-main">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
                 <span>{t('dashboard.qualityRating')}</span>
               </div>
-              <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
+              <div className="flex items-center gap-1.5 bg-neutral-light-gray px-2.5 py-1 rounded-xl border border-border-main text-xs font-bold text-text-main">
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
                 <span>{t('dashboard.timeCommitment')}</span>
               </div>
@@ -614,11 +614,11 @@ export default function DashboardHome() {
           </div>
           {financialGrowthData.length > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-3 pt-3 border-t border-border-main/50 mt-2">
-              <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
+              <div className="flex items-center gap-1.5 bg-neutral-light-gray px-2.5 py-1 rounded-xl border border-border-main text-xs font-bold text-text-main">
                 <span className="w-2.5 h-2.5 rounded-full bg-purple-500 shrink-0" />
                 <span>{t('dashboard.adRevenueDollar')}</span>
               </div>
-              <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs font-bold text-text-main">
+              <div className="flex items-center gap-1.5 bg-neutral-light-gray px-2.5 py-1 rounded-xl border border-border-main text-xs font-bold text-text-main">
                 <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
                 <span>{t('dashboard.orderProfitsDollar')}</span>
               </div>
