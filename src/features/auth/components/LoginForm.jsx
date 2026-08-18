@@ -16,12 +16,12 @@ export default function LoginForm() {
 
 
         <div className="text-center pt-8 pb-2 bg-white/10 backdrop-blur-md ">
-          <h1 className="text-3xl font-bold text-gray-800">{t('auth.subtitle')}</h1>
+          <h1 className="text-3xl font-zain font-bold text-gray-800">{t('auth.subtitle')}</h1>
         </div>
 
         <div className="flex flex-col md:flex-row flex-grow">
 
-          <div className="md:w-1/2 p-12 flex flex-col justify-center bg-white/10 backdrop-blur-sm">
+          <div className="md:w-1/2 p-12 font-zain flex flex-col justify-center bg-white/10 backdrop-blur-sm">
             <form onSubmit={handleLogin} className="space-y-5">
 
 
@@ -35,7 +35,7 @@ export default function LoginForm() {
               />
 
               <div className="space-y-3">
-                <label className="block text-sm font-bold text-gray-700 mr-2">{t('auth.passwordLabel')}</label>
+                <label className="block font-zain  text-sm font-bold text-gray-700 mr-2">{t('auth.passwordLabel')}</label>
                 <PasswordInput
                   name="password"
                   className="h-12 border-none shadow-inner"
@@ -56,7 +56,7 @@ export default function LoginForm() {
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="w-full md:w-2/3 mx-auto flex items-center justify-center gap-3 h-12 bg-primary-dark text-white rounded-xl text-lg font-medium shadow-lg transition-all active:scale-95 disabled:bg-primary/70 disabled:cursor-wait"
+                  className="w-full font-zain md:w-2/3 mx-auto flex items-center justify-center gap-3 h-12 bg-primary-dark text-white rounded-xl text-lg font-medium shadow-lg transition-all active:scale-95 disabled:bg-primary/70 disabled:cursor-wait"
                 >
                   {isPending ? (
                     <>
