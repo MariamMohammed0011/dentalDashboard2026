@@ -74,40 +74,38 @@ export default function SubscriptionReportSection({ subscriptionData, isLoading,
       dir="rtl"
     >
       {/* Header Section */}
-      <div className="flex flex-col xs:flex-col sm:flex-row justify-between items-start sm:items-end gap-4 xs:gap-5">
-        <div className="flex items-start xs:items-center gap-3 xs:gap-4 flex-1">
-          <div className="p-2.5 xs:p-3 bg-gradient-to-br from-blue-500/20 to-blue-500/10 text-blue-600 dark:text-blue-400 rounded-xl xs:rounded-2xl shadow-sm border border-blue-200/40 dark:border-blue-800/30 flex items-center justify-center shrink-0">
-            <FlaskConical size={20} className="xs:w-6 xs:h-6" />
-          </div>
-          <div className="text-right">
-            <h1 className="text-xl xs:text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-              {t('reports.subscriptionsReport.title')}
-            </h1>
-          </div>
+      <div className="flex items-start xs:items-center gap-3 xs:gap-4">
+        <div className="p-2.5 xs:p-3 bg-gradient-to-br from-blue-500/20 to-blue-500/10 text-blue-600 dark:text-blue-400 rounded-xl xs:rounded-2xl shadow-sm border border-blue-200/40 dark:border-blue-800/30 flex items-center justify-center shrink-0">
+          <FlaskConical size={20} className="xs:w-6 xs:h-6" />
         </div>
+        <div className="text-right">
+          <h1 className="text-xl xs:text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+            {t('reports.subscriptionsReport.title')}
+          </h1>
+        </div>
+      </div>
 
-        {/* Days Filter Pills - Responsive Grid */}
-        <div className="flex flex-col xs:flex-row items-center gap-2.5 xs:gap-3 bg-gradient-to-r from-blue-50 to-indigo-50/50 dark:from-slate-800/50 dark:to-slate-800/30 p-2.5 xs:p-3 rounded-xl xs:rounded-2xl border border-blue-200/40 dark:border-slate-700/40 shadow-sm w-full xs:w-auto">
-          <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 px-1.5 xs:px-2 font-bold shrink-0">
-            <Calendar size={16} className="text-blue-600 dark:text-blue-400" />
-            <span>{t('reports.subscriptionsReport.range')}:</span>
-          </div>
-          <div className="grid grid-cols-5 gap-1 xs:gap-1.5 w-full xs:w-auto">
-            {daysOptions.map(option => (
-              <button
-                type="button"
-                key={option.value}
-                onClick={() => setDays(option.value)}
-                className={`px-1.5 xs:px-2.5 py-1.5 xs:py-2 text-[11px] xs:text-xs font-black rounded-lg xs:rounded-xl transition-all duration-300 text-center cursor-pointer whitespace-nowrap ${
-                  days === option.value
-                    ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/30 border border-blue-400 scale-105'
-                    : 'bg-white dark:bg-slate-700/30 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700/60 border border-slate-200/60 dark:border-slate-700/40'
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
+      {/* Days Filter Pills - Full Width Under Header */}
+      <div className="flex items-center gap-2.5 xs:gap-3 bg-gradient-to-r from-blue-50 to-indigo-50/50 dark:from-slate-800/50 dark:to-slate-800/30 p-3 xs:p-4 rounded-xl xs:rounded-2xl border border-blue-200/40 dark:border-slate-700/40 shadow-sm w-full -mx-3 xs:-mx-4 sm:-mx-5 px-3 xs:px-4 sm:px-5">
+        <div className="flex items-center gap-1.5 text-xs xs:text-sm text-slate-600 dark:text-slate-400 px-1.5 xs:px-2 font-bold shrink-0">
+          <Calendar size={16} className="xs:w-5 xs:h-5 text-blue-600 dark:text-blue-400" />
+          <span>{t('reports.subscriptionsReport.range')}:</span>
+        </div>
+        <div className="flex gap-1.5 xs:gap-2 flex-wrap">
+          {daysOptions.map(option => (
+            <button
+              type="button"
+              key={option.value}
+              onClick={() => setDays(option.value)}
+              className={`px-2.5 xs:px-3.5 py-1.5 xs:py-2 text-xs xs:text-sm font-black rounded-lg xs:rounded-xl transition-all duration-300 cursor-pointer whitespace-nowrap ${
+                days === option.value
+                  ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/30 border border-blue-400 scale-105'
+                  : 'bg-white dark:bg-slate-700/30 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700/60 border border-slate-200/60 dark:border-slate-700/40'
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
         </div>
       </div>
 
