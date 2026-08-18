@@ -34,11 +34,14 @@ export default function SubscriptionModal({ isOpen, onClose, onSubmit, type, ini
 
   const selectedLab = labs.find((l) => String(l.id) === String(selectedLabId));
 
+  const getLabDisplayName = (lab) => {
+    return lab.owner?.name || lab.owner?.namePlace || lab.name || `Lab #${lab.id}`;
+  };
+
   const filteredLabs = labs.filter((l) => {
-    const labName = l.owner?.namePlace || l.name || '';
-    const ownerName = l.owner?.name || '';
+    const labName = getLabDisplayName(l);
     const query = labSearchQuery.toLowerCase();
-    return labName.toLowerCase().includes(query) || ownerName.toLowerCase().includes(query) || String(l.id).includes(query);
+    return labName.toLowerCase().includes(query) || String(l.id).includes(query);
   });
 
   return createPortal(
@@ -123,7 +126,7 @@ export default function SubscriptionModal({ isOpen, onClose, onSubmit, type, ini
                         </div>
                         {selectedLab ? (
                           <div className="flex flex-col min-w-0 text-right">
-                            <span className="text-xs xs:text-sm font-black truncate">{selectedLab.owner?.namePlace || selectedLab.name || t('subscription.subscriptionModal.labFallbackName', { id: selectedLab.id })}</span>
+                            <span className="text-xs xs:text-sm font-black truncate">{getLabDisplayName(selectedLab)}</span>
                             <span className="text-[10px] xs:text-[11px] text-emerald-700 dark:text-emerald-400 font-bold">
                               ID: {selectedLab.id}
                             </span>
@@ -178,7 +181,7 @@ export default function SubscriptionModal({ isOpen, onClose, onSubmit, type, ini
                                         <FlaskConical size={14} className="xs:w-4 xs:h-4" />
                                       </div>
                                       <div className="flex flex-col text-right min-w-0">
-                                        <span className="text-xs xs:text-sm font-black truncate" title={labName}>{labName}</span>
+                                        <span className="text-xs xs:text-sm font-black truncate" title={getLabDisplayName(l)}>{getLabDisplayName(l)}</span>
                                         <span className={`text-[10px] xs:text-[11px] font-semibold ${isSelected ? "text-white/80" : "text-text-muted"}`}>
                                           ID: {l.id}
                                         </span>
