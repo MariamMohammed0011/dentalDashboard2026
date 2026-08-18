@@ -9,11 +9,10 @@ import {
   Clock,
   Trash2,
   Eye,
-  ChevronRight,
-  ChevronLeft,
   Users,
   Pencil
 } from 'lucide-react';
+import MembershipPagination from '../../membership/components/MembershipPagination';
 
 const AdsList = ({
   ads, 
@@ -212,32 +211,7 @@ const AdsList = ({
         </div>
       </div>
 
-     
-      {pagination && pagination.totalPages > 1 && (
-        <div className="flex justify-between items-center p-5 border border-gray-100 rounded-[2rem] bg-white shadow-sm mt-auto">
-          <div className="text-xs sm:text-sm text-gray-500 font-bold">
-            {t('ads.adsList.paginationInfo', { page: pagination.page, totalPages: pagination.totalPages, total: pagination.total })}
-          </div>
-          <div className="flex gap-2">
-            <button
-              disabled={pagination.page === 1}
-              onClick={() => setCurrentPage(pagination.page - 1)}
-              className="p-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
-              title={t('ads.adsList.prevPage')}
-            >
-              <ChevronRight size={16} strokeWidth={2.5} />
-            </button>
-            <button
-              disabled={pagination.page === pagination.totalPages}
-              onClick={() => setCurrentPage(pagination.page + 1)}
-              className="p-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
-              title={t('ads.adsList.nextPage')}
-            >
-              <ChevronLeft size={16} strokeWidth={2.5} />
-            </button>
-          </div>
-        </div>
-      )}
+      <MembershipPagination pagination={pagination} onPageChange={setCurrentPage} />
 
     </div>
   );
