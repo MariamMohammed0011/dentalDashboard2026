@@ -17,8 +17,8 @@ export const signalRService = {
     const token = Cookies.get("auth_token");
     
     // 🎯 التعديل الجوهري هنا: تغيير المسار ليطابق ما يطلبه السيرفر في الـ Console تماماً!
-  //  const hubUrl = "https://osnet.shop/dentconnect/notificationHub"; //  المسار الصحيح
-    const hubUrl = "https://localhost:44334/notificationHub"; //  المسار الصحيح
+   const hubUrl = "https://osnet.shop/dentconnect/notificationHub"; //  المسار الصحيح
+    // const hubUrl = "https://localhost:44334/notificationHub"; //  المسار الصحيح
     try {
       console.log(`[SignalR] Initializing connection to correct endpoint: ${hubUrl}`);
       
