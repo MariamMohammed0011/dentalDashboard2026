@@ -86,14 +86,14 @@ export default function InvoiceDetailsModal({ isOpen, onClose, invoice }) {
                 </div>
 
                 <div className="hidden sm:flex items-center gap-2 shrink-0">
-                  <button
+                  {/* <button
                     type="button"
                     onClick={handlePrint}
                     className="p-2.5 bg-white hover:bg-blue-50 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-xl transition-all cursor-pointer shadow-sm border border-slate-200/60 dark:border-slate-600/60"
                     title="طباعة الفاتورة"
                   >
                     <Printer size={18} />
-                  </button>
+                  </button> */}
                   <button
                     type="button"
                     onClick={onClose}
@@ -174,7 +174,7 @@ export default function InvoiceDetailsModal({ isOpen, onClose, invoice }) {
                       </div>
                     )}
 
-                    {invoice.userEmail && (
+                    {/* {invoice.userEmail && (
                       <div className="flex items-start gap-2 xs:gap-2.5 sm:gap-3">
                         <div className="w-7 xs:w-8 sm:w-8 h-7 xs:h-8 sm:h-8 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0 mt-0.5">
                           <Mail size={14} className="xs:w-4 xs:h-4 sm:w-4 sm:h-4 text-purple-500" />
@@ -184,7 +184,7 @@ export default function InvoiceDetailsModal({ isOpen, onClose, invoice }) {
                           <p className="text-xs xs:text-sm font-bold text-text-main break-all dir-ltr text-[11px] xs:text-xs">{invoice.userEmail}</p>
                         </div>
                       </div>
-                    )}
+                    )} */}
 
                     {invoice.userPhone && (
                       <div className="flex items-start gap-2 xs:gap-2.5 sm:gap-3">

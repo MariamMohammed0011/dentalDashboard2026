@@ -235,7 +235,7 @@ export const adsApi = {
       formData.append('Price', String(price));
 
       const response = await axiosInstance.patch(
-        `/Advertisement/admin/accept-and-publish/user/${userId}/advertisement/${adId}`,
+        `/Advertisement/admin/accept-and-publish/lab/user/${userId}/advertisement/${adId}`,
         formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' }
