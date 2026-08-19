@@ -10,7 +10,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://osnet.shop/dentconnect/',
+        // target: 'https://osnet.shop/dentconnect/',
+        target: 'https://localhost:44334/',
         changeOrigin: true,
         secure: false,     }
     }

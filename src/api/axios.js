@@ -2,8 +2,9 @@ import axios from "axios";
 import Cookies from "js-cookie"; 
 
 const axiosInstance = axios.create({
-  baseURL: "https://osnet.shop/dentconnect/api",
+  // baseURL: "https://osnet.shop/dentconnect/api",
  
+  baseURL: "https://localhost:44334/api",
   
 });
 

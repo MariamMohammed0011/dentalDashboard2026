@@ -165,6 +165,9 @@ const formatTimeArabic = (dateString) => {
 };
 
 export const notificationsService = {
+  // مفتاح "مقروء" الفريد عبر الأنواع، يُستخدم بالتخزين المحلي فقط (id الحقيقي يبقى دون تغيير لطلبات الباك إند)
+  buildReadKey: (type, id) => `${type}-${id}`,
+
   // دالة تنسيق وتوحيد شكل الإشعار
   formatNotification: (n) => {
     const localReadIds = getLocalReadIds();
@@ -185,13 +188,17 @@ export const notificationsService = {
       }
     }
 
-    const rawId = n.id || Math.floor(Math.random() * 1000000);
-
     if (adObj && adObj.title) {
       text = `طلب إعلان جديد: "${adObj.title}"`;
     }
 
     const type = mapNotificationType(n.type || (adObj ? "ad" : ""), n.blogPostType, text);
+
+    const rawId = n.id ?? Math.floor(Math.random() * 1000000);
+
+    // 🎯 مفتاح فريد عبر كل الأنواع لتتبع "مقروء" محلياً، منفصل عن id الحقيقي المستخدم بطلبات الحذف/التعديل
+    // بدون هذا التمييز، تعليم إشعار كمقروء من نوع ما كان يجعل إشعارات أخرى بنفس الرقم من نوع مختلف تظهر مقروءة تلقائياً
+    const readKey = notificationsService.buildReadKey(type, rawId);
 
     // 🎯 استخراج معرف العنصر المرتبط (إعلان/مدونة/طلب انضمام) للانتقال المباشر إليه عند فتح الإشعار
     let relatedId = null;
@@ -210,7 +217,7 @@ export const notificationsService = {
       type: type,
       text: text,
       time: formatTimeArabic(n.createdAt),
-      read: n.isRead || localReadIds.includes(rawId),
+      read: n.isRead || localReadIds.includes(readKey),
       createdAt: n.createdAt,
       relatedId
     };
@@ -275,8 +282,8 @@ export const notificationsService = {
   },
 
   // تحديث حالة إشعار معين ليصبح مقروءاً محلياً
-  markAsRead: async (id) => {
-    addLocalReadId(id);
+  markAsRead: async (id, type = "reminder") => {
+    addLocalReadId(notificationsService.buildReadKey(type, id));
     try {
       const localNotifs = JSON.parse(localStorage.getItem("mock_notifications") || "[]");
       const updated = localNotifs.map(n => n.id === id ? { ...n, isRead: true } : n);
@@ -296,7 +303,7 @@ export const notificationsService = {
 
     try {
       const notifications = await notificationsService.getNotifications();
-      notifications.forEach(n => addLocalReadId(n.id));
+      notifications.forEach(n => addLocalReadId(notificationsService.buildReadKey(n.type, n.id)));
     } catch (error) { }
 
     return await notificationsService.getNotifications();

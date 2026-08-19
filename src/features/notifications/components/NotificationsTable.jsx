@@ -25,7 +25,7 @@ const NotificationsTable = ({
     }
 
     if (!notif.read) {
-      onToggleRead(notif.id);
+      onToggleRead(notif);
     }
   };
 
@@ -134,7 +134,7 @@ const NotificationsTable = ({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      onToggleRead(notif.id);
+                      onToggleRead(notif);
                     }}
                     className={`p-2 rounded-xl border border-transparent transition-all duration-200 cursor-pointer ${notif.read
                         ? 'text-emerald-500 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10'

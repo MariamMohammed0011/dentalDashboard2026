@@ -95,8 +95,8 @@ export function useNotifications() {
     queryClient.setQueryData(['notifications-list-data'], updated);
   };
 
-  const toggleReadStatus = async (id) => {
-    const updated = await notificationsService.markAsRead(id);
+  const toggleReadStatus = async (id, type = "reminder") => {
+    const updated = await notificationsService.markAsRead(id, type);
     queryClient.setQueryData(['notifications'], updated);
     queryClient.setQueryData(['notifications-list-data'], updated);
   };

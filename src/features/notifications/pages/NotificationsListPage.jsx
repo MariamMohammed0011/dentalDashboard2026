@@ -32,7 +32,7 @@ const NotificationsListPage = () => {
 
   // 2. Mutations
   const toggleReadMutation = useMutation({
-    mutationFn: (id) => notificationsService.markAsRead(id),
+    mutationFn: (notif) => notificationsService.markAsRead(notif.id, notif.type),
     onSuccess: (updatedData) => {
       queryClient.setQueryData(['notifications-list-data'], updatedData);
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
@@ -290,7 +290,7 @@ const NotificationsListPage = () => {
         <NotificationsTable
           notifications={paginatedNotifications}
           isLoading={isLoading}
-          onToggleRead={(id) => toggleReadMutation.mutate(id)}
+          onToggleRead={(notif) => toggleReadMutation.mutate(notif)}
         />
 
         {/* 5. Pagination */}
