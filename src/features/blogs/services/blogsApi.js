@@ -132,24 +132,9 @@ export const blogsApi = {
 
 
   deleteBlog: async (id) => {
-    // 🎯 قاعدة البيانات فيها FK بدون Cascade Delete بين Notifications و BlogPosts
-    // فلازم نحذف إشعارات هذا البوست أولاً وإلا حذف البوست بيفشل بخطأ 500 (FK_Notifications_BlogPosts_BlogPostId)
-    try {
-      const notifsRes = await axiosInstance.get('/DoctorBlog/notifications');
-      const relatedNotifs = Array.isArray(notifsRes.data)
-        ? notifsRes.data.filter((n) => n.blogPostId === id)
-        : [];
+    
 
-      await Promise.all(
-        relatedNotifs.map((n) =>
-          axiosInstance.delete(`/DoctorBlog/notifications/${n.id}`).catch(() => {})
-        )
-      );
-    } catch (e) {
-      // تجاهل فشل جلب/حذف الإشعارات ونكمل بمحاولة حذف البوست كما هي
-    }
-
-    const response = await axiosInstance.delete(`/Posts/${id}`);
+    const response = await axiosInstance.delete(`/DoctorBlog/admin/delete-post/${id}`);
     return response.data;
   },
 
