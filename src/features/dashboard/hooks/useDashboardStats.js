@@ -78,6 +78,8 @@ export const useDashboardStats = () => {
 
   useEffect(() => {
     let isMounted = true;
+    let refreshInterval;
+
     const fetchStatistics = async () => {
       try {
         const currentYear = new Date().getFullYear();
@@ -301,8 +303,11 @@ export const useDashboardStats = () => {
     };
 
     fetchStatistics();
+    refreshInterval = setInterval(fetchStatistics, 5000);
+
     return () => {
       isMounted = false;
+      if (refreshInterval) clearInterval(refreshInterval);
     };
   }, []);
 

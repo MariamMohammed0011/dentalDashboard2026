@@ -93,7 +93,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
     if (file.fullUrl) return file.fullUrl;
     if (file.path) {
       if (file.path.startsWith('http://') || file.path.startsWith('https://')) return file.path;
-      return `https://localhost:44334/${file.path.replace(/^\//, '')}`;
+      return `https://osnet.shop/dentconnect/${file.path.replace(/^\//, '')}`;
     }
     return '#';
   };

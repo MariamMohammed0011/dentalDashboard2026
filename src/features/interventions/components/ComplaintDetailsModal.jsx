@@ -41,7 +41,7 @@ export default function ComplaintDetailsModal({ complaint, onClose, onSendReply,
   const getFullImageUrl = (path) => {
     if (!path) return null;
     if (path.startsWith('http://') || path.startsWith('https://')) return path;
-    return `https://localhost:44334/${path.replace(/^\//, '')}`;
+    return `https://osnet.shop/dentconnect/${path.replace(/^\//, '')}`;
   };
 
   return createPortal(
