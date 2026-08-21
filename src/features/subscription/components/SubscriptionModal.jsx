@@ -35,7 +35,7 @@ export default function SubscriptionModal({ isOpen, onClose, onSubmit, type, ini
   const selectedLab = labs.find((l) => String(l.id) === String(selectedLabId));
 
   const getLabDisplayName = (lab) => {
-    return lab.labNamePlace || lab.owner?.name || lab.name || `Lab #${lab.id}`;
+    return lab.labNamePlace || lab.owner?.name || lab.name || t('subscription.subscriptionModal.labFallbackName', { id: lab.id });
   };
 
   const filteredLabs = labs.filter((l) => {
@@ -161,7 +161,7 @@ export default function SubscriptionModal({ isOpen, onClose, onSubmit, type, ini
                             {filteredLabs.length > 0 ? (
                               filteredLabs.map((l) => {
                                 const isSelected = String(l.id) === String(selectedLabId);
-                                const labName = l.owner?.namePlace || l.name || `Lab #${l.id}`;
+                                const labName = getLabDisplayName(l);
                                 return (
                                   <button
                                     key={l.id}

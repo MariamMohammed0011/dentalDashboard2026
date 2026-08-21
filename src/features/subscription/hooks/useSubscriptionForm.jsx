@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { labsApi } from '../../labs/services/labsApi';
 
 export const useSubscriptionForm = ({ isOpen, type, initialData, onSubmit, onClose }) => {
+  const { t } = useTranslation();
   const [labs, setLabs] = useState([]);
   const [loadingLabs, setLoadingLabs] = useState(false);
 
@@ -53,7 +55,29 @@ export const useSubscriptionForm = ({ isOpen, type, initialData, onSubmit, onClo
   const handleSubmit = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
     if (!amount || !startDate || !endDate || (type === 'add' && !selectedLabId)) {
-      setError('يرجى ملء جميع الحقول المطلوبة');
+      setError(t('subscription.hooks.fillRequiredFields'));
+      return;
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+
+    if (parseFloat(amount) < 0) {
+      setError(t('subscription.hooks.invalidAmountNegative'));
+      return;
+    }
+
+    if (startDate < today) {
+      setError(t('subscription.hooks.startDatePastError'));
+      return;
+    }
+
+    if (endDate <= today) {
+      setError(t('subscription.hooks.endDatePastError'));
+      return;
+    }
+
+    if (startDate > endDate) {
+      setError(t('subscription.hooks.startAfterEndError'));
       return;
     }
 
@@ -66,13 +90,13 @@ export const useSubscriptionForm = ({ isOpen, type, initialData, onSubmit, onClo
         periodStartUtc: startDate,
         periodEndUtc: endDate,
       };
-      
+
       const labId = type === 'add' ? selectedLabId : (initialData?.labId || initialData?.id);
       await onSubmit(labId, payload);
       onClose();
     } catch (err) {
       console.error(err);
-      setError(err?.response?.data?.message || 'حدث خطأ أثناء حفظ الاشتراك');
+      setError(err?.response?.data?.message || t('subscription.hooks.saveError'));
     } finally {
       setIsSubmitting(false);
     }

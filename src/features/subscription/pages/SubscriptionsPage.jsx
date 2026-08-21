@@ -68,8 +68,8 @@ export default function SubscriptionsPage() {
             className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 px-2.5 sm:px-5 bg-white dark:bg-slate-900 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-amber-600 dark:text-amber-400 border border-amber-300/70 dark:border-amber-800/60 rounded-xl sm:rounded-2xl text-[11px] sm:text-sm font-black shadow-sm transition-all active:scale-95 cursor-pointer whitespace-nowrap min-w-0"
           >
             <DollarSign size={16} className="shrink-0" />
-            <span className="truncate sm:hidden">تعديل السعر</span>
-            <span className="hidden sm:inline">تعديل القيمة لجميع المخابر</span>
+            <span className="truncate sm:hidden">{t('subscription.updatePrice')}</span>
+            <span className="hidden sm:inline">{t('subscription.updatePriceAllLabs')}</span>
           </button>
 
           <button
@@ -77,7 +77,7 @@ export default function SubscriptionsPage() {
             className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 px-2.5 sm:px-6 bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl sm:rounded-2xl text-[11px] sm:text-sm font-black shadow-lg shadow-emerald-500/20 transition-all active:scale-95 cursor-pointer whitespace-nowrap min-w-0"
           >
             <Plus size={16} className="shrink-0" />
-            <span className="truncate sm:hidden">إضافة</span>
+            <span className="truncate sm:hidden">{t('common.add')}</span>
             <span className="hidden sm:inline">{t('subscription.addSubscription')}</span>
           </button>
         </div>
@@ -92,10 +92,10 @@ export default function SubscriptionsPage() {
           className="bg-bg-card border border-border-main/70 rounded-[2.2rem] p-5.5 shadow-sm hover:shadow-xl transition-all duration-300 flex items-center justify-between relative overflow-hidden group"
         >
           <div className="flex flex-col text-right z-10">
-            <span className="text-[11px] text-text-muted font-extrabold uppercase tracking-wider mb-1">إجمالي الاشتراكات</span>
+            <span className="text-[11px] text-text-muted font-extrabold uppercase tracking-wider mb-1">{t('subscription.totalSubscriptions')}</span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl sm:text-3xl font-black text-text-main tracking-tight">{activeCount + pendingPaymentCount}</span>
-              <span className="text-xs font-bold text-text-muted">مخبر</span>
+              <span className="text-xs font-bold text-text-muted">{t('common.lab')}</span>
             </div>
           </div>
           <div className="p-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/40 group-hover:rotate-[12deg] group-hover:scale-110 transition-transform duration-300 z-10 shadow-sm">
@@ -112,10 +112,10 @@ export default function SubscriptionsPage() {
           className="bg-bg-card border border-border-main/70 rounded-[2.2rem] p-5.5 shadow-sm hover:shadow-xl transition-all duration-300 flex items-center justify-between relative overflow-hidden group"
         >
           <div className="flex flex-col text-right z-10">
-            <span className="text-[11px] text-text-muted font-extrabold uppercase tracking-wider mb-1">اشتراكات سارية</span>
+            <span className="text-[11px] text-text-muted font-extrabold uppercase tracking-wider mb-1">{t('subscription.activeSubscriptions')}</span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl sm:text-3xl font-black text-emerald-500 tracking-tight">{activeCount}</span>
-              <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">نشط</span>
+              <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">{t('common.active')}</span>
             </div>
           </div>
           <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/40 group-hover:rotate-[12deg] group-hover:scale-110 transition-transform duration-300 z-10 shadow-sm">
@@ -132,10 +132,10 @@ export default function SubscriptionsPage() {
           className="bg-bg-card border border-border-main/70 rounded-[2.2rem] p-5.5 shadow-sm hover:shadow-xl transition-all duration-300 flex items-center justify-between relative overflow-hidden group"
         >
           <div className="flex flex-col text-right z-10">
-            <span className="text-[11px] text-text-muted font-extrabold uppercase tracking-wider mb-1">بانتظار الدفع</span>
+            <span className="text-[11px] text-text-muted font-extrabold uppercase tracking-wider mb-1">{t('common.pendingPayment')}</span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl sm:text-3xl font-black text-purple-600 dark:text-purple-400 tracking-tight">{pendingPaymentCount}</span>
-              <span className="text-xs font-bold text-purple-600 dark:text-purple-400">في الانتظار</span>
+              <span className="text-xs font-bold text-purple-600 dark:text-purple-400">{t('subscription.inWaiting')}</span>
             </div>
           </div>
           <div className="p-3.5 rounded-2xl bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 border border-purple-200/60 dark:border-purple-900/40 group-hover:rotate-[12deg] group-hover:scale-110 transition-transform duration-300 z-10 shadow-sm">
@@ -152,10 +152,10 @@ export default function SubscriptionsPage() {
           className="bg-bg-card border border-border-main/70 rounded-[2.2rem] p-5.5 shadow-sm hover:shadow-xl transition-all duration-300 flex items-center justify-between relative overflow-hidden group"
         >
           <div className="flex flex-col text-right z-10">
-            <span className="text-[11px] text-text-muted font-extrabold uppercase tracking-wider mb-1">تنتهي خلال 30 يوم</span>
+            <span className="text-[11px] text-text-muted font-extrabold uppercase tracking-wider mb-1">{t('subscription.expiringIn30Days')}</span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl sm:text-3xl font-black text-amber-500 tracking-tight">{expiringSoonCount}</span>
-              <span className="text-xs font-bold text-amber-600 dark:text-amber-400">تنتهي قريباً</span>
+              <span className="text-xs font-bold text-amber-600 dark:text-amber-400">{t('subscription.expiringSoon')}</span>
             </div>
           </div>
           <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/40 group-hover:rotate-[12deg] group-hover:scale-110 transition-transform duration-300 z-10 shadow-sm">
@@ -192,7 +192,7 @@ export default function SubscriptionsPage() {
               }`}
           >
             <CreditCard size={14} className="sm:size-4" />
-            <span className="hidden sm:inline">بانتظار الدفع</span>
+            <span className="hidden sm:inline">{t('common.pendingPayment')}</span>
             <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${activeTab === 'pendingPayment' ? 'bg-white/20 text-white' : 'bg-purple-500/10 text-purple-600'
               }`}>
               {pendingPaymentCount}
@@ -211,7 +211,7 @@ export default function SubscriptionsPage() {
                     ? 'bg-white dark:bg-slate-900 text-emerald-500 shadow-sm border border-slate-200/50 dark:border-slate-700/50'
                     : 'text-text-muted hover:text-text-main'
                   }`}
-                title="عرض الكروت الفاخرة"
+                title={t('subscription.gridModeTooltip')}
               >
                 <LayoutGrid size={18} />
               </button>
@@ -221,7 +221,7 @@ export default function SubscriptionsPage() {
                     ? 'bg-white dark:bg-slate-900 text-emerald-500 shadow-sm border border-slate-200/50 dark:border-slate-700/50'
                     : 'text-text-muted hover:text-text-main'
                   }`}
-                title="عرض الجدول المضغوط"
+                title={t('subscription.tableModeTooltip')}
               >
                 <List size={18} />
               </button>

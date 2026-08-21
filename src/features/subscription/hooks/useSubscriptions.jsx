@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { fetchActiveSubscriptions, fetchPendingPaymentAccounts, activateSubscription, renewSubscription, updateAllSubscriptionAmounts } from '../services/subscriptionApi';
 import { labsApi } from '../../labs/services/labsApi';
 import { toast } from 'sonner';
 
-const normalizePendingPaymentAccount = (acc, labsList = []) => {
+const normalizePendingPaymentAccount = (acc, labsList = [], t) => {
   let matchedLab = null;
 
   if (labsList && labsList.length > 0) {
@@ -16,7 +17,8 @@ const normalizePendingPaymentAccount = (acc, labsList = []) => {
   }
 
   const labId = matchedLab ? matchedLab.id : (acc.labId || acc.dentalLabId || (acc.ownerId && String(acc.id) !== String(acc.ownerId) ? acc.id : acc.labId || acc.id));
-  const labName = matchedLab?.labNamePlace || acc.labNamePlace || acc.namePlace || acc.labName || acc.name || `مخبر #${labId}`;
+  const fallbackLabName = t ? t('subscription.subscriptionModal.labFallbackName', { id: labId }) : `مخبر #${labId}`;
+  const labName = matchedLab?.labNamePlace || acc.labNamePlace || acc.namePlace || acc.labName || acc.name || fallbackLabName;
   const ownerName = matchedLab?.ownerName || acc.ownerName || acc.name;
   const email = matchedLab?.ownerEmail || acc.ownerEmail || acc.email;
   const phone = matchedLab?.ownerPhone || acc.ownerPhone || acc.phone;
@@ -37,6 +39,7 @@ const normalizePendingPaymentAccount = (acc, labsList = []) => {
 };
 
 export const useSubscriptions = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('active');
   const [activeSubs, setActiveSubs] = useState([]);
   const [pendingPaymentAccounts, setPendingPaymentAccounts] = useState([]);
@@ -63,10 +66,10 @@ export const useSubscriptions = () => {
       const labsArray = Array.isArray(labsData) ? labsData : (labsData?.data || labsData || []);
 
       setActiveSubs(activeArray);
-      setPendingPaymentAccounts(pendingPaymentArray.map(acc => normalizePendingPaymentAccount(acc, labsArray)));
+      setPendingPaymentAccounts(pendingPaymentArray.map(acc => normalizePendingPaymentAccount(acc, labsArray, t)));
     } catch (e) {
       console.error('Error loading subscriptions', e);
-      toast.error('حدث خطأ أثناء تحميل بيانات الاشتراكات');
+      toast.error(t('subscription.hooks.loadError'));
     } finally {
       setLoading(false);
     }
@@ -101,11 +104,11 @@ export const useSubscriptions = () => {
   const handleUpdateAllAmounts = async (newAmount) => {
     try {
       const res = await updateAllSubscriptionAmounts(newAmount);
-      toast.success(res?.message || 'تم تحديث قيمة الاشتراك لجميع المخابر بنجاح');
+      toast.success(res?.message || t('subscription.hooks.updateAllSuccess'));
       load();
     } catch (e) {
       console.error(e);
-      const errMsg = e?.response?.data?.message || 'حدث خطأ أثناء تحديث قيمة الاشتراك';
+      const errMsg = e?.response?.data?.message || t('subscription.hooks.updateAllError');
       toast.error(errMsg);
       throw e;
     }
@@ -115,15 +118,15 @@ export const useSubscriptions = () => {
     try {
       if (modalType === 'renew') {
         await renewSubscription(labId, payload);
-        toast.success('تم تجديد الاشتراك وتحديث الحساب بنجاح');
+        toast.success(t('subscription.hooks.renewSuccess'));
       } else {
         await activateSubscription(labId, payload);
-        toast.success('تم تسجيل الاشتراك وتفعيل حساب المخبر بنجاح');
+        toast.success(t('subscription.hooks.activateSuccess'));
       }
       load();
     } catch (e) {
       console.error(e);
-      const errMsg = e?.response?.data?.message || 'حدث خطأ أثناء حفظ الاشتراك';
+      const errMsg = e?.response?.data?.message || t('subscription.hooks.saveError');
       toast.error(errMsg);
       throw e;
     }

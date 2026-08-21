@@ -59,10 +59,10 @@ export default function SubscriptionCard({ sub, onActivate, onRenew }) {
 
             <div className="flex flex-col gap-0.5 min-w-0">
               <span className="text-[10px] text-gray-400 dark:text-slate-500 font-black tracking-widest uppercase">
-                {t('labs.labType')} #{labId}
+                {t('subscription.labIdLabel', { id: labId })}
               </span>
-              <h3 className="font-bold text-text-main dark:text-gray-100 text-[15px] tracking-tight truncate leading-tight">
-                {labName}
+              <h3 className="font-bold text-text-main dark:text-gray-100 text-[15px] tracking-tight truncate leading-tight" title={labName || t('subscription.subscriptionModal.labFallbackName', { id: labId })}>
+                {labName || t('subscription.subscriptionModal.labFallbackName', { id: labId })}
               </h3>
             </div>
           </div>

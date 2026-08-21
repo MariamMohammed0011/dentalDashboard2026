@@ -23,7 +23,7 @@ export default function SubscriptionTable({ subs, isLoading, onActivate, onRenew
        <div className="hidden lg:flex items-center w-full px-6 py-3  text-slate-500 dark:text-slate-400 font-extrabold text-[14px] uppercase select-none">
         <div className="w-[26%] text-center flex items-center justify-center gap-1.5">{t('subscription.labName')}</div>
         <div className="w-[32%] text-center flex items-center justify-center gap-1.5">{t('reports.duration')}</div>
-        <div className="w-[24%] text-center flex items-center justify-center gap-1.5">المدة المتبقية</div>
+        <div className="w-[24%] text-center flex items-center justify-center gap-1.5">{t('subscription.remainingDuration')}</div>
          <div className="w-[20%] text-center flex items-center justify-center gap-1.5">{t('common.actions')}</div>
       </div>
 
@@ -60,8 +60,8 @@ export default function SubscriptionTable({ subs, isLoading, onActivate, onRenew
                     <Building2 size={19} />
                   </div>
                   <div className="flex flex-col text-right min-w-0">
-                    <span className="font-extrabold text-text-main dark:text-gray-100 text-xs sm:text-[13px] truncate leading-snug" title={labName || `مخبر #${labId}`}>
-                      {labName || `مخبر #${labId}`}
+                    <span className="font-extrabold text-text-main dark:text-gray-100 text-xs sm:text-[13px] truncate leading-snug" title={labName || t('subscription.subscriptionModal.labFallbackName', { id: labId })}>
+                      {labName || t('subscription.subscriptionModal.labFallbackName', { id: labId })}
                     </span>
                     <span className="text-[10px] text-text-muted font-black">
                       ID: #{labId}
@@ -84,7 +84,7 @@ export default function SubscriptionTable({ subs, isLoading, onActivate, onRenew
                     {isActive ? (
                       <>
                         {isLowRemaining && <AlertTriangle size={10} className="animate-bounce text-amber-500" />}
-                        متبقي {remainingDays} يوم
+                        {t('subscription.remainingDaysCount', { count: remainingDays })}
                       </>
                     ) : (
                       t('subscription.expiredDaysAgo', { days: Math.abs(remainingDays ?? 0) })
