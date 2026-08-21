@@ -126,7 +126,7 @@ export default function InvoicesTable({ invoices, isLoading, onOpenDetails }) {
 
                     {/* Amount */}
                     <td className="py-3.5 px-4 text-center whitespace-nowrap font-black text-sm text-text-main dark:text-gray-100">
-                      {Number(inv.price || 0).toLocaleString()} <span className="text-[10px] text-text-muted font-normal">ر.س</span>
+                      {Number(inv.price || 0).toLocaleString()} <span className="text-[10px] text-text-muted font-normal">$</span>
                     </td>
 
                     {/* Status */}
@@ -214,7 +214,8 @@ export default function InvoicesTable({ invoices, isLoading, onOpenDetails }) {
                 <div className="border-t border-slate-100 dark:border-slate-800 pt-3 flex justify-between items-center">
                   <div>
                     <p className="text-[11px] font-bold text-text-muted mb-1">المبلغ</p>
-                    <p className="text-lg font-black text-primary">{Number(inv.price || 0).toLocaleString()} <span className="text-xs text-text-muted font-bold">ر.س</span></p>
+                    <p className="text-lg font-black text-primary">{Number(inv.price || 0).toLocaleString()} <span className="text-xs text-text-muted font-bold">$
+                      </span></p>
                   </div>
                   <button
                     onClick={() => onOpenDetails(inv)}
@@ -291,7 +292,7 @@ export default function InvoicesTable({ invoices, isLoading, onOpenDetails }) {
                 <div className="flex justify-between items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                   <div>
                     <p className="text-[10px] text-text-muted font-bold mb-0.5">المبلغ</p>
-                    <p className="font-black text-sm text-primary">{Number(inv.price || 0).toLocaleString()} <span className="text-[10px] font-bold">ر.س</span></p>
+                    <p className="font-black text-sm text-primary">{Number(inv.price || 0).toLocaleString()} <span className="text-[10px] font-bold">$</span></p>
                   </div>
                   <button
                     onClick={() => onOpenDetails(inv)}

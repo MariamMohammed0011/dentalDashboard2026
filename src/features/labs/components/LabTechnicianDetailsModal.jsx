@@ -141,22 +141,7 @@ const LabTechnicianDetailsModal = ({ tech, isOpen, onClose }) => {
                   </span>
                 </div>
 
-                {/* <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800 gap-2">
-                  <span className="text-xs font-bold text-gray-400">ملف توثيق المهنة:</span>
-                  {tech.verificationDocumentPath ? (
-                    <a
-                      href={`https://localhost:44334/${tech.verificationDocumentPath}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 hover:underline"
-                    >
-                      <FileText size={16} />
-                      عرض المستند المرفق
-                    </a>
-                  ) : (
-                    <span className="text-xs text-gray-400 font-bold">لا يوجد مستند مرفق</span>
-                  )}
-                </div> */}
+               
               </div>
 
             </div>

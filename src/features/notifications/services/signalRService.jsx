@@ -15,32 +15,34 @@ export const signalRService = {
     }
 
     const token = Cookies.get("auth_token");
-    
+
     // 🎯 التعديل الجوهري هنا: تغيير المسار ليطابق ما يطلبه السيرفر في الـ Console تماماً!
-   const hubUrl = "https://osnet.shop/dentconnect/notificationHub"; //  المسار الصحيح
+    //  const hubUrl = "https://osnet.shop/dentconnect/notificationHub"; //  المسار الصحيح
     // const hubUrl = "https://localhost:44334/notificationHub"; //  المسار الصحيح
+    const baseUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '');
+    const hubUrl = `${baseUrl}/notificationHub`;
     try {
       console.log(`[SignalR] Initializing connection to correct endpoint: ${hubUrl}`);
-      
+
+      // signalRService.js 
+
       // signalRService.js
 
-// signalRService.js
-
-connection = new HubConnectionBuilder()
-  .withUrl(hubUrl, {
-    accessTokenFactory: () => {
-      const token = Cookies.get("auth_token");
-      console.log("[SignalR] Fetching token for connection:", token ? "Token Found" : "No Token");
-      return token || "";
-    },
-    // 1. اجعليها false أو قومي بحذف السطر تماماً لتفعيل الـ Negotiation
-    skipNegotiation: false, 
-    // 2. يفضل ترك الخيارات مفتوحة ليختار المتصفح أفضل وسيلة مدعومة تلقائياً
-    transport: HttpTransportType.WebSockets | HttpTransportType.LongPolling 
-  })
-  .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
-  .configureLogging(1) 
-  .build();
+      connection = new HubConnectionBuilder()
+        .withUrl(hubUrl, {
+          accessTokenFactory: () => {
+            const token = Cookies.get("auth_token");
+            console.log("[SignalR] Fetching token for connection:", token ? "Token Found" : "No Token");
+            return token || "";
+          },
+          // 1. اجعليها false أو قومي بحذف السطر تماماً لتفعيل الـ Negotiation
+          skipNegotiation: false,
+          // 2. يفضل ترك الخيارات مفتوحة ليختار المتصفح أفضل وسيلة مدعومة تلقائياً
+          transport: HttpTransportType.WebSockets | HttpTransportType.LongPolling
+        })
+        .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
+        .configureLogging(1)
+        .build();
 
       const handleIncomingNotification = (notification) => {
         console.log("[SignalR] New Live Notification received:", notification);
@@ -51,9 +53,9 @@ connection = new HubConnectionBuilder()
 
       // مسميات الميثودز الأساسية والمتوقعة من الـ Backend
       const eventNames = [
-        "ReceiveNotification", 
-        "SendNotification", 
-        "Notification", 
+        "ReceiveNotification",
+        "SendNotification",
+        "Notification",
         "notification"
       ];
 

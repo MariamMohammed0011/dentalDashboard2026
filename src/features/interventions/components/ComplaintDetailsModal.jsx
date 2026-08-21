@@ -38,12 +38,24 @@ export default function ComplaintDetailsModal({ complaint, onClose, onSendReply,
     setReplyText('');
   };
 
+  // const getFullImageUrl = (path) => {
+  //   if (!path) return null;
+  //   if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  //   return `https://osnet.shop/dentconnect/${path.replace(/^\//, '')}`;
+  //   // return `https://localhost:44334/${path.replace(/^\//, '')}`;
+  // };
   const getFullImageUrl = (path) => {
-    if (!path) return null;
-    if (path.startsWith('http://') || path.startsWith('https://')) return path;
-    return `https://osnet.shop/dentconnect/${path.replace(/^\//, '')}`;
-    // return `https://localhost:44334/${path.replace(/^\//, '')}`;
-  };
+  if (!path) return null;
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+
+  // جلب الرابط الأساسي من .env.local والتأكد من إزالة أي مائلة / في النهاية
+  const baseUrl = (import.meta.env.VITE_API_BASE_URL ).replace(/\/+$/, '');
+  
+  // إزالة أي مائلة / في بداية المسار لتجنب مشكلة //
+  const cleanPath = path.replace(/^\/+/, '');
+
+  return `${baseUrl}/${cleanPath}`;
+};
 
   return createPortal(
     <AnimatePresence>

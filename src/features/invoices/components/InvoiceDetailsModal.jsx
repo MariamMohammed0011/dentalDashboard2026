@@ -292,7 +292,7 @@ export default function InvoiceDetailsModal({ isOpen, onClose, invoice }) {
                           </span>
                         </td>
                         <td className="p-3.5 text-left font-black text-base text-emerald-600 dark:text-emerald-400 whitespace-nowrap dir-ltr">
-                          {Number(invoice.price || 0).toLocaleString()} <span className="text-xs font-bold text-text-muted">ر.س</span>
+                          {Number(invoice.price || 0).toLocaleString()} <span className="text-xs font-bold text-text-muted">$</span>
                         </td>
                       </tr>
                     </tbody>
@@ -335,7 +335,8 @@ export default function InvoiceDetailsModal({ isOpen, onClose, invoice }) {
                     <div className="min-w-0 flex-1">
                       <p className="text-[10px] xs:text-xs text-text-muted font-bold mb-0.5 xs:mb-1">{t('invoices.amount')}</p>
                       <p className="font-black text-sm xs:text-lg text-emerald-600 dark:text-emerald-400 dir-ltr">
-                        {Number(invoice.price || 0).toLocaleString()} <span className="text-xs font-bold text-text-muted">ر.س</span>
+                        {Number(invoice.price || 0).toLocaleString()} <span className="text-xs font-bold text-text-muted">$
+                        </span>
                       </p>
                     </div>
                   </div>

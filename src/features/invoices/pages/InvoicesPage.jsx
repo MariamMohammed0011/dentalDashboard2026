@@ -61,7 +61,7 @@ export default function InvoicesPage() {
           </div>
           <div>
             <span className="text-xl sm:text-2xl lg:text-3xl font-black text-text-main break-words">
-              {totalPaidRevenue.toLocaleString()} <span className="text-xs font-bold text-text-muted">ر.س</span>
+              {totalPaidRevenue.toLocaleString()} <span className="text-xs font-bold text-text-muted">$</span>
             </span>
             <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1.5">
               {paidCount} {t('invoices.paidInvoicesCount')}
@@ -81,7 +81,9 @@ export default function InvoicesPage() {
           </div>
           <div>
             <span className="text-xl sm:text-2xl lg:text-3xl font-black text-text-main break-words">
-              {totalUnpaidAmount.toLocaleString()} <span className="text-xs font-bold text-text-muted">ر.س</span>
+              {totalUnpaidAmount.toLocaleString()} <span className="text-xs font-bold text-text-muted">$
+
+              </span>
             </span>
             <p className="text-xs font-bold text-rose-600 dark:text-rose-400 mt-1.5">
               {unpaidCount} {t('invoices.unpaidInvoicesCount')}
@@ -101,7 +103,8 @@ export default function InvoicesPage() {
           </div>
           <div>
             <span className="text-xl sm:text-2xl lg:text-3xl font-black text-text-main break-words">
-              {(totalPaidRevenue + totalUnpaidAmount).toLocaleString()} <span className="text-xs font-bold text-text-muted">ر.س</span>
+              {(totalPaidRevenue + totalUnpaidAmount).toLocaleString()} <span className="text-xs font-bold text-text-muted">$
+                </span>
             </span>
             <p className="text-xs font-bold text-primary mt-1.5">
               {paidCount + unpaidCount} {t('invoices.totalInvoicesIssued')}

@@ -88,17 +88,30 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
     }
   };
 
-  const getFullFileUrl = (file) => {
-    if (!file) return '#';
-    if (file.fullUrl) return file.fullUrl;
-    if (file.path) {
-      if (file.path.startsWith('http://') || file.path.startsWith('https://')) return file.path;
-      return `https://osnet.shop/dentconnect/${file.path.replace(/^\//, '')}`;
-      // return `https://localhost:44334/${file.path.replace(/^\//, '')}`;
-    }
-    return '#';
-  };
-
+  // const getFullFileUrl = (file) => {
+  //   if (!file) return '#';
+  //   if (file.fullUrl) return file.fullUrl;
+  //   if (file.path) {
+  //     if (file.path.startsWith('http://') || file.path.startsWith('https://')) return file.path;
+  //     return `https://osnet.shop/dentconnect/${file.path.replace(/^\//, '')}`;
+  //     // return `https://localhost:44334/${file.path.replace(/^\//, '')}`;
+  //   }
+  //   return '#';
+  // };
+const getFullFileUrl = (file) => {
+  if (!file) return '#';
+  if (file.fullUrl) return file.fullUrl;
+  if (file.path) {
+    if (file.path.startsWith('http://') || file.path.startsWith('https://')) return file.path;
+    
+    // جلب الرابط من .env.local وإزالة المائلة الزائدة
+    const baseUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '');
+    const cleanPath = file.path.replace(/^\/+/, '');
+    
+    return `${baseUrl}/${cleanPath}`;
+  }
+  return '#';
+};
   const isDigital = String(order.impressionType).toLowerCase() === 'digital' || String(order.impressionType) === 'رقمية' || stlFiles.length > 0;
   const currentStlFile = stlFiles[activeStlIndex] || stlFiles[0];
 
@@ -472,7 +485,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
                       {t('orders.estimatedPriceTitle') || 'السعر التقديري'}
                     </span>
                     <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                      {order.estimatedPrice ? `${order.estimatedPrice.toLocaleString()} ${t('orders.currency') || 'ر.س'}` : (t('orders.freeOrUnknown') || 'غير محدد')}
+                      {order.estimatedPrice ? `${order.estimatedPrice.toLocaleString()} ${t('orders.currency') || '$'}` : (t('orders.freeOrUnknown') || 'غير محدد')}
                     </span>
                   </div>
 
@@ -481,7 +494,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
                       {t('orders.finalPriceTitle') || 'السعر النهائي'}
                     </span>
                     <span className="text-sm font-bold text-violet-700 dark:text-violet-300">
-                      {order.finalPrice ? `${order.finalPrice.toLocaleString()} ${t('orders.currency') || 'ر.س'}` : (t('orders.notDeterminedYet') || 'قيد المراجعة')}
+                      {order.finalPrice ? `${order.finalPrice.toLocaleString()} ${t('orders.currency') || '$'}` : (t('orders.notDeterminedYet') || 'قيد المراجعة')}
                     </span>
                   </div>
                 </div>
