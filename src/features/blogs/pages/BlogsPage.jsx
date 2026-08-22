@@ -589,146 +589,172 @@ export default function BlogsPage() {
       )}
 
       {/* 6. Active Article Modal */}
-      {typeof document !== "undefined" && createPortal(
-        <AnimatePresence>
-          {activeArticle && (
-            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" dir="rtl">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setActiveArticle(null)}
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+     {typeof document !== "undefined" && createPortal(
+  <AnimatePresence>
+    {activeArticle && (
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4" dir="rtl">
+        {/* خلفية التعتيم */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setActiveArticle(null)}
+          className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        />
+
+        {/* جسم المودال الرئيسي */}
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.95, opacity: 0, y: 20 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+          className="relative bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col font-zain"
+        >
+          {/* 1. مساحة الصورة والعنوان الرئيسي */}
+          <div className="h-52 sm:h-64 relative bg-slate-100 dark:bg-slate-800 shrink-0 border-b border-slate-100 dark:border-slate-800/80">
+            {activeArticle.image ? (
+              <SensitiveImage
+                src={activeArticle.image}
+                alt={activeArticle.title}
+                isSensitive={activeArticle.isSensitiveRedacted}
+                imgClassName="w-full h-full object-cover"
               />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400">
+                <BookOpen size={48} />
+              </div>
+            )}
+            
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
 
-              <motion.div
-                initial={{ scale: 0.95, opacity: 0, y: 30 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.95, opacity: 0, y: 30 }}
-                className="relative bg-white dark:bg-slate-900 w-full max-w-3xl rounded-tl-3xl rounded-br-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
-              >
-                <div className="h-48 sm:h-64 relative bg-slate-100 dark:bg-slate-800 flex-shrink-0 border-b border-slate-100 dark:border-slate-800/80">
-                  <SensitiveImage
-                    src={activeArticle.image}
-                    alt={activeArticle.title}
-                    isSensitive={activeArticle.isSensitiveRedacted}
-                    imgClassName="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+            {/* زر الإغلاق (X) */}
+            <button
+              type="button"
+              onClick={() => setActiveArticle(null)}
+              className="absolute top-4 left-4 p-2 bg-black/50 hover:bg-black/75 text-white rounded-xl transition-all cursor-pointer backdrop-blur-md border border-white/10 active:scale-95"
+            >
+              <X size={18} />
+            </button>
 
-                  <button
-                    onClick={() => setActiveArticle(null)}
-                    className="absolute top-4 left-4 sm:top-6 sm:left-6 p-2 sm:p-2.5 bg-black/60 hover:bg-black/80 text-white rounded-xl transition-colors backdrop-blur-md border border-white/20 z-50"
-                  >
-                    <X size={18} className="sm:w-5 sm:h-5" />
-                  </button>
-
-                  <div className="absolute bottom-4 sm:bottom-6 right-4 sm:right-8 left-4 sm:left-8 flex justify-between items-end text-white">
-                    <div className="flex flex-col text-right gap-1.5 min-w-0 flex-1">
-                      <RoleBadge role={activeArticle.author.role} className="self-start" />
-                      <h2 className="text-sm sm:text-lg font-bold mt-1 leading-tight line-clamp-3">
-                        {activeArticle.title}
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 sm:p-5 flex flex-col gap-3 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-800/20">
-                  <div className="flex items-center justify-between gap-3 w-full">
-                    <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold text-xs shrink-0 ring-1 ring-slate-200 dark:ring-slate-700 overflow-hidden">
-                        {activeArticle.author.avatar ? (
-                          <img
-                            src={activeArticle.author.avatar}
-                            alt={activeArticle.author.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <span>{activeArticle.author.name?.slice(0, 2).toUpperCase() || "DR"}</span>
-                        )}
-                      </div>
-
-                      <div className="flex flex-col text-right min-w-0 flex-1">
-                        <h4
-                          title={activeArticle.author.name}
-                          className="text-slate-900 dark:text-white font-extrabold text-sm leading-snug truncate"
-                        >
-                          {activeArticle.author.name}
-                        </h4>
-                        <span
-                          title={activeArticle.author.specialty}
-                          className="text-slate-400 dark:text-slate-400 text-xs font-medium truncate mt-0.5"
-                        >
-                          {activeArticle.author.specialty }
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="shrink-0 self-start">
-                      <BlogActionsMenu
-                        isApproved={String(activeArticle.status || "").toLowerCase() === "approved"}
-                        isRejected={String(activeArticle.status || "").toLowerCase() === "rejected"}
-                        showReview={false}
-                        onReview={() => {}}
-                        onApprove={() => {
-                          setApproveTarget(activeArticle);
-                          setIsApproveModalOpen(true);
-                        }}
-                        onReject={() => {
-                          setRejectTarget(activeArticle);
-                          setIsRejectModalOpen(true);
-                        }}
-                        onDelete={() => {
-                          setDeleteTarget(activeArticle);
-                          setIsDeleteModalOpen(true);
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 pt-1 border-t border-slate-150/50 dark:border-slate-800/80">
-                    <RoleBadge role={activeArticle.author.role} variant="soft" />
-                    <StatusPill status={activeArticle.status} />
-                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold">
-                      <Calendar size={13} className="text-amber-600 dark:text-amber-400" />
-                      <span className="text-text-main">{activeArticle.publishDate}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 sm:p-8 overflow-y-auto custom-scrollbar flex-grow space-y-4 sm:space-y-6">
-
-                  {/* {activeArticle.reviewMessage && (
-                    <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-border-main/40 flex items-start gap-2.5">
-                      <AlertCircle size={16} className="text-text-muted shrink-0 mt-0.5" />
-                      <p className="text-xs sm:text-sm text-text-muted font-medium leading-relaxed">
-                        {activeArticle.reviewMessage}
-                      </p>
-                    </div>
-                  )} */}
-
-                  <div className="flex flex-col gap-2">
-                    <span className="text-[11px] font-black text-text-muted uppercase tracking-wider">
-                      {t('blogs.contentSectionLabel')}
-                    </span>
-                    <div className="text-text-main text-xs sm:text-base leading-relaxed sm:leading-loose whitespace-pre-wrap break-words font-medium text-justify">
-                      {activeArticle.content}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-end pt-1">
-                    <span dir="ltr" className="text-[10px] sm:text-xs text-text-muted font-bold font-mono">
-                      #{activeArticle.id} {t('blogs.postIdLabel')}
-                    </span>
-                  </div>
-                </div>
-
-              </motion.div>
+            {/* العنوان فوق الصورة */}
+            <div className="absolute bottom-4 right-5 left-5 text-white">
+              <RoleBadge role={activeArticle.author?.role} className="mb-2" />
+              <h2 className="text-base sm:text-xl font-extrabold leading-snug line-clamp-2 drop-shadow-sm">
+                {activeArticle.title}
+              </h2>
             </div>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
+          </div>
+
+          {/* 2. شريط معلومات الكاتب والتاريخ */}
+          <div className="px-5 py-3.5 flex items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/40">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold text-xs shrink-0 ring-1 ring-slate-200 dark:ring-slate-700 overflow-hidden">
+                {activeArticle.author?.avatar ? (
+                  <img
+                    src={activeArticle.author.avatar}
+                    alt={activeArticle.author.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span>{activeArticle.author?.name?.slice(0, 2).toUpperCase() || "DR"}</span>
+                )}
+              </div>
+
+              <div className="flex flex-col text-right min-w-0">
+                <h4 className="text-slate-900 dark:text-white font-bold text-sm leading-tight truncate">
+                  {activeArticle.author?.name}
+                </h4>
+                <span className="text-slate-400 text-xs font-medium truncate mt-0.5">
+                  {activeArticle.author?.specialty || "أخصائي طب وجراحة أسنان"}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <StatusPill status={activeArticle.status} />
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 shadow-2xs">
+                <Calendar size={13} className="text-primary dark:text-blue-400" />
+                <span dir="ltr">{activeArticle.publishDate}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. محتوى المقال */}
+          <div className="p-5 sm:p-6 overflow-y-auto custom-scrollbar flex-grow space-y-4">
+            <div className="flex flex-col gap-2">
+              <span className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                {t('blogs.contentSectionLabel') || "محتوى المنشور"}
+              </span>
+              <div className="text-slate-700 dark:text-slate-200 text-sm sm:text-base leading-relaxed sm:leading-loose whitespace-pre-wrap break-words font-medium text-justify">
+                {activeArticle.content}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end pt-2">
+              <span dir="ltr" className="text-[11px] text-slate-400 dark:text-slate-500 font-mono font-bold">
+                #{activeArticle.id} {t('blogs.postIdLabel') || "ID"}
+              </span>
+            </div>
+          </div>
+
+          {/* 4. شريط الإجراءات السفلي (Footer) */}
+          <div className="px-5 py-3.5 bg-slate-50/80 dark:bg-slate-900/60 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5 shrink-0">
+            {(() => {
+              const activeStatus = String(activeArticle.status || "").toLowerCase();
+              const isApproved = activeStatus === "approved";
+              const isRejected = activeStatus === "rejected";
+
+              return (
+                <>
+                  {!isApproved && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setApproveTarget(activeArticle);
+                        setIsApproveModalOpen(true);
+                      }}
+                      className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl flex items-center gap-1.5 text-xs shadow-xs transition-all active:scale-95 cursor-pointer"
+                    >
+                      <Check size={15} />
+                      <span>{t('blogs.actions.approve') || "قبول"}</span>
+                    </button>
+                  )}
+
+                  {!isApproved && !isRejected && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRejectTarget(activeArticle);
+                        setIsRejectModalOpen(true);
+                      }}
+                      className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl flex items-center gap-1.5 text-xs shadow-xs transition-all active:scale-95 cursor-pointer"
+                    >
+                      <Ban size={15} />
+                      <span>{t('blogs.actions.reject') || "رفض"}</span>
+                    </button>
+                  )}
+                </>
+              );
+            })()}
+
+            <button
+              type="button"
+              onClick={() => {
+                setDeleteTarget(activeArticle);
+                setIsDeleteModalOpen(true);
+              }}
+              className="px-4 py-2 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white font-bold rounded-xl flex items-center gap-1.5 text-xs border border-rose-200 dark:border-rose-900/40 transition-all active:scale-95 cursor-pointer"
+            >
+              <Trash2 size={15} />
+              <span>{t('blogs.actions.delete') || "حذف"}</span>
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    )}
+  </AnimatePresence>,
+  document.body
+)}
 
       {/* Modals */}
       <ConfirmationModal
