@@ -90,19 +90,21 @@ const AddAdClientModal = ({ isOpen, onClose, onCreateClient, isSubmitting }) => 
                   <input
                     type="text"
                     required
-                    placeholder={t('ads.addClientModal.phonePlaceholder')}
+                    placeholder="09XXXXXXXX"
                     value={form.phone}
                     onChange={(e) => handleChange('phone', e.target.value)}
+                    maxLength="10"
+                    inputMode="numeric"
                     className="bg-gradient-to-r from-slate-50 to-slate-50/50 dark:from-slate-800/60 dark:to-slate-800/40 border-2 border-slate-200/60 dark:border-slate-700/60 rounded-lg xs:rounded-xl sm:rounded-2xl px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 text-slate-800 dark:text-slate-100 font-semibold text-xs xs:text-sm focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 dark:focus:border-emerald-400 transition-all w-full text-right placeholder-slate-400/60"
                     dir="ltr"
                     disabled={isSubmitting}
                   />
                   <span className="text-[10px] xs:text-[11px] text-slate-500 dark:text-slate-400 mr-1 block mt-0.5 font-medium">
-                    {t('ads.addClientModal.phoneHint')}
+                    09 + 8 أرقام (مجموع 10 أرقام)
                   </span>
                 </div>
 
-                <div className="flex flex-col gap-1.5 xs:gap-2">
+                {/* <div className="flex flex-col gap-1.5 xs:gap-2">
                   <label className="text-slate-700 dark:text-slate-300 font-black text-xs xs:text-sm flex items-center gap-1.5 xs:gap-2 mr-1">
                     <span className="p-1 xs:p-1.5 rounded-lg xs:rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400 flex-shrink-0">
                       <Building2 size={14} className="xs:w-4 xs:h-4" />
@@ -117,7 +119,7 @@ const AddAdClientModal = ({ isOpen, onClose, onCreateClient, isSubmitting }) => 
                     className="bg-gradient-to-r from-slate-50 to-slate-50/50 dark:from-slate-800/60 dark:to-slate-800/40 border-2 border-slate-200/60 dark:border-slate-700/60 rounded-lg xs:rounded-xl sm:rounded-2xl px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 text-slate-800 dark:text-slate-100 font-semibold text-xs xs:text-sm focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 dark:focus:border-purple-400 transition-all w-full placeholder-slate-400/60"
                     disabled={isSubmitting}
                   />
-                </div>
+                </div> */}
 
                 <div className="flex flex-col gap-1.5 xs:gap-2">
                   <label className="text-slate-700 dark:text-slate-300 font-black text-xs xs:text-sm flex items-center gap-1.5 xs:gap-2 mr-1">

@@ -43,22 +43,50 @@ export const usersApi = {
       if (!search || search.trim() === "") {
         return mappedAllUsers;
       }
-      const formData = new FormData();
-      formData.append("query", search);
 
-      const searchResponse = await axiosInstance.post("/Users/search", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const queryTrimmed = search.trim();
+      const searchUserIds = new Set();
+
+      try {
+        const formData = new FormData();
+        formData.append("query", queryTrimmed);
+
+        const searchResponse = await axiosInstance.post("/Users/search", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        const searchData = searchResponse.data;
+
+        const extractIds = (item) => {
+          if (!item || typeof item !== 'object') return;
+          const id = item.id ?? item.userId ?? item.user?.id;
+          if (id !== undefined && id !== null) searchUserIds.add(String(id));
+        };
+
+        if (Array.isArray(searchData)) {
+          searchData.forEach(extractIds);
+        } else if (typeof searchData === 'object' && searchData !== null) {
+          const categorized = searchData.categorizedResults || searchData.results || searchData;
+          Object.values(categorized).forEach((list) => {
+            if (Array.isArray(list)) list.forEach(extractIds);
+            else if (typeof list === 'object') extractIds(list);
+          });
+        }
+      } catch (searchError) {
+        console.warn("Search users endpoint error, falling back to local search:", searchError);
+      }
+
+      return mappedAllUsers.filter((u) => {
+        const isIdMatch = searchUserIds.has(String(u.id));
+        const qLower = queryTrimmed.toLowerCase();
+        const isTextMatch = (u.name && u.name.toLowerCase().includes(qLower)) ||
+                            (u.phone && u.phone.includes(qLower)) ||
+                            (u.namePlace && u.namePlace.toLowerCase().includes(qLower)) ||
+                            (u.email && u.email.toLowerCase().includes(qLower));
+        return isIdMatch || (searchUserIds.size === 0 && isTextMatch);
       });
-
-      const categorizedResults = searchResponse.data?.categorizedResults || {};
-
-      const searchUserIds = Object.values(categorizedResults).flatMap((list) =>
-        (list || []).map((u) => u.id)
-      );
-
-      return mappedAllUsers.filter((u) => searchUserIds.includes(u.id));
     } catch (error) {
       console.error("Error in getUsers:", error);
       throw error;

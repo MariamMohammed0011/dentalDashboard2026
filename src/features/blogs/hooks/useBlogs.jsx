@@ -76,16 +76,22 @@ export const useBlogs = () => {
     if (!rejectTarget) return;
 
     try {
+      setBlogs((prev) =>
+        prev.map((b) =>
+          b.id === rejectTarget.id ? { ...b, status: "rejected" } : b
+        )
+      );
+      if (activeArticle && activeArticle.id === rejectTarget.id) {
+        setActiveArticle((prev) => (prev ? { ...prev, status: "rejected" } : null));
+      }
+
       await blogsApi.rejectBlog(rejectTarget.id);
       toast.success(`تم رفض المنشور "${rejectTarget.title}" بنجاح.`);
 
-      if (activeArticle && activeArticle.id === rejectTarget.id) {
-        setActiveArticle(null);
-      }
-
-      fetchBlogsData();
+      fetchBlogsData(true);
     } catch (error) {
       toast.error("فشل في رفض المنشور.");
+      fetchBlogsData(true);
     } finally {
       setRejectTarget(null);
     }
@@ -95,16 +101,22 @@ export const useBlogs = () => {
     if (!approveTarget) return;
 
     try {
+      setBlogs((prev) =>
+        prev.map((b) =>
+          b.id === approveTarget.id ? { ...b, status: "approved" } : b
+        )
+      );
+      if (activeArticle && activeArticle.id === approveTarget.id) {
+        setActiveArticle((prev) => (prev ? { ...prev, status: "approved" } : null));
+      }
+
       await blogsApi.approveBlog(approveTarget.id);
       toast.success(`تم قبول ونشر المقال "${approveTarget.title}" بنجاح.`);
 
-      if (activeArticle && activeArticle.id === approveTarget.id) {
-        setActiveArticle(null);
-      }
-
-      fetchBlogsData();
+      fetchBlogsData(true);
     } catch (error) {
       toast.error("فشل في قبول ونشر المقال.");
+      fetchBlogsData(true);
     } finally {
       setApproveTarget(null);
     }

@@ -414,7 +414,7 @@
       "approved": "المقبولة",
       "rejected": "المرفوضة"
     },
-    "searchPlaceholder": "ابحث بالعنوان، الكاتب، المحتوى...",
+    "searchPlaceholder": "ابحث بالعنوان،  المحتوى...",
     "publishDate": "تاريخ النشر",
     "likesCount": "{{count}} إعجاب",
     "commentsCount": "{{count}} تعليق",
@@ -609,7 +609,7 @@
       "approvalStatusLabel": "حالة التأكيد",
       "statusLabel": "حالة الإعلان",
       "searchLabel": "البحث في الإعلانات",
-      "searchPlaceholder": "اكتب عنوان أو اسم المعلن...",
+      "searchPlaceholder": "اكتب محتوى الاعلان أو اسم المعلن...",
       "applyButton": "تطبيق الفلاتر",
       "resetButton": "إعادة تعيين",
       "activeFiltersHint": "يتم تصفية النتائج بناءً على الاختيارات الحالية",

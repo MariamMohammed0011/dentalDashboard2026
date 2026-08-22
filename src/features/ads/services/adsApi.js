@@ -157,8 +157,7 @@ const mapAdToFrontend = (ad, clients = [], audienceSets = null) => {
 export const adsApi = {
   getAds: async ({ page = 1, limit = 5, filters = {} } = {}) => {
     try {
-      // الجلب دائماً من نقطة الأدمن لأنها الوحيدة التي تُرجع حالة الموافقة والسعر،
-      // بينما تُستخدم نقطتا /dentists و /labs كمرجع لتصنيف الجمهور المستهدف فقط
+      // 1. جلب البيانات الكاملة لجميع الإعلانات والمستخدمين والجماهير المستهدفة
       const [adsResponse, clientsResponse, dentistsResponse, labsResponse] = await Promise.allSettled([
         axiosInstance.get("/Advertisement/admin/all"),
         axiosInstance.get("/Advertisement/all"),
@@ -176,9 +175,75 @@ export const adsApi = {
         labIds: new Set(labAds.map((a) => String(a.id)))
       };
 
-      let adsList = rawAds.map((ad) => mapAdToFrontend(ad, rawClients, audienceSets)).filter(Boolean);
+      // تحويل كافة الإعلانات بالبيانات الكاملة (الصور، العملاء، الجماهير، الأسعار، الحالات)
+      const allFullAds = rawAds.map((ad) => mapAdToFrontend(ad, rawClients, audienceSets)).filter(Boolean);
 
-      // فلترة الجمهور المستهدف (أطباء / مخابر / الاثنان معاً)
+      let adsList = allFullAds;
+
+      // 2. إذا كان هناك بحث: إرسال كويري البحث ومطابقة الـ IDs المسترجعة مع القائمة الكاملة
+      if (filters.search && filters.search.trim()) {
+        const queryTrimmed = filters.search.trim();
+        const matchedAdIds = new Set();
+        const matchedUserIds = new Set();
+
+        try {
+          const formData = new FormData();
+          formData.append("query", queryTrimmed);
+
+          const searchResponse = await axiosInstance.post("/Advertisement/search", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+
+          const searchData = searchResponse.data;
+
+          const extractIds = (item) => {
+            if (!item || typeof item !== 'object') return;
+            const adId = item.id ?? item.advertisementId ?? item.adId;
+            if (adId !== undefined && adId !== null) matchedAdIds.add(String(adId));
+
+            const uId = item.userId ?? item.user?.id ?? item.user?.userId;
+            if (uId !== undefined && uId !== null) matchedUserIds.add(String(uId));
+          };
+
+          if (Array.isArray(searchData)) {
+            searchData.forEach(extractIds);
+          } else if (typeof searchData === 'object' && searchData !== null) {
+            Object.values(searchData).forEach(val => {
+              if (Array.isArray(val)) {
+                val.forEach(extractIds);
+              } else if (typeof val === 'object' && val !== null) {
+                extractIds(val);
+                Object.values(val).forEach(nested => {
+                  if (Array.isArray(nested)) nested.forEach(extractIds);
+                });
+              }
+            });
+          }
+        } catch (searchError) {
+          console.warn("Search endpoint failed or had no results, falling back to local match:", searchError);
+        }
+
+        // مطابقة الـ IDs الناتجة عن البحث مع الإعلانات الكاملة لضمان عرض كامل البيانات
+        adsList = allFullAds.filter(ad => {
+          const adIdStr = String(ad.id);
+          const userIdStr = String(ad.userId);
+          const isIdMatch = matchedAdIds.has(adIdStr) || matchedUserIds.has(userIdStr);
+
+          // مطابقة نصية احتياطية (fallback)
+          const qLower = queryTrimmed.toLowerCase();
+          const isTextMatch =
+            (ad.title && ad.title.toLowerCase().includes(qLower)) ||
+            (ad.storeName && ad.storeName.toLowerCase().includes(qLower)) ||
+            (ad.content && ad.content.toLowerCase().includes(qLower)) ||
+            (ad.storePhone && ad.storePhone.includes(qLower));
+
+          return isIdMatch || (matchedAdIds.size === 0 && matchedUserIds.size === 0 && isTextMatch);
+        });
+      }
+
+      // 3. فلترة الجمهور المستهدف (أطباء / مخابر / الاثنان معاً)
       if (filters.type && filters.type !== 'all') {
         adsList = adsList.filter(ad => ad.type === filters.type);
       }
@@ -187,16 +252,6 @@ export const adsApi = {
       }
       if (filters.status && filters.status !== 'all') {
         adsList = adsList.filter(ad => ad.status === filters.status);
-      }
-      if (filters.search) {
-        const q = filters.search.toLowerCase();
-        adsList = adsList.filter(ad =>
-          ad.storeName.toLowerCase().includes(q) ||
-          ad.storePhone.includes(q) ||
-          ad.id.toString().includes(q) ||
-          ad.title.toLowerCase().includes(q) ||
-          ad.content.toLowerCase().includes(q)
-        );
       }
 
       const total = adsList.length;

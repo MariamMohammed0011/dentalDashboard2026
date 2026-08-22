@@ -71,6 +71,17 @@ export const blogsApi = {
           imageUrl = `${axiosInstance.defaults.baseURL.replace("/api", "")}/${post.attachments[0].path}`;
         }
 
+        let normalizedStatus = "pending";
+        if (typeof post.status === "string" && post.status.trim()) {
+          normalizedStatus = post.status.toLowerCase();
+        } else if (typeof post.status === "number") {
+          if (post.status === 1) normalizedStatus = "approved";
+          else if (post.status === 2) normalizedStatus = "rejected";
+          else normalizedStatus = "pending";
+        } else if (cleanStatus) {
+          normalizedStatus = cleanStatus.toLowerCase();
+        }
+
         return {
           id: post.postId,
           title: post.title || "",
@@ -89,7 +100,7 @@ export const blogsApi = {
             role: roleStr,
             specialty: specialtyStr
           },
-          status: post.status,
+          status: normalizedStatus,
           reviewMessage: post.reviewMessage
         };
       });
@@ -142,8 +153,8 @@ export const blogsApi = {
   getStats: async () => {
     try {
       const [docsRes, labsRes] = await Promise.all([
-        axiosInstance.get("/DoctorBlog/pending-posts").catch(() => ({ data: [] })),
-        axiosInstance.get("/DoctorBlog/pending-lab-posts").catch(() => ({ data: [] }))
+        axiosInstance.get("/DoctorBlog/approved-doctor-posts").catch(() => ({ data: [] })),
+        axiosInstance.get("/DoctorBlog/approved-lab-posts").catch(() => ({ data: [] }))
       ]);
       const docsPosts = Array.isArray(docsRes.data) ? docsRes.data : [];
       const labsPosts = Array.isArray(labsRes.data) ? labsRes.data : [];

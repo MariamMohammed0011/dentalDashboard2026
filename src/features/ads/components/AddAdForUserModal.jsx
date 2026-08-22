@@ -38,6 +38,21 @@ const AddAdForUserModal = ({ isOpen, onClose, onCreateAd, user, isSubmitting }) 
       return;
     }
 
+    // التحقق من تاريخ الانتهاء
+    if (!form.expiresAt) {
+      toast.error('يرجى تحديد تاريخ انتهاء الإعلان');
+      return;
+    }
+
+    const selectedDate = new Date(form.expiresAt);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate <= today) {
+      toast.error('تاريخ انتهاء الإعلان يجب أن يكون أكبر من تاريخ اليوم');
+      return;
+    }
+
     try {
       await onCreateAd(form);
       setForm({

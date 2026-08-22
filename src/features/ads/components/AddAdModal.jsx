@@ -58,13 +58,10 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
   });
 
   const filteredUsers = users.filter(user => {
-    const isSystemAdmin = 
-      user.role?.toLowerCase() === 'systemadmin' || 
-      user.role?.toLowerCase() === 'admin' || 
-      user.name === 'System Admin' ||
-      user.role === 'مسؤول النظام';
+    // فقط المستخدمين اللي دورهم ADSClient
+    const isAdsClient = user.role?.toLowerCase() === 'adsclient';
 
-    if (isSystemAdmin) return false;
+    if (!isAdsClient) return false;
 
     const q = userSearch.toLowerCase();
     return (
@@ -86,6 +83,21 @@ const AddAdModal = ({ isOpen, onClose, onCreateAd, isSubmitting }) => {
     }
     if (!form.image) {
       toast.error(t('ads.addAdForUserModal.imageRequired'));
+      return;
+    }
+
+    // التحقق من تاريخ الانتهاء
+    if (!form.expiresAt) {
+      toast.error('يرجى تحديد تاريخ انتهاء الإعلان');
+      return;
+    }
+
+    const selectedDate = new Date(form.expiresAt);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate <= today) {
+      toast.error('تاريخ انتهاء الإعلان يجب أن يكون أكبر من تاريخ اليوم');
       return;
     }
 

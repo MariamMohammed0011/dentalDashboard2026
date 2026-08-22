@@ -15,7 +15,26 @@ export const useAddAdClient = ({ onCreateClient, onClose, isSubmitting }) => {
   const [form, setForm] = useState(INITIAL_FORM_STATE);
 
   const handleChange = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    if (field === 'phone') {
+      // فقط أرقام
+      const onlyNumbers = value.replace(/\D/g, '');
+
+      // إذا تجاوز 10 أرقام، عرض toast تنبيه
+      if (onlyNumbers.length > 10) {
+        toast.error('رقم الهاتف يجب أن يكون 10 أرقام فقط (09 + 8 أرقام)');
+        return;
+      }
+
+      // إذا كان الطول أكتر من 2 وما بيبدأ ب 09، عطيه تنبيه
+      if (onlyNumbers.length > 2 && !onlyNumbers.startsWith('09')) {
+        toast.error('رقم الهاتف يجب أن يبدأ بـ 09');
+        return;
+      }
+
+      setForm((prev) => ({ ...prev, [field]: onlyNumbers }));
+    } else {
+      setForm((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
   const resetForm = () => setForm(INITIAL_FORM_STATE);
@@ -30,20 +49,20 @@ export const useAddAdClient = ({ onCreateClient, onClose, isSubmitting }) => {
       return;
     }
 
-    const phoneNumber = parsePhoneNumberFromString(form.phone.trim());
-
-    if (!phoneNumber || !phoneNumber.isValid()) {
-      toast.error('رقم الهاتف غير صحيح! يجب أن يبدأ برمز الدولة (مثال: +9639XXXXXXXX)');
+    // التحقق من صيغة الهاتف: يجب أن يبدأ بـ 09 وعدد الأرقام الكلي 10
+    const phoneDigits = form.phone.trim();
+    if (!/^09\d{8}$/.test(phoneDigits)) {
+      toast.error('رقم الهاتف يجب أن يكون 10 أرقام فقط (09 + 8 أرقام)');
       return;
     }
 
     const cleanedForm = Object.fromEntries(
       Object.entries({
         ...form,
-        phone: phoneNumber.number 
+        phone: phoneDigits
       })
       .map(([key, value]) => [key, typeof value === 'string' ? value.trim() : value])
-      .filter(([_, value]) => value !== '') 
+      .filter(([_, value]) => value !== '')
     );
 
     
