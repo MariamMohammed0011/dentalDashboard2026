@@ -13,6 +13,7 @@ import {
   Loader2,
   AlertTriangle
 } from 'lucide-react';
+import { ColumnChartSkeleton, PieChartSkeleton, LineChartSkeleton, AreaChartSkeleton } from './components/ChartSkeleton';
 
 const StatCard = ({ title, count, icon: Icon, color, borderAccent, progressPercentage, progressColor, subDetails }) => (
   <div className="group relative bg-bg-card border border-primary/30 hover:border-primary rounded-xl p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1 shadow-sm shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 flex flex-col justify-between h-full text-right overflow-hidden" dir="rtl">
@@ -469,7 +470,7 @@ export default function DashboardHome() {
                 <span className="text-sm">{t('dashboard.failedLoadDoctorsStats')}</span>
               </div>
             ) : dentistsOrdersData.length === 0 ? (
-              <span className="text-sm text-text-muted">{t('common.noData')}</span>
+              <ColumnChartSkeleton />
             ) : (
               <div className="w-full h-full">
                 <Column {...dentistsColumnConfig} />
@@ -501,7 +502,7 @@ export default function DashboardHome() {
                 <span className="text-sm">{t('dashboard.failedLoadLabsStats')}</span>
               </div>
             ) : labsOrdersData.length === 0 ? (
-              <span className="text-sm text-text-muted">{t('common.noData')}</span>
+              <ColumnChartSkeleton />
             ) : (
               <div className="w-full h-full">
                 <Column {...labsColumnConfig} />
@@ -529,7 +530,7 @@ export default function DashboardHome() {
             {isLoading ? (
               <Loader2 className="animate-spin text-primary" size={32} />
             ) : compensationsChartData.length === 0 ? (
-              <span className="text-sm text-text-muted">{t('common.noData')}</span>
+              <ColumnChartSkeleton />
             ) : (
               <div className="w-full h-full">
                 <Column {...trendsConfig} />
@@ -547,7 +548,7 @@ export default function DashboardHome() {
             {isLoading ? (
               <Loader2 className="animate-spin text-primary" size={32} />
             ) : statusChartData.length === 0 ? (
-              <span className="text-sm text-text-muted">{t('common.noData')}</span>
+              <PieChartSkeleton />
             ) : (
               <div className="w-full h-full">
                 <Pie {...lifecycleConfig} />
@@ -571,7 +572,7 @@ export default function DashboardHome() {
             {isLoading ? (
               <Loader2 className="animate-spin text-primary" size={32} />
             ) : ratingsChartData.length === 0 ? (
-              <span className="text-sm text-text-muted">{t('common.noData')}</span>
+              <LineChartSkeleton />
             ) : (
               <div className="w-full h-full">
                 <Line {...labConfig} />
@@ -605,7 +606,7 @@ export default function DashboardHome() {
             {isLoading ? (
               <Loader2 className="animate-spin text-primary" size={32} />
             ) : financialGrowthData.length === 0 ? (
-              <span className="text-sm text-text-muted">{t('common.noData')}</span>
+              <AreaChartSkeleton />
             ) : (
               <div className="w-full h-full">
                 <Area {...revenueConfig} />

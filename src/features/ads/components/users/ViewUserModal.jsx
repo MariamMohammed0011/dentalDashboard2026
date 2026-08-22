@@ -222,7 +222,7 @@ const ViewUserModal = ({ isOpen, onClose, user }) => {
                             </div>
                             {ad.price && (
                               <div className="absolute bottom-2.5 left-2.5 bg-emerald-500 text-white text-[11px] font-black px-2.5 py-1 rounded-lg">
-                                {ad.price.toLocaleString()} ل.س
+                                {ad.price.toLocaleString()} $
                               </div>
                             )}
                           </div>

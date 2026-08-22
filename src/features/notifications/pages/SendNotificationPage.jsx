@@ -112,7 +112,10 @@ const SendNotificationPage = () => {
         await adsApi.approveAd(userId, selectedAdId, parsedPrice);
 
         await notificationsService.createNotification({
-          text: `تم تحديد سعر الإعلان "${selectedAd?.title || 'إعلان'}" بقيمة ${parsedPrice.toLocaleString()} ل.س وإرسال إشعار دفع للمعلن.`,
+          text: `تم تحديد سعر الإعلان "${selectedAd?.title || 'إعلان'}" بقيمة ${parsedPrice.toLocaleString()} 
+          $ 
+          وإرسال إشعار دفع للمعلن.
+          `,
           type: 'ad'
         });
 
