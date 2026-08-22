@@ -59,7 +59,7 @@ const AddAdClientModal = ({ isOpen, onClose, onCreateClient, isSubmitting }) => 
 
             <form onSubmit={handleSubmit} className="flex flex-col flex-grow overflow-hidden font-zain">
 
-              <div className="p-4 xs:p-5 sm:p-6 sm:p-7 flex flex-col gap-3.5 xs:gap-4 sm:gap-5 text-right overflow-y-auto flex-grow custom-scrollbar">
+              <div className="p-4 xs:p-5  sm:p-7 flex flex-col gap-3.5 xs:gap-4 sm:gap-5 text-right overflow-y-auto flex-grow custom-scrollbar">
 
                 <div className="flex flex-col gap-1.5 xs:gap-2">
                   <label className="text-slate-700 dark:text-slate-300 font-black text-xs xs:text-sm flex items-center gap-1.5 xs:gap-2 mr-1">
