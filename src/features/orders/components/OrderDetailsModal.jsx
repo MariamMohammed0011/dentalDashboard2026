@@ -88,30 +88,29 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
     }
   };
 
-  // const getFullFileUrl = (file) => {
-  //   if (!file) return '#';
-  //   if (file.fullUrl) return file.fullUrl;
-  //   if (file.path) {
-  //     if (file.path.startsWith('http://') || file.path.startsWith('https://')) return file.path;
-  //     return `https://osnet.shop/dentconnect/${file.path.replace(/^\//, '')}`;
-  //     // return `https://localhost:44334/${file.path.replace(/^\//, '')}`;
-  //   }
-  //   return '#';
-  // };
-const getFullFileUrl = (file) => {
-  if (!file) return '#';
-  if (file.fullUrl) return file.fullUrl;
-  if (file.path) {
-    if (file.path.startsWith('http://') || file.path.startsWith('https://')) return file.path;
-    
-    // جلب الرابط من .env.local وإزالة المائلة الزائدة
+  const getFullFileUrl = (file) => {
+    if (!file) return '#';
     const baseUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '');
-    const cleanPath = file.path.replace(/^\/+/, '');
-    
-    return `${baseUrl}/${cleanPath}`;
-  }
-  return '#';
-};
+
+    // 1. إذا كان المسار نسبياً (مثل uploads/cases/2/stl/...) نربطه مباشرة بالـ baseUrl
+    if (file.path && !file.path.startsWith('http://') && !file.path.startsWith('https://')) {
+      const cleanPath = file.path.replace(/^\/+/, '');
+      return `${baseUrl}/${cleanPath}`;
+    }
+
+    // 2. إذا أرسل الباك إند رابطاً كاملاً، نستخرج مسار مجلد الملفات (uploads/...) ونربطه بالـ baseUrl الحالي في البيئة
+    const rawPath = file.path || file.fullUrl || '';
+    if (rawPath.includes('uploads/')) {
+      const uploadPart = rawPath.substring(rawPath.indexOf('uploads/'));
+      return `${baseUrl}/${uploadPart}`;
+    }
+
+    if (rawPath.startsWith('http://') || rawPath.startsWith('https://')) {
+      return rawPath;
+    }
+
+    return rawPath ? `${baseUrl}/${rawPath.replace(/^\/+/, '')}` : '#';
+  };
   const isDigital = String(order.impressionType).toLowerCase() === 'digital' || String(order.impressionType) === 'رقمية' || stlFiles.length > 0;
   const currentStlFile = stlFiles[activeStlIndex] || stlFiles[0];
 
